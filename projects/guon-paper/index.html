@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<title>GUON Optimizer · 论文介绍</title>
+<meta name="description" content="VRAM is Too Expensive So We Use Graduate Students to Train LLMs: The GUON Optimizer">
+<style>
+  /* ============ 设计令牌（与首页一致） ============ */
+  :root{
+    --bg:#0a0a0a;
+    --bg-2:#0f0f0f;
+    --ink:#e8e8e8;
+    --ink-dim:#7a7a7a;
+    --ink-faint:#3a3a3a;
+    --line:#1f1f1f;
+    --line-2:#2a2a2a;
+    --acid:#c6ff00;
+    --acid-dim:rgba(198,255,0,.16);
+    --mono:'JetBrains Mono','SFMono-Regular',ui-monospace,'Cascadia Code','Liberation Mono',Menlo,Consolas,monospace;
+    --pad:clamp(20px,5vw,72px);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{background:var(--bg)}
+  body{
+    font-family:var(--mono);
+    color:var(--ink);
+    background:var(--bg);
+    min-height:100vh;
+    line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ============ 背景纹理（与首页一致） ============ */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:radial-gradient(circle at center, rgba(255,255,255,.045) 1px, transparent 1.4px);
+    background-size:26px 26px;
+    animation:drift 32s linear infinite;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+    background-size:80px 80px;
+    mask-image:radial-gradient(ellipse at 50% 20%, #000 0%, transparent 70%);
+    -webkit-mask-image:radial-gradient(ellipse at 50% 20%, #000 0%, transparent 70%);
+  }
+  @keyframes drift{to{background-position:26px 26px}}
+
+  .topbeam{
+    position:fixed;top:0;left:0;right:0;height:2px;z-index:50;
+    background:linear-gradient(90deg, transparent 0%, var(--acid) 12%, var(--acid) 88%, transparent 100%);
+    opacity:.55;box-shadow:0 0 14px var(--acid-dim);
+  }
+
+  .shell{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:0 var(--pad) 80px}
+
+  /* ============ 顶栏（返回） ============ */
+  header.bar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 0 18px;border-bottom:1px solid var(--line);
+    opacity:0;transform:translateY(-8px);
+    animation:rise .6s .05s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .back{
+    display:inline-flex;align-items:center;gap:9px;
+    font-size:12px;letter-spacing:.14em;color:var(--ink-dim);
+    text-decoration:none;text-transform:uppercase;
+    transition:color .24s;
+  }
+  .back .arr{color:var(--acid);transition:transform .24s}
+  .back:hover{color:var(--acid)}
+  .back:hover .arr{transform:translateX(-4px)}
+  .crumb{font-size:11px;color:var(--ink-faint);letter-spacing:.1em}
+  .crumb b{color:var(--ink-dim);font-weight:400}
+
+  /* ============ 元信息条 ============ */
+  .meta-bar{
+    display:flex;flex-wrap:wrap;gap:10px;margin:40px 0 26px;
+    opacity:0;transform:translateY(10px);
+    animation:rise .6s .18s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .meta-chip{
+    font-size:10px;letter-spacing:.14em;color:var(--ink-dim);
+    border:1px solid var(--line-2);padding:4px 9px;text-transform:uppercase;
+  }
+  .meta-chip.acid{color:var(--acid);border-color:var(--acid)}
+
+  /* ============ 标题 ============ */
+  .title-wrap{margin-bottom:18px;opacity:0;transform:translateY(14px);animation:rise .7s .26s cubic-bezier(.2,.7,.2,1) forwards}
+  .eyebrow{font-size:12px;color:var(--acid);letter-spacing:.2em;margin-bottom:14px;font-weight:700}
+  .eyebrow::before{content:"// ";color:var(--ink-faint)}
+  h1{
+    font-size:clamp(26px,4.6vw,46px);font-weight:800;line-height:1.12;letter-spacing:-.015em;
+    color:var(--ink);margin-bottom:14px;
+  }
+  .authors{font-size:13px;color:var(--ink-dim);letter-spacing:.02em}
+  .authors .sup{color:var(--acid)}
+  .authors .aff{color:var(--ink-faint)}
+
+  .rule-acid{width:64px;height:2px;background:var(--acid);margin:26px 0;opacity:0;transform:scaleX(0);transform-origin:left;animation:growx .5s .4s cubic-bezier(.2,.7,.2,1) forwards}
+
+  /* ============ 摘要 ============ */
+  .abstract{
+    opacity:0;transform:translateY(10px);
+    animation:rise .65s .42s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .sec-label{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+  .sec-label .bv{width:4px;height:16px;background:var(--acid);box-shadow:0 0 10px var(--acid-dim)}
+  .sec-label h2{font-size:12px;letter-spacing:.24em;color:var(--ink);font-weight:700;text-transform:uppercase}
+  .abstract p{font-size:14px;color:var(--ink-dim);line-height:1.8;letter-spacing:.01em}
+  .abstract p .hl{color:var(--ink)}
+
+  /* ============ 入口按钮 ============ */
+  .actions{
+    display:flex;flex-wrap:wrap;gap:14px;margin-top:38px;
+    opacity:0;transform:translateY(10px);
+    animation:rise .65s .54s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:11px;
+    font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;
+    padding:15px 22px;text-decoration:none;
+    border:1px solid var(--line-2);color:var(--ink);background:var(--bg-2);
+    transition:transform .26s cubic-bezier(.2,.7,.2,1), border-color .26s, color .26s, background .26s, box-shadow .26s;
+  }
+  .btn .arrow{transition:transform .26s}
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:2px 2px 0 0 var(--acid-dim)}
+  .btn:hover .arrow{transform:translateX(5px)}
+  .btn.primary{border-color:var(--acid);color:var(--acid)}
+  .btn.primary:hover{background:var(--acid);color:var(--bg)}
+  .btn .tag{font-size:9px;color:var(--ink-faint);letter-spacing:.1em;font-weight:400}
+  .btn.primary .tag{color:rgba(198,255,0,.5)}
+  .btn.primary:hover .tag{color:rgba(10,10,10,.6)}
+
+  /* ============ 页脚 ============ */
+  footer{
+    margin-top:64px;padding-top:22px;border-top:1px solid var(--line);
+    font-size:11px;color:var(--ink-faint);letter-spacing:.08em;
+    opacity:0;transform:translateY(8px);
+    animation:rise .6s .7s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  footer a{color:var(--ink-dim);text-decoration:none;border-bottom:1px solid var(--line-2);transition:color .2s,border-color .2s}
+  footer a:hover{color:var(--acid);border-color:var(--acid)}
+
+  /* ============ 海报 ============ */
+  .poster{
+    margin-top:42px;
+    opacity:0;transform:translateY(12px);
+    animation:rise .65s .5s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .poster .sec-label{margin-bottom:16px}
+  .poster-frame{
+    position:relative;display:block;
+    border:1px solid var(--line-2);background:var(--bg-2);
+    padding:10px;max-width:420px;
+    text-decoration:none;
+    transition:transform .28s cubic-bezier(.2,.7,.2,1), border-color .28s, box-shadow .28s;
+  }
+  .poster-frame::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--acid);transform:scaleY(.18);transform-origin:top;
+    transition:transform .32s cubic-bezier(.2,.7,.2,1);
+  }
+  .poster-frame:hover{transform:translate(-3px,-3px);border-color:var(--acid);box-shadow:3px 3px 0 0 var(--acid-dim)}
+  .poster-frame:hover::before{transform:scaleY(1)}
+  .poster-frame img{display:block;width:100%;height:auto}
+  .poster-cap{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:12px;font-size:10px;letter-spacing:.14em;color:var(--ink-faint);text-transform:uppercase;
+  }
+  .poster-cap .open{color:var(--ink-dim);transition:color .24s}
+  .poster-frame:hover .poster-cap .open{color:var(--acid)}
+
+  @keyframes rise{to{opacity:1;transform:translateY(0)}}
+  @keyframes growx{to{opacity:1;transform:scaleX(1)}}
+
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important;opacity:1 !important;transform:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="topbeam"></div>
+
+<div class="shell">
+
+  <!-- 顶栏：返回首页 -->
+  <header class="bar">
+    <a class="back" href="/"><span class="arr">←</span> BACK TO INDEX</a>
+    <span class="crumb">projects <b>/</b> guon-paper</span>
+  </header>
+
+  <!-- 元信息 -->
+  <div class="meta-bar">
+    <span class="meta-chip acid">PAPER · 2025</span>
+    <span class="meta-chip">JOKEROFACADEMICS</span>
+    <span class="meta-chip">12 PAGES</span>
+    <span class="meta-chip">HUMOR / AI</span>
+  </div>
+
+  <!-- 标题区 -->
+  <div class="title-wrap">
+    <div class="eyebrow">ARTICLE ID 108</div>
+    <h1>VRAM is Too Expensive So We Use Graduate Students to Train LLMs: The GUON Optimizer</h1>
+    <p class="authors">Prof. Pig<span class="sup">*</span> · Student Piggy<br>
+      <span class="aff">School of Artificial Hype · Yeji University</span>
+    </p>
+  </div>
+
+  <div class="rule-acid"></div>
+
+  <!-- 摘要 -->
+  <section class="abstract">
+    <div class="sec-label"><span class="bv"></span><h2>Abstract</h2></div>
+    <p>
+      Scaling large language models confronts a severe <span class="hl">memory wall crisis</span>, with modern optimizers easily hoarding terabytes of historical states. Facing a dried-up funding account, we propose <span class="hl">Guon (Graduate Unpaid Optimization Nodes)</span> — a stateless second-order optimization paradigm driven entirely by carbon-based compute power.
+    </p>
+    <p style="margin-top:14px">
+      基于时空对偶理论：既然买不起显存沿时间轴累积动量，就把廉价的研究生密集填入物理空间，让他们在草稿纸上手动做 FP32 梯度累积。评估显示 GUON 将 70B 模型的静态显存需求降低约 8 倍（降至 140 GB）。
+    </p>
+  </section>
+
+  <!-- 海报 -->
+  <section class="poster">
+    <div class="sec-label"><span class="bv"></span><h2>Poster</h2></div>
+    <a class="poster-frame" href="assets/JOA_poster_108.png" target="_blank" rel="noopener">
+      <img src="assets/JOA_poster_108.png" alt="GUON Optimizer 论文海报" loading="lazy">
+      <div class="poster-cap">
+        <span>JOA_poster_108 · 2160×3840</span>
+        <span class="open">点击查看大图 ↗</span>
+      </div>
+    </a>
+  </section>
+
+  <!-- 入口按钮 -->
+  <div class="actions">
+    <a class="btn primary" href="https://jokerofacademics.com/academics/article.php?id=108" target="_blank" rel="noopener">
+      在线阅读 <span class="arrow">→</span>
+    </a>
+    <a class="btn" href="assets/GUON_Optimizer.pdf" target="_blank" rel="noopener">
+      下载 PDF <span class="arrow">↓</span> <span class="tag">570KB · 本地副本</span>
+    </a>
+  </div>
+
+  <!-- 页脚 -->
+  <footer>
+    官方出处：<a href="https://jokerofacademics.com/academics/article.php?id=108" target="_blank" rel="noopener">jokerofacademics.com/academics/article.php?id=108</a><br>
+    本地 PDF 副本仅供离线兜底，著作权归原作者所有。
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,441 @@
+/* app.css — 心韵深辨 H5 全局样式 (Apple Design System)
+ * 由原小程序 app.wxss 转化: page 选择器 → :root/body, 其余原样复用
+ * 设计风格: 科技蓝系 + 苹果设计语言
+ * 主色: #007AFF (Apple Blue)
+ * 辅色: #5AC8FA (Teal) / #34C759 (Green) / #FF3B30 (Red)
+ * 字体: SF Pro / PingFang SC
+ * 4pt网格, 20px卡片圆角, 毛玻璃效果
+ */
+
+/* ===== 全局重置 ===== */
+:root {
+  --bg-primary: #F2F2F7;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #F2F2F7;
+  --bg-grouped: #F2F2F7;
+  --bg-canvas: #0a1520;
+
+  --label-primary: #000000;
+  --label-secondary: rgba(60, 60, 67, 0.85);
+  --label-tertiary: rgba(60, 60, 67, 0.7);
+  --label-quaternary: rgba(60, 60, 67, 0.55);
+
+  --separator: rgba(60, 60, 67, 0.12);
+  --separator-opaque: #C6C6C8;
+
+  --fill-primary: rgba(120, 120, 128, 0.20);
+  --fill-secondary: rgba(120, 120, 128, 0.16);
+  --fill-tertiary: rgba(120, 120, 128, 0.12);
+
+  --accent-blue: #007AFF;
+  --accent-green: #34C759;
+  --accent-indigo: #5856D6;
+  --accent-orange: #FF9500;
+  --accent-red: #FF3B30;
+  --accent-teal: #5AC8FA;
+
+  --card-radius: 20px;
+  --card-padding: 16px;
+  --card-gap: 12px;
+  --page-margin: 16px;
+  --btn-radius: 12px;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow-modal: 0 10px 30px rgba(0, 0, 0, 0.12);
+
+  --nav-bg: rgba(242, 242, 247, 0.82);
+  --tab-bg: rgba(255, 255, 255, 0.85);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background-color: var(--bg-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: 15px;
+  color: var(--label-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  /* 主题切换过渡 */
+  transition: background-color 0.25s ease;
+}
+
+/* ===== 深色模式 =====
+ * dark 类挂在 <body> 上, 由 JS 主题切换控制
+ */
+body.dark,
+.dark {
+  --bg-primary: #000000;
+  --bg-secondary: #1C1C1E;
+  --bg-tertiary: #2C2C2E;
+  --bg-grouped: #000000;
+  --bg-canvas: #050d18;
+
+  --label-primary: #FFFFFF;
+  --label-secondary: rgba(235, 235, 245, 0.85);
+  --label-tertiary: rgba(235, 235, 245, 0.7);
+  --label-quaternary: rgba(235, 235, 245, 0.55);
+
+  --separator: rgba(84, 84, 88, 0.45);
+  --separator-opaque: #38383A;
+
+  --fill-primary: rgba(120, 120, 128, 0.36);
+  --fill-secondary: rgba(120, 120, 128, 0.32);
+  --fill-tertiary: rgba(120, 120, 128, 0.18);
+
+  --accent-blue: #0A84FF;
+  --accent-green: #30D158;
+  --accent-indigo: #5E5CE6;
+  --accent-orange: #FF9F0A;
+  --accent-red: #FF453A;
+  --accent-teal: #64D2FF;
+
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 10px 40px rgba(0, 0, 0, 0.5);
+
+  --nav-bg: rgba(0, 0, 0, 0.82);
+  --tab-bg: rgba(28, 28, 30, 0.85);
+}
+
+/* ===== 通用容器 ===== */
+.container {
+  padding: 0 var(--page-margin);
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding-top: 8px;
+  /* 底部留白避开自定义TabBar(高度58px + safe-area) */
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  background-color: var(--bg-primary);
+  transition: background-color 0.25s ease;
+}
+
+/* ===== 卡片 (苹果风格) ===== */
+.card {
+  background: var(--bg-secondary);
+  border-radius: var(--card-radius);
+  padding: var(--card-padding);
+  margin-bottom: var(--card-gap);
+  box-shadow: var(--shadow-card);
+}
+
+.card-elevated {
+  background: var(--bg-secondary);
+  border-radius: var(--card-radius);
+  padding: var(--card-padding);
+  margin-bottom: var(--card-gap);
+  box-shadow: var(--shadow-elevated);
+}
+
+/* ===== 标题层级 (iOS Dynamic Type) ===== */
+.title-xl {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--label-primary);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.title-lg {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--label-primary);
+  letter-spacing: -0.3px;
+}
+
+.title-md {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--label-primary);
+}
+
+.subtitle {
+  font-size: 15px;
+  color: var(--label-secondary);
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+/* ===== 文字层级工具类 (Apple Design) ===== */
+.text-primary   { color: var(--label-primary); }
+.text-secondary { color: var(--label-secondary); }
+.text-tertiary  { color: var(--label-tertiary); }
+.text-muted     { color: var(--label-quaternary); }
+.text-accent    { color: var(--accent-blue); }
+.text-accent-teal { color: var(--accent-teal); }
+.text-success   { color: var(--accent-green); }
+.text-warning   { color: var(--accent-orange); }
+.text-danger    { color: var(--accent-red); }
+
+.bg-primary { background-color: var(--accent-blue); }
+.bg-secondary { background-color: var(--accent-teal); }
+.bg-light { background-color: var(--bg-tertiary); }
+
+/* ===== 状态标签 (苹果 Pill 风格) ===== */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 4px;
+  letter-spacing: 0.2px;
+}
+
+.tag-normal {
+  background: rgba(52, 199, 89, 0.12);
+  color: var(--accent-green);
+}
+
+.tag-abnormal {
+  background: rgba(255, 59, 48, 0.12);
+  color: var(--accent-red);
+}
+
+.tag-neutral {
+  background: var(--fill-tertiary);
+  color: var(--label-secondary);
+}
+
+/* ===== 按钮 (苹果风格) ===== */
+.btn-primary {
+  background: var(--accent-blue);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--btn-radius);
+  padding: 14px 24px;
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: -0.2px;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  cursor: pointer;
+}
+
+.btn-primary:active {
+  opacity: 0.85;
+  transform: scale(0.97);
+}
+
+.btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--accent-blue);
+  border: none;
+  border-radius: var(--btn-radius);
+  padding: 14px 24px;
+  font-size: 17px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.2;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  cursor: pointer;
+}
+
+.btn-secondary:active {
+  opacity: 0.7;
+  transform: scale(0.97);
+}
+
+.btn-text {
+  color: var(--accent-blue);
+  font-size: 15px;
+  font-weight: 400;
+  text-align: center;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ===== 分隔线 ===== */
+.divider {
+  height: 0.5px;
+  background: var(--separator);
+  margin: 12px 0;
+}
+
+/* ===== 进度条 ===== */
+.progress-bar {
+  height: 6px;
+  background: var(--fill-tertiary);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent-blue);
+  border-radius: 100px;
+  transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ===== 动画 (Spring Easing) ===== */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.pulse-animation {
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fade-in 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.scale-in {
+  animation: scale-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ===== 空状态 ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 16px;
+}
+
+.empty-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: var(--fill-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.empty-text {
+  font-size: 17px;
+  color: var(--label-secondary);
+  font-weight: 500;
+}
+
+.empty-subtext {
+  font-size: 13px;
+  color: var(--label-tertiary);
+  margin-top: 4px;
+}
+
+/* ===== 列表项 (iOS Settings 风格) ===== */
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.list-item:active {
+  opacity: 0.6;
+}
+
+.list-icon {
+  width: 29px;
+  height: 29px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.list-icon-text {
+  font-size: 16px;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.list-content {
+  flex: 1;
+}
+
+.list-title {
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--label-primary);
+}
+
+.list-desc {
+  font-size: 13px;
+  color: var(--label-secondary);
+  margin-top: 2px;
+}
+
+.list-arrow {
+  font-size: 20px;
+  color: var(--label-tertiary);
+  font-weight: 300;
+}
+
+/* ===== 毛玻璃效果 ===== */
+.glass {
+  background: var(--nav-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+/* ===== 顶栏 (H5 新增, 对应小程序原生导航栏) ===== */
+.nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 12px;
+  background: var(--nav-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid var(--separator);
+}
+
+.nav-bar-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--label-primary);
+  letter-spacing: -0.2px;
+}
+
+.nav-bar-back {
+  position: absolute;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 15px;
+  color: var(--accent-blue);
+  background: none;
+  border: none;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.nav-bar-back:active { opacity: 0.6; }
+
+/* ===== H5 文件输入 (隐藏, 由 JS 触发) ===== */
+.hidden-file-input {
+  display: none;
+}

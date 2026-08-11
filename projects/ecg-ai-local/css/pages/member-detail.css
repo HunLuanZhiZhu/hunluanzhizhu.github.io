@@ -1,0 +1,84 @@
+/* pages/member-detail/member-detail.wxss — 成员详情页 (Apple联系人风格) */
+
+/* Hero区域 */
+.page-member-detail .hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0 24px;
+  gap: 10px;
+}
+
+.page-member-detail .hero-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  border: 0.5px solid var(--separator);
+}
+
+.page-member-detail .hero-avatar-img {
+  width: 100%;
+  height: 100%;
+}
+
+.page-member-detail .hero-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--label-primary);
+}
+
+.page-member-detail .hero-role {
+  flex-shrink: 0;
+}
+
+/* 详情卡片 */
+.page-member-detail .detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.page-member-detail .detail-section {
+  padding: 14px 0;
+}
+
+.page-member-detail .detail-section:first-child {
+  padding-top: 4px;
+}
+
+.page-member-detail .detail-section:last-child {
+  padding-bottom: 4px;
+}
+
+.page-member-detail .detail-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-blue);
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.page-member-detail .detail-text {
+  font-size: 15px;
+  color: var(--label-primary);
+  line-height: 1.65;
+}
+
+/* 标签样式(复用team页) */
+.page-member-detail .role-mentor {
+  background: var(--accent-blue);
+  color: #FFFFFF;
+}
+
+.page-member-detail .role-member {
+  background: rgba(0, 122, 255, 0.12);
+  color: var(--accent-blue);
+}
+
+/* 深色模式 hero 阴影 */
+.page-member-detail .dark .hero-avatar {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}

@@ -1,0 +1,157 @@
+/* pages/mine/mine.wxss — 苹果设计风格 */
+
+.page-mine .header {
+  padding: 16px 0 16px;
+}
+
+/* 用户信息卡片 */
+.page-mine .profile-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-mine .avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.page-mine .avatar-img {
+  width: 100%;
+  height: 100%;
+}
+
+.page-mine .profile-info {
+  flex: 1;
+}
+
+.page-mine .profile-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--label-primary);
+  letter-spacing: -0.3px;
+  margin-bottom: 2px;
+}
+
+.page-mine .profile-desc {
+  font-size: 13px;
+  color: var(--label-secondary);
+}
+
+/* 个人档案编辑卡片 */
+.page-mine .profile-edit-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: var(--card-padding);
+}
+
+.page-mine .profile-edit-card:active {
+  opacity: 0.7;
+}
+
+.page-mine .profile-edit-card .list-content {
+  flex: 1;
+}
+
+/* iOS 风格 Toggle Switch */
+.page-mine .switch-track {
+  width: 51px;
+  height: 31px;
+  border-radius: 100px;
+  background: rgba(120, 120, 128, 0.32);
+  position: relative;
+  transition: background 0.25s ease;
+  flex-shrink: 0;
+}
+
+.page-mine .switch-on {
+  background: var(--accent-green);
+}
+
+.page-mine .switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.page-mine .switch-on .switch-thumb {
+  transform: translateX(20px);
+}
+
+.page-mine .list-item-switch {
+  padding-right: 4px;
+}
+
+/* 统计卡片 */
+.page-mine .stats-card {
+  display: flex;
+  padding: 16px 12px;
+}
+
+.page-mine .stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-mine .stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--label-primary);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.page-mine .stat-label {
+  font-size: 12px;
+  color: var(--label-secondary);
+  margin-top: 4px;
+}
+
+.page-mine .stat-divider {
+  width: 0.5px;
+  background: var(--separator);
+  margin: 2px 0;
+}
+
+/* 技术信息 */
+.page-mine .tech-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.page-mine .tech-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.page-mine .tech-label {
+  font-size: 14px;
+  color: var(--label-secondary);
+}
+
+.page-mine .tech-value {
+  font-size: 14px;
+  color: var(--label-primary);
+  font-weight: 500;
+}
+
+/* 底部文字 */
+.page-mine .footer-text {
+  text-align: center;
+  font-size: 12px;
+  color: var(--label-quaternary);
+  padding: 24px 0 16px;
+}

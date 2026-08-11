@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 浏览器标签页图标 -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <title>Minecraft Web - Rust + Bevy</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+        /* Bevy 渲染目标 canvas (全屏) */
+        #game-canvas {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        /* WASM 加载中遮罩 (Bevy 启动前显示) */
+        #loading {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #87CEEB 0%, #4682B4 100%);
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            z-index: 100;
+            transition: opacity 0.5s;
+        }
+        #loading h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        #loading p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 1.5em;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        /* 错误显示 */
+        #error-msg {
+            position: fixed;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #1a1a1a;
+            color: #ff6b6b;
+            font-family: 'Segoe UI', sans-serif;
+            z-index: 200;
+            padding: 2em;
+        }
+        #error-msg h2 { margin-bottom: 1em; }
+        #error-msg pre {
+            max-width: 90%;
+            overflow: auto;
+            background: #0d0d0d;
+            padding: 1em;
+            border-radius: 6px;
+            font-size: 0.85em;
+        }
+        /* ================================================================== */
+        /* 移动端虚拟摇杆 + 触摸控制 UI (仅触摸设备显示) */
+        /* ================================================================== */
+        #mobile-controls {
+            display: none; /* 默认隐藏, JS 检测触摸设备后显示 */
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            pointer-events: none; /* 容器不拦截事件, 子元素单独开启 */
+            touch-action: none; /* 阻止浏览器默认触摸行为 (滚动/缩放) */
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+        /* 摇杆外圈 (动态定位, touchstart 时在触摸点出现) */
+        #joystick-base {
+            position: fixed;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.35);
+            pointer-events: none;
+            display: none;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+        /* 摇杆内圈 (拇指) */
+        #joystick-thumb {
+            position: fixed;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.45);
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            pointer-events: none;
+            display: none;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            transition: background 0.1s;
+        }
+        /* 通用触摸按钮样式 (Minecraft 像素风格半透明按钮) */
+        .touch-btn {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            pointer-events: auto;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            text-align: center;
+            line-height: 1.1;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            transition: background 0.1s, border-color 0.1s;
+        }
+        .touch-btn:active, .touch-btn.active {
+            background: rgba(255, 255, 255, 0.35);
+            border-color: rgba(255, 255, 255, 0.9);
+        }
+        /* 右下区域功能按钮 (跳跃/潜行/攻击/放置/飞行) */
+        .touch-btn-action {
+            width: 64px;
+            height: 64px;
+            font-size: 12px;
+        }
+        /* 顶部小按钮 (背包/说明书/暂停/聊天/丢弃) */
+        .touch-btn-top {
+            width: 44px;
+            height: 44px;
+            font-size: 18px;
+            border-radius: 8px;
+        }
+        /* 快捷栏左右滚按钮 */
+        .touch-btn-hotbar {
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            border-radius: 8px;
+        }
+        /* 视角拖动区域 (右半屏, 不可见但接收触摸) */
+        #look-zone {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            pointer-events: auto;
+            touch-action: none;
+            display: none; /* 默认隐藏, 触摸设备显示 */
+        }
+        /* 摇杆触发区域 (左半屏, 不可见但接收触摸) */
+        #joystick-zone {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            pointer-events: auto;
+            touch-action: none;
+            display: none; /* 默认隐藏, 触摸设备显示 */
+        }
+    </style>
+</head>
+<body>
+    <!-- Bevy 渲染目标 canvas (必须在 wasm 加载前存在; tabindex 使其可接收键盘事件) -->
+    <canvas id="game-canvas" tabindex="0"></canvas>
+
+    <!-- 说明书 iframe 覆盖层 (由 Rust 端 manual_iframe_system 控制显示/隐藏) -->
+    <!-- 用 srcdoc 加载完整 HTML, 完美渲染表格/样式/滚动条 -->
+    <iframe id="manual-iframe"
+            style="display:none; position:fixed; top:5%; left:10%; width:80%; height:90%; z-index:100; border:2px solid #4a9eff; border-radius:8px; background:#1a1a2e;"
+            sandbox="allow-same-origin allow-scripts"
+            srcdoc="<!DOCTYPE html><html><body style=\"font-family:sans-serif;text-align:center;padding:40px;color:#888;\">加载中...</body></html>">
+    </iframe>
+
+    <!-- WASM 加载中遮罩 (Bevy 启动后由 JS 隐藏) -->
+    <div id="loading">
+        <h1>Minecraft Web</h1>
+        <p>Rust + Bevy + WASM</p>
+        <div class="spinner"></div>
+        <p style="margin-top: 1em; font-size: 0.9em; opacity: 0.7;">正在加载 WASM...</p>
+    </div>
+
+    <!-- 错误显示 -->
+    <div id="error-msg">
+        <h2>加载出错</h2>
+        <pre id="error-detail"></pre>
+    </div>
+
+    <!-- 移动端触摸控制 UI 容器 (仅触摸设备时由 JS 动态填充内容, 桌面端保持空) -->
+    <div id="mobile-controls" style="display:none;"></div>
+
+    <script type="module">
+        // ================================================================
+        // 移动端触摸控制系统 (虚拟摇杆 + 触摸按钮 + 视角拖动)
+        // 仅在检测到触摸设备时初始化, 桌面端完全不加载任何触摸相关代码
+        // ================================================================
+
+        // 检测触摸设备: ontouchstart 或 maxTouchPoints > 0
+        // 注: 带触摸屏的笔记本 maxTouchPoints 也 >0, 但通常 ontouchstart 不存在
+        // 这里用更严格的检测: 必须同时满足 ontouchstart 存在 (纯触摸设备)
+        const isTouchDevice = ('ontouchstart' in window) && (navigator.maxTouchPoints > 0);
+
+        // 全局触摸输入对象 (始终初始化, Rust 端每帧读取, 桌面端字段保持零值)
+        window._touchInput = {
+            touch_enabled: isTouchDevice,
+            joy_x: 0, joy_y: 0,           // 摇杆方向 (-1~1)
+            look_x: 0, look_y: 0,         // 视角 delta (每帧累积, Rust 消费后清零)
+            jump: false, sneak: false, sprint: false,  // 持续状态
+            attack_just: false, place_just: false,     // 一次性 (左/右键等价)
+            fly_just: false, inventory_just: false,    // 一次性 (F/E等价)
+            manual_just: false, pause_just: false,     // 一次性 (H/Esc等价)
+            drop_just: false, chat_just: false,        // 一次性 (Q/T等价)
+            hotbar_left_just: false, hotbar_right_just: false,  // 快捷栏滚
+            hotbar_slot: -1,              // 直接选择槽位 (-1=无变化, 0-8)
+        };
+
+        // === 仅触摸设备时初始化触摸控制系统 ===
+        if (isTouchDevice) {
+            console.log('[触摸] 检测到触摸设备, 启用移动端控制');
+
+            // --- 动态创建触摸控制 DOM 元素 (桌面端不创建) ---
+            const mc = document.getElementById('mobile-controls');
+            if (mc) {
+                mc.innerHTML = `
+                    <div id="joystick-zone"></div>
+                    <div id="look-zone"></div>
+                    <div id="joystick-base"></div>
+                    <div id="joystick-thumb"></div>
+                    <div id="btn-inventory" class="touch-btn touch-btn-top" style="top: 10px; right: 10px;" title="背包">📦</div>
+                    <div id="btn-manual" class="touch-btn touch-btn-top" style="top: 10px; right: 60px;" title="说明书">📖</div>
+                    <div id="btn-pause" class="touch-btn touch-btn-top" style="top: 10px; right: 110px;" title="暂停">⏸</div>
+                    <div id="btn-chat" class="touch-btn touch-btn-top" style="top: 10px; right: 160px;" title="聊天">💬</div>
+                    <div id="btn-drop" class="touch-btn touch-btn-top" style="top: 10px; right: 210px;" title="丢弃">🗑</div>
+                    <div id="btn-hotbar-left" class="touch-btn touch-btn-hotbar" style="bottom: 20px; left: 50%; transform: translateX(-160px);" title="上一个">◀</div>
+                    <div id="btn-hotbar-right" class="touch-btn touch-btn-hotbar" style="bottom: 20px; left: 50%; transform: translateX(120px);" title="下一个">▶</div>
+                    <div id="btn-attack" class="touch-btn touch-btn-action" style="bottom: 90px; right: 20px;" title="攻击/破坏">⛏</div>
+                    <div id="btn-place" class="touch-btn touch-btn-action" style="bottom: 90px; right: 90px;" title="放置/使用">✋</div>
+                    <div id="btn-jump" class="touch-btn touch-btn-action" style="bottom: 20px; right: 20px;" title="跳跃">⬆</div>
+                    <div id="btn-sneak" class="touch-btn touch-btn-action" style="bottom: 20px; right: 90px;" title="潜行">⬇</div>
+                    <div id="btn-fly" class="touch-btn touch-btn-action" style="bottom: 160px; right: 55px; width: 50px; height: 50px; font-size: 10px;" title="飞行">FLY</div>
+                `;
+                mc.style.display = 'block';
+                const jz = document.getElementById('joystick-zone');
+                const lz = document.getElementById('look-zone');
+                if (jz) jz.style.display = 'block';
+                if (lz) lz.style.display = 'block';
+            }
+
+            // --- 多点触摸追踪: Map<touchId, {type, ...}> ---
+            const ongoingTouches = new Map();
+            let joystickActive = false;
+            let joystickId = null;
+            let joystickBaseX = 0, joystickBaseY = 0;
+            const JOYSTICK_RADIUS = 60;
+            let sprintBtnActive = false;
+
+            const joystickZone = document.getElementById('joystick-zone');
+            const joystickBase = document.getElementById('joystick-base');
+            const joystickThumb = document.getElementById('joystick-thumb');
+
+            // --- 摇杆逻辑 ---
+            function handleJoystickStart(touch) {
+                if (joystickActive) return;
+                joystickActive = true;
+                joystickId = touch.identifier;
+                joystickBaseX = touch.clientX;
+                joystickBaseY = touch.clientY;
+                if (joystickBase) {
+                    joystickBase.style.left = joystickBaseX + 'px';
+                    joystickBase.style.top = joystickBaseY + 'px';
+                    joystickBase.style.display = 'block';
+                }
+                if (joystickThumb) {
+                    joystickThumb.style.left = joystickBaseX + 'px';
+                    joystickThumb.style.top = joystickBaseY + 'px';
+                    joystickThumb.style.display = 'block';
+                }
+            }
+
+            function handleJoystickMove(touch) {
+                if (!joystickActive || touch.identifier !== joystickId) return;
+                let dx = touch.clientX - joystickBaseX;
+                let dy = touch.clientY - joystickBaseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist > JOYSTICK_RADIUS) {
+                    dx = (dx / dist) * JOYSTICK_RADIUS;
+                    dy = (dy / dist) * JOYSTICK_RADIUS;
+                }
+                if (joystickThumb) {
+                    joystickThumb.style.left = (joystickBaseX + dx) + 'px';
+                    joystickThumb.style.top = (joystickBaseY + dy) + 'px';
+                }
+                window._touchInput.joy_x = dx / JOYSTICK_RADIUS;
+                window._touchInput.joy_y = -dy / JOYSTICK_RADIUS;
+                if (window._touchInput.joy_y > 0.9) {
+                    window._touchInput.sprint = true;
+                } else if (!sprintBtnActive) {
+                    window._touchInput.sprint = false;
+                }
+            }
+
+            function handleJoystickEnd() {
+                joystickActive = false;
+                joystickId = null;
+                window._touchInput.joy_x = 0;
+                window._touchInput.joy_y = 0;
+                if (!sprintBtnActive) window._touchInput.sprint = false;
+                if (joystickBase) joystickBase.style.display = 'none';
+                if (joystickThumb) joystickThumb.style.display = 'none';
+            }
+
+            // --- 视角拖动逻辑 ---
+            function handleLookStart(touch) {
+                ongoingTouches.set(touch.identifier, {
+                    type: 'look',
+                    lastX: touch.clientX,
+                    lastY: touch.clientY,
+                });
+            }
+            function handleLookMove(touch) {
+                const t = ongoingTouches.get(touch.identifier);
+                if (!t || t.type !== 'look') return;
+                const dx = touch.clientX - t.lastX;
+                const dy = touch.clientY - t.lastY;
+                window._touchInput.look_x += dx;
+                window._touchInput.look_y += dy;
+                t.lastX = touch.clientX;
+                t.lastY = touch.clientY;
+            }
+            function handleLookEnd(touchId) {
+                ongoingTouches.delete(touchId);
+            }
+
+            // --- 按钮逻辑 ---
+            const holdButtons = {
+                'btn-jump': (v) => { window._touchInput.jump = v; },
+                'btn-sneak': (v) => { window._touchInput.sneak = v; },
+                'btn-sprint': (v) => { sprintBtnActive = v; window._touchInput.sprint = v; },
+            };
+            const justButtons = {
+                'btn-attack': () => { window._touchInput.attack_just = true; },
+                'btn-place': () => { window._touchInput.place_just = true; },
+                'btn-fly': () => { window._touchInput.fly_just = true; },
+                'btn-inventory': () => { window._touchInput.inventory_just = true; },
+                'btn-manual': () => { window._touchInput.manual_just = true; },
+                'btn-pause': () => { window._touchInput.pause_just = true; },
+                'btn-drop': () => { window._touchInput.drop_just = true; },
+                'btn-chat': () => { window._touchInput.chat_just = true; },
+                'btn-hotbar-left': () => { window._touchInput.hotbar_left_just = true; },
+                'btn-hotbar-right': () => { window._touchInput.hotbar_right_just = true; },
+            };
+
+            function isButton(target) {
+                if (!target || !target.id) return null;
+                if (holdButtons[target.id]) return { id: target.id, type: 'hold' };
+                if (justButtons[target.id]) return { id: target.id, type: 'just' };
+                return null;
+            }
+
+            function handleButtonStart(target, touch) {
+                const btn = isButton(target);
+                if (!btn) return false;
+                if (btn.type === 'hold') {
+                    holdButtons[btn.id](true);
+                    target.classList.add('active');
+                } else {
+                    justButtons[btn.id]();
+                    target.classList.add('active');
+                }
+                ongoingTouches.set(touch.identifier, { type: 'button', btnId: btn.id, target: target });
+                return true;
+            }
+
+            function handleButtonEnd(touchId) {
+                const t = ongoingTouches.get(touchId);
+                if (!t || t.type !== 'button') return;
+                if (holdButtons[t.btnId]) {
+                    holdButtons[t.btnId](false);
+                }
+                if (t.target) t.target.classList.remove('active');
+                ongoingTouches.delete(touchId);
+            }
+
+            // --- 全局触摸事件处理 ---
+            function handleTouchStart(e) {
+                for (const touch of e.changedTouches) {
+                    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (handleButtonStart(target, touch)) {
+                        e.preventDefault();
+                        continue;
+                    }
+                    if (touch.clientX < window.innerWidth * 0.5 && !joystickActive) {
+                        handleJoystickStart(touch);
+                        ongoingTouches.set(touch.identifier, { type: 'joystick' });
+                        e.preventDefault();
+                        continue;
+                    }
+                    if (touch.clientX >= window.innerWidth * 0.5) {
+                        handleLookStart(touch);
+                        e.preventDefault();
+                        continue;
+                    }
+                }
+            }
+
+            function handleTouchMove(e) {
+                for (const touch of e.changedTouches) {
+                    const t = ongoingTouches.get(touch.identifier);
+                    if (!t) continue;
+                    if (t.type === 'joystick') {
+                        handleJoystickMove(touch);
+                    } else if (t.type === 'look') {
+                        handleLookMove(touch);
+                    }
+                }
+                e.preventDefault();
+            }
+
+            function handleTouchEnd(e) {
+                for (const touch of e.changedTouches) {
+                    const t = ongoingTouches.get(touch.identifier);
+                    if (!t) continue;
+                    if (t.type === 'joystick') {
+                        handleJoystickEnd();
+                    } else if (t.type === 'look') {
+                        handleLookEnd(touch.identifier);
+                    } else if (t.type === 'button') {
+                        handleButtonEnd(touch.identifier);
+                    }
+                }
+                e.preventDefault();
+            }
+
+            // --- 注册触摸事件监听 (仅在触摸设备上) ---
+            document.addEventListener('touchstart', handleTouchStart, { passive: false });
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd, { passive: false });
+            document.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+
+            // 阻止移动端双击缩放和手势缩放 (仅在触摸设备上)
+            document.addEventListener('gesturestart', (e) => e.preventDefault());
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', (e) => {
+                const now = Date.now();
+                if (now - lastTouchEnd <= 300) { e.preventDefault(); }
+                lastTouchEnd = now;
+            }, { passive: false });
+        } else {
+            console.log('[触摸] 非触摸设备, 跳过移动端控制');
+        }
+
+        // ================================================================
+        // WASM 加载与游戏启动
+        // ================================================================
+        let wasmStarted = false;
+
+        // winit 在 WASM 上使用 JS 异常进行异步控制流管理
+        // App::run() 会抛出 "Using exceptions for control flow" 异常
+        // 这是正常行为, 不是错误, 但会导致 import() 的 Promise reject
+        function isWinitControlFlowError(e) {
+            const msg = e.toString() + ' ' + (e.stack || '');
+            return msg.includes("Using exceptions for control flow") ||
+                   msg.includes("don't mind me") ||
+                   msg.includes("__wbindgen_throw") ||
+                   msg.includes("wbindgen_throw");
+        }
+
+        // 加载 WASM 模块 (含 IndexedDB 存档预加载)
+        async function loadGame() {
+            try {
+                // 先从 IndexedDB 预加载存档 (供 Rust preload_save_system 读取)
+                if (typeof window._loadSaveFromIndexedDB === 'function') {
+                    try {
+                        const savedData = await window._loadSaveFromIndexedDB();
+                        if (savedData && savedData.length > 0) {
+                            window._mcSaveData = savedData;
+                            console.log('[存档] 预加载存档成功 (' + savedData.length + ' 字节)');
+                        }
+                    } catch (e) {
+                        console.warn('[存档] 预加载失败:', e);
+                    }
+                }
+                const wasm = await import('./minecraft_web.js');
+                await wasm.default('./minecraft_web_bg.wasm');
+                wasmStarted = true;
+            } catch (e) {
+                if (isWinitControlFlowError(e)) {
+                    console.log("[winit] 控制流异常已忽略 (WASM 正常行为), 游戏已启动");
+                    wasmStarted = true;
+                    return;
+                }
+                console.error("真正的加载错误:", e);
+                document.getElementById('error-detail').textContent = e.toString() + '\n\n' + (e.stack || '');
+                document.getElementById('error-msg').style.display = 'flex';
+            }
+        }
+
+        // 页面加载完成后立即加载 WASM (主菜单由 Bevy UI 在 AppState::MainMenu 显示)
+        window.addEventListener('load', async () => {
+            await loadGame();
+            if (wasmStarted) {
+                // WASM 启动成功, 隐藏加载遮罩 (主菜单由 Bevy UI 渲染)
+                const loading = document.getElementById('loading');
+                loading.style.opacity = '0';
+                setTimeout(() => { loading.style.display = 'none'; }, 500);
+            }
+        });
+
+        // ====================================================================
+        // WASM-JS 桥接函数 (供 Rust 端通过 web_sys 调用)
+        // ====================================================================
+
+        // 存档下载 (Ctrl+S 保存时由 Rust 调用)
+        window._downloadSaveData = function() {
+            const data = window._mcSaveData;
+            if (!data || data.length === 0) {
+                console.warn('[存档] 无保存数据');
+                return;
+            }
+            const blob = new Blob([data], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const now = new Date();
+            const ts = now.getFullYear() + ('0'+(now.getMonth()+1)).slice(-2) + ('0'+now.getDate()).slice(-2) + '_' + ('0'+now.getHours()).slice(-2) + ('0'+now.getMinutes()).slice(-2);
+            a.download = 'mc-web-' + ts + '.mcsa';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            console.log('[存档] 已下载 ' + a.download + ' (' + data.length + ' 字节)');
+        };
+
+        // ====================================================================
+        // IndexedDB 持久化 (自动存档 + 退出保存, 由 Rust storage.rs 调用)
+        // ====================================================================
+
+        // 异步保存到 IndexedDB (由 Rust save_to_indexeddb 调用)
+        // 对齐参考 PS3 ConsoleSaveFile::writeFile 的异步写入
+        window._saveToIndexedDB = function() {
+            const data = window._mcSaveDataPending;
+            if (!data || data.length === 0) {
+                console.warn('[存档] 无待保存数据');
+                return;
+            }
+            console.log('[存档] 开始写入 IndexedDB (' + data.length + ' 字节)...');
+            try {
+                const request = indexedDB.open('minecraft-web', 1);
+                request.onupgradeneeded = function(event) {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains('saves')) {
+                        db.createObjectStore('saves', { keyPath: 'id' });
+                    }
+                };
+                request.onsuccess = function(event) {
+                    const db = event.target.result;
+                    const tx = db.transaction('saves', 'readwrite');
+                    const store = tx.objectStore('saves');
+                    store.put({ id: 'world', data: data });
+                    tx.oncomplete = function() {
+                        console.log('[存档] IndexedDB 写入成功 (' + data.length + ' 字节)');
+                        db.close();
+                    };
+                    tx.onerror = function(err) {
+                        console.error('[存档] IndexedDB 写入失败:', err);
+                        db.close();
+                    };
+                };
+                request.onerror = function(err) {
+                    console.error('[存档] IndexedDB 打开失败:', err);
+                };
+            } catch (e) {
+                console.error('[存档] IndexedDB 异常:', e);
+            }
+        };
+
+        // 从 IndexedDB 加载存档 (启动时由 Rust 调用)
+        // 返回 Uint8Array 或 null
+        window._loadSaveFromIndexedDB = function() {
+            try {
+                const request = indexedDB.open('minecraft-web', 1);
+                return new Promise((resolve, reject) => {
+                    request.onupgradeneeded = function(event) {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains('saves')) {
+                            db.createObjectStore('saves', { keyPath: 'id' });
+                        }
+                    };
+                    request.onsuccess = function(event) {
+                        const db = event.target.result;
+                        try {
+                            const tx = db.transaction('saves', 'readonly');
+                            const store = tx.objectStore('saves');
+                            const getReq = store.get('world');
+                            getReq.onsuccess = function() {
+                                if (getReq.result && getReq.result.data) {
+                                    console.log('[存档] IndexedDB 读取成功 (' + getReq.result.data.length + ' 字节)');
+                                    resolve(getReq.result.data);
+                                } else {
+                                    console.log('[存档] IndexedDB 无存档');
+                                    resolve(null);
+                                }
+                                db.close();
+                            };
+                            getReq.onerror = function(err) {
+                                console.error('[存档] IndexedDB 读取失败:', err);
+                                resolve(null);
+                                db.close();
+                            };
+                        } catch (e) {
+                            console.error('[存档] IndexedDB 事务异常:', e);
+                            resolve(null);
+                            db.close();
+                        }
+                    };
+                    request.onerror = function(err) {
+                        console.error('[存档] IndexedDB 打开失败:', err);
+                        resolve(null);
+                    };
+                });
+            } catch (e) {
+                console.error('[存档] IndexedDB 异常:', e);
+                return Promise.resolve(null);
+            }
+        };
+
+        // 触发文件选择对话框 (主菜单"加载存档"按钮由 Rust 调用)
+        // 对齐原 index.html 中的 loadFile.click() 逻辑
+        window._triggerLoadSave = function() {
+            const loadFile = document.getElementById('load-file');
+            if (loadFile) {
+                loadFile.click();
+            }
+        };
+
+        // 文件选择 input (隐藏, 供 _triggerLoadSave 触发)
+        // accept: 仅 .mcsa (统一存档格式, 废弃旧 .dat NBT 格式)
+        const loadFile = document.createElement('input');
+        loadFile.type = 'file';
+        loadFile.id = 'load-file';
+        loadFile.accept = '.mcsa,application/octet-stream';
+        loadFile.style.display = 'none';
+        document.body.appendChild(loadFile);
+
+        // 文件选择回调 → 读取存档 → 设置 window._mcSaveData → 设置加载标志
+        // 统一路径: 文件加载和 IndexedDB 加载都写入 window._mcSaveData,
+        // 由 Rust 端 load_from_indexeddb() 读取, load_preloaded_world_system 反序列化 (MCSA 格式)
+        loadFile.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const buf = await file.arrayBuffer();
+            const saveData = new Uint8Array(buf);
+            console.log('[存档] 加载存档 文件=' + file.name + ' 大小=' + saveData.length + ' 字节');
+            // 写入 window._mcSaveData (与 IndexedDB 预加载路径一致, Rust 从此变量读取)
+            window._mcSaveData = saveData;
+            // 设置加载标志, 供主菜单系统轮询并切换到 Loading 状态
+            if (!window.gameConfig) window.gameConfig = {};
+            window.gameConfig.loadRequested = true;
+            console.log('[存档] 已设置 _mcSaveData 和 loadRequested 标志');
+        });
+
+        // ====================================================================
+        // 指针锁定管理
+        // ====================================================================
+
+        // 请求指针锁定 (供 Rust 端 OnEnter(InGame) 时调用)
+        // 注: 浏览器要求用户手势触发, 如果不在手势栈内可能被拒绝
+        window._requestPointerLock = function() {
+            const canvas = document.getElementById('game-canvas');
+            if (canvas && document.pointerLockElement !== canvas) {
+                try {
+                    const promise = canvas.requestPointerLock();
+                    // 捕获 Promise rejection (浏览器安全限制: 非用户手势触发时拒绝)
+                    if (promise && promise.catch) {
+                        promise.catch(() => {
+                            // 静默处理: 玩家点击 canvas 时会自动重新锁定
+                        });
+                    }
+                    console.log('[输入] 请求指针锁定');
+                } catch (err) {
+                    console.warn('[输入] 指针锁定失败:', err);
+                }
+            }
+        };
+
+        // 监听指针锁定变化
+        document.addEventListener('pointerlockchange', () => {
+            const canvas = document.getElementById('game-canvas');
+            if (canvas && document.pointerLockElement !== canvas) {
+                if (wasmStarted) {
+                    // 指针未锁定 (暂停状态), 由 Rust 端 ScreenState::Pause 处理
+                }
+            }
+        });
+
+        // 点击 canvas 重新锁定指针 (当指针未锁定时)
+        // 仅在 Rust 端确认"应该锁定指针"时 (InGame + 无屏幕) 才请求锁定,
+        // 避免在主菜单 / 说明书 / 物品栏等界面点击时误锁定指针。
+        document.addEventListener('click', (e) => {
+            if (!wasmStarted) return;
+            const canvas = document.getElementById('game-canvas');
+            if (!canvas) return;
+            // 仅当点击目标在 canvas 上, 且 Rust 端标志为 true, 且指针未锁定时
+            if (e.target === canvas && window._shouldLockPointer === true && document.pointerLockElement !== canvas) {
+                try { canvas.requestPointerLock(); } catch (err) { console.warn('[输入] 重新锁定指针失败:', err); }
+            }
+        });
+
+        // ====================================================================
+        // 说明书 iframe 渲染 (由 Rust 端 manual_iframe_system 调用)
+        // ====================================================================
+
+        // 说明书页面名称映射 (索引 → HTML 文件名, 对齐 mc_manuals::ALL_MANUALS)
+        const MANUAL_PAGES = [
+            'index', 'blocks', 'items', 'mobs', 'world', 'crafting', 'furnace', 'controls'
+        ];
+
+        // 导航拦截脚本: 注入到 iframe 内, 拦截 <a href="xxx.html"> 点击,
+        // 转发到 Rust 端的 window._onManualNav(index) 进行页面切换
+        // 同时拦截 H/ESC 键 (iframe 获得焦点时, 父窗口的 keydown 监听器收不到事件)
+        const MANUAL_NAV_SCRIPT = `
+<script>
+(function() {
+    'use strict';
+    // 文件名 → 索引映射
+    var pageMap = {};
+    ['index','blocks','items','mobs','world','crafting','furnace','controls'].forEach(function(name, i) {
+        pageMap[name + '.html'] = i;
+    });
+    // 拦截导航链接点击
+    document.addEventListener('click', function(e) {
+        var link = e.target.closest('a[href]');
+        if (!link) return;
+        var href = link.getAttribute('href');
+        if (pageMap.hasOwnProperty(href)) {
+            e.preventDefault();
+            // 通过全局变量通知 Rust 端翻页
+            window.parent._manualNavTarget = pageMap[href];
+        }
+    });
+    // 拦截 H/ESC 键: iframe 获得焦点时父窗口收不到 keydown,
+    // 通过全局变量通知 Rust 端关闭说明书
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            window.parent._manualCloseRequested = true;
+        } else if (e.key === 'h' || e.key === 'H') {
+            window.parent._manualCloseRequested = true;
+        }
+    });
+})();
+</scr` + `ipt>`;
+
+        // 显示说明书 iframe 并注入 HTML 内容
+        // @param html  完整 HTML 字符串 (include_str! 嵌入, 含内联 CSS)
+        // @param navIndex  当前页面索引 (0-7, 用于高亮导航栏)
+        window._showManualIframe = function(html, navIndex) {
+            var iframe = document.getElementById('manual-iframe');
+            if (!iframe) return;
+            // 在 </body> 前注入导航拦截脚本
+            var enrichedHtml = html;
+            if (enrichedHtml.indexOf('</body>') !== -1) {
+                enrichedHtml = enrichedHtml.replace('</body>', MANUAL_NAV_SCRIPT + '</body>');
+            } else {
+                enrichedHtml += MANUAL_NAV_SCRIPT;
+            }
+            iframe.srcdoc = enrichedHtml;
+            iframe.style.display = 'block';
+            console.log('[说明书] iframe 显示: 索引=' + navIndex);
+        };
+
+        // 隐藏说明书 iframe
+        window._hideManualIframe = function() {
+            var iframe = document.getElementById('manual-iframe');
+            if (!iframe) return;
+            iframe.style.display = 'none';
+            iframe.srcdoc = '';
+            console.log('[说明书] iframe 隐藏');
+        };
+    </script>
+</body>
+</html>
