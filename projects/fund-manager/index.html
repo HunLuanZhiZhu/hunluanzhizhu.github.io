@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="color-scheme" content="light" />
+<title>活动经费记账助手</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@600;700;900&display=swap');
+:root{
+  --paper:#f3f5f1;
+  --paper-2:#fbfcf9;
+  --sheet:#ffffff;
+  --ink:#182337;
+  --ink-soft:#314057;
+  --muted:#738093;
+  --faint:#aab2bd;
+  --rule:#d9ded7;
+  --rule-strong:#bfc7c0;
+  --navy:#17365f;
+  --navy-2:#214b7d;
+  --teal:#167467;
+  --teal-soft:#e5f2ee;
+  --amber:#ad6a14;
+  --amber-soft:#fff2d8;
+  --coral:#b84b3f;
+  --coral-soft:#fdeae7;
+  --sky:#4d78a8;
+  --shadow:0 16px 40px rgba(38,51,66,.08);
+  --shadow-small:0 6px 18px rgba(38,51,66,.07);
+  --radius:8px;
+  --sans:'Noto Sans SC','Microsoft YaHei','PingFang SC',sans-serif;
+  --serif:'Noto Serif SC','Songti SC','STSong',serif;
+}
+*{box-sizing:border-box}
+html{background:var(--paper);scroll-behavior:smooth}
+body{margin:0;background:
+  linear-gradient(rgba(23,54,95,.028) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(23,54,95,.028) 1px,transparent 1px),
+  var(--paper);background-size:32px 32px;color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(77,120,168,.24);outline-offset:2px}
+.app{min-height:100vh}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(243,245,241,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(191,199,192,.9)}
+.topbar::after{content:'';display:block;height:3px;background:linear-gradient(90deg,var(--navy) 0 38%,var(--teal) 38% 64%,#d3b060 64% 82%,var(--coral) 82%)}
+.topbar-inner{max-width:1260px;margin:auto;padding:13px 24px 11px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap;font-family:var(--serif);font-size:17px;font-weight:900;letter-spacing:.035em;color:var(--navy)}
+.brand::before{content:'账';display:grid;place-items:center;width:27px;height:27px;background:var(--navy);color:#fff;font-family:var(--serif);font-size:13px;line-height:1;border-radius:2px;box-shadow:3px 3px 0 rgba(23,116,103,.16)}
+.spacer{flex:1}
+.mode-pill{display:flex;align-items:center;gap:8px;border:1px solid var(--rule-strong);background:rgba(255,255,255,.72);border-radius:4px;padding:6px 9px;font-size:12px;font-weight:600;color:var(--muted)}
+.mode-dot{width:7px;height:7px;border-radius:50%;background:#9aa4af;box-shadow:0 0 0 3px rgba(154,164,175,.12)}
+.mode-pill.secret{border-color:#a9c9c1;color:var(--teal);background:var(--teal-soft)}
+.mode-pill.secret .mode-dot{background:var(--teal);box-shadow:0 0 0 3px rgba(22,116,103,.13)}
+.btn{border:1px solid var(--rule-strong);background:rgba(255,255,255,.86);color:var(--ink-soft);border-radius:5px;padding:9px 13px;font-weight:650;box-shadow:0 2px 0 rgba(24,35,55,.035);transition:background .16s,border-color .16s,transform .16s,box-shadow .16s}
+.btn:hover{border-color:#9ca7ae;background:#fff;box-shadow:var(--shadow-small);transform:translateY(-1px)}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:4px 4px 0 rgba(23,116,103,.16)}
+.btn.primary:hover{background:var(--navy-2);border-color:var(--navy-2)}
+.btn.danger{color:var(--coral);border-color:#dfb4ae;background:#fff8f7;box-shadow:none}
+.btn.danger:hover{border-color:var(--coral);background:var(--coral-soft)}
+.btn.ghost{background:transparent;border-color:transparent;box-shadow:none;padding-left:0;color:var(--navy)}
+.btn.ghost:hover{background:transparent;border-color:transparent;box-shadow:none;transform:translateX(-2px)}
+.btn.small{padding:6px 9px;font-size:12px;border-radius:4px}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+main{max-width:1260px;margin:auto;padding:38px 24px 72px}
+.home-lead{display:grid;grid-template-columns:minmax(280px,.9fr) minmax(560px,1.7fr);gap:24px;align-items:stretch;margin-bottom:28px}
+.hero{position:relative;min-height:184px;margin:0;background:var(--navy);color:#fff;padding:26px 28px 24px;display:flex;align-items:flex-end;overflow:hidden;box-shadow:var(--shadow);border-radius:var(--radius)}
+.hero::before{content:'';position:absolute;width:175px;height:175px;border:1px solid rgba(255,255,255,.14);border-radius:50%;right:-38px;top:-55px;box-shadow:0 0 0 22px rgba(255,255,255,.025),0 0 0 44px rgba(255,255,255,.018)}
+.hero::after{content:'经费 · 活动 · 报销';position:absolute;right:18px;bottom:14px;writing-mode:vertical-rl;font-size:10px;letter-spacing:.25em;color:rgba(255,255,255,.42)}
+.hero-copy{position:relative;z-index:1;padding-right:28px}
+.hero-kicker{font-size:11px;font-weight:700;letter-spacing:.18em;color:#a8d8cf;margin-bottom:9px}
+.hero h1{font-family:var(--serif);font-size:38px;line-height:1.08;margin:0 0 10px;letter-spacing:.04em;font-weight:900}
+.hero p{margin:0;max-width:28em;color:rgba(255,255,255,.72);font-size:13px}
+.hero-stamp{position:absolute;top:18px;right:18px;z-index:1;border:1px solid rgba(255,255,255,.26);padding:6px 8px;text-align:right;min-width:88px}
+.hero-stamp span{display:block;font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.52)}
+.hero-stamp strong{display:block;margin-top:2px;font-size:11px;letter-spacing:.06em;font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin:0;background:var(--rule-strong);border:1px solid var(--rule-strong);box-shadow:var(--shadow);border-radius:var(--radius);overflow:hidden}
+.stat{position:relative;background:rgba(255,255,255,.91);padding:20px 21px;min-height:91px}
+.stat:nth-child(4){background:#f8faf7}
+.stat .k{font-size:11px;color:var(--muted);margin-bottom:7px;font-weight:600;letter-spacing:.04em}
+.stat .v{font-family:var(--serif);font-size:25px;font-weight:900;color:var(--navy);font-variant-numeric:tabular-nums}
+.stat::after{content:'';position:absolute;right:12px;top:12px;width:5px;height:5px;background:var(--rule-strong);border-radius:50%}
+.masked{letter-spacing:.08em}
+.toolbar{display:grid;grid-template-columns:minmax(260px,1fr) repeat(5,max-content);gap:8px;align-items:center;margin:0 0 26px;padding:10px;background:rgba(255,255,255,.58);border:1px solid var(--rule);border-radius:var(--radius)}
+.search{width:100%;min-width:0;background:#fff;border:1px solid var(--rule-strong);border-radius:4px;padding:10px 12px;outline:none;box-shadow:inset 3px 0 0 var(--teal)}
+.search:focus{border-color:var(--sky);box-shadow:inset 3px 0 0 var(--teal),0 0 0 3px rgba(77,120,168,.1)}
+.section-title{display:flex;align-items:center;gap:12px;margin:28px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--rule-strong)}
+.section-title h2{font-family:var(--serif);font-size:17px;margin:0;color:var(--navy);letter-spacing:.025em}.section-title h2::before{content:'◆';font-family:serif;color:var(--teal);font-size:8px;margin-right:8px;vertical-align:2px}
+.section-title .subtle{margin-left:auto}.subtle{color:var(--muted);font-size:11px}
+.reminders{display:grid;gap:8px}.reminder{position:relative;background:#fffaf0;border:1px solid #e4c88e;border-left:5px solid #d29a39;border-radius:5px;padding:12px 13px 12px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 12px rgba(107,78,25,.04)}
+.reminder::before{content:'催';display:grid;place-items:center;flex:0 0 28px;height:28px;border:1px solid #d9b96f;color:#9a651c;font-family:var(--serif);font-weight:800;background:#fff}
+.reminder strong{font-size:13px;color:#61491f}.reminder .meta{font-size:11px;color:#8a6a3b;margin-top:2px}.reminder .grow{flex:1}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.card{position:relative;background:
+  linear-gradient(90deg,transparent 0 31px,rgba(77,120,168,.07) 31px 32px,transparent 32px),
+  repeating-linear-gradient(0deg,transparent 0 31px,rgba(77,120,168,.055) 31px 32px),
+  var(--sheet);border:1px solid var(--rule-strong);border-radius:6px;padding:18px 18px 16px 43px;box-shadow:var(--shadow-small);transition:transform .18s,border-color .18s,box-shadow .18s;cursor:pointer;min-height:206px;display:flex;flex-direction:column;overflow:visible}
+.card::before{content:'';position:absolute;left:-1px;top:16px;width:8px;height:62px;background:var(--amber);border-radius:0 3px 3px 0;box-shadow:2px 2px 0 rgba(0,0,0,.04)}
+.card:has(.status.done)::before{background:var(--teal)}.card:has(.status.need)::before{background:var(--coral)}.card:has(.status.unfunded)::before{background:var(--sky)}
+.card::after{content:'#' attr(data-id);position:absolute;right:14px;bottom:8px;font-family:var(--serif);font-size:42px;font-weight:900;line-height:1;color:rgba(23,54,95,.055);pointer-events:none}
+.card:hover{transform:translateY(-3px) rotate(-.15deg);border-color:#9fa9aa;box-shadow:0 18px 35px rgba(38,51,66,.12)}
+.card-head{display:flex;justify-content:space-between;gap:12px;position:relative;z-index:1}.card-id{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.08em}.card h3{font-family:var(--serif);font-size:19px;margin:5px 0 5px;line-height:1.35;color:var(--navy);letter-spacing:.02em}.card-date{font-size:11px;color:var(--muted)}
+.card-metrics{position:relative;z-index:1;margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:0;padding-top:16px}.metric{border-top:1px solid var(--rule);padding:8px 8px 3px 0}.metric:nth-child(even){padding-left:10px;border-left:1px solid var(--rule)}.metric .k{font-size:9px;color:var(--muted);letter-spacing:.04em}.metric .v{margin-top:3px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink-soft)}
+.status{font-size:10px;padding:4px 7px;border-radius:3px;font-weight:700;white-space:nowrap;border:1px solid}.status.done{background:var(--teal-soft);color:var(--teal);border-color:#bcd9d1}.status.todo{background:var(--amber-soft);color:#91580f;border-color:#ead09e}.status.need{background:var(--coral-soft);color:var(--coral);border-color:#e8bbb5}.status.unfunded{background:#edf3f9;color:#456b96;border-color:#bfd0e1}
+.metric.over-budget .k,.metric.over-budget .v,.summary-cell.over-budget label,.summary-cell.over-budget .big{color:var(--coral)}
+.metric.over-budget{background:#fff4f2;border-color:#e8bbb5}.budget-alert{margin-top:7px;font-size:12px;font-weight:800;color:var(--coral)}
+.empty{padding:42px 20px;text-align:center;color:var(--muted);border:1px dashed var(--rule-strong);border-radius:6px;background:rgba(255,255,255,.55)}
+.detail{display:none}.detail.active{display:block}.home.hidden{display:none}.back{margin-bottom:15px}
+.detail-title{position:relative;display:flex;gap:14px;align-items:flex-start;margin-bottom:17px;padding:22px 24px;background:var(--sheet);border:1px solid var(--rule-strong);border-radius:var(--radius);box-shadow:var(--shadow-small);overflow:hidden}.detail-title::before{content:'';position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--navy)}.detail-title h1{font-family:var(--serif);margin:3px 0 3px;font-size:31px;color:var(--navy);letter-spacing:.03em}.detail-title .grow{flex:1}
+.summary{display:grid;grid-template-columns:1.2fr repeat(4,1fr);gap:1px;margin:0 0 18px;background:var(--rule-strong);border:1px solid var(--rule-strong);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-small)}
+.summary-cell{position:relative;background:#fff;padding:15px 16px;min-height:102px}.summary-cell label{display:block;color:var(--muted);font-size:10px;margin-bottom:8px;font-weight:700;letter-spacing:.05em}.summary-cell .big{font-family:var(--serif);font-size:20px;font-weight:900;color:var(--navy);font-variant-numeric:tabular-nums}.summary-cell.negative{background:#fff7f5}.summary-cell.negative .big{color:var(--coral)}.summary-cell.positive{background:#fffaf0}.summary-cell.positive .big{color:#9b6116}.summary-cell[style*="grid-column"]{min-height:auto;background:#f7f9f6;border-top:1px solid var(--rule-strong)}
+.editable{position:relative}.edit-main{display:flex;align-items:center;gap:6px}.cell-input{width:100%;border:0;background:transparent;padding:2px 0;color:var(--ink);font-weight:650;outline:none;border-bottom:1px solid transparent;font-variant-numeric:tabular-nums;transition:border-color .15s,background .15s}.cell-input:hover{border-bottom-color:var(--rule-strong);background:rgba(243,245,241,.55)}.cell-input:focus{border-bottom-color:var(--teal);background:#f8fbfa}.cell-note{font-size:9px;color:var(--faint);margin-top:5px;min-height:13px}.money-input{text-align:left}.locked{opacity:.56;pointer-events:none}
+.switch-row{display:flex;align-items:center;gap:10px}.switch{position:relative;width:40px;height:22px}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;background:#cbd1d4;border-radius:3px;transition:.2s}.slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:.2s}.switch input:checked + .slider{background:var(--teal)}.switch input:checked + .slider:before{transform:translateX(18px)}
+.sheet{background:#fff;border:1px solid var(--rule-strong);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 13px;background:linear-gradient(90deg,#f7f9f6,#fff);border-bottom:1px solid var(--rule-strong)}.sheet-head h2{font-family:var(--serif);font-size:16px;margin:0;color:var(--navy)}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:780px}th,td{padding:11px 12px;text-align:left;border-bottom:1px solid #e8ece8;vertical-align:top}th{font-size:10px;color:#617082;font-weight:800;background:#eef2ef;position:sticky;top:0;letter-spacing:.045em;border-bottom-color:var(--rule-strong)}td{font-size:12px}tbody tr{transition:background .12s}tbody tr:hover{background:#fbfcf9}.col-check{width:90px}.col-date{width:120px}.col-act{width:80px}.row-actions{display:flex;gap:6px}.checkwrap{display:flex;align-items:center;gap:7px}.checkwrap input{width:17px;height:17px;accent-color:var(--teal)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(17,29,45,.48);z-index:50;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}.modal-backdrop.show{display:flex}.modal{background:#fff;border-radius:7px;border:1px solid var(--rule-strong);box-shadow:0 28px 80px rgba(17,29,45,.24);width:min(620px,100%);max-height:88vh;overflow:auto}.modal-head{padding:20px 22px 9px;border-top:5px solid var(--navy)}.modal-head h3{font-family:var(--serif);margin:0;font-size:19px;color:var(--navy)}.modal-body{padding:10px 22px 20px}.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:13px 22px 16px;border-top:1px solid var(--rule);background:#f8faf7}
+.form-row{display:grid;grid-template-columns:128px 1fr;gap:12px;align-items:center;margin:12px 0}.form-row label{font-size:12px;color:var(--muted);font-weight:600}.field{width:100%;border:1px solid var(--rule-strong);border-radius:4px;padding:10px 11px;outline:none;background:#fff}.field:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(77,120,168,.1)}.error{color:var(--coral);font-size:11px;margin-top:8px}.tip{font-size:11px;color:#5f6c79;line-height:1.7;background:#f1f5f2;border-left:3px solid var(--teal);border-radius:2px;padding:10px 12px}.preview-group{border:1px solid var(--rule);border-radius:5px;padding:12px;margin:9px 0;background:#fbfcf9}.preview-group strong{font-size:12px}.preview-group .rows{font-size:10px;color:var(--muted);margin:4px 0 8px}
+
+.manage-panel{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 18px;padding:12px 14px;background:#eef5f3;border:1px solid #bfd3cd;border-radius:var(--radius);box-shadow:var(--shadow-small)}
+.manage-info{display:flex;align-items:baseline;gap:12px;color:var(--navy);font-size:12px}.manage-info strong{font-family:var(--serif);font-size:16px}.manage-info b{font-size:15px;color:var(--teal)}
+.manage-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.btn:disabled{opacity:.42;cursor:not-allowed;transform:none!important}
+.card.manage-card{cursor:pointer;padding-left:54px}.card.manage-card:hover{transform:translateY(-1px)}.card.manage-card.selected{border-color:#6b9e92;box-shadow:0 0 0 2px rgba(58,126,115,.12),var(--shadow)}
+.card-select{position:absolute;left:18px;top:22px;display:grid;place-items:center;width:24px;height:24px;border:1px solid var(--rule-strong);border-radius:5px;background:#fff;z-index:2}.card-select input{width:16px;height:16px;accent-color:var(--teal);cursor:pointer}
+@media(max-width:760px){.manage-panel{align-items:flex-start;flex-direction:column}.manage-actions{justify-content:flex-start}.card.manage-card{padding-left:50px}}
+
+.manual{display:none}.manual.active{display:block}.manual-shell{max-width:980px;margin:0 auto}.manual-head{position:relative;background:var(--navy);color:#fff;border-radius:var(--radius);padding:28px 30px 26px;margin-bottom:18px;box-shadow:var(--shadow);overflow:hidden}.manual-head::after{content:'说明';position:absolute;right:24px;bottom:-18px;font-family:var(--serif);font-size:86px;font-weight:900;color:rgba(255,255,255,.055);line-height:1}.manual-head h1{position:relative;z-index:1;font-family:var(--serif);font-size:31px;margin:6px 0 8px;letter-spacing:.04em}.manual-head p{position:relative;z-index:1;margin:0;color:rgba(255,255,255,.72);max-width:48em}.manual-kicker{position:relative;z-index:1;font-size:10px;letter-spacing:.18em;color:#a8d8cf;font-weight:700}.manual-nav{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 18px}.manual-nav a{font-size:11px;text-decoration:none;color:var(--navy);background:#fff;border:1px solid var(--rule-strong);padding:6px 9px;border-radius:4px}.manual-nav a:hover{border-color:var(--sky);background:#f7fafc}.manual-section{scroll-margin-top:85px;background:#fff;border:1px solid var(--rule-strong);border-radius:var(--radius);padding:22px 24px;margin:12px 0;box-shadow:var(--shadow-small)}.manual-section h2{font-family:var(--serif);font-size:19px;color:var(--navy);margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--rule)}.manual-section h3{font-size:13px;color:var(--ink);margin:18px 0 7px}.manual-section p,.manual-section li{font-size:12px;color:var(--ink-soft);line-height:1.85}.manual-section ul,.manual-section ol{padding-left:20px}.manual-section code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#eef2ef;border:1px solid var(--rule);padding:1px 5px;border-radius:3px;font-size:11px}.manual-note{background:#f1f5f2;border-left:4px solid var(--teal);padding:11px 13px;margin:11px 0;color:#536171;font-size:11px;line-height:1.75}.manual-warn{background:#fff8e9;border-left:4px solid var(--amber);padding:11px 13px;margin:11px 0;color:#74511c;font-size:11px;line-height:1.75}.manual-table{width:100%;min-width:0;margin:10px 0;border:1px solid var(--rule)}.manual-table th,.manual-table td{position:static;padding:9px 10px;font-size:11px}.manual-actions{display:flex;justify-content:flex-start;margin-bottom:14px}
+
+.toast{position:fixed;right:22px;bottom:22px;z-index:80;background:var(--navy);color:#fff;border-radius:4px;padding:10px 13px;font-size:11px;box-shadow:0 12px 30px rgba(23,54,95,.22);opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translateY(0)}
+.filter-panel{display:flex;align-items:end;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--rule-strong);border-radius:var(--radius);padding:12px 14px;margin:12px 0 18px;box-shadow:var(--shadow-small)}
+.filter-field{display:grid;gap:5px;min-width:150px}.filter-field label{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em}.filter-field .field{min-height:36px;padding:7px 9px}.filter-panel .filter-grow{flex:1 1 180px}.filter-panel .filter-actions{display:flex;gap:7px;margin-left:auto}.filter-summary{font-size:11px;color:var(--muted);align-self:center;padding-bottom:8px}
+.manual-critical{border:2px solid #c66a34;background:linear-gradient(180deg,#fffaf1 0%,#fff 100%);box-shadow:0 10px 26px rgba(160,88,36,.10)}.manual-critical h2{color:#8f451d;border-bottom-color:#e9c9ad}.manual-critical .critical-banner{display:flex;gap:10px;align-items:flex-start;background:#8f451d;color:#fff;padding:12px 14px;border-radius:5px;margin-bottom:14px}.manual-critical .critical-banner strong{display:block;font-size:13px;margin-bottom:3px}.manual-critical .critical-banner span{font-size:11px;line-height:1.7;color:#ffe9d4}.manual-head-alert{position:relative;z-index:1;margin-top:14px;padding:9px 11px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);border-radius:4px;font-size:11px;color:#fff}.template-inline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+@media(max-width:1060px){.home-lead{grid-template-columns:1fr}.hero{min-height:160px}.stats{grid-template-columns:repeat(4,1fr)}.toolbar{grid-template-columns:1fr repeat(2,max-content)}.toolbar .btn:nth-of-type(3),.toolbar .btn:nth-of-type(4){grid-row:2}.grid{grid-template-columns:repeat(2,1fr)}.summary{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){main{padding:24px 14px 52px}.filter-panel{align-items:stretch}.filter-field{flex:1 1 calc(50% - 6px);min-width:0}.filter-field.filter-grow{flex-basis:100%}.filter-panel .filter-actions{width:100%;margin-left:0}.filter-panel .filter-actions .btn{flex:1}.topbar-inner{padding:10px 14px}.brand{font-size:14px}.brand::before{width:24px;height:24px}.mode-pill{display:none}.hero{padding:23px 20px;min-height:170px}.hero h1{font-size:31px}.hero-stamp{top:14px;right:14px}.stats{grid-template-columns:1fr 1fr}.stat{padding:16px;min-height:82px}.toolbar{display:flex;flex-wrap:wrap;padding:8px}.search{flex:1 1 100%}.toolbar .btn{flex:1 1 calc(50% - 5px)}.grid{grid-template-columns:1fr}.detail-title{padding:18px 18px 18px 22px}.detail-title h1{font-size:25px}.summary{grid-template-columns:1fr 1fr}.summary-cell:first-child{grid-column:1/-1}.summary-cell[style*="grid-column"]{grid-column:1/-1!important}.form-row{grid-template-columns:1fr;gap:5px}.modal{width:100%}}
+@media(max-width:420px){.stats{grid-template-columns:1fr 1fr}.stat .v{font-size:20px}.hero::after{display:none}.summary{grid-template-columns:1fr}.summary-cell:first-child{grid-column:auto}.toolbar .btn{flex-basis:100%}.hide-sm{display:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar"><div class="topbar-inner">
+    <div class="brand">活动经费记账助手</div><div class="spacer"></div>
+    <button id="manualBtn" class="btn small">使用说明</button>
+    <div id="modePill" class="mode-pill"><span class="mode-dot"></span><span id="modeText">普通模式</span></div>
+    <button id="modeBtn" class="btn small">进入秘密模式</button>
+  </div></div>
+
+  <main>
+    <section id="home" class="home">
+      <div class="home-lead">
+        <div class="hero">
+          <div class="hero-copy"><div class="hero-kicker">校园活动经费台账</div><h1>活动总览</h1><p>先处理需要催办的活动，再进入单项核对支出。</p></div>
+          <div class="hero-stamp"><span>今天</span><strong id="heroToday">—</strong></div>
+        </div>
+        <div class="stats">
+        <div class="stat"><div class="k">活动数量</div><div class="v" id="statCount">0</div></div>
+        <div class="stat"><div class="k">超预算活动</div><div class="v" id="statOverBudget">0</div></div>
+        <div class="stat"><div class="k">预支合计</div><div class="v money" id="statAdvance">￥0.00</div></div>
+        <div class="stat"><div class="k">待处理活动</div><div class="v" id="statPending">0</div></div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input id="search" class="search" placeholder="搜索活动名称或编号" />
+        <button id="newActivityBtn" class="btn primary">新建活动</button>
+        <button id="importBtn" class="btn">导入工作簿</button>
+        <button id="templateBtn" class="btn">下载预算模板</button>
+        <button id="backupBtn" class="btn">完整备份</button>
+        <button id="rangeExportBtn" class="btn">按时间导出</button>
+        <button id="manageActivitiesBtn" class="btn">活动管理</button>
+      </div>
+
+      <div class="filter-panel" aria-label="活动筛选">
+        <div class="filter-field filter-grow"><label for="statusFilter">活动状态</label><select id="statusFilter" class="field"><option value="all">全部活动</option><option value="unsettled">仅未结清</option></select></div>
+        <div class="filter-field"><label for="filterStart">创建日期从</label><input id="filterStart" class="field" type="date"></div>
+        <div class="filter-field"><label for="filterEnd">创建日期到</label><input id="filterEnd" class="field" type="date"></div>
+        <div id="filterSummary" class="filter-summary"></div>
+        <div class="filter-actions"><button id="clearFiltersBtn" class="btn small">清除筛选</button></div>
+      </div>
+      <div id="managePanel" class="manage-panel" style="display:none" aria-label="活动批量管理">
+        <div class="manage-info"><strong>活动管理</strong><span>已选 <b id="selectedCount">0</b> 个活动</span></div>
+        <div class="manage-actions">
+          <button id="selectVisibleBtn" class="btn small">全选当前结果</button>
+          <button id="clearSelectionBtn" class="btn small">清空选择</button>
+          <button id="exportSelectedBtn" class="btn small primary" disabled>导出选中</button>
+          <button id="deleteSelectedBtn" class="btn small danger" disabled>删除选中</button>
+          <button id="exitManageBtn" class="btn small">完成管理</button>
+        </div>
+      </div>
+      <input id="fileInput" type="file" accept=".xlsx,.xls" hidden />
+      <input id="singleActivityFileInput" type="file" accept=".xlsx,.xls" hidden />
+
+      <div id="reminderSection" style="display:none">
+        <div class="section-title"><h2>催办提醒</h2><span class="subtle">已预支的活动创建满一个自然月后，只要未结清且未手动处理，每次打开或刷新都会提醒</span></div>
+        <div id="reminders" class="reminders"></div>
+      </div>
+
+      <div class="section-title"><h2>全部活动</h2><span id="activityCountText" class="subtle"></span></div>
+      <div id="activityGrid" class="grid"></div>
+    </section>
+
+    <section id="detail" class="detail">
+      <button id="backBtn" class="btn ghost back">← 返回活动总览</button>
+      <div class="detail-title">
+        <div class="grow"><div class="subtle" id="detailId"></div><h1 id="detailNameTitle">活动</h1><div class="subtle" id="detailCreated"></div></div>
+      </div>
+
+      <div id="summary" class="summary"></div>
+
+      <div class="sheet">
+        <div class="sheet-head"><h2>支出清单</h2><button id="addItemBtn" class="btn small primary">新增支出</button></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>物品</th><th>单价</th><th>总价</th><th>备注</th><th class="col-check">已报销</th><th class="col-date">报销日期</th><th class="col-act">操作</th></tr></thead>
+          <tbody id="itemBody"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <section id="manual" class="manual">
+      <div class="manual-shell">
+        <div class="manual-actions"><button id="manualBackBtn" class="btn ghost">← 返回</button></div>
+        <div class="manual-head">
+          <div class="manual-kicker">活动经费记账助手 · 内置说明书</div>
+          <h1>使用说明</h1>
+          <p>本工具是管理员个人使用的活动经费记账与催办助手，不是正式财务系统。</p>
+          <div class="manual-head-alert"><strong>重要：</strong>业务数据只保存在当前浏览器本地。更换电脑、清理网站数据或重置浏览器都可能导致数据不可访问，请优先阅读下方“本地数据与备份”并定期执行完整备份。</div>
+        </div>
+        <nav class="manual-nav" aria-label="说明书目录">
+          <a href="#m-storage">本地数据与备份（必读）</a><a href="#m-start">快速开始</a><a href="#m-import">预算导入</a><a href="#m-activity">活动管理</a><a href="#m-reimburse">报销</a><a href="#m-remind">催办</a><a href="#m-privacy">隐私模式</a><a href="#m-backup">备份恢复</a><a href="#m-export">统计导出</a>
+        </nav>
+
+        <section id="m-storage" class="manual-section manual-critical">
+          <div class="critical-banner"><div><strong>请先确认你理解本地数据的风险</strong><span>本工具没有网络数据库。浏览器里的数据一旦被清理，网页本身无法从服务器替你恢复。</span></div></div>
+          <h2>一、本地数据与备份（必读）</h2>
+          <ul>
+            <li><strong>业务数据只保存在当前浏览器本地</strong>，不会上传到网络数据库。</li>
+            <li>更换电脑、清理浏览器网站数据、重置浏览器配置或浏览器故障，都可能使本地数据无法继续访问。</li>
+            <li><strong>建议定期点击“完整备份”下载电子表格工作簿，并把备份文件保存到可靠位置。</strong></li>
+            <li>执行完整恢复前，系统会先要求保存一份“恢复前自动备份”，用于误恢复后的回退。</li>
+            <li>本工具不保存修改历史，只保存当前值和各可编辑单元格的最后编辑日期。</li>
+            <li>金额以人民币元显示，最多两位小数；内部按“分”的整数计算。预算、预支、单价和总价不接受负数；经费差额可以为负数。</li>
+          </ul>
+        </section>
+
+        <section id="m-start" class="manual-section">
+          <h2>二、快速开始</h2>
+          <ol>
+            <li>在首页点击“新建活动”，只填写活动名称；或者从预算电子表格直接创建活动。</li>
+            <li>活动编号自动取现有最大编号加 1；创建日期自动取电脑当天日期。</li>
+            <li>新活动的预支金额默认为 <strong>0.00</strong>，首页状态显示“未预支”。实际发生预支后，进入活动详情修改“预支金额”。</li>
+            <li>学生报销时，在支出清单中核对实际金额并勾选“已报销”。系统自动累计已报销金额并计算经费差额。</li>
+            <li>遇到无法由金额自动表达、但管理员已经线下处理完成的情况，可勾选“经费已手动处理”，停止该活动催办。</li>
+          </ol>
+          <div class="manual-note">经费差额 = 预支金额 − 已报销金额。正数表示仍有预支经费需要追踪；负数表示已报销金额超过预支金额，需要更多经费。</div>
+        </section>
+
+        <section id="m-import" class="manual-section">
+          <h2>三、普通预算电子表格导入</h2>
+          <p>普通预算导入只识别以下四个表头，名称必须准确：</p>
+          <div class="template-inline"><button id="manualTemplateBtn" class="btn small">下载标准预算模板</button><span class="subtle">模板直接由当前网页生成，工作表顶部自带填写说明和示例，不需要另外查看说明书。</span></div>
+          <table class="manual-table"><thead><tr><th>活动</th><th>物品</th><th>单价</th><th>总价</th></tr></thead><tbody><tr><td>迎新晚会</td><td>横幅</td><td>80.00</td><td>160.00</td></tr><tr><td></td><td>矿泉水</td><td></td><td>100.00</td></tr></tbody></table>
+          <ul>
+            <li>不再兼容旧表头名称。</li>
+            <li>“活动”单元格可以留空。空着时，自动继承上方最近一个非空活动名称。</li>
+            <li>“单价”可以留空；留空后活动详情中也保持为空。</li>
+            <li>“总价”是预算汇总与报销汇总真正使用的金额字段。</li>
+            <li>普通预算表不导入“备注”。导入后每条支出的备注默认为空，可在活动详情中手动填写。</li>
+            <li>同一个文件可以包含多个活动，系统会按活动名称分组；导入预览时可以选择“新建活动”或“追加到现有活动”。</li>
+          </ul>
+          <p>普通预算导入新活动时，预算金额初始化为该活动所有“总价”的合计；预支金额初始化为 0.00。</p>
+        </section>
+
+        <section id="m-activity" class="manual-section">
+          <h2>四、活动查看与批量管理</h2>
+          <h3>主页查看与筛选</h3>
+          <p>主页每个活动对应一张活动卡片。可以按活动名称或编号搜索，也可以选择“仅未结清”，并按照创建日期设置开始和结束日期。状态筛选、时间筛选和搜索可以组合使用。</p>
+          <div class="manual-note">“未结清”包括未预支、待追缴和需追加经费的活动，不包括已结清或已手动处理的活动。</div>
+          <h3>活动管理已经集中到主页</h3>
+          <ol>
+            <li>点击主页工具栏中的“活动管理”。普通模式下需要先输入密码；秘密模式下可直接进入。</li>
+            <li>进入活动管理后，每张活动卡片会出现选择框。可以逐个勾选，也可以点击“全选当前结果”，一次选择当前搜索和筛选结果中的所有活动。</li>
+            <li>“清空选择”会取消全部已选活动；管理条会始终显示当前已选活动数量。</li>
+            <li>点击“导出选中”，会生成适合人工阅读的电子表格工作簿：第一张为“选中活动总览”，之后每个选中活动各一张工作表。</li>
+            <li>点击“删除选中”会先显示二次确认；确认后一次删除所有选中活动及其支出数据。删除没有回收站。</li>
+            <li>点击“完成管理”退出批量管理，活动卡片恢复为点击进入详情的正常行为。</li>
+          </ol>
+          <div class="manual-warn">“全选当前结果”只会增加当前筛选结果中的活动。已经选择但后来被筛选隐藏的活动仍保持选中，应以“已选 X 个活动”的数量为准；需要重新开始时点击“清空选择”。</div>
+          <h3>单个活动详情</h3>
+          <p>点击活动卡片进入该活动的子界面。活动详情只负责编辑这个活动自身的数据和支出，不再承担删除整个活动的操作。</p>
+          <ul>
+            <li>活动总体信息包括活动名称、创建日期、预算金额、预支金额、已报销金额、经费差额和“经费已手动处理”状态。预算主要用于判断是否发生超支。</li>
+            <li>预算金额在导入时初始取支出总价之和，之后成为独立可编辑字段，不会因为后续修改支出自动变化。当已报销金额超过预算金额时，首页会显示“超出预算”及超出金额；未超出时显示预算剩余。</li>
+            <li>预支金额只保存当前总值，不记录多次预支历史；需要追加预支时直接修改该值。</li>
+            <li>已报销金额由所有已勾选支出的“总价”自动求和，不能直接编辑。</li>
+            <li>每个可编辑单元格下方都会显示该单元格自己的最后编辑日期。</li>
+          </ul>
+          <h3>支出清单</h3>
+          <p>每条支出包含“物品、单价、总价、备注、已报销、报销日期”。可以新增、编辑或直接删除单条支出。删除单条支出不二次确认。</p>
+          <div class="manual-note">系统不记录数量，也不支持单条支出“部分报销”。如果实际可报销金额发生变化，应先修改该条支出的总价，再勾选已报销。</div>
+        </section>
+
+        <section id="m-reimburse" class="manual-section">
+          <h2>五、报销操作</h2>
+          <ol>
+            <li>进入对应活动详情，找到实际已经报销的支出。</li>
+            <li>如实际金额与原预算不同，先修改“总价”。</li>
+            <li>勾选“已报销”。系统立即把这条支出的总价计入已报销金额，并自动记录当天为报销日期。</li>
+            <li>取消“已报销”时，原报销日期自动清空；以后再次勾选时，日期改为再次勾选的当天。</li>
+          </ol>
+          <p>报销日期由系统自动维护，不允许手工修改。</p>
+        </section>
+
+        <section id="m-remind" class="manual-section">
+          <h2>六、催办规则</h2>
+          <p>网页每次首次打开或刷新时，都会读取电脑当天日期并重新判断全部活动。</p>
+          <p>一个活动只有同时满足以下条件，才会进入催办：</p>
+          <ul>
+            <li>预支金额大于 0；</li>
+            <li>未勾选“经费已手动处理”；</li>
+            <li>预支金额 − 已报销金额不等于 0；</li>
+            <li>从活动创建日期起已经满一个自然月。</li>
+          </ul>
+          <p>一旦进入催办期，此后每次打开或刷新都会继续提醒，直到差额变为 0 或管理员勾选“经费已手动处理”。如果存在待催办活动，首次加载时会弹窗提示活动数量，具体活动列在首页“催办提醒”区域。</p>
+          <div class="manual-warn">预支金额为 0 的活动显示“未预支”，不会进入催办。给活动填写实际预支金额后，系统才把它纳入催办判断。</div>
+        </section>
+
+        <section id="m-privacy" class="manual-section">
+          <h2>七、普通模式、活动详情与秘密模式</h2>
+          <ul>
+            <li><strong>普通模式主页：</strong>金额统一打码，适合学生在旁边时查看活动列表和状态。</li>
+            <li><strong>普通模式进入活动：</strong>需要输入密码。验证成功后，仅本次活动详情显示真实金额；返回首页后，主页继续打码。</li>
+            <li><strong>秘密模式：</strong>输入密码进入后，主页显示真实金额，进入活动详情不再重复验证。</li>
+            <li><strong>刷新：</strong>刷新页面后恢复普通模式，避免下次打开页面时直接暴露金额。</li>
+          </ul>
+          <p>说明书不会展示实际密码。密码校验用于日常屏幕隐私保护，不等同于专业的数据加密系统。</p>
+        </section>
+
+        <section id="m-backup" class="manual-section">
+          <h2>八、完整备份与恢复</h2>
+          <h3>完整备份</h3>
+          <p>点击“完整备份”会生成一个电子表格工作簿，其中包含一个“总览”工作表，以及每个活动各自的“活动_编号”工作表。完整备份会保存活动状态、支出、备注、报销日期和每个可编辑字段的最后编辑日期。</p>
+          <h3>完整恢复</h3>
+          <p>通过“导入工作簿”选择本工具生成的完整备份文件。恢复采用整体覆盖方式，不与当前数据自动合并。</p>
+          <p>真正覆盖当前数据以前，系统会先要求把当前状态另存为一份安全备份。如果用户取消安全备份保存，则恢复操作也会取消。</p>
+          <div class="manual-warn">完整恢复会替换当前浏览器中的全部活动数据。请确认选择的是正确备份文件。</div>
+        </section>
+
+        <section id="m-export" class="manual-section">
+          <h2>九、按时间统计导出</h2>
+          <p>点击“按时间导出”可以按活动创建日期选择范围。默认范围为最近一个自然月。</p>
+          <p>统计文件以人工阅读为目的：第一张工作表为“统计总览”，包含活动数量和各项金额汇总；后续每个活动各有一张工作表，列出活动概况和支出明细。</p>
+          <p>除了按时间导出，还可以在主页进入“活动管理”，勾选任意活动后使用“导出选中”。选中导出不要求活动时间连续，适合临时整理某几个活动；同样采用“总览 + 每活动一张工作表”的人工阅读结构。</p>
+          <p>统计导出与完整备份用途不同：统计导出适合阅读和归档；完整备份用于无损恢复系统。</p>
+        </section>
+
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="modalRoot"></div><div id="toast" class="toast"></div>
+
+<script>
+(() => {
+'use strict';
+const DB_NAME='fund_manager_local_v1', STORE='state', KEY='main';
+const PASSWORD_HASH='47ce1ee20a6bea301e40c4b0eab06dd30114220c97f12273338ca675da915fe6';
+let state={activities:[]};
+let secretMode=false;
+let currentActivityId=null;
+let currentActivityAuthorized=false;
+let manualReturn='home';
+let pendingImport=null;
+let managementMode=false;
+let selectedActivityIds=new Set();
+
+const $=s=>document.querySelector(s);
+const today=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`};
+const oneMonthBefore=(dateStr)=>{const d=parseDate(dateStr);if(!d)return dateStr;const day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()-1);const last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();d.setDate(Math.min(day,last));const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`};
+const toCents=v=>Math.max(0,Math.round((Number(v)||0)*100));
+const toOptionalCents=v=>String(v??'').trim()===''?null:toCents(v);
+const fromCents=c=>(Number(c||0)/100).toFixed(2);
+const optionalMoneyValue=c=>c===null||c===undefined?'':fromCents(c);
+const optionalXlsxMoney=c=>c===null||c===undefined?'':Number(fromCents(c));
+const money=c=>{const n=Number(c||0);return `${n<0?'-':''}￥${fromCents(Math.abs(n))}`};
+const maskedMoney=()=> '￥••••';
+const displayMoney=c=>secretMode?money(c):maskedMoney();
+const detailCanReveal=()=>secretMode||currentActivityAuthorized;
+const detailMoney=c=>detailCanReveal()?money(c):maskedMoney();
+const parseDate=s=>{const d=new Date(`${s}T00:00:00`);return Number.isNaN(d.getTime())?null:d};
+const fmtDate=s=>s||'—';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>`${Date.now().toString(36)}${Math.random().toString(36).slice(2,8)}`;
+
+function addCalendarMonth(dateStr){
+  const d=parseDate(dateStr); if(!d) return null;
+  const day=d.getDate(); d.setDate(1); d.setMonth(d.getMonth()+1);
+  const last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+  d.setDate(Math.min(day,last)); return d;
+}
+function daysBetween(a,b){return Math.floor((b-a)/86400000)}
+function reminderInfo(a){
+  if(a.manualHandled.value) return null;
+  if(Number(a.advance?.cents||0)===0) return null;
+  const diff=getDiff(a); if(diff===0) return null;
+  const due=addCalendarMonth(a.createdDate); if(!due) return null;
+  const now=parseDate(today()); if(now<due) return null;
+  const overdue=daysBetween(due,now);
+  return {due,overdue};
+}
+function getReimbursed(a){return a.items.filter(x=>x.reimbursed.value).reduce((s,x)=>s+x.totalPrice.cents,0)}
+function getDiff(a){return a.advance.cents-getReimbursed(a)}
+function getOverBudget(a){return Math.max(0,getReimbursed(a)-Number(a.budget?.cents||0))}
+function getBudgetRemaining(a){return Math.max(0,Number(a.budget?.cents||0)-getReimbursed(a))}
+function lastEdited(valueObj){return valueObj?.edited||''}
+function maxId(){return state.activities.reduce((m,a)=>Math.max(m,Number(a.id)||0),0)}
+function activityStatus(a){const diff=getDiff(a);if(a.manualHandled.value)return {text:'已手动处理',cls:'done'};if(Number(a.advance?.cents||0)===0)return {text:'未预支',cls:'unfunded'};if(diff===0)return {text:'已结清',cls:'done'};if(diff>0)return {text:'待追缴',cls:'todo'};return {text:'需追加经费',cls:'need'}}
+
+function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=()=>r.result.createObjectStore(STORE);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function load(){try{const db=await openDB();const data=await new Promise((res,rej)=>{const tx=db.transaction(STORE,'readonly');const r=tx.objectStore(STORE).get(KEY);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});if(data&&Array.isArray(data.activities))state=data}catch(e){console.error(e)}normalizeState();render();showStartupReminderIfNeeded()}
+function normalizeState(){for(const a of state.activities){for(const x of (a.items||[])){if(!x.note)x.note={value:'',edited:x.detail?.edited||a.createdDate||today()};if(!x.unitPrice)x.unitPrice={cents:null,edited:a.createdDate||today()};if(x.unitPrice.cents===undefined)x.unitPrice.cents=null}}}
+async function save(){const db=await openDB();await new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(state,KEY);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+
+function modeUI(){
+  $('#modeText').textContent=secretMode?'秘密模式':'普通模式';
+  $('#modePill').classList.toggle('secret',secretMode);
+  $('#modeBtn').textContent=secretMode?'退出秘密模式':'进入秘密模式';
+}
+function render(){modeUI();renderHome();if(currentActivityId!==null)renderDetail()}
+function getHomeFilteredActivities(){
+  const acts=state.activities;
+  const q=$('#search').value.trim().toLowerCase();
+  const statusFilter=$('#statusFilter')?.value||'all';
+  const filterStart=$('#filterStart')?.value||'';
+  const filterEnd=$('#filterEnd')?.value||'';
+  return acts.filter(a=>{
+    if(q&&!String(a.id).includes(q)&&!a.name.value.toLowerCase().includes(q))return false;
+    const unsettled=!a.manualHandled.value&&(Number(a.advance?.cents||0)===0||getDiff(a)!==0);
+    if(statusFilter==='unsettled'&&!unsettled)return false;
+    if(filterStart&&a.createdDate<filterStart)return false;
+    if(filterEnd&&a.createdDate>filterEnd)return false;
+    return true;
+  }).sort((a,b)=>b.id-a.id);
+}
+function updateManagementPanel(){
+  const panel=$('#managePanel');if(!panel)return;
+  panel.style.display=managementMode?'flex':'none';
+  const valid=new Set(state.activities.map(a=>a.id));
+  selectedActivityIds=new Set([...selectedActivityIds].filter(id=>valid.has(id)));
+  const n=selectedActivityIds.size;
+  $('#selectedCount').textContent=String(n);
+  $('#exportSelectedBtn').disabled=n===0;
+  $('#deleteSelectedBtn').disabled=n===0;
+  $('#manageActivitiesBtn').textContent=managementMode?'管理中':'活动管理';
+}
+function renderHome(){
+  $('#heroToday').textContent=today();
+  const acts=state.activities; $('#statCount').textContent=acts.length;
+  const adv=acts.reduce((sum,a)=>sum+a.advance.cents,0);
+  $('#statOverBudget').textContent=acts.filter(a=>getOverBudget(a)>0).length; $('#statAdvance').textContent=displayMoney(adv);
+  $('#statPending').textContent=acts.filter(a=>!a.manualHandled.value&&(Number(a.advance?.cents||0)===0||getDiff(a)!==0)).length;
+  const statusFilter=$('#statusFilter')?.value||'all';
+  const filterStart=$('#filterStart')?.value||'';
+  const filterEnd=$('#filterEnd')?.value||'';
+  const filtered=getHomeFilteredActivities();
+  $('#activityCountText').textContent=`显示 ${filtered.length} / ${acts.length}`;
+  if($('#filterSummary')){const parts=[];if(statusFilter==='unsettled')parts.push('未结清');if(filterStart||filterEnd)parts.push(`${filterStart||'最早'} 至 ${filterEnd||'今天'}`);$('#filterSummary').textContent=parts.length?`筛选：${parts.join(' · ')}`:'未启用筛选'}
+  updateManagementPanel();
+  const grid=$('#activityGrid');
+  if(!filtered.length){grid.innerHTML=`<div class="empty" style="grid-column:1/-1">${acts.length?'当前筛选条件下没有活动。':'还没有活动。可以新建活动，或导入预算工作簿。'}</div>`}
+  else grid.innerHTML=filtered.map(a=>{
+    const reimb=getReimbursed(a), diff=getDiff(a), overBudget=getOverBudget(a), budgetRemaining=getBudgetRemaining(a), status=activityStatus(a), selected=selectedActivityIds.has(a.id);
+    return `<article class="card ${managementMode?'manage-card':''} ${selected?'selected':''}" data-id="${a.id}">${managementMode?`<label class="card-select" title="选择活动"><input class="activity-select" type="checkbox" ${selected?'checked':''} aria-label="选择活动 ${esc(a.name.value)}"></label>`:''}<div class="card-head"><div><div class="card-id">活动 #${a.id}</div><h3>${esc(a.name.value)}</h3><div class="card-date">创建于 ${a.createdDate}</div></div><span class="status ${status.cls}">${status.text}</span></div><div class="card-metrics"><div class="metric"><div class="k">预支金额</div><div class="v">${displayMoney(a.advance.cents)}</div></div><div class="metric"><div class="k">经费差额</div><div class="v">${displayMoney(diff)}</div></div><div class="metric"><div class="k">已报销</div><div class="v">${displayMoney(reimb)}</div></div><div class="metric ${overBudget>0?'over-budget':''}"><div class="k">${overBudget>0?'超出预算':'预算剩余'}</div><div class="v">${displayMoney(overBudget>0?overBudget:budgetRemaining)}</div></div></div></article>`
+  }).join('');
+  grid.querySelectorAll('.card').forEach(el=>el.onclick=e=>{
+    const id=Number(el.dataset.id);
+    if(managementMode){
+      if(e.target.closest('.card-select'))return;
+      if(selectedActivityIds.has(id))selectedActivityIds.delete(id);else selectedActivityIds.add(id);
+      renderHome();
+    }else openActivity(id);
+  });
+  grid.querySelectorAll('.activity-select').forEach(ch=>ch.onchange=e=>{const id=Number(e.target.closest('.card').dataset.id);if(e.target.checked)selectedActivityIds.add(id);else selectedActivityIds.delete(id);renderHome()});
+  renderReminders();
+}
+function getReminderList(){
+  return state.activities.map(a=>({a,info:reminderInfo(a)})).filter(x=>x.info).sort((x,y)=>y.info.overdue-x.info.overdue);
+}
+function renderReminders(){
+  const list=getReminderList();
+  $('#reminderSection').style.display=list.length?'block':'none';
+  $('#reminders').innerHTML=list.map(({a,info})=>`<div class="reminder"><div class="grow"><strong>${esc(a.name.value)} · 活动 #${a.id}</strong><div class="meta">${info.overdue===0?'今天开始催办':`已到催办期 ${info.overdue} 天`} · 当前差额 ${displayMoney(getDiff(a))}</div></div><button class="btn small" data-open="${a.id}">查看</button></div>`).join('');
+  $('#reminders').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openActivity(Number(b.dataset.open)));
+}
+function showStartupReminderIfNeeded(){
+  const count=getReminderList().length;
+  if(!count)return;
+  showModal(`<div class="modal-head"><h3>有活动需要催办</h3></div><div class="modal-body"><p style="font-size:15px;line-height:1.8">当前共有 <strong>${count}</strong> 个活动处于催办状态。</p><div class="tip">详见首页“催办提醒”区域。</div></div><div class="modal-foot"><button class="btn primary" id="startupReminderOk">知道了</button></div>`,root=>{root.querySelector('#startupReminderOk').onclick=closeModal});
+}
+
+function enterActivity(id,authorized){currentActivityId=id;currentActivityAuthorized=!!authorized||secretMode;$('#home').classList.add('hidden');$('#detail').classList.add('active');renderDetail();window.scrollTo({top:0,behavior:'smooth'})}
+function openActivity(id){if(secretMode){enterActivity(id,true);return}activityPasswordModal(id)}
+function closeActivity(){currentActivityId=null;currentActivityAuthorized=false;$('#detail').classList.remove('active');$('#home').classList.remove('hidden');renderHome();window.scrollTo({top:0,behavior:'smooth'})}
+function openManual(){manualReturn=(currentActivityId!==null&&$('#detail').classList.contains('active'))?'detail':'home';$('#home').classList.add('hidden');$('#detail').classList.remove('active');$('#manual').classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function closeManual(){$('#manual').classList.remove('active');if(manualReturn==='detail'&&currentActivityId!==null){$('#home').classList.add('hidden');$('#detail').classList.add('active');renderDetail()}else{$('#detail').classList.remove('active');$('#home').classList.remove('hidden');renderHome()}window.scrollTo({top:0,behavior:'smooth'})}
+function current(){return state.activities.find(a=>a.id===currentActivityId)}
+
+function editableBlock(obj,type,fieldKey,extra=''){
+  const val=type==='money'?fromCents(obj.cents):obj.value;
+  const masked=type==='money'&&!detailCanReveal();
+  const inputType=masked?'text':(type==='money'?'number':'text');
+  const step=type==='money'?'step="0.01" min="0"':'';
+  return `<div class="editable ${masked?'locked':''}"><div class="edit-main"><input class="cell-input ${type==='money'?'money-input':''}" data-field="${fieldKey}" type="${inputType}" ${step} value="${esc(masked?'••••':val)}" ${masked?'disabled':''} ${extra}></div><div class="cell-note">最后编辑 ${lastEdited(obj)||'—'}</div></div>`
+}
+function renderDetail(){
+  const a=current(); if(!a){closeActivity();return}
+  $('#detailId').textContent=`活动 #${a.id}`; $('#detailNameTitle').textContent=a.name.value; $('#detailCreated').textContent=`创建日期 ${a.createdDate}`;
+  const reimb=getReimbursed(a),diff=getDiff(a),overBudget=getOverBudget(a);
+  $('#summary').innerHTML=`
+    <div class="summary-cell"><label>活动名称</label>${editableBlock(a.name,'text','name')}</div>
+    <div class="summary-cell ${overBudget>0?'over-budget':''}"><label>预算金额</label>${editableBlock(a.budget,'money','budget')}${overBudget>0?`<div class="budget-alert">已超出预算 ${detailMoney(overBudget)}</div>`:''}</div>
+    <div class="summary-cell"><label>预支金额</label>${editableBlock(a.advance,'money','advance')}</div>
+    <div class="summary-cell"><label>已报销金额</label><div class="big">${detailMoney(reimb)}</div><div class="cell-note">由已勾选支出自动计算</div></div>
+    <div class="summary-cell ${diff<0?'negative':diff>0?'positive':''}"><label>经费差额</label><div class="big">${detailMoney(diff)}</div><div class="cell-note">预支金额 − 已报销金额</div></div>
+    <div class="summary-cell" style="grid-column:1/-1"><label>经费已手动处理</label><div class="switch-row"><label class="switch"><input id="manualHandled" type="checkbox" ${a.manualHandled.value?'checked':''}><span class="slider"></span></label><strong>${a.manualHandled.value?'已停止催办':'未手动处理'}</strong></div><div class="cell-note">最后编辑 ${a.manualHandled.edited||'—'}</div></div>`;
+  bindSummaryEditors(a);
+  const body=$('#itemBody');
+  if(!a.items.length) body.innerHTML='<tr><td colspan="7"><div class="empty">还没有支出项目。</div></td></tr>';
+  else body.innerHTML=a.items.map(x=>`<tr data-item="${x.id}">
+    <td>${itemInput(x,'detail','text')}</td>
+    <td>${itemInput(x,'unitPrice','money-optional')}</td>
+    <td>${itemInput(x,'totalPrice','money')}</td>
+    <td>${itemInput(x,'note','text-optional')}</td>
+    <td><div class="checkwrap"><input class="reimb-check" type="checkbox" ${x.reimbursed.value?'checked':''}><span>${x.reimbursed.value?'是':'否'}</span></div><div class="cell-note">最后编辑 ${x.reimbursed.edited||'—'}</div></td>
+    <td>${fmtDate(x.reimbursementDate)}</td>
+    <td><div class="row-actions"><button class="btn small danger delete-item">删除</button></div></td>
+  </tr>`).join('');
+  bindItemEditors(a);
+}
+function itemInput(x,key,type){const o=x[key], isMoney=type==='money'||type==='money-optional', optional=type==='money-optional'||type==='text-optional', masked=isMoney&&!detailCanReveal();const val=isMoney?(optional?optionalMoneyValue(o.cents):fromCents(o.cents)):o.value;const inputType=masked?'text':(isMoney?'number':'text');return `<div class="editable ${masked?'locked':''}"><input class="cell-input item-edit" data-key="${key}" data-type="${type}" type="${inputType}" ${isMoney&&!masked?'step="0.01" min="0"':''} value="${esc(masked?'••••':val)}" ${masked?'disabled':''}><div class="cell-note">最后编辑 ${o.edited||'—'}</div></div>`}
+function bindSummaryEditors(a){
+  $('#summary').querySelectorAll('[data-field]').forEach(inp=>{
+    inp.onchange=async()=>{
+      const k=inp.dataset.field,d=today();
+      if(k==='name'){const nv=inp.value.trim();if(!nv){renderDetail();return}if(nv!==a.name.value){a.name={value:nv,edited:d}}}
+      else {const cents=toCents(inp.value);const target=k==='budget'?'budget':'advance';if(cents!==a[target].cents)a[target]={cents,edited:d}}
+      await save();render();
+    }
+  });
+  $('#manualHandled').onchange=async e=>{a.manualHandled={value:e.target.checked,edited:today()};await save();render()}
+}
+function bindItemEditors(a){
+  $('#itemBody').querySelectorAll('tr[data-item]').forEach(tr=>{
+    const x=a.items.find(i=>i.id===tr.dataset.item); if(!x)return;
+    tr.querySelectorAll('.item-edit').forEach(inp=>inp.onchange=async()=>{const k=inp.dataset.key,t=inp.dataset.type,d=today();if(k==='detail'){const nv=inp.value.trim();if(!nv){renderDetail();return}if(nv!==x.detail.value)x.detail={value:nv,edited:d}}else if(k==='note'){const nv=inp.value.trim();if(nv!==x.note.value)x.note={value:nv,edited:d}}else{const cents=t==='money-optional'?toOptionalCents(inp.value):toCents(inp.value);if(cents!==x[k].cents)x[k]={cents,edited:d}}await save();render()});
+    tr.querySelector('.reimb-check').onchange=async e=>{x.reimbursed={value:e.target.checked,edited:today()};x.reimbursementDate=e.target.checked?today():'';await save();render()};
+    tr.querySelector('.delete-item').onclick=async()=>{a.items=a.items.filter(i=>i.id!==x.id);await save();render();toast('支出已删除')};
+  })
+}
+
+function showModal(html,onReady){const root=$('#modalRoot');root.innerHTML=`<div class="modal-backdrop show"><div class="modal">${html}</div></div>`;const back=root.querySelector('.modal-backdrop');back.addEventListener('click',e=>{if(e.target===back)closeModal()});onReady?.(root)}
+function closeModal(){const root=$('#modalRoot');root.innerHTML=''}
+async function sha256(s){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('')}
+function passwordModal(){showModal(`<div class="modal-head"><h3>进入秘密模式</h3></div><div class="modal-body"><div class="tip">秘密模式会显示真实金额。密码仅在本机浏览器中校验。</div><div class="form-row"><label>密码</label><input id="pwd" class="field" type="password" autofocus></div><div id="pwdErr" class="error"></div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="pwdOk">确认</button></div>`,root=>{
+  root.querySelector('[data-cancel]').onclick=closeModal; const go=async()=>{const h=await sha256(root.querySelector('#pwd').value);if(h===PASSWORD_HASH){secretMode=true;closeModal();render();toast('已进入秘密模式')}else root.querySelector('#pwdErr').textContent='密码错误'};root.querySelector('#pwdOk').onclick=go;root.querySelector('#pwd').onkeydown=e=>{if(e.key==='Enter')go()}
+})}
+function activityPasswordModal(id){
+  const a=state.activities.find(x=>x.id===id);if(!a)return;
+  showModal(`<div class="modal-head"><h3>查看活动详情</h3></div><div class="modal-body"><div class="tip">普通模式下进入活动详情需要验证密码。验证只解锁本次活动详情；返回主页后，主页金额仍会打码。</div><div class="form-row"><label>活动</label><div class="field" style="background:#f7f8fa">#${a.id} ${esc(a.name.value)}</div></div><div class="form-row"><label>密码</label><input id="activityPwd" class="field" type="password" autofocus></div><div id="activityPwdErr" class="error"></div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="activityPwdOk">进入活动</button></div>`,root=>{
+    root.querySelector('[data-cancel]').onclick=closeModal;
+    const go=async()=>{const h=await sha256(root.querySelector('#activityPwd').value);if(h===PASSWORD_HASH){closeModal();enterActivity(id,true)}else root.querySelector('#activityPwdErr').textContent='密码错误'};
+    root.querySelector('#activityPwdOk').onclick=go;root.querySelector('#activityPwd').onkeydown=e=>{if(e.key==='Enter')go()};
+  })
+}
+function managementPasswordModal(){
+  showModal(`<div class="modal-head"><h3>进入活动管理</h3></div><div class="modal-body"><div class="tip">活动管理可以批量删除或导出活动。普通模式下需要先验证密码；验证不会取消主页金额打码。</div><div class="form-row"><label>密码</label><input id="managePwd" class="field" type="password" autofocus></div><div id="managePwdErr" class="error"></div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="managePwdOk">进入管理</button></div>`,root=>{
+    root.querySelector('[data-cancel]').onclick=closeModal;
+    const go=async()=>{const h=await sha256(root.querySelector('#managePwd').value);if(h===PASSWORD_HASH){closeModal();managementMode=true;selectedActivityIds.clear();renderHome();toast('已进入活动管理')}else root.querySelector('#managePwdErr').textContent='密码错误'};
+    root.querySelector('#managePwdOk').onclick=go;root.querySelector('#managePwd').onkeydown=e=>{if(e.key==='Enter')go()};
+  })
+}
+function enterManagementMode(){if(managementMode)return;if(secretMode){managementMode=true;selectedActivityIds.clear();renderHome();return}managementPasswordModal()}
+function exitManagementMode(){managementMode=false;selectedActivityIds.clear();renderHome()}
+function selectedActivities(){return state.activities.filter(a=>selectedActivityIds.has(a.id)).sort((a,b)=>a.id-b.id)}
+function deleteSelectedActivities(){
+  const acts=selectedActivities();if(!acts.length)return;
+  const names=acts.slice(0,5).map(a=>`#${a.id} ${esc(a.name.value)}`).join('<br>');
+  const more=acts.length>5?`<br>以及另外 ${acts.length-5} 个活动。`:'';
+  showModal(`<div class="modal-head"><h3>确认删除选中活动</h3></div><div class="modal-body"><p>将永久删除选中的 <strong>${acts.length}</strong> 个活动及其全部支出数据：</p><div class="tip">${names}${more}</div><p class="error" style="margin-top:12px">此操作没有回收站。</p></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn danger" id="deleteSelectedOk">确认删除 ${acts.length} 个活动</button></div>`,root=>{
+    root.querySelector('[data-cancel]').onclick=closeModal;
+    root.querySelector('#deleteSelectedOk').onclick=async()=>{const ids=new Set(acts.map(a=>a.id));state.activities=state.activities.filter(a=>!ids.has(a.id));await save();selectedActivityIds.clear();closeModal();renderHome();toast(`已删除 ${acts.length} 个活动`)};
+  })
+}
+
+function newActivityModal(){showModal(`<div class="modal-head"><h3>新建活动</h3></div><div class="modal-body"><div class="form-row"><label>活动名称</label><input id="newName" class="field" placeholder="例如：迎新晚会"></div><div class="tip">手工创建只需要活动名称。创建日期取电脑今天日期；活动编号为当前最大编号加 1；预算初始为 0；预支初始为 0，主页状态显示“未预支”，可进入活动后填写实际预支金额。</div><div style="height:1px;background:var(--line);margin:18px 0"></div><div class="tip"><strong>也可以直接从单个活动预算表创建</strong><br>支持电子表格工作簿(XLSX)，表头为：活动、物品、单价、总价。活动列可向下留空并继承上方最近的活动；单价值可以留空。备注不从普通预算表导入，可进入活动后手动填写。系统会自动以总价之和初始化预算金额。</div><div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="createFromXlsx">选择单活动预算表</button><button class="btn" id="createDownloadTemplate">下载预算模板</button></div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="createOk">手工创建</button></div>`,root=>{
+  root.querySelector('[data-cancel]').onclick=closeModal;
+  root.querySelector('#createFromXlsx').onclick=()=>{$('#singleActivityFileInput').click()};
+  root.querySelector('#createDownloadTemplate').onclick=downloadBudgetTemplate;
+  root.querySelector('#createOk').onclick=async()=>{const name=root.querySelector('#newName').value.trim();if(!name)return;const d=today();const a={id:maxId()+1,name:{value:name,edited:d},createdDate:d,budget:{cents:0,edited:d},advance:{cents:0,edited:d},manualHandled:{value:false,edited:d},items:[]};state.activities.push(a);await save();closeModal();render();openActivity(a.id);toast('活动已创建')}
+})}
+function addItemModal(){const a=current();showModal(`<div class="modal-head"><h3>新增支出</h3></div><div class="modal-body"><div class="form-row"><label>物品</label><input id="itName" class="field"></div><div class="form-row"><label>单价</label><input id="itUnit" class="field" type="number" min="0" step="0.01" placeholder="可留空"></div><div class="form-row"><label>总价</label><input id="itTotal" class="field" type="number" min="0" step="0.01" value="0.00"></div><div class="form-row"><label>备注</label><input id="itNote" class="field" placeholder="可留空"></div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="itOk">新增</button></div>`,root=>{
+  root.querySelector('[data-cancel]').onclick=closeModal;root.querySelector('#itOk').onclick=async()=>{const name=root.querySelector('#itName').value.trim();if(!name)return;const d=today();a.items.push({id:uid(),detail:{value:name,edited:d},unitPrice:{cents:toOptionalCents(root.querySelector('#itUnit').value),edited:d},totalPrice:{cents:toCents(root.querySelector('#itTotal').value),edited:d},note:{value:root.querySelector('#itNote').value.trim(),edited:d},reimbursed:{value:false,edited:d},reimbursementDate:''});await save();closeModal();render();toast('支出已新增')}
+})}
+function makeFullBackupWorkbook(activities=state.activities){
+  const wb=XLSX.utils.book_new();
+  const summary=[['活动经费记账助手完整备份'],['备份版本','2'],['导出日期',today()],[],['活动编号','活动名称','名称最后编辑','创建日期','预算金额','预算最后编辑','预支金额','预支最后编辑','已报销金额','经费差额','经费已手动处理','状态最后编辑']];
+  activities.slice().sort((a,b)=>a.id-b.id).forEach(a=>summary.push([a.id,a.name.value,a.name.edited,a.createdDate,Number(fromCents(a.budget.cents)),a.budget.edited,Number(fromCents(a.advance.cents)),a.advance.edited,Number(fromCents(getReimbursed(a))),Number(fromCents(getDiff(a))),a.manualHandled.value?'是':'否',a.manualHandled.edited]));
+  const ws=XLSX.utils.aoa_to_sheet(summary);ws['!cols']=[8,24,14,14,14,14,14,14,14,14,16,14].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,'总览');
+  activities.slice().sort((a,b)=>a.id-b.id).forEach(a=>{
+    const rows=[['活动信息'],['字段','值','最后编辑日期'],['活动编号',a.id,''],['活动名称',a.name.value,a.name.edited],['创建日期',a.createdDate,''],['预算金额',Number(fromCents(a.budget.cents)),a.budget.edited],['预支金额',Number(fromCents(a.advance.cents)),a.advance.edited],['已报销金额',Number(fromCents(getReimbursed(a))),'自动计算'],['经费差额',Number(fromCents(getDiff(a))),'自动计算'],['经费已手动处理',a.manualHandled.value?'是':'否',a.manualHandled.edited],[],['支出清单'],['物品','物品最后编辑','单价','单价最后编辑','总价','总价最后编辑','备注','备注最后编辑','已报销','状态最后编辑','报销日期']];
+    a.items.forEach(x=>rows.push([x.detail.value,x.detail.edited,optionalXlsxMoney(x.unitPrice.cents),x.unitPrice.edited,Number(fromCents(x.totalPrice.cents)),x.totalPrice.edited,x.note?.value||'',x.note?.edited||x.detail.edited,x.reimbursed.value?'是':'否',x.reimbursed.edited,x.reimbursementDate||'']));
+    const s=XLSX.utils.aoa_to_sheet(rows);s['!cols']=[28,14,12,14,12,14,28,14,10,14,14].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,s,`活动_${a.id}`.slice(0,31));
+  }); return wb;
+}
+async function downloadWb(wb,name){
+  const data=XLSX.write(wb,{bookType:'xlsx',type:'array',compression:true});
+  const blob=new Blob([data],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  if('showSaveFilePicker' in window){
+    try{
+      const handle=await window.showSaveFilePicker({suggestedName:name,types:[{description:'电子表格工作簿',accept:{'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx']}}]});
+      const writable=await handle.createWritable();await writable.write(blob);await writable.close();return true;
+    }catch(e){if(e&&e.name==='AbortError')return false;console.warn('系统保存对话框不可用，改用浏览器下载',e)}
+  }
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.style.display='none';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);return true;
+}
+function makeBudgetTemplateWorkbook(){
+  const wb=XLSX.utils.book_new();
+  // A:D 永远只放正式填写区；E 留作视觉分隔；F:I 为填写说明。
+  // 这样说明文字不会混入数据区域，表头也固定在第 1 行。
+  const rows=Array.from({length:24},()=>Array(9).fill(''));
+  rows[0][0]='活动'; rows[0][1]='物品'; rows[0][2]='单价'; rows[0][3]='总价';
+  rows[0][5]='预算表填写说明（请先阅读）';
+  rows[1][5]='1. 请只在左侧 A:D 四列填写数据，四个表头不要修改。';
+  rows[2][5]='2. 同一活动有多行物品时，只需第一行填写活动名称；后续“活动”可留空，系统会继承上方最近一个非空活动。';
+  rows[3][5]='3. 单价可以留空；总价请填写该物品的实际预算总额，系统以“总价”参与预算和报销金额计算。';
+  rows[4][5]='4. 一个工作簿可以填写多个活动；开始新活动时，在“活动”列重新填写新的活动名称。';
+  rows[5][5]='5. 备注不用写在普通预算表中；导入后可进入活动详情，在对应物品后填写备注。';
+  rows[7][5]='填写示例';
+  rows[8][5]='迎新晚会｜矿泉水｜2｜100';
+  rows[9][5]='（活动留空）｜横幅｜80｜160';
+  rows[10][5]='篮球比赛｜奖品｜（单价留空）｜500';
+  rows[12][5]='提示：右侧说明区不会参与导入，请不要在 A:D 数据区插入说明文字。';
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!merges']=[
+    {s:{r:0,c:5},e:{r:0,c:8}},
+    {s:{r:1,c:5},e:{r:1,c:8}},
+    {s:{r:2,c:5},e:{r:2,c:8}},
+    {s:{r:3,c:5},e:{r:3,c:8}},
+    {s:{r:4,c:5},e:{r:4,c:8}},
+    {s:{r:5,c:5},e:{r:5,c:8}},
+    {s:{r:7,c:5},e:{r:7,c:8}},
+    {s:{r:8,c:5},e:{r:8,c:8}},
+    {s:{r:9,c:5},e:{r:9,c:8}},
+    {s:{r:10,c:5},e:{r:10,c:8}},
+    {s:{r:12,c:5},e:{r:12,c:8}}
+  ];
+  ws['!cols']=[{wch:22},{wch:30},{wch:14},{wch:14},{wch:3},{wch:28},{wch:18},{wch:18},{wch:18}];
+  ws['!rows']=[{hpt:24},{hpt:24},{hpt:38},{hpt:38},{hpt:30},{hpt:30},{hpt:8},{hpt:22},{hpt:22},{hpt:22},{hpt:22},{hpt:8},{hpt:34}];
+  XLSX.utils.book_append_sheet(wb,ws,'预算导入模板');
+  return wb;
+}
+async function downloadBudgetTemplate(){
+  const ok=await downloadWb(makeBudgetTemplateWorkbook(),'活动预算导入模板.xlsx');
+  if(ok)toast('预算模板已下载');
+  return ok;
+}
+async function fullBackup(auto=false){return await downloadWb(makeFullBackupWorkbook(),`${auto?'恢复前自动备份':'完整备份'}_${today()}.xlsx`)}
+function rangeExportModal(){const end=today(),start=oneMonthBefore(end);showModal(`<div class="modal-head"><h3>按创建日期导出</h3></div><div class="modal-body"><div class="form-row"><label>开始日期</label><input id="start" class="field" type="date" value="${start}"></div><div class="form-row"><label>结束日期</label><input id="end" class="field" type="date" value="${end}"></div><div class="tip">默认范围为最近一个月。导出文件用于人工阅读：第一张为统计总览，之后每个活动一张工作表。</div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="rangeOk">导出</button></div>`,root=>{root.querySelector('[data-cancel]').onclick=closeModal;root.querySelector('#rangeOk').onclick=async()=>{const s=root.querySelector('#start').value,e=root.querySelector('#end').value;if(!s||!e||s>e)return;const acts=state.activities.filter(a=>a.createdDate>=s&&a.createdDate<=e);const ok=await downloadWb(makeRangeWorkbook(acts,s,e),`活动经费统计_${s}_至_${e}.xlsx`);if(ok){closeModal();toast(`已导出 ${acts.length} 个活动`)}}})}
+function makeRangeWorkbook(acts,start,end){
+  const wb=XLSX.utils.book_new(); const totalBudget=acts.reduce((s,a)=>s+a.budget.cents,0), totalAdvance=acts.reduce((s,a)=>s+a.advance.cents,0), totalReimb=acts.reduce((s,a)=>s+getReimbursed(a),0), totalOverBudget=acts.reduce((s,a)=>s+getOverBudget(a),0);
+  const rows=[['活动经费统计'],['导出日期',today()],['筛选开始日期',start],['筛选结束日期',end],['活动数量',acts.length],[],['编号','活动名称','创建日期','预算金额','预支金额','已报销金额','超出预算','经费差额','处理状态']];
+  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>rows.push([a.id,a.name.value,a.createdDate,Number(fromCents(a.budget.cents)),Number(fromCents(a.advance.cents)),Number(fromCents(getReimbursed(a))),Number(fromCents(getOverBudget(a))),Number(fromCents(getDiff(a))),activityStatus(a).text]));
+  rows.push([],['合计','','',Number(fromCents(totalBudget)),Number(fromCents(totalAdvance)),Number(fromCents(totalReimb)),Number(fromCents(totalOverBudget)),Number(fromCents(totalAdvance-totalReimb)),'']);
+  const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[8,25,14,14,14,14,14,14,15].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,'统计总览');
+  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>{const rs=[['活动概况'],['项目','内容'],['活动编号',a.id],['活动名称',a.name.value],['创建日期',a.createdDate],['预算金额',Number(fromCents(a.budget.cents))],['预支金额',Number(fromCents(a.advance.cents))],['已报销金额',Number(fromCents(getReimbursed(a)))],['超出预算',Number(fromCents(getOverBudget(a)))],['经费差额',Number(fromCents(getDiff(a)))],['经费已手动处理',a.manualHandled.value?'是':'否'],[],['支出明细'],['物品','单价','总价','备注','报销状态','报销日期']];a.items.forEach(x=>rs.push([x.detail.value,optionalXlsxMoney(x.unitPrice.cents),Number(fromCents(x.totalPrice.cents)),x.note?.value||'',x.reimbursed.value?'已报销':'未报销',x.reimbursementDate||'']));rs.push([],['支出总额','',Number(fromCents(a.items.reduce((s,x)=>s+x.totalPrice.cents,0)))],['已报销支出总额','',Number(fromCents(getReimbursed(a)))],['未报销支出总额','',Number(fromCents(a.items.filter(x=>!x.reimbursed.value).reduce((s,x)=>s+x.totalPrice.cents,0)))]);const sh=XLSX.utils.aoa_to_sheet(rs);sh['!cols']=[28,14,14,30,14,14].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,sh,`活动_${a.id}`.slice(0,31))});return wb;
+}
+
+function makeSelectedWorkbook(acts){
+  const wb=XLSX.utils.book_new();
+  const totalBudget=acts.reduce((sum,a)=>sum+a.budget.cents,0),totalAdvance=acts.reduce((sum,a)=>sum+a.advance.cents,0),totalReimb=acts.reduce((sum,a)=>sum+getReimbursed(a),0),totalOverBudget=acts.reduce((sum,a)=>sum+getOverBudget(a),0);
+  const rows=[['选中活动经费统计'],['导出日期',today()],['选中活动数量',acts.length],[],['编号','活动名称','创建日期','预算金额','预支金额','已报销金额','超出预算','经费差额','处理状态']];
+  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>rows.push([a.id,a.name.value,a.createdDate,Number(fromCents(a.budget.cents)),Number(fromCents(a.advance.cents)),Number(fromCents(getReimbursed(a))),Number(fromCents(getOverBudget(a))),Number(fromCents(getDiff(a))),activityStatus(a).text]));
+  rows.push([],['合计','','',Number(fromCents(totalBudget)),Number(fromCents(totalAdvance)),Number(fromCents(totalReimb)),Number(fromCents(totalOverBudget)),Number(fromCents(totalAdvance-totalReimb)),'']);
+  const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[8,25,14,14,14,14,14,14,15].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,'选中活动总览');
+  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>{const rs=[['活动概况'],['项目','内容'],['活动编号',a.id],['活动名称',a.name.value],['创建日期',a.createdDate],['预算金额',Number(fromCents(a.budget.cents))],['预支金额',Number(fromCents(a.advance.cents))],['已报销金额',Number(fromCents(getReimbursed(a)))],['超出预算',Number(fromCents(getOverBudget(a)))],['经费差额',Number(fromCents(getDiff(a)))],['经费已手动处理',a.manualHandled.value?'是':'否'],[],['支出明细'],['物品','单价','总价','备注','报销状态','报销日期']];a.items.forEach(x=>rs.push([x.detail.value,optionalXlsxMoney(x.unitPrice.cents),Number(fromCents(x.totalPrice.cents)),x.note?.value||'',x.reimbursed.value?'已报销':'未报销',x.reimbursementDate||'']));rs.push([],['支出总额','',Number(fromCents(a.items.reduce((sum,x)=>sum+x.totalPrice.cents,0)))],['已报销支出总额','',Number(fromCents(getReimbursed(a)))],['未报销支出总额','',Number(fromCents(a.items.filter(x=>!x.reimbursed.value).reduce((sum,x)=>sum+x.totalPrice.cents,0)))]);const sh=XLSX.utils.aoa_to_sheet(rs);sh['!cols']=[28,14,14,30,14,14].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,sh,`活动_${a.id}`.slice(0,31))});
+  return wb;
+}
+async function exportSelectedActivities(){const acts=selectedActivities();if(!acts.length)return;const ok=await downloadWb(makeSelectedWorkbook(acts),`选中活动经费统计_${today()}.xlsx`);if(ok)toast(`已导出 ${acts.length} 个选中活动`)}
+
+function sheetRows(ws){return XLSX.utils.sheet_to_json(ws,{header:1,defval:''})}
+function detectBackup(wb){return wb.SheetNames.includes('总览')&&String(sheetRows(wb.Sheets['总览'])?.[0]?.[0]||'').includes('完整备份')}
+function detectRange(wb){return wb.SheetNames.includes('统计总览')&&String(sheetRows(wb.Sheets['统计总览'])?.[0]?.[0]||'').includes('活动经费统计')}
+function parseFullBackup(wb){
+  const sum=sheetRows(wb.Sheets['总览']); const headerIdx=sum.findIndex(r=>r[0]==='活动编号'); if(headerIdx<0)throw new Error('总览缺少活动编号表头');
+  const acts=[]; for(const r of sum.slice(headerIdx+1)){if(r[0]==='')continue;const id=Number(r[0]);if(!Number.isInteger(id)||id<1)throw new Error('活动编号无效');const a={id,name:{value:String(r[1]),edited:String(r[2]||r[3]||today())},createdDate:String(r[3]),budget:{cents:toCents(r[4]),edited:String(r[5]||r[3]||today())},advance:{cents:toCents(r[6]),edited:String(r[7]||r[3]||today())},manualHandled:{value:String(r[10])==='是',edited:String(r[11]||r[3]||today())},items:[]};const sname=`活动_${id}`;if(!wb.Sheets[sname])throw new Error(`缺少 ${sname} 工作表`);const rows=sheetRows(wb.Sheets[sname]);const hi=rows.findIndex(x=>(x[0]==='物品'||x[0]==='购买明细')&&(x[1]==='物品最后编辑'||x[1]==='明细最后编辑'));if(hi<0)throw new Error(`${sname} 缺少支出表头`);const hdr=rows[hi].map(v=>String(v).trim());const idx=(...names)=>names.map(n=>hdr.indexOf(n)).find(i=>i>=0)??-1;const di=idx('物品','购买明细'),de=idx('物品最后编辑','明细最后编辑'),ui=idx('单价'),ue=idx('单价最后编辑'),ti=idx('总价'),te=idx('总价最后编辑'),ni=idx('备注'),ne=idx('备注最后编辑'),ri=idx('已报销'),re=idx('状态最后编辑'),rdi=idx('报销日期');for(const x of rows.slice(hi+1)){if(!String(x[di]).trim())continue;a.items.push({id:uid(),detail:{value:String(x[di]),edited:String(x[de]||a.createdDate)},unitPrice:{cents:toOptionalCents(x[ui]),edited:String(x[ue]||a.createdDate)},totalPrice:{cents:toCents(x[ti]),edited:String(x[te]||a.createdDate)},note:{value:ni>=0?String(x[ni]||''):'',edited:String((ne>=0?x[ne]:'')||a.createdDate)},reimbursed:{value:String(x[ri])==='是',edited:String(x[re]||a.createdDate)},reimbursementDate:String(x[rdi]||'')})}acts.push(a)}
+  const ids=new Set();acts.forEach(a=>{if(ids.has(a.id))throw new Error('活动编号重复');ids.add(a.id);if(!parseDate(a.createdDate))throw new Error(`活动 #${a.id} 创建日期无效`)});return acts;
+}
+function parseRangeExport(wb){
+  const groups=[]; for(const name of wb.SheetNames.filter(n=>/^活动_\d+$/.test(n))){const rows=sheetRows(wb.Sheets[name]);const get=(label)=>{const r=rows.find(x=>x[0]===label);return r?r[1]:''};const actName=String(get('活动名称')||'').trim();if(!actName)continue;const hi=rows.findIndex(x=>(x[0]==='物品'||x[0]==='购买明细')&&x[1]==='单价');const items=[];if(hi>=0){const hdr=rows[hi].map(v=>String(v).trim());const idx=n=>hdr.indexOf(n);const di=idx('物品')>=0?idx('物品'):idx('购买明细'),ui=idx('单价'),ti=idx('总价'),ni=idx('备注'),ri=idx('报销状态'),rdi=idx('报销日期');for(const r of rows.slice(hi+1)){if(!String(r[di]).trim()||String(r[di]).includes('总额'))break;items.push({detail:String(r[di]),unitPrice:r[ui],totalPrice:r[ti],note:ni>=0?String(r[ni]||''):'',reimbursed:String(r[ri])==='已报销',reimbursementDate:String(r[rdi]||'')})}}groups.push({name:actName,createdDate:String(get('创建日期')||today()),budget:get('预算金额'),advance:get('预支金额'),manual:String(get('经费已手动处理'))==='是',items,source:'range'})}return groups;
+}
+function parseRegularWorkbook(wb){
+  const map=new Map();
+  for(const sn of wb.SheetNames){
+    const rows=sheetRows(wb.Sheets[sn]);
+    if(!rows.length)continue;
+    let h=-1,cols={};
+    for(let i=0;i<Math.min(rows.length,20);i++){
+      const r=rows[i].map(x=>String(x).trim());
+      const ai=r.indexOf('活动'),di=r.indexOf('物品'),ui=r.indexOf('单价'),ti=r.indexOf('总价');
+      if(ai>=0&&di>=0&&ui>=0&&ti>=0){h=i;cols={ai,di,ui,ti};break}
+    }
+    if(h<0)continue;
+    let inheritedName='';
+    for(const r of rows.slice(h+1)){
+      const explicitName=String(r[cols.ai]||'').trim();
+      if(explicitName)inheritedName=explicitName;
+      const detail=String(r[cols.di]||'').trim();
+      if(!detail)continue;
+      if(!inheritedName)continue;
+      if(!map.has(inheritedName))map.set(inheritedName,[]);
+      map.get(inheritedName).push({detail,unitPrice:r[cols.ui],totalPrice:r[cols.ti],note:''});
+    }
+  }
+  return [...map.entries()].map(([name,items])=>({name,items,source:'regular'}));
+}
+function importPreview(groups){pendingImport=groups;if(!groups.length){toast('没有识别到可导入的活动数据');return}
+  showModal(`<div class="modal-head"><h3>确认导入</h3></div><div class="modal-body"><div class="tip">每组可以新建为一个活动，也可以追加到现有活动。追加时只增加支出，不覆盖原预算和预支。</div>${groups.map((g,i)=>`<div class="preview-group"><strong>${esc(g.name)}</strong><div class="rows">${g.items.length} 条支出</div><select class="field import-target" data-i="${i}"><option value="new">新建活动</option>${state.activities.map(a=>`<option value="${a.id}">追加到 #${a.id} ${esc(a.name.value)}</option>`).join('')}</select></div>`).join('')}</div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="importOk">执行导入</button></div>`,root=>{root.querySelector('[data-cancel]').onclick=closeModal;root.querySelector('#importOk').onclick=async()=>{const d=today();for(const sel of root.querySelectorAll('.import-target')){const g=groups[Number(sel.dataset.i)];let a;if(sel.value==='new'){a={id:maxId()+1,name:{value:g.name,edited:d},createdDate:g.createdDate&&parseDate(g.createdDate)?g.createdDate:d,budget:{cents:g.budget!==undefined?toCents(g.budget):g.items.reduce((s,x)=>s+toCents(x.totalPrice),0),edited:d},advance:{cents:g.advance!==undefined?toCents(g.advance):0,edited:d},manualHandled:{value:!!g.manual,edited:d},items:[]};state.activities.push(a)}else a=state.activities.find(x=>x.id===Number(sel.value));for(const it of g.items){a.items.push({id:uid(),detail:{value:it.detail,edited:d},unitPrice:{cents:toOptionalCents(it.unitPrice),edited:d},totalPrice:{cents:toCents(it.totalPrice),edited:d},note:{value:it.note||'',edited:d},reimbursed:{value:!!it.reimbursed,edited:d},reimbursementDate:it.reimbursed?(it.reimbursementDate||d):''})}}await save();closeModal();render();toast(`已导入 ${groups.length} 组活动数据`)}})
+}
+async function importSingleActivityFile(file){
+  try{
+    const data=await file.arrayBuffer();const wb=XLSX.read(data,{type:'array'});
+    let groups;
+    if(detectBackup(wb))throw new Error('完整备份请使用“导入工作簿”入口恢复');
+    if(detectRange(wb))groups=parseRangeExport(wb);else groups=parseRegularWorkbook(wb);
+    if(groups.length!==1)throw new Error(groups.length===0?'没有识别到活动':'该文件包含多个活动，请使用顶部“导入工作簿”批量导入');
+    const g=groups[0],d=today();
+    const a={id:maxId()+1,name:{value:g.name,edited:d},createdDate:d,budget:{cents:g.source==='range'&&g.budget!==undefined?toCents(g.budget):g.items.reduce((sum,x)=>sum+toCents(x.totalPrice),0),edited:d},advance:{cents:g.source==='range'&&g.advance!==undefined?toCents(g.advance):0,edited:d},manualHandled:{value:g.source==='range'?!!g.manual:false,edited:d},items:[]};
+    for(const it of g.items)a.items.push({id:uid(),detail:{value:it.detail,edited:d},unitPrice:{cents:toOptionalCents(it.unitPrice),edited:d},totalPrice:{cents:toCents(it.totalPrice),edited:d},note:{value:it.note||'',edited:d},reimbursed:{value:!!it.reimbursed,edited:d},reimbursementDate:it.reimbursed?(it.reimbursementDate||d):''});
+    state.activities.push(a);await save();closeModal();render();openActivity(a.id);toast('已从预算表创建活动');
+  }catch(e){console.error(e);toast(`创建失败：${e.message||'文件格式错误'}`)}
+}
+async function importFile(file){
+  try{const data=await file.arrayBuffer();const wb=XLSX.read(data,{type:'array'});if(detectBackup(wb)){const acts=parseFullBackup(wb);showModal(`<div class="modal-head"><h3>恢复完整备份</h3></div><div class="modal-body"><p>识别到完整备份，共 ${acts.length} 个活动。</p><div class="tip">继续后会先自动下载当前数据的安全备份，然后用该文件整体覆盖当前本地数据。</div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn danger" id="restoreOk">开始恢复</button></div>`,root=>{root.querySelector('[data-cancel]').onclick=closeModal;root.querySelector('#restoreOk').onclick=async()=>{const backedUp=await fullBackup(true);if(!backedUp){toast('已取消恢复');return}state.activities=acts;await save();closeModal();currentActivityId=null;$('#detail').classList.remove('active');$('#home').classList.remove('hidden');render();toast('完整备份已恢复')}});return}
+    if(detectRange(wb)){importPreview(parseRangeExport(wb));return}
+    importPreview(parseRegularWorkbook(wb));
+  }catch(e){console.error(e);toast(`导入失败：${e.message||'文件格式错误'}`)}
+}
+
+$('#modeBtn').onclick=()=>{if(secretMode){secretMode=false;managementMode=false;selectedActivityIds.clear();if($('#manual').classList.contains('active')){render();toast('已退出秘密模式')}else if(currentActivityId!==null){closeActivity();toast('已退出秘密模式并返回普通主页')}else{render();toast('已退出秘密模式')}}else passwordModal()};
+$('#manualBtn').onclick=openManual; $('#manualBackBtn').onclick=closeManual;
+$('#manualTemplateBtn').onclick=downloadBudgetTemplate; $('#templateBtn').onclick=downloadBudgetTemplate;
+$('#search').oninput=renderHome; $('#statusFilter').onchange=renderHome; $('#filterStart').onchange=renderHome; $('#filterEnd').onchange=renderHome; $('#clearFiltersBtn').onclick=()=>{$('#statusFilter').value='all';$('#filterStart').value='';$('#filterEnd').value='';renderHome()};
+$('#newActivityBtn').onclick=newActivityModal; $('#backBtn').onclick=closeActivity; $('#addItemBtn').onclick=addItemModal;
+$('#manageActivitiesBtn').onclick=enterManagementMode; $('#exitManageBtn').onclick=exitManagementMode;
+$('#selectVisibleBtn').onclick=()=>{getHomeFilteredActivities().forEach(a=>selectedActivityIds.add(a.id));renderHome()};
+$('#clearSelectionBtn').onclick=()=>{selectedActivityIds.clear();renderHome()};
+$('#exportSelectedBtn').onclick=exportSelectedActivities; $('#deleteSelectedBtn').onclick=deleteSelectedActivities;
+$('#backupBtn').onclick=async()=>{const ok=await fullBackup(false);if(ok)toast('完整备份已导出')}; $('#rangeExportBtn').onclick=rangeExportModal;
+$('#importBtn').onclick=()=>$('#fileInput').click(); $('#fileInput').onchange=e=>{const f=e.target.files[0];if(f)importFile(f);e.target.value=''}; $('#singleActivityFileInput').onchange=e=>{const f=e.target.files[0];if(f)importSingleActivityFile(f);e.target.value=''};
+window.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+load();
+})();
+</script>
+</body>
+</html>
