@@ -965,3 +965,9 @@ body.dark,.dark {
  * .fab 的 box-shadow 引用 var(--shadow-lg), 深色模式下由 page.dark 变量覆盖自动加深,
  * 无需额外的 .dark 覆盖规则。此注释仅作说明占位。 */
 
+
+/* ===== H5 防横向滚动 ===== */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
