@@ -81,8 +81,12 @@
     if (node.nodeType !== 1) return ''
 
     var tag = node.tagName.toLowerCase()
-    // block 无实际元素：若有 wx:for 则展开，否则直接渲染子节点
+    // block 无实际元素：若有 wx:if/wx:for 则处理，否则直接渲染子节点
     if (tag === 'block') {
+      var ifExpr = node.getAttribute && node.getAttribute('data-wx-if')
+      if (ifExpr !== null && ifExpr !== undefined) {
+        if (!evalExpr(cleanExpr(ifExpr), data)) return ''
+      }
       var forExpr = node.getAttribute && node.getAttribute('data-wx-for')
       if (forExpr !== null && forExpr !== undefined) {
         var items = evalExpr(cleanExpr(forExpr), data) || []
