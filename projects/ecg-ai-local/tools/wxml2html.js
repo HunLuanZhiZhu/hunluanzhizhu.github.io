@@ -157,6 +157,20 @@ function renderNode(node, out) {
   const lower = tag.toLowerCase()
 
   if (lower === 'block') {
+    // block 的 wx:for 需保留：转成 <block data-wx-for> 由渲染引擎展开
+    var forAttr = node.attrs.find(function(a) { return a.name === 'wx:for' })
+    var forItemAttr = node.attrs.find(function(a) { return a.name === 'wx:for-item' })
+    var forIndexAttr = node.attrs.find(function(a) { return a.name === 'wx:for-index' })
+    var keyAttr = node.attrs.find(function(a) { return a.name === 'wx:key' })
+    if (forAttr) {
+      out.push('<block data-wx-for="' + esc(forAttr.value) + '"' +
+        (forItemAttr ? ' data-wx-for-item="' + esc(forItemAttr.value) + '"' : '') +
+        (forIndexAttr ? ' data-wx-for-index="' + esc(forIndexAttr.value) + '"' : '') +
+        (keyAttr ? ' data-wx-key="' + esc(keyAttr.value) + '"' : '') + '>')
+      for (const child of node.children) renderNode(child, out)
+      out.push('</block>')
+      return
+    }
     for (const child of node.children) renderNode(child, out)
     return
   }

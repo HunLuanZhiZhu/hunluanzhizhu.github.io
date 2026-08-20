@@ -125,6 +125,8 @@
 .page-detect .sample-scroll {
   white-space: nowrap;
   margin-bottom: var(--cg);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .page-detect .sample-scroll::-webkit-scrollbar {
   display: none;

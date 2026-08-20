@@ -81,8 +81,22 @@
     if (node.nodeType !== 1) return ''
 
     var tag = node.tagName.toLowerCase()
-    // block 无实际元素，直接渲染子节点
+    // block 无实际元素：若有 wx:for 则展开，否则直接渲染子节点
     if (tag === 'block') {
+      var forExpr = node.getAttribute && node.getAttribute('data-wx-for')
+      if (forExpr !== null && forExpr !== undefined) {
+        var items = evalExpr(cleanExpr(forExpr), data) || []
+        var itemVar = (node.getAttribute && node.getAttribute('data-wx-for-item')) || 'item'
+        var indexVar = (node.getAttribute && node.getAttribute('data-wx-for-index')) || 'index'
+        var html = ''
+        for (var bi = 0; bi < items.length; bi++) {
+          var itemData = Object.assign({}, data)
+          itemData[itemVar] = items[bi]
+          itemData[indexVar] = bi
+          html += renderChildren(node, itemData)
+        }
+        return html
+      }
       return renderChildren(node, data)
     }
     if (tag === 'page-meta') return '' // 移除
