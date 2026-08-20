@@ -60,6 +60,21 @@
       }
     }
 
+    // 局部更新：切换指示器圆点 + 静默同步页面 data，绝不触发整页 setData 重渲染
+    function notifyChange() {
+      var dotsEl = sw.parentElement && sw.parentElement.querySelector('.feature-dots')
+      if (dotsEl) {
+        var dots = dotsEl.children
+        for (var i = 0; i < dots.length; i++) {
+          if (i === index) dots[i].classList.add('active')
+          else dots[i].classList.remove('active')
+        }
+      }
+      if (page && page.data && Object.prototype.hasOwnProperty.call(page.data, 'featureIndex')) {
+        page.data.featureIndex = index
+      }
+    }
+
     function goTo(i, notify) {
       if (count === 0) return
       var target
@@ -72,17 +87,7 @@
       }
       index = target
       apply()
-      if (notify !== false && page && typeof page.onFeatureChange === 'function') {
-        page.onFeatureChange({ detail: { current: index } })
-      } else if (notify !== false && page) {
-        // 通用 fallback：通过页面方法名对应的 data-bind="change:onXxx" 已绑定在 sw 上，
-        // 直接触发页面同名方法（wx 页面用 onFeatureChange，这里留通用入口）
-        var bind = sw.getAttribute('data-bind') || ''
-        var parts = bind.split(':')
-        if (parts[0] === 'change' && parts[1] && typeof page[parts[1]] === 'function') {
-          page[parts[1]]({ detail: { current: index, source: 'autoplay' } })
-        }
-      }
+      if (notify !== false) notifyChange()
     }
 
     function tick() {
@@ -147,6 +152,18 @@
       })
     }
 
+    // 点击指示器圆点：本地切换并阻止冒泡，避免走 data-bind -> setData 整页重渲染
+    function onWrapClick(e) {
+      var dot = e.target && e.target.closest ? e.target.closest('.feature-dot') : null
+      if (!dot) return
+      var idx = parseInt(dot.getAttribute('data-index'), 10)
+      if (!isNaN(idx) && idx !== index) {
+        goTo(idx, true)
+      }
+      e.stopPropagation()
+      e.preventDefault()
+    }
+
     return {
       el: sw,
       init: function() {
@@ -159,6 +176,7 @@
         sw.addEventListener('mousedown', onPointerDown)
         sw.addEventListener('mouseup', onPointerEnd)
         sw.addEventListener('click', onClickGuard, true)
+        if (sw.parentElement) sw.parentElement.addEventListener('click', onWrapClick, true)
         start()
       },
       refreshFromAttr: function() {
@@ -177,6 +195,7 @@
         sw.removeEventListener('mousedown', onPointerDown)
         sw.removeEventListener('mouseup', onPointerEnd)
         sw.removeEventListener('click', onClickGuard, true)
+        if (sw.parentElement) sw.parentElement.removeEventListener('click', onWrapClick, true)
       }
     }
   }
