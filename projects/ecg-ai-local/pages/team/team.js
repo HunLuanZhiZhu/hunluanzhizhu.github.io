@@ -9,7 +9,7 @@ Page({
       {
         name: '神秘人 A',
         role: '团队总负责人',
-        avatar: '/assets/smr.jpg',
+        avatar: 'assets/smr.jpg',
         education: '计算机技术专业在读硕士',
         research: '人工智能在心电信号分析与分类方面的应用',
         responsibility: '项目整体统筹与团队组织领导，以扎实的科研积累与组织领导能力支撑团队发展',
@@ -18,7 +18,7 @@ Page({
       {
         name: '神秘人 B',
         role: '技术负责人',
-        avatar: '/assets/smr.jpg',
+        avatar: 'assets/smr.jpg',
         education: '计算机技术专业在读硕士',
         research: '脉冲神经网络与生物医学信号结合',
         responsibility: '团队组织与协调、项目整体推进，为科研任务提供技术支撑',
@@ -27,7 +27,7 @@ Page({
       {
         name: '神秘人 C',
         role: '界面设计负责人',
-        avatar: '/assets/smr.jpg',
+        avatar: 'assets/smr.jpg',
         education: '计算机软件工程学士，即将进入计算机技术专业硕士阶段学习',
         research: '医学特征提取',
         responsibility: '项目界面设计与交互优化，围绕项目功能需求完成界面布局、视觉呈现及相关设计工作，提升项目整体展示效果与用户体验',

@@ -257,11 +257,23 @@
       if (container) {
         var html = template().render(tpl, inst.data)
         container.innerHTML = html
+        // 给根 .container 加页面作用域前缀（匹配 css/pages/xxx.css 的 .page-xxx 选择器）
+        var pageRootEl = container.querySelector('.container')
+        if (pageRootEl) {
+          var segs = route.split('/')
+          var pageName = segs[segs.length - 1]
+          pageRootEl.classList.add('page-' + pageName)
+        }
         // 事件委托
         delegateEvents(container, inst)
         inst._renderFn = function() {
           if (global.__currentRoute === route) {
             container.innerHTML = template().render(tpl, inst.data)
+            var pr = container.querySelector('.container')
+            if (pr) {
+              var segs2 = route.split('/')
+              pr.classList.add('page-' + segs2[segs2.length - 1])
+            }
             // 重新委托（innerHTML 替换后旧监听丢失）
             delegateEvents(container, inst)
             // 挂载组件

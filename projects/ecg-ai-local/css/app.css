@@ -4,7 +4,7 @@
  * 核心: 中性留白, 克制点缀, 层级分明
  */
 
-page {
+:root {
   /* ===== 基础色系 ===== */
   --warm: #F5F5F7;
   --card: #FFFFFF;
@@ -76,7 +76,7 @@ page {
   -webkit-font-smoothing: antialiased;
 }
 
-page.dark,.dark {
+body.dark,.dark {
   /* 修复深色模式文字不可见: color属性继承的是"计算值",
    * page上 color: var(--t1) 已解析为浅色模式的近黑色 #1E293B,
    * .dark容器内所有无显式color的后代(.metric-val/.stat-hero-val/.big-stat-num等大数字类)

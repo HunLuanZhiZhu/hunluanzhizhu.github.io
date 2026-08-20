@@ -24,9 +24,9 @@ Page({
     // Sc-R4: 每篇轮播使用对应主题的渐变背景
     // 2026-08-20: 封面图转回 JPG(q78, 103KB)以保证旧机型兼容; 原 WebP 体积略小但兼容性不足
     featuredArticles: [
-      { id: 1, category: '心律基础', title: '什么是窦性心律？', desc: '起源于窦房结的正常心脏搏动，节律规整，频率在60-100次/分钟。', coverImage: '/assets/feature-sinus.jpg' },
-      { id: 2, category: '异常解读', title: '室性早搏有多危险？', desc: '起源于心室肌的提前搏动，QRS波群宽大畸形，频发需警惕器质性心脏病。', coverImage: '/assets/feature-pvc.jpg' },
-      { id: 7, category: '新技术', title: '人工智能在心电图诊断中的应用', desc: '深度学习模型在心电分类任务中已达到甚至超过心内科专家的准确率。', coverImage: '/assets/feature-ai.jpg' }
+      { id: 1, category: '心律基础', title: '什么是窦性心律？', desc: '起源于窦房结的正常心脏搏动，节律规整，频率在60-100次/分钟。', coverImage: 'assets/feature-sinus.jpg' },
+      { id: 2, category: '异常解读', title: '室性早搏有多危险？', desc: '起源于心室肌的提前搏动，QRS波群宽大畸形，频发需警惕器质性心脏病。', coverImage: 'assets/feature-pvc.jpg' },
+      { id: 7, category: '新技术', title: '人工智能在心电图诊断中的应用', desc: '深度学习模型在心电分类任务中已达到甚至超过心内科专家的准确率。', coverImage: 'assets/feature-ai.jpg' }
     ],
     featureIndex: 0,      // 轮播当前页 (指示器高亮)
     showBackTop: false,   // 返回顶部按钮显隐
