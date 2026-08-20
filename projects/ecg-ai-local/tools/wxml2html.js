@@ -162,8 +162,8 @@ function renderNode(node, out) {
   }
   if (lower === 'page-meta') return
 
-  // 自定义组件（含 - 且非 scroll-view）→ data-wx-component 占位
-  if (lower.indexOf('-') > 0 && lower !== 'scroll-view') {
+  // 自定义组件（含 - 且不在 EXT_MAP 已知标签中）→ data-wx-component 占位
+  if (lower.indexOf('-') > 0 && !EXT_MAP[lower]) {
     var compId = ''
     for (var ci = 0; ci < node.attrs.length; ci++) {
       if (node.attrs[ci].name === 'id') compId = node.attrs[ci].value

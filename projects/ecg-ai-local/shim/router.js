@@ -22,6 +22,7 @@
   var currentRoute = null
   var currentInstance = null
   var templates = {}
+  var historyStack = []
 
   // 解析 hash: '#/detect?key=N' → {name:'detect', query:{key:'N'}}
   function parseHash() {
@@ -50,8 +51,18 @@
     window.location.hash = hash.replace(/^#\/?/, '')
   }
   function navigateBack(delta) {
-    if (window.history.length > 1) window.history.back()
-    else window.location.hash = '#/detect'
+    // 从历史栈回退（H5 hash 路由无原生 history 栈语义）
+    if (historyStack.length > 1) {
+      // 弹掉当前页
+      historyStack.pop()
+      var prev = historyStack[historyStack.length - 1]
+      if (prev && prev !== currentRoute) {
+        window.location.hash = '#/' + prev
+        return
+      }
+    }
+    // 无历史，回检测页
+    window.location.hash = '#/detect'
   }
   function reLaunch(hash) {
     window.location.hash = hash.replace(/^#\/?/, '')
@@ -89,6 +100,11 @@
     if (!route) {
       window.location.hash = '#/detect'
       return
+    }
+
+    // 维护历史栈（去重相邻重复）
+    if (historyStack[historyStack.length - 1] !== name) {
+      historyStack.push(name)
     }
 
     // 卸载旧页
@@ -137,6 +153,11 @@
 
   function initRouter() {
     window.addEventListener('hashchange', render)
+    // 返回按钮绑定
+    var backBtn = document.getElementById('nav-back')
+    if (backBtn) {
+      backBtn.addEventListener('click', function() { navigateBack() })
+    }
     if (!window.location.hash) {
       window.location.hash = '#/detect'
     }
