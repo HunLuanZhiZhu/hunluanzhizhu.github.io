@@ -9,6 +9,14 @@
       global.__requireModule('app.js', null)
       console.log('[boot] app.js 已加载')
 
+      // 1.5 执行组件模块（注册 Component 实例，页面 mount 时挂载）
+      try {
+        global.__requireModule('components/profile-sheet.js', null)
+        console.log('[boot] profile-sheet 组件已注册')
+      } catch (e) {
+        console.error('[boot] 组件加载失败:', e.message)
+      }
+
       // 2. 初始化主题（app.initTheme 设置 body dark class + 背景色）
       var app = global.getApp()
       if (app && app.initTheme) {

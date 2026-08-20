@@ -4,16 +4,16 @@
 
 (function(global) {
   var ROUTES = {
-    'detect':           { title: '心电检测', tab: 0, module: 'pages/detect/detect.js', tpl: 'templates/detect.html' },
-    'history':          { title: '检测历史', tab: 1, module: 'pages/history/history.js', tpl: 'templates/history.html' },
-    'science':          { title: '心电科普', tab: 2, module: 'pages/science/science.js', tpl: 'templates/science.html' },
-    'team':             { title: '团队介绍', tab: 3, module: 'pages/team/team.js', tpl: 'templates/team.html' },
-    'mine':             { title: '我的', tab: 4, module: 'pages/mine/mine.js', tpl: 'templates/mine.html' },
-    'analysis':         { title: '综合分析', tab: -1, module: 'subpages/analysis/analysis.js', tpl: 'templates/analysis.html' },
-    'category-detail':  { title: '分类详情', tab: -1, module: 'subpages/category-detail/category-detail.js', tpl: 'templates/category-detail.html' },
-    'info-detail':      { title: '详情', tab: -1, module: 'subpages/info-detail/info-detail.js', tpl: 'templates/info-detail.html' },
-    'member-detail':    { title: '成员详情', tab: -1, module: 'subpages/member-detail/member-detail.js', tpl: 'templates/member-detail.html' },
-    'settings':         { title: '设置', tab: -1, module: 'subpages/settings/settings.js', tpl: 'templates/settings.html' }
+    'detect':           { title: '心电检测', tab: 0, module: 'pages/detect/detect.js', tpl: 'templates/detect-v2.html' },
+    'history':          { title: '检测历史', tab: 1, module: 'pages/history/history.js', tpl: 'templates/history-v2.html' },
+    'science':          { title: '心电科普', tab: 2, module: 'pages/science/science.js', tpl: 'templates/science-v2.html' },
+    'team':             { title: '团队介绍', tab: 3, module: 'pages/team/team.js', tpl: 'templates/team-v2.html' },
+    'mine':             { title: '我的', tab: 4, module: 'pages/mine/mine.js', tpl: 'templates/mine-v2.html' },
+    'analysis':         { title: '综合分析', tab: -1, module: 'subpages/analysis/analysis.js', tpl: 'templates/analysis-v2.html' },
+    'category-detail':  { title: '分类详情', tab: -1, module: 'subpages/category-detail/category-detail.js', tpl: 'templates/category-detail-v2.html' },
+    'info-detail':      { title: '详情', tab: -1, module: 'subpages/info-detail/info-detail.js', tpl: 'templates/info-detail-v2.html' },
+    'member-detail':    { title: '成员详情', tab: -1, module: 'subpages/member-detail/member-detail.js', tpl: 'templates/member-detail-v2.html' },
+    'settings':         { title: '设置', tab: -1, module: 'subpages/settings/settings.js', tpl: 'templates/settings-v2.html' }
   }
 
   var runtime = function() { return global.__runtime }
@@ -71,7 +71,8 @@
     if (templates[route]) return templates[route]
     var tplPath = ROUTES[route].tpl
     try {
-      var res = await fetch(tplPath)
+      // 时间戳避免浏览器缓存旧模板
+      var res = await fetch(tplPath + '?t=' + Date.now())
       var text = await res.text()
       templates[route] = text
     } catch (e) {

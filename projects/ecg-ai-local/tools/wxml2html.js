@@ -162,6 +162,25 @@ function renderNode(node, out) {
   }
   if (lower === 'page-meta') return
 
+  // 自定义组件（含 - 且非 scroll-view）→ data-wx-component 占位
+  if (lower.indexOf('-') > 0 && lower !== 'scroll-view') {
+    var compId = ''
+    for (var ci = 0; ci < node.attrs.length; ci++) {
+      if (node.attrs[ci].name === 'id') compId = node.attrs[ci].value
+    }
+    out.push('<div data-wx-component="' + lower + '" data-component-id="' + compId + '"')
+    // 保留 bind:save 等事件
+    for (var ce = 0; ce < node.attrs.length; ce++) {
+      var an = node.attrs[ce].name
+      var av = node.attrs[ce].value || ''
+      if (an.startsWith('bind:')) {
+        out.push(' data-bind="custom:' + av + '"')
+      }
+    }
+    out.push('></div>')
+    return
+  }
+
   const htmlTag = EXT_MAP[lower] || 'div'
   out.push('<' + htmlTag)
 

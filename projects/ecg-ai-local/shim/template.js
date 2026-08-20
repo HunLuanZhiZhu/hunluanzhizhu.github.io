@@ -86,9 +86,21 @@
       return renderChildren(node, data)
     }
     if (tag === 'page-meta') return '' // 移除
-    // 自定义组件 <profile-sheet> → 占位，由 runtime 挂组件
-    if (tag.indexOf('-') > 0 && tag !== 'scroll-view') {
-      return '<div data-wx-component="' + tag + '" data-component-id="' + (node.getAttribute('id') || '') + '"></div>'
+    // 自定义组件：标签本身含 -（<profile-sheet>）或已是 data-wx-component 的 div（模板转换产物）
+    var isComponentTag = tag.indexOf('-') > 0 && tag !== 'scroll-view'
+    var hasComponentAttr = node.getAttribute && node.getAttribute('data-wx-component') !== null
+    if (isComponentTag || hasComponentAttr) {
+      var compName = hasComponentAttr ? node.getAttribute('data-wx-component') : tag
+      var compId = node.getAttribute && (node.getAttribute('id') || node.getAttribute('data-component-id') || '')
+      // 保留 bind:save 等 custom 事件（data-bind="custom:onXxx"）
+      var binds = ''
+      if (node.attributes) {
+        for (var bi = 0; bi < node.attributes.length; bi++) {
+          var bAttr = node.attributes[bi]
+          if (bAttr.name === 'data-bind') binds = ' data-bind="' + bAttr.value + '"'
+        }
+      }
+      return '<div data-wx-component="' + compName + '" data-component-id="' + compId + '"' + binds + '></div>'
     }
 
     var dirs = parseDirectives(node, data)
