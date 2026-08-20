@@ -8,7 +8,7 @@ const MEMBERS = [
   {
     letter: 'A',
     name: '神秘人 A',
-    avatar: 'assets/smr.png',
+    avatar: 'assets/smr.jpg',
     role: '项目负责人',
     education: '计算机科学与技术 学士（2024），人工智能与计算机科学 硕士在读',
     research: '分数阶梯度优化、医学信号处理，在国内外高质量期刊发表多篇论文',
@@ -17,7 +17,7 @@ const MEMBERS = [
   {
     letter: 'B',
     name: '神秘人 B',
-    avatar: 'assets/smr.png',
+    avatar: 'assets/smr.jpg',
     role: '算法工程师',
     education: '数学与应用数学 学士（2025），人工智能与计算机科学 硕士在读',
     research: '脉冲神经网络、分数阶微积分、类脑计算，在国内外高质量期刊发表多篇论文',
@@ -26,7 +26,7 @@ const MEMBERS = [
   {
     letter: 'C',
     name: '神秘人 C',
-    avatar: 'assets/smr.png',
+    avatar: 'assets/smr.jpg',
     role: '前端开发',
     education: '计算机科学与技术 学士（2026），人工智能与计算机科学 硕士在读',
     research: '医学信号处理',
@@ -35,7 +35,7 @@ const MEMBERS = [
   {
     letter: 'D',
     name: '神秘人 D',
-    avatar: 'assets/smr.png',
+    avatar: 'assets/smr.jpg',
     role: '指导老师',
     education: '控制科学与工程 博士（2015），教授，多次入选全球前2%科学家，博导，主持完成多项国家自然基金青基与面上项目',
     research: '医学信号处理、非线性动力学、混合系统、模式识别、联想记忆',

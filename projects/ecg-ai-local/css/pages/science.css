@@ -1,8 +1,3 @@
-/* science.css — 心韵深辨 H5 (同步自 science.wxss)
- * 变量: css/app.css 提供的 --warm:#F5F5F7 --teal:#007AFF / 深色 --warm:#0B1120 --teal:#0A84FF
- * 注意: H5 中 scroll-view → div[data-scroll], canvas type=2d → canvas, 其余原样
- */
-
 /* science.wxss — 心律科普页特有样式
  * Sc1: feature-cover 浅teal渐变
  * Sc2: AAMI 分类卡提取样式
@@ -12,15 +7,15 @@
 /* Sc1(已移除 2026-08-10): feature-cover 单卡被精选轮播 feature-slide-cover 替代 */
 
 /* ===== Sc2: AAMI 分类卡提取样式 ===== */
-.category-card {
+.page-science .category-card {
   margin-bottom: 10px;
 }
-.category-card:active {
+.page-science .category-card:active {
   opacity: 0.7;
 }
 
 /* 分类卡头部 */
-.category-header {
+.page-science .category-header {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -28,7 +23,7 @@
 }
 
 /* 分类图标容器 — 带投影增强 */
-.category-icon-wrap {
+.page-science .category-icon-wrap {
   width: 40px;
   height: 40px;
   border-radius: 10px;
@@ -42,34 +37,34 @@
 }
 
 /* Sc3: 分类图标背景色 — 渐变增强 */
-.category-icon-emerald {
+.page-science .category-icon-emerald {
   background: linear-gradient(135deg, var(--emerald), #34D399);
   box-shadow: 0 2px 8px rgba(16,185,129,0.2);
 }
-.category-icon-amber {
+.page-science .category-icon-amber {
   background: linear-gradient(135deg, var(--amber), #FBBF24);
   box-shadow: 0 2px 8px rgba(180,83,9,0.2);
 }
-.category-icon-rose {
+.page-science .category-icon-rose {
   background: linear-gradient(135deg, var(--rose), #FB7185);
   box-shadow: 0 2px 8px rgba(225,29,72,0.2);
 }
-.category-icon-coral {
+.page-science .category-icon-coral {
   background: linear-gradient(135deg, var(--coral), #FB923C);
   box-shadow: 0 2px 8px rgba(249,115,22,0.2);
 }
-.category-icon-slate {
+.page-science .category-icon-slate {
   background: linear-gradient(135deg, var(--t3), #94A3B8);
   box-shadow: 0 2px 8px rgba(120,144,156,0.2);
 }
 
 /* 分类名称容器 */
-.category-name-wrap { flex: 1; }
-.category-name { font-size: 15px; font-weight: 600; }
-.category-en-name { font-size: 12px; color: var(--t3); margin-top: 2px; }
+.page-science .category-name-wrap { flex: 1; }
+.page-science .category-name { font-size: 15px; font-weight: 600; }
+.page-science .category-en-name { font-size: 12px; color: var(--t3); margin-top: 2px; }
 
 /* Sc11: 分类卡波形背景 */
-.category-wave-bg {
+.page-science .category-wave-bg {
   height: 50px;
   border-radius: var(--r-sm);
   background: var(--inp);
@@ -77,7 +72,7 @@
 }
 /* 波形canvas — 显式尺寸避免百分比渲染问题 */
 /* position:relative + z-index:0 确保canvas在TabBar(z-index:9999)之下 */
-.category-wave-canvas {
+.page-science .category-wave-canvas {
   width: 100%;
   height: 50px;
   display: block;
@@ -86,7 +81,7 @@
 }
 
 /* 分类描述文字 */
-.category-desc {
+.page-science .category-desc {
   font-size: 12px;
   color: var(--t2);
   margin-top: 8px;
@@ -94,33 +89,33 @@
 }
 
 /* ===== 健康提示多条文本间距 ===== */
-.health-tip .health-tip-text + .health-tip-text {
+.page-science .health-tip .health-tip-text + .health-tip-text {
   margin-top: 6px;
 }
 
 /* ===== 分类色卡速查条 (2026-08-10): 五类颜色+缩写+名称 ===== */
-.legend-strip-card {
+.page-science .legend-strip-card {
   display: flex;
   padding: 14px var(--cp);
 }
-.legend-strip {
+.page-science .legend-strip {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 5px;
 }
-.legend-strip-dot {
+.page-science .legend-strip-dot {
   width: 18px;
   height: 18px;
   border-radius: 6px;
 }
-.legend-strip-abbr {
+.page-science .legend-strip-abbr {
   font-size: 10px;
   font-weight: 700;
   color: var(--t3);
 }
-.legend-strip-name {
+.page-science .legend-strip-name {
   font-size: var(--fs-tag);
   color: var(--t2);
   text-align: center;
@@ -128,17 +123,17 @@
 }
 
 /* ===== 文章封面文字增强 — 文字阴影提升可读性 ===== */
-.article-cover {
+.page-science .article-cover {
   text-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 /* ===== 搜索栏增强 ===== */
-.search-bar {
+.page-science .search-bar {
   position: relative;
 }
 
 /* 搜索清空按钮 */
-.search-clear {
+.page-science .search-clear {
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -151,50 +146,50 @@
   flex-shrink: 0;
   margin-left: 4px;
 }
-.search-clear:active {
+.page-science .search-clear:active {
   opacity: 0.6;
 }
 
 /* ===== 芯片激活态增强 ===== */
-.chip.active {
+.page-science .chip.active {
   box-shadow: 0 2px 8px rgba(0,122,255,0.25);
 }
 
 /* ===== 交互反馈 ===== */
 .article-card:active,
-.chip:active {
+.page-science .chip:active {
   opacity: 0.6;
 }
 
 /* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
-.dark .chip.active { box-shadow: 0 2px 8px rgba(10,132,255,0.25); }
-.dark .category-icon-emerald { box-shadow: 0 2px 8px rgba(52,211,153,0.2); }
-.dark .category-icon-amber { box-shadow: 0 2px 8px rgba(251,191,36,0.2); }
-.dark .category-icon-rose { box-shadow: 0 2px 8px rgba(251,113,133,0.2); }
-.dark .category-icon-coral { box-shadow: 0 2px 8px rgba(251,146,60,0.2); }
-.dark .category-icon-slate { box-shadow: 0 2px 8px rgba(100,116,139,0.2); }
+.page-science .dark .chip.active { box-shadow: 0 2px 8px rgba(10,132,255,0.25); }
+.page-science .dark .category-icon-emerald { box-shadow: 0 2px 8px rgba(52,211,153,0.2); }
+.page-science .dark .category-icon-amber { box-shadow: 0 2px 8px rgba(251,191,36,0.2); }
+.page-science .dark .category-icon-rose { box-shadow: 0 2px 8px rgba(251,113,133,0.2); }
+.page-science .dark .category-icon-coral { box-shadow: 0 2px 8px rgba(251,146,60,0.2); }
+.page-science .dark .category-icon-slate { box-shadow: 0 2px 8px rgba(100,116,139,0.2); }
 
 /* ============================================================
  * 精选科普轮播 — 2026-08-10
  * 原生swiper + 自定义teal指示器, 深色画布+波形底纹+白字
  * ============================================================ */
-.feature-swiper-wrap {
+.page-science .feature-swiper-wrap {
   position: relative;
   margin-top: 16px;
 }
-.feature-swiper {
+.page-science .feature-swiper {
   height: 196px;
   border-radius: var(--r-lg);
   overflow: hidden;
   box-shadow: var(--shadow-md);
 }
-.feature-slide {
+.page-science .feature-slide {
   height: 100%;
   border-radius: var(--r-lg);
   overflow: hidden;
 }
 /* 轮播封面卡 — 真实医学图片(用 image 组件保证真机兼容) + 底部渐变遮罩确保文字可读性 */
-.feature-slide-cover {
+.page-science .feature-slide-cover {
   height: 100%;
   position: relative;
   overflow: hidden;
@@ -202,20 +197,20 @@
   flex-direction: column;
   justify-content: flex-end;
 }
-.feature-slide-bg {
+.page-science .feature-slide-bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
 /* 底部渐变遮罩: 从透明到深色, 确保白色文字可读 */
-.feature-slide-mask {
+.page-science .feature-slide-mask {
   position: absolute;
   inset: 0;
   background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%);
 }
 /* 微弱光晕装饰 */
-.feature-slide-cover::before {
+.page-science .feature-slide-cover::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -223,7 +218,7 @@
   background: radial-gradient(ellipse at 75% 25%, rgba(255,255,255,0.12) 0%, transparent 60%);
   z-index: 1;
 }
-.feature-slide-content {
+.page-science .feature-slide-content {
   position: relative;
   z-index: 2;
   padding: 22px 24px;
@@ -231,7 +226,7 @@
   flex-direction: column;
   justify-content: flex-end;
 }
-.feature-slide-tag {
+.page-science .feature-slide-tag {
   align-self: flex-start;
   font-size: var(--fs-tag);
   font-weight: 600;
@@ -242,7 +237,7 @@
   margin-bottom: 10px;
   backdrop-filter: blur(4px);
 }
-.feature-slide-title {
+.page-science .feature-slide-title {
   font-size: 23px;
   font-weight: 700;
   color: #fff;
@@ -250,7 +245,7 @@
   letter-spacing: -0.5px;
   max-width: 92%;
 }
-.feature-slide-desc {
+.page-science .feature-slide-desc {
   font-size: var(--fs-xs);
   color: rgba(255,255,255,0.78);
   margin-top: 8px;
@@ -260,14 +255,14 @@
   text-overflow: ellipsis;
   max-width: 92%;
 }
-.feature-slide-cta {
+.page-science .feature-slide-cta {
   margin-top: 12px;
   font-size: var(--fs-xs);
   font-weight: 600;
   color: #fff;
 }
 /* 指示器: 圆点→active变宽(pill), 呼应脉冲语言 */
-.feature-dots {
+.page-science .feature-dots {
   position: absolute;
   bottom: 12px;
   right: 16px;
@@ -275,15 +270,15 @@
   gap: 5px;
   z-index: 2;
 }
-.feature-dot {
+.page-science .feature-dot {
   width: 6px;
   height: 6px;
   border-radius: 100px;
   background: rgba(255,255,255,0.4);
   transition: width 0.25s var(--ease), background-color 0.25s var(--ease);
 }
-.feature-dot.active {
+.page-science .feature-dot.active {
   width: 18px;
   background: var(--teal);
 }
-.dark .feature-dot.active { background: #0A84FF; }
+.page-science .dark .feature-dot.active { background: #0A84FF; }

@@ -1,13 +1,9 @@
-/* info-detail.css — 心韵深辨 H5 子页 (同步自 subpackages/extra/info-detail/info-detail.wxss)
- * 变量: css/app.css --warm:#F5F5F7 --teal:#007AFF
- */
-
 /* info-detail.wxss — Warm Clinical
  * 信息详情页专属样式 — 视觉增强: Hero 渐变背景、图标投影
  */
 
 /* ===== 头部 Hero 区域 — 渐变背景 ===== */
-.info-hero {
+.page-info-detail .info-hero {
   margin-top: 20px;
   text-align: center;
   padding: 24px 20px;
@@ -15,7 +11,7 @@
   position: relative;
   overflow: hidden;
 }
-.info-hero::before {
+.page-info-detail .info-hero::before {
   content: '';
   position: absolute;
   top: -20px;
@@ -26,12 +22,12 @@
   background: radial-gradient(circle, rgba(0,122,255,0.05) 0%, transparent 70%);
   pointer-events: none;
 }
-.dark .info-hero::before {
+.page-info-detail .dark .info-hero::before {
   background: radial-gradient(circle, rgba(10,132,255,0.08) 0%, transparent 70%);
 }
 
 /* Hero 图标 — teal 渐变 + 投影 */
-.info-hero-icon {
+.page-info-detail .info-hero-icon {
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -49,7 +45,7 @@
 }
 
 /* Hero 标题 */
-.info-hero-title {
+.page-info-detail .info-hero-title {
   font-size: 20px;
   font-weight: 700;
   color: var(--t1);
@@ -58,14 +54,14 @@
 }
 
 /* ===== 分段内容间距 ===== */
-.info-section-text {
+.page-info-detail .info-section-text {
   font-size: var(--fs-sm);
   color: var(--t2);
   line-height: var(--lh);
 }
 
 /* 分割线 */
-.info-divider {
+.page-info-detail .info-divider {
   height: 1px;
   background: var(--border);
   margin: 20px 0;
@@ -76,7 +72,7 @@
  * ============================================================ */
 
 /* 阅读进度条: fixed定位在导航栏下方(页面视口顶), teal渐变细线 */
-.reading-progress {
+.page-info-detail .reading-progress {
   position: fixed;
   top: 0;
   left: 0;
@@ -88,14 +84,14 @@
 }
 
 /* 相关阅读: 横向滑动卡, 与示例卡统一语言 */
-.related-scroll {
+.page-info-detail .related-scroll {
   white-space: nowrap;
   margin-bottom: var(--cg);
 }
-.related-scroll::-webkit-scrollbar {
+.page-info-detail .related-scroll::-webkit-scrollbar {
   display: none;
 }
-.related-card {
+.page-info-detail .related-card {
   display: inline-flex;
   flex-direction: column;
   justify-content: space-between;
@@ -111,11 +107,11 @@
   white-space: normal;
   transition: transform 0.15s var(--ease), opacity 0.15s var(--ease);
 }
-.related-card:active {
+.page-info-detail .related-card:active {
   transform: scale(0.97);
   opacity: 0.88;
 }
-.related-title {
+.page-info-detail .related-title {
   font-size: var(--fs-sm);
   font-weight: 600;
   line-height: 1.5;
@@ -123,7 +119,7 @@
   word-break: break-all;
   overflow: visible;
 }
-.related-cta {
+.page-info-detail .related-cta {
   margin-top: 10px;
   font-size: var(--fs-xs);
   font-weight: 600;
@@ -131,4 +127,4 @@
 }
 
 /* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
-.dark .info-hero-icon { box-shadow: 0 3px 10px rgba(10,132,255,0.25); }
+.page-info-detail .dark .info-hero-icon { box-shadow: 0 3px 10px rgba(10,132,255,0.25); }

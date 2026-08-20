@@ -3,40 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
 <title>心韵深辨 · 智能心电检测</title>
 <meta name="description" content="基于心电信号的智能心律失常检测系统 — 本地AI推理，无需联网上传数据">
+
 <style>
-  /* ===== 全局基础 (小程序 page 选择器等价物已在 app.css :root/body) ===== */
-  html, body { height: 100%; }
+  /* ===== H5 壳层样式（导航栏/TabBar挂载点/UI组件） ===== */
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body { background: #F5F5F7; }
+  body.dark { background: #0B1120; }
 
-  #app {
-    min-height: 100vh;
-    background: var(--bg-primary);
+  /* 顶部导航栏 */
+  .nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    background: rgba(245, 245, 247, 0.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid rgba(60, 60, 67, 0.12);
+  }
+  body.dark .nav-bar {
+    background: rgba(11, 17, 32, 0.85);
+    border-bottom-color: rgba(84, 84, 88, 0.45);
+  }
+  .nav-bar-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1D1D1F;
+    letter-spacing: -0.2px;
+  }
+  body.dark .nav-bar-title { color: #F1F5F9; }
+  .nav-bar-back {
+    position: absolute;
+    left: 10px;
+    font-size: 15px;
+    color: #007AFF;
+    background: none;
+    border: none;
+    padding: 6px 8px;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  .nav-bar-back:active { opacity: 0.6; }
+
+  /* 页面挂载点 */
+  #page-root { min-height: calc(100vh - 44px); }
+
+  /* TabBar 挂载点 */
+  #tabbar-root {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 950;
   }
 
-  /* ===== 页面容器 (路由挂载点) ===== */
-  #page-root {
-    min-height: calc(100vh - 44px);
-  }
-
-  /* ===== H5 UI 组件样式 (替代 wx API) ===== */
-  /* Toast */
+  /* ===== UI 组件（toast/loading/modal/actionsheet） ===== */
   .ui-toast {
     position: fixed;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0.9);
     background: rgba(28, 28, 30, 0.88);
     color: #fff;
     border-radius: 12px;
     padding: 14px 22px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex; align-items: center; gap: 8px;
     font-size: 14px;
-    z-index: 9999;
+    z-index: 99999;
     opacity: 0;
     transition: opacity 0.25s ease, transform 0.25s ease;
     pointer-events: none;
@@ -46,205 +82,75 @@
   }
   .ui-toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
   .ui-toast-icon {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #34C759;
-    color: #fff;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-weight: 700;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #34C759; color: #fff;
+    font-size: 12px; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-weight: 700;
   }
-
-  /* Loading */
   .ui-loading {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
+    position: fixed; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
     background: rgba(0, 0, 0, 0.35);
-    z-index: 9998;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
+    z-index: 99998;
+    opacity: 0; transition: opacity 0.2s ease; pointer-events: none;
   }
   .ui-loading.show { opacity: 1; pointer-events: auto; }
   .ui-loading-spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    width: 36px; height: 36px;
+    border: 3px solid rgba(255,255,255,0.3);
     border-top-color: #fff;
     border-radius: 50%;
     animation: ui-spin 0.9s linear infinite;
   }
-  .ui-loading-text { color: #fff; font-size: 14px; letter-spacing: 0.5px; }
+  .ui-loading-text { color: #fff; font-size: 14px; }
   @keyframes ui-spin { to { transform: rotate(360deg); } }
-
-  /* Modal */
-  .ui-modal { position: fixed; inset: 0; z-index: 9997; }
-  .ui-modal-mask {
-    position: absolute; inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transition: opacity 0.25s ease;
-  }
+  .ui-modal { position: fixed; inset: 0; z-index: 99997; }
+  .ui-modal-mask { position: absolute; inset: 0; background: rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.25s ease; }
   .ui-modal.show .ui-modal-mask { opacity: 1; }
   .ui-modal-box {
-    position: absolute;
-    top: 50%; left: 50%;
+    position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -46%) scale(0.94);
     width: min(320px, 86vw);
-    background: var(--bg-secondary);
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: var(--shadow-modal);
-    opacity: 0;
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+    background: #fff; border-radius: 14px; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    opacity: 0; transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
   }
+  body.dark .ui-modal-box { background: #1E293B; }
   .ui-modal.show .ui-modal-box { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  .ui-modal-title {
-    padding: 18px 16px 0;
-    font-size: 17px;
-    font-weight: 600;
-    text-align: center;
-    color: var(--label-primary);
-  }
-  .ui-modal-content {
-    padding: 10px 20px 18px;
-    font-size: 14px;
-    color: var(--label-secondary);
-    text-align: center;
-    line-height: 1.6;
-  }
-  .ui-modal-actions {
-    display: flex;
-    border-top: 0.5px solid var(--separator);
-  }
-  .ui-modal-btn {
-    flex: 1;
-    padding: 12px 0;
-    background: none;
-    border: none;
-    font-size: 17px;
-    font-weight: 400;
-    cursor: pointer;
-    color: var(--accent-blue);
-  }
-  .ui-modal-btn + .ui-modal-btn { border-left: 0.5px solid var(--separator); }
+  .ui-modal-title { padding: 18px 16px 0; font-size: 17px; font-weight: 600; text-align: center; color: #1D1D1F; }
+  body.dark .ui-modal-title { color: #F1F5F9; }
+  .ui-modal-content { padding: 10px 20px 18px; font-size: 14px; color: #6E6E73; text-align: center; line-height: 1.6; }
+  body.dark .ui-modal-content { color: #94A3B8; }
+  .ui-modal-actions { display: flex; border-top: 0.5px solid rgba(60,60,67,0.12); }
+  .ui-modal-btn { flex: 1; padding: 12px 0; background: none; border: none; font-size: 17px; cursor: pointer; color: #007AFF; }
+  .ui-modal-btn + .ui-modal-btn { border-left: 0.5px solid rgba(60,60,67,0.12); }
   .ui-modal-btn:active { opacity: 0.6; }
-
-  /* ActionSheet */
-  .ui-sheet { position: fixed; inset: 0; z-index: 9996; }
-  .ui-sheet-mask {
-    position: absolute; inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transition: opacity 0.25s ease;
-  }
+  .ui-sheet { position: fixed; inset: 0; z-index: 99996; }
+  .ui-sheet-mask { position: absolute; inset: 0; background: rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.25s ease; }
   .ui-sheet.show .ui-sheet-mask { opacity: 1; }
-  .ui-sheet-panel {
-    position: absolute;
-    left: 8px; right: 8px; bottom: 8px;
-    transform: translateY(105%);
-    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-  }
+  .ui-sheet-panel { position: absolute; left: 8px; right: 8px; bottom: 8px; transform: translateY(105%); transition: transform 0.3s cubic-bezier(0.32,0.72,0,1); }
   .ui-sheet.show .ui-sheet-panel { transform: translateY(0); }
-  .ui-sheet-list {
-    background: var(--bg-secondary);
-    border-radius: 14px;
-    overflow: hidden;
-  }
-  .ui-sheet-item {
-    display: block;
-    width: 100%;
-    padding: 15px 0;
-    background: none;
-    border: none;
-    font-size: 17px;
-    color: var(--accent-blue);
-    cursor: pointer;
-    border-bottom: 0.5px solid var(--separator);
-  }
+  .ui-sheet-list { background: #fff; border-radius: 14px; overflow: hidden; }
+  body.dark .ui-sheet-list { background: #1E293B; }
+  .ui-sheet-item { display: block; width: 100%; padding: 15px 0; background: none; border: none; font-size: 17px; color: #007AFF; cursor: pointer; border-bottom: 0.5px solid rgba(60,60,67,0.12); }
   .ui-sheet-item:last-child { border-bottom: none; }
-  .ui-sheet-item:active { opacity: 0.6; }
-  .ui-sheet-cancel {
-    display: block;
-    width: 100%;
-    margin-top: 8px;
-    padding: 15px 0;
-    background: var(--bg-secondary);
-    border: none;
-    border-radius: 14px;
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--label-primary);
-    cursor: pointer;
-  }
-  .ui-sheet-cancel:active { opacity: 0.6; }
-
-  /* ===== 顶部导航栏 ===== */
-  .nav-bar {
-    position: sticky;
-    top: 0;
-    z-index: 900;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 44px;
-    padding: 0 12px;
-    background: var(--nav-bg);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border-bottom: 0.5px solid var(--separator);
-    transition: background-color 0.25s ease;
-  }
-  .nav-bar-title {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--label-primary);
-    letter-spacing: -0.2px;
-  }
-  .nav-bar-back {
-    position: absolute;
-    left: 10px;
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 15px;
-    color: var(--accent-blue);
-    background: none;
-    border: none;
-    padding: 6px 8px;
-    cursor: pointer;
-    border-radius: 8px;
-  }
-  .nav-bar-back:active { opacity: 0.6; }
-
-  /* ===== 底部 TabBar 挂载点 ===== */
-  #tabbar-root {
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    z-index: 950;
-  }
+  .ui-sheet-cancel { display: block; width: 100%; margin-top: 8px; padding: 15px 0; background: #fff; border: none; border-radius: 14px; font-size: 17px; font-weight: 600; color: #1D1D1F; cursor: pointer; }
+  body.dark .ui-sheet-cancel { background: #1E293B; color: #F1F5F9; }
 </style>
-<link rel="stylesheet" href="css/app.css?v=2"?v=2>
-<link rel="stylesheet" href="css/tabbar.css?v=2"?v=2>
-<link rel="stylesheet" href="css/profile-sheet.css?v=2"?v=2>
-<link rel="stylesheet" href="css/pages/detect.css?v=2"?v=2>
-<link rel="stylesheet" href="css/pages/history.css?v=2"?v=2>
-<link rel="stylesheet" href="css/pages/science.css?v=2"?v=2>
-<link rel="stylesheet" href="css/pages/team.css?v=2"?v=2>
-<link rel="stylesheet" href="css/pages/mine.css?v=2"?v=2>
-<link rel="stylesheet" href="css/pages/category-detail.css?v=2"?v=2>
-<link rel="stylesheet" href="css/pages/member-detail.css?v=2"?v=2>
-<link rel="stylesheet" href="css/pages/info-detail.css?v=2"?v=2>
-<link rel="stylesheet" href="css/pages/analysis.css?v=2"?v=2>
+
+<link rel="stylesheet" href="css/app.css?v=3">
+<link rel="stylesheet" href="css/tabbar.css?v=3">
+<link rel="stylesheet" href="css/profile-sheet.css?v=3">
+<link rel="stylesheet" href="css/pages/detect.css?v=3">
+<link rel="stylesheet" href="css/pages/history.css?v=3">
+<link rel="stylesheet" href="css/pages/science.css?v=3">
+<link rel="stylesheet" href="css/pages/team.css?v=3">
+<link rel="stylesheet" href="css/pages/mine.css?v=3">
+<link rel="stylesheet" href="css/pages/analysis.css?v=3">
+<link rel="stylesheet" href="css/pages/category-detail.css?v=3">
+<link rel="stylesheet" href="css/pages/info-detail.css?v=3">
+<link rel="stylesheet" href="css/pages/member-detail.css?v=3">
+<link rel="stylesheet" href="css/pages/settings.css?v=3">
 </head>
 <body>
 <!-- 顶部导航栏 -->
@@ -259,21 +165,46 @@
 <!-- TabBar 挂载点 -->
 <div id="tabbar-root"></div>
 
-<!-- TF.js (本地 vendor, 离线可用) -->
+<!-- TF.js（本地 vendor） -->
 <script src="vendor/tf-core.min.js"></script>
 <script src="vendor/tf-backend-cpu.min.js"></script>
 
-<!-- 应用入口 -->
-<script type="module">
-  import { initTheme, initTF } from './js/app.js'
-  import { initRouter } from './js/router.js'
+<!-- shim 层 -->
+<script src="shim/module.js"></script>
+<script src="shim/ui.js"></script>
+<script src="shim/wx.js"></script>
+<script src="shim/template.js"></script>
+<script src="shim/runtime.js"></script>
+<script src="shim/router.js"></script>
+<script src="shim/tabbar.js"></script>
+<script src="shim/templates.js"></script>
 
-  // 启动: 主题 → TF.js(不阻塞) → 路由
-  initTheme()
-  initTF().catch(function(e) {
-    console.error('TF.js初始化异常(不阻塞启动):', e)
-  })
-  initRouter()
-</script>
+<!-- 业务模块（wrapped） -->
+<script src="app.wrapped.js"></script>
+<script src="utils/spikeEncoder.wrapped.js"></script>
+<script src="utils/ecgSamples.wrapped.js"></script>
+<script src="utils/demoSamples.wrapped.js"></script>
+<script src="utils/fileParser.wrapped.js"></script>
+<script src="utils/animateValue.wrapped.js"></script>
+<script src="utils/ecgModel.wrapped.js"></script>
+<script src="subpages/utils/chartHelper.wrapped.js"></script>
+<script src="utils/exportHelper.wrapped.js"></script>
+<script src="utils/waveAnimator.wrapped.js"></script>
+<script src="components/profile-sheet.wrapped.js"></script>
+
+<!-- 页面模块（wrapped） -->
+<script src="pages/detect/detect.wrapped.js"></script>
+<script src="pages/history/history.wrapped.js"></script>
+<script src="pages/science/science.wrapped.js"></script>
+<script src="pages/team/team.wrapped.js"></script>
+<script src="pages/mine/mine.wrapped.js"></script>
+<script src="subpages/analysis/analysis.wrapped.js"></script>
+<script src="subpages/category-detail/category-detail.wrapped.js"></script>
+<script src="subpages/info-detail/info-detail.wrapped.js"></script>
+<script src="subpages/member-detail/member-detail.wrapped.js"></script>
+<script src="subpages/settings/settings.wrapped.js"></script>
+
+<!-- 启动器 -->
+<script src="shim/boot.js"></script>
 </body>
 </html>

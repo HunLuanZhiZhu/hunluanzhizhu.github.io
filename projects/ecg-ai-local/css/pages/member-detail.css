@@ -1,26 +1,22 @@
-/* member-detail.css — 心韵深辨 H5 子页 (同步自 subpackages/extra/member-detail/member-detail.wxss)
- * 变量: css/app.css --warm:#F5F5F7 --teal:#007AFF
- */
-
 /* member-detail.wxss — Warm Clinical
  * 成员详情页专属样式 — 从 wxml 内联样式提取
  * 视觉增强: 头像渐变、Hero 区域光晕、成就标签增强
  */
 
 /* ===== 统一头像尺寸（跨页面统一）===== */
-.avatar-sm { width: 44px; height: 44px; }
-.avatar-md { width: 56px; height: 56px; }
-.avatar-lg { width: 64px; height: 64px; }
+.page-member-detail .avatar-sm { width: 44px; height: 44px; }
+.page-member-detail .avatar-md { width: 56px; height: 56px; }
+.page-member-detail .avatar-lg { width: 64px; height: 64px; }
 
 /* ===== 成员头像品牌色背景（与 team.wxss 一致 — 渐变+投影）===== */
-.member-avatar-indigo {
+.page-member-detail .member-avatar-indigo {
   background: linear-gradient(135deg, var(--indigo), #6366F1);
   color: #fff;
   font-weight: 600;
   box-shadow: 0 3px 10px rgba(79,70,229,0.25);
 }
 
-.member-avatar-teal {
+.page-member-detail .member-avatar-teal {
   background: linear-gradient(135deg, var(--teal), #5AC8FA);
   color: #fff;
   font-weight: 600;
@@ -28,7 +24,7 @@
 }
 
 /* ===== 负责人角色标签（与 team.wxss 一致）===== */
-.role-leader {
+.page-member-detail .role-leader {
   background: var(--teal-dim);
   color: var(--teal);
 }
@@ -36,8 +32,8 @@
 /* ===== 成员头部 Hero 区域 — 渐变背景增强 ===== */
 /* 修复深色模式白色条带: hero 的 margin-top 会穿透 container(外边距折叠),
  * 露出 page 元素背景。改用 container padding-top 占位, 保证间距区域是容器深色背景 */
-.container { padding-top: 20px; }
-.member-hero {
+.page-member-detail .container { padding-top: 20px; }
+.page-member-detail .member-hero {
   margin-top: 0;
   text-align: center;
   padding: 32px 20px;
@@ -46,7 +42,7 @@
   overflow: hidden;
 }
 /* Hero 装饰光晕 */
-.member-hero::before {
+.page-member-detail .member-hero::before {
   content: '';
   position: absolute;
   top: -30px;
@@ -57,12 +53,12 @@
   background: radial-gradient(circle, rgba(0,122,255,0.06) 0%, transparent 70%);
   pointer-events: none;
 }
-.dark .member-hero::before {
+.page-member-detail .dark .member-hero::before {
   background: radial-gradient(circle, rgba(10,132,255,0.10) 0%, transparent 70%);
 }
 
 /* Hero 头像 — 大尺寸圆形居中(文字版已废弃, 保留兼容) */
-.member-hero-avatar {
+.page-member-detail .member-hero-avatar {
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -73,7 +69,7 @@
   z-index: 1;
 }
 /* Hero 照片头像 — 圆形照片, 与文字头像同尺寸 */
-.member-hero-avatar-img {
+.page-member-detail .member-hero-avatar-img {
   width: 72px;
   height: 72px;
   border-radius: 50%;
@@ -83,10 +79,10 @@
   z-index: 1;
   box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
-.dark .member-hero-avatar-img { box-shadow: 0 4px 16px rgba(0,0,0,0.30); }
+.page-member-detail .dark .member-hero-avatar-img { box-shadow: 0 4px 16px rgba(0,0,0,0.30); }
 
 /* Hero 姓名 */
-.member-hero-name {
+.page-member-detail .member-hero-name {
   font-size: 22px;
   font-weight: 700;
   color: var(--t1);
@@ -95,7 +91,7 @@
 }
 
 /* Hero 角色标签 */
-.member-hero-role {
+.page-member-detail .member-hero-role {
   display: inline-block;
   padding: 3px 12px;
   border-radius: 100px;
@@ -109,20 +105,20 @@
 }
 
 /* 覆盖 role-leader 的背景色（Hero 中居中显示）*/
-.member-hero .role-leader {
+.page-member-detail .member-hero .role-leader {
   background: var(--teal-dim);
   color: var(--teal);
 }
 
 /* ===== 研究成果 — 独立中性色标签 ===== */
-.achievement-tags {
+.page-member-detail .achievement-tags {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
 }
 
 /* 成就标签 — 中性色背景 + 次要文字色 */
-.achievement-tag {
+.page-member-detail .achievement-tag {
   font-size: var(--fs-tag);
   padding: 4px 12px;
   border-radius: 100px;
@@ -132,5 +128,5 @@
 }
 
 /* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
-.dark .member-avatar-teal { box-shadow: 0 3px 10px rgba(10,132,255,0.25); }
-.dark .member-avatar-indigo { box-shadow: 0 3px 10px rgba(129,140,248,0.25); }
+.page-member-detail .dark .member-avatar-teal { box-shadow: 0 3px 10px rgba(10,132,255,0.25); }
+.page-member-detail .dark .member-avatar-indigo { box-shadow: 0 3px 10px rgba(129,140,248,0.25); }

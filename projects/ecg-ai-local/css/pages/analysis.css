@@ -1,32 +1,28 @@
-/* analysis.css — 心韵深辨 H5 子页 (同步自 subpackages/extra/analysis/analysis.wxss)
- * 变量: css/app.css --warm:#F5F5F7 --teal:#007AFF
- */
-
 /* analysis.wxss — Warm Clinical
  * 分析页专属样式 — 视觉增强: 比例条、图表卡片、风险卡装饰
  */
 
 /* A4: canvas 尺寸 — 响应式 */
-.donut-canvas {
+.page-analysis .donut-canvas {
   width: 100%;
   height: 200px;
   display: block;
   margin: 0 auto;
 }
 
-.bar-canvas {
+.page-analysis .bar-canvas {
   width: 100%;
   height: 200px;
   display: block;
 }
 
 /* A8: sec 之间增加间距 */
-.sec-spacer {
+.page-analysis .sec-spacer {
   margin-top: 36px;
 }
 
 /* A2: 正常/异常比例条 — 渐变增强 */
-.ratio-bar {
+.page-analysis .ratio-bar {
   display: flex;
   height: 10px;
   border-radius: 5px;
@@ -34,51 +30,51 @@
   background: var(--inp);
   margin-bottom: 8px;
 }
-.ratio-bar-normal {
+.page-analysis .ratio-bar-normal {
   height: 100%;
   background: linear-gradient(90deg, var(--green), #34D399);
 }
-.ratio-bar-abnormal {
+.page-analysis .ratio-bar-abnormal {
   height: 100%;
   background: linear-gradient(90deg, var(--red), #FB7185);
 }
 
 /* ===== 图表卡片增强 — 内边距统一 ===== */
-.card canvas {
+.page-analysis .card canvas {
   border-radius: var(--r-sm);
 }
 
 /* ===== 风险卡左侧装饰条 ===== */
-.risk-card-green, .risk-card-low {
+.page-analysis .risk-card-green, .page-analysis .risk-card-low {
   border-left: 3px solid var(--green);
 }
-.risk-card-orange, .risk-card-mid {
+.page-analysis .risk-card-orange, .page-analysis .risk-card-mid {
   border-left: 3px solid var(--amber);
 }
-.risk-card-red, .risk-card-high {
+.page-analysis .risk-card-red, .page-analysis .risk-card-high {
   border-left: 3px solid var(--red);
 }
 
 /* ===== 风险图标增强 — 渐变背景 ===== */
-.risk-icon-green, .risk-icon-low {
+.page-analysis .risk-icon-green, .page-analysis .risk-icon-low {
   background: linear-gradient(135deg, var(--green), #34D399);
   box-shadow: 0 2px 8px rgba(16,185,129,0.2);
 }
-.risk-icon-orange, .risk-icon-mid {
+.page-analysis .risk-icon-orange, .page-analysis .risk-icon-mid {
   background: linear-gradient(135deg, var(--amber), #FBBF24);
   box-shadow: 0 2px 8px rgba(180,83,9,0.2);
 }
-.risk-icon-red, .risk-icon-high {
+.page-analysis .risk-icon-red, .page-analysis .risk-icon-high {
   background: linear-gradient(135deg, var(--red), #FB7185);
   box-shadow: 0 2px 8px rgba(225,29,72,0.2);
 }
 
 /* ===== 比例标签增强 ===== */
-.ratio-labels {
+.page-analysis .ratio-labels {
   font-weight: 600;
 }
 
 /* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
-.dark .risk-icon-green, .dark .risk-icon-low { box-shadow: 0 2px 8px rgba(52,211,153,0.2); }
-.dark .risk-icon-orange, .dark .risk-icon-mid { box-shadow: 0 2px 8px rgba(251,191,36,0.2); }
-.dark .risk-icon-red, .dark .risk-icon-high { box-shadow: 0 2px 8px rgba(251,113,133,0.2); }
+.page-analysis .dark .risk-icon-green, .page-analysis .dark .risk-icon-low { box-shadow: 0 2px 8px rgba(52,211,153,0.2); }
+.page-analysis .dark .risk-icon-orange, .page-analysis .dark .risk-icon-mid { box-shadow: 0 2px 8px rgba(251,191,36,0.2); }
+.page-analysis .dark .risk-icon-red, .page-analysis .dark .risk-icon-high { box-shadow: 0 2px 8px rgba(251,113,133,0.2); }

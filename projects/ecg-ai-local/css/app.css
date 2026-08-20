@@ -1,17 +1,10 @@
-/* css/app.css — 心韵深辨 H5 全局样式
- * 来源: app.wxss (Apple Clinical 高级中性底 + Apple 蓝)
- * 映射: page -> :root,html,body,#app ; page.dark -> html[data-theme="dark"],body.dark,.dark
- * 变量: --warm:#F5F5F7  --teal:#007AFF  深色 --warm:#0B1120 --teal:#0A84FF
- * 同步时间: 2026-08-21  备份: aidocs/backup-warm-teal-20260821/
- */
-
 /* app.wxss — 心韵深辨
  * 重构(2026-08-21): Apple Clinical 高级中性底 + Apple 蓝主色
  * 备份至 aidocs/backup-warm-teal-20260821/，可一键回滚牛皮纸绿调
  * 核心: 中性留白, 克制点缀, 层级分明
  */
 
-:root, html, body, #app {
+page {
   /* ===== 基础色系 ===== */
   --warm: #F5F5F7;
   --card: #FFFFFF;
@@ -83,7 +76,7 @@
   -webkit-font-smoothing: antialiased;
 }
 
-:root.dark, html[data-theme="dark"], body.dark, .dark {
+page.dark,.dark {
   /* 修复深色模式文字不可见: color属性继承的是"计算值",
    * page上 color: var(--t1) 已解析为浅色模式的近黑色 #1E293B,
    * .dark容器内所有无显式color的后代(.metric-val/.stat-hero-val/.big-stat-num等大数字类)
@@ -969,15 +962,6 @@
 .dark .disclaimer-icon { box-shadow: 0 2px 8px rgba(251,191,36,0.2); }
 
 /* ===== FAB 悬浮按钮阴影(使用全局shadow变量, 已适配) =====
- * .fab 的 box-shadow 引用 var(--shadow-lg), 深色模式下由 html[data-theme="dark"], body.dark 变量覆盖自动加深,
+ * .fab 的 box-shadow 引用 var(--shadow-lg), 深色模式下由 page.dark 变量覆盖自动加深,
  * 无需额外的 .dark 覆盖规则。此注释仅作说明占位。 */
 
-
-/* ===== H5 专属补充 (不覆盖小程序全局) ===== */
-/* #app 容器由 index.html 提供 */
-#app { min-height: 100vh; background: var(--warm); }
-/* 隐藏文件输入 */
-.hidden-file-input { display:none; }
-/* H5 顶栏由 index.html 内联样式承载，此处仅做变量兜底 */
-.nav-bar { background: rgba(255,255,255,0.94); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); }
-body.dark .nav-bar, .dark .nav-bar { background: rgba(28,28,30,0.94); }

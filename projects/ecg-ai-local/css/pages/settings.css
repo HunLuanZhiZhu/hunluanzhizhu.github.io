@@ -1,0 +1,95 @@
+/* settings.wxss — 设置页面特有样式
+ * S9: 提取页面特有样式
+ * 视觉增强: 技术架构行交替背景、开关投影、列表图标增强
+ */
+
+/* ===== switch-row 中的图标适配 ===== */
+.page-settings .switch-row .list-icon {
+  margin-right: 0;
+}
+
+/* ===== 技术架构行深色模式适配 ===== */
+.page-settings .dark .tech-label {
+  color: var(--t2);
+}
+.page-settings .dark .tech-value {
+  color: var(--t1);
+}
+
+/* ===== 存储使用项的值高亮 ===== */
+.page-settings .list-row .list-meta-val {
+  color: var(--teal);
+}
+
+/* ===== 技术架构行增强 — 交替背景 ===== */
+.page-settings .tech-row:nth-child(odd) {
+  background: var(--inp);
+}
+.page-settings .tech-row:nth-child(even) {
+  background: transparent;
+}
+
+/* ===== 存储用量进度条 (2026-08-10) ===== */
+.page-settings .storage-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--inp);
+  overflow: hidden;
+  margin-top: 8px;
+}
+.page-settings .storage-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--teal), #5AC8FA);
+  transition: width 0.5s var(--ease);
+}
+.page-settings .tech-row {
+  border-radius: 0;
+}
+.page-settings .tech-row:first-child {
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+}
+.page-settings .tech-row:last-child {
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+}
+.page-settings .tech-row:only-child {
+  border-radius: var(--r-lg);
+}
+
+/* ===== 开关增强 — 投影与过渡 ===== */
+.page-settings .switch-track {
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+}
+.page-settings .switch-track.on {
+  box-shadow: 0 2px 8px rgba(0,122,255,0.25);
+}
+.page-settings .switch-thumb {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* ===== 列表图标增强 — 各色投影 ===== */
+.page-settings .list-icon-teal {
+  box-shadow: 0 2px 8px rgba(0,122,255,0.2);
+}
+.page-settings .list-icon-rose {
+  box-shadow: 0 2px 8px rgba(225,29,72,0.2);
+}
+.page-settings .list-icon-indigo {
+  box-shadow: 0 2px 8px rgba(79,70,229,0.2);
+}
+.page-settings .list-icon-coral {
+  box-shadow: 0 2px 8px rgba(249,115,22,0.2);
+}
+.page-settings .list-icon-slate {
+  box-shadow: 0 2px 8px rgba(120,144,156,0.15);
+}
+
+/* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
+.page-settings .dark .switch-track.on { box-shadow: 0 2px 8px rgba(10,132,255,0.25); }
+.page-settings .dark .switch-thumb { box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+.page-settings .dark .list-icon-teal { box-shadow: 0 2px 8px rgba(10,132,255,0.2); }
+.page-settings .dark .list-icon-rose { box-shadow: 0 2px 8px rgba(251,113,133,0.2); }
+.page-settings .dark .list-icon-indigo { box-shadow: 0 2px 8px rgba(129,140,248,0.2); }
+.page-settings .dark .list-icon-coral { box-shadow: 0 2px 8px rgba(251,146,60,0.2); }
+.page-settings .dark .list-icon-slate { box-shadow: 0 2px 8px rgba(100,116,139,0.15); }
+.page-settings .dark .storage-bar-fill { background: linear-gradient(90deg, var(--teal), #0A84FF); }

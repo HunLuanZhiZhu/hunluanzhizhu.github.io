@@ -1,8 +1,3 @@
-/* mine.css — 心韵深辨 H5 (同步自 mine.wxss)
- * 变量: css/app.css 提供的 --warm:#F5F5F7 --teal:#007AFF / 深色 --warm:#0B1120 --teal:#0A84FF
- * 注意: H5 中 scroll-view → div[data-scroll], canvas type=2d → canvas, 其余原样
- */
-
 /* mine.wxss — 我的页面特有样式
  * M8: 趋势率动态颜色类
  * M11: 评分卡深色模式适配
@@ -10,31 +5,31 @@
  */
 
 /* ===== M8: 趋势率动态颜色类 ===== */
-.trend-rate.trend-rate-emerald { color: var(--emerald); }
-.trend-rate.trend-rate-amber { color: var(--amber); }
-.trend-rate.trend-rate-rose { color: var(--rose); }
+.page-mine .trend-rate.trend-rate-emerald { color: var(--emerald); }
+.page-mine .trend-rate.trend-rate-amber { color: var(--amber); }
+.page-mine .trend-rate.trend-rate-rose { color: var(--rose); }
 
 /* ===== M11: 评分卡深色模式适配 ===== */
-.dark .score-card {
+.page-mine .dark .score-card {
   background: var(--card);
 }
-.dark .score-ring::before {
+.page-mine .dark .score-ring::before {
   background: var(--card);
 }
 
 /* ===== 评分标签深色模式适配 ===== */
-.dark .score-ring-lbl {
+.page-mine .dark .score-ring-lbl {
   color: var(--t3);
 }
 
 /* ===== 评分卡渐变背景增强 ===== */
-.score-card {
+.page-mine .score-card {
   background: linear-gradient(135deg, var(--card) 0%, var(--teal-dim) 100%);
   position: relative;
   overflow: hidden;
 }
 /* 装饰性光晕 */
-.score-card::before {
+.page-mine .score-card::before {
   content: '';
   position: absolute;
   top: -20px;
@@ -45,113 +40,113 @@
   background: radial-gradient(circle, rgba(0,122,255,0.05) 0%, transparent 70%);
   pointer-events: none;
 }
-.dark .score-card::before {
+.page-mine .dark .score-card::before {
   background: radial-gradient(circle, rgba(10,132,255,0.08) 0%, transparent 70%);
 }
 
 /* ===== 统计行增强 — 分隔线渐变 ===== */
-.stat-div {
+.page-mine .stat-div {
   background: linear-gradient(180deg, transparent, var(--border), transparent);
 }
 
 /* ===== 健康档案图标增强 — 立体投影 ===== */
-.list-icon-teal {
+.page-mine .list-icon-teal {
   box-shadow: 0 2px 8px rgba(0,122,255,0.2);
 }
-.list-icon-emerald {
+.page-mine .list-icon-emerald {
   box-shadow: 0 2px 8px rgba(16,185,129,0.2);
 }
-.list-icon-amber {
+.page-mine .list-icon-amber {
   box-shadow: 0 2px 8px rgba(180,83,9,0.2);
 }
 
 /* ===== 趋势卡柱状增强 — 更圆润顶部 ===== */
-.trend-bar {
+.page-mine .trend-bar {
   border-radius: 6px 6px 3px 3px;
 }
 
 /* ===== 档案完整度卡 — 渐变背景+完成态变色 (2026-08-10) ===== */
-.profile-complete-card {
+.page-mine .profile-complete-card {
   background: linear-gradient(135deg, var(--card) 0%, var(--teal-dim) 100%);
 }
-.profile-complete-head {
+.page-mine .profile-complete-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   margin-bottom: 10px;
 }
-.profile-complete-title { font-size: var(--fs-sm); font-weight: 600; }
-.profile-complete-val {
+.page-mine .profile-complete-title { font-size: var(--fs-sm); font-weight: 600; }
+.page-mine .profile-complete-val {
   font-size: var(--fs-md);
   font-weight: 700;
   color: var(--teal);
 }
-.profile-complete-val.done { color: var(--green); }
-.profile-complete-hint { font-size: var(--fs-xxs); color: var(--t3); margin-top: 8px; }
-.profile-complete-card .progress-bar { height: 6px; }
-.profile-complete-card .progress-fill {
+.page-mine .profile-complete-val.done { color: var(--green); }
+.page-mine .profile-complete-hint { font-size: var(--fs-xxs); color: var(--t3); margin-top: 8px; }
+.page-mine .profile-complete-card .progress-bar { height: 6px; }
+.page-mine .profile-complete-card .progress-fill {
   transition: width 0.6s var(--ease);
   background: linear-gradient(90deg, var(--teal), #5AC8FA);
 }
-.profile-complete-card .progress-fill.profile-fill-done {
+.page-mine .profile-complete-card .progress-fill.profile-fill-done {
   background: linear-gradient(90deg, var(--green), #34D399);
 }
 
 /* ===== 心律分类分布 (cat-dist) ===== */
-.cat-dist {
+.page-mine .cat-dist {
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin-top: 4px;
 }
-.cat-dist-row {
+.page-mine .cat-dist-row {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.cat-dist-label {
+.page-mine .cat-dist-label {
   display: flex;
   align-items: center;
   gap: 6px;
   width: 120px;
   flex-shrink: 0;
 }
-.cat-dist-dot {
+.page-mine .cat-dist-dot {
   width: 10px;
   height: 10px;
   border-radius: 3px;
   flex-shrink: 0;
 }
-.cat-dist-dot.cat-dot-N { background: var(--emerald); }
-.cat-dist-dot.cat-dot-S { background: var(--amber); }
-.cat-dist-dot.cat-dot-V { background: var(--rose); }
-.cat-dist-dot.cat-dot-F { background: var(--coral); }
-.cat-dist-dot.cat-dot-Q { background: var(--t3); }
-.cat-dist-name {
+.page-mine .cat-dist-dot.cat-dot-N { background: var(--emerald); }
+.page-mine .cat-dist-dot.cat-dot-S { background: var(--amber); }
+.page-mine .cat-dist-dot.cat-dot-V { background: var(--rose); }
+.page-mine .cat-dist-dot.cat-dot-F { background: var(--coral); }
+.page-mine .cat-dist-dot.cat-dot-Q { background: var(--t3); }
+.page-mine .cat-dist-name {
   font-size: var(--fs-xs);
   color: var(--t2);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.cat-dist-bar-wrap {
+.page-mine .cat-dist-bar-wrap {
   flex: 1;
   height: 8px;
   background: var(--inp);
   border-radius: 100px;
   overflow: hidden;
 }
-.cat-dist-bar {
+.page-mine .cat-dist-bar {
   height: 100%;
   border-radius: 100px;
   transition: width 0.6s var(--ease);
 }
-.cat-bar-emerald { background: linear-gradient(90deg, var(--emerald), #34D399); }
-.cat-bar-amber { background: linear-gradient(90deg, var(--amber), #FBBF24); }
-.cat-bar-rose { background: linear-gradient(90deg, var(--rose), #FB7185); }
-.cat-bar-coral { background: linear-gradient(90deg, var(--coral), #FB923C); }
-.cat-bar-slate { background: linear-gradient(90deg, var(--t3), #94A3B8); }
-.cat-dist-count {
+.page-mine .cat-bar-emerald { background: linear-gradient(90deg, var(--emerald), #34D399); }
+.page-mine .cat-bar-amber { background: linear-gradient(90deg, var(--amber), #FBBF24); }
+.page-mine .cat-bar-rose { background: linear-gradient(90deg, var(--rose), #FB7185); }
+.page-mine .cat-bar-coral { background: linear-gradient(90deg, var(--coral), #FB923C); }
+.page-mine .cat-bar-slate { background: linear-gradient(90deg, var(--t3), #94A3B8); }
+.page-mine .cat-dist-count {
   font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--t1);
@@ -159,7 +154,7 @@
   text-align: right;
   flex-shrink: 0;
 }
-.cat-dist-percent {
+.page-mine .cat-dist-percent {
   font-size: var(--fs-xxs);
   color: var(--t3);
   width: 32px;
@@ -168,10 +163,10 @@
 }
 
 /* ===== 健康评估发现标签增强 ===== */
-.score-tags {
+.page-mine .score-tags {
   margin-top: 10px;
 }
-.score-tag {
+.page-mine .score-tag {
   font-size: var(--fs-xxs);
   color: var(--t2);
   background: var(--inp);
@@ -184,12 +179,12 @@
 }
 
 /* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
-.dark .list-icon-teal { box-shadow: 0 2px 8px rgba(10,132,255,0.2); }
-.dark .list-icon-emerald { box-shadow: 0 2px 8px rgba(52,211,153,0.2); }
-.dark .list-icon-amber { box-shadow: 0 2px 8px rgba(251,191,36,0.2); }
-.dark .list-icon-rose { box-shadow: 0 2px 8px rgba(251,113,133,0.2); }
-.dark .cat-bar-emerald { background: linear-gradient(90deg, #10B981, #34D399); }
-.dark .cat-bar-amber { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
-.dark .cat-bar-rose { background: linear-gradient(90deg, #E11D48, #FB7185); }
-.dark .cat-bar-coral { background: linear-gradient(90deg, #F97316, #FB923C); }
-.dark .cat-bar-slate { background: linear-gradient(90deg, #64748B, #94A3B8); }
+.page-mine .dark .list-icon-teal { box-shadow: 0 2px 8px rgba(10,132,255,0.2); }
+.page-mine .dark .list-icon-emerald { box-shadow: 0 2px 8px rgba(52,211,153,0.2); }
+.page-mine .dark .list-icon-amber { box-shadow: 0 2px 8px rgba(251,191,36,0.2); }
+.page-mine .dark .list-icon-rose { box-shadow: 0 2px 8px rgba(251,113,133,0.2); }
+.page-mine .dark .cat-bar-emerald { background: linear-gradient(90deg, #10B981, #34D399); }
+.page-mine .dark .cat-bar-amber { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
+.page-mine .dark .cat-bar-rose { background: linear-gradient(90deg, #E11D48, #FB7185); }
+.page-mine .dark .cat-bar-coral { background: linear-gradient(90deg, #F97316, #FB923C); }
+.page-mine .dark .cat-bar-slate { background: linear-gradient(90deg, #64748B, #94A3B8); }

@@ -1,17 +1,12 @@
-/* detect.css — 心韵深辨 H5 (同步自 detect.wxss)
- * 变量: css/app.css 提供的 --warm:#F5F5F7 --teal:#007AFF / 深色 --warm:#0B1120 --teal:#0A84FF
- * 注意: H5 中 scroll-view → div[data-scroll], canvas type=2d → canvas, 其余原样
- */
-
 /* detect.wxss — Warm Clinical
  * 检测页专属样式 — 视觉增强: 摘要卡渐变、预览统计、模型状态
  */
 
 /* ECG 画布 */
-.ecg-canvas { width: 100%; height: 150px; display: block; }
+.page-detect .ecg-canvas { width: 100%; height: 150px; display: block; }
 
 /* D7: card 内嵌标题类 — 替换 card 内的 sec 标题，内联覆盖 margin */
-.card-title {
+.page-detect .card-title {
   font-size: var(--fs-md);
   font-weight: 600;
   color: var(--t1);
@@ -21,7 +16,7 @@
   gap: 8px;
 }
 /* card-title 前缀装饰点 */
-.card-title::before {
+.page-detect .card-title::before {
   content: '';
   width: 3px;
   height: 14px;
@@ -31,12 +26,12 @@
 }
 
 /* D6: 今日心脏摘要卡 — 渐变背景增强 */
-.summary-card {
+.page-detect .summary-card {
   padding: var(--cp);
   background: linear-gradient(135deg, var(--card) 0%, var(--teal-dim) 100%);
 }
-.summary-row { display: flex; align-items: center; gap: 14px; }
-.summary-icon {
+.page-detect .summary-row { display: flex; align-items: center; gap: 14px; }
+.page-detect .summary-icon {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -47,36 +42,36 @@
   font-weight: 700;
   flex-shrink: 0;
 }
-.summary-icon-normal {
+.page-detect .summary-icon-normal {
   background: var(--green-dim);
   color: var(--green);
   box-shadow: 0 2px 8px rgba(16,185,129,0.15);
 }
-.summary-icon-abnormal {
+.page-detect .summary-icon-abnormal {
   background: var(--red-dim);
   color: var(--red);
   box-shadow: 0 2px 8px rgba(225,29,72,0.15);
 }
-.summary-info { flex: 1; min-width: 0; }
-.summary-time { font-size: var(--fs-xs); color: var(--t3); }
-.summary-name { font-size: var(--fs-md); font-weight: 600; margin-top: 2px; color: var(--t1); }
+.page-detect .summary-info { flex: 1; min-width: 0; }
+.page-detect .summary-time { font-size: var(--fs-xs); color: var(--t3); }
+.page-detect .summary-name { font-size: var(--fs-md); font-weight: 600; margin-top: 2px; color: var(--t1); }
 
 /* 预览区域样式 */
-.preview-title { margin-bottom: 4px; }
-.preview-sub { margin-bottom: 12px; }
-.preview-stats {
+.page-detect .preview-title { margin-bottom: 4px; }
+.page-detect .preview-sub { margin-bottom: 12px; }
+.page-detect .preview-stats {
   display: flex;
   justify-content: space-around;
   padding: 12px 0 0;
   border-top: 1px solid var(--border);
   margin-top: 4px;
 }
-.preview-stat-item { text-align: center; }
-.preview-stat-lbl { font-size: var(--fs-xxs); color: var(--t3); }
-.preview-stat-val { font-size: var(--fs-md); font-weight: 700; color: var(--teal); margin-top: 4px; }
+.page-detect .preview-stat-item { text-align: center; }
+.page-detect .preview-stat-lbl { font-size: var(--fs-xxs); color: var(--t3); }
+.page-detect .preview-stat-val { font-size: var(--fs-md); font-weight: 700; color: var(--teal); margin-top: 4px; }
 
 /* 模型状态指示器 — 使用纯色背景，避免backdrop-filter性能损耗 */
-.model-status {
+.page-detect .model-status {
   background: var(--card);
   box-shadow: var(--shadow-sm);
   transition: all 0.25s var(--ease);
@@ -84,7 +79,7 @@
 }
 
 /* 收起态: 缩为小圆点, 无文字无边框, 不遮挡内容 */
-.model-status-collapsed {
+.page-detect .model-status-collapsed {
   padding: 0;
   width: 10px;
   height: 10px;
@@ -95,31 +90,31 @@
   box-shadow: 0 0 0 3px rgba(0,122,255,0.15);
 }
 .model-status-collapsed .ecg-loader,
-.model-status-collapsed .model-status-text {
+.page-detect .model-status-collapsed .model-status-text {
   display: none;
 }
 
 /* 展开态: 完整胶囊 */
-.model-status-expanded {
+.page-detect .model-status-expanded {
   opacity: 1;
 }
 
 /* 文字过渡 */
-.model-status-text {
+.page-detect .model-status-text {
   white-space: nowrap;
 }
 
 /* 导入按钮区域增强 — 主按钮已有全局样式，此处补充间距 */
-.btn-primary {
+.page-detect .btn-primary {
   margin-top: 4px;
 }
 
 /* 示例数据列表增强 — badge 立体感 */
-.list-badge {
+.page-detect .list-badge {
   box-shadow: 0 2px 6px rgba(15,23,42,0.1);
 }
 /* 深色模式: 阴影改为黑色, 避免浅色阴影在深色背景上不可见 */
-.dark .list-badge {
+.page-detect .dark .list-badge {
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
@@ -127,14 +122,14 @@
  * 示例数据横向滑动卡 — 2026-08-10
  * scroll-view 横向卡片, 一屏约1.7张, 提示可滑动
  * ============================================================ */
-.sample-scroll {
+.page-detect .sample-scroll {
   white-space: nowrap;
   margin-bottom: var(--cg);
 }
-.sample-scroll::-webkit-scrollbar {
+.page-detect .sample-scroll::-webkit-scrollbar {
   display: none;
 }
-.sample-card {
+.page-detect .sample-card {
   display: inline-flex;
   flex-direction: column;
   width: 210px;
@@ -148,30 +143,30 @@
   white-space: normal;
   transition: transform 0.15s var(--ease), opacity 0.15s var(--ease);
 }
-.sample-card:active {
+.page-detect .sample-card:active {
   transform: scale(0.97);
   opacity: 0.88;
 }
-.sample-top {
+.page-detect .sample-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
 }
-.sample-arrow {
+.page-detect .sample-arrow {
   font-size: 18px;
   color: var(--t3);
   transition: transform 0.18s var(--ease);
 }
-.sample-card:active .sample-arrow {
+.page-detect .sample-card:active .sample-arrow {
   transform: translateX(3px);
 }
-.sample-name {
+.page-detect .sample-name {
   font-size: var(--fs-md);
   font-weight: 600;
   color: var(--t1);
 }
-.sample-desc {
+.page-detect .sample-desc {
   font-size: var(--fs-xs);
   color: var(--t2);
   margin-top: 5px;
@@ -179,5 +174,5 @@
 }
 
 /* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
-.dark .summary-icon-normal { box-shadow: 0 2px 8px rgba(52,211,153,0.15); }
-.dark .summary-icon-abnormal { box-shadow: 0 2px 8px rgba(251,113,133,0.15); }
+.page-detect .dark .summary-icon-normal { box-shadow: 0 2px 8px rgba(52,211,153,0.15); }
+.page-detect .dark .summary-icon-abnormal { box-shadow: 0 2px 8px rgba(251,113,133,0.15); }

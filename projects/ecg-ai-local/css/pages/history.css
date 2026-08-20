@@ -1,14 +1,9 @@
-/* history.css — 心韵深辨 H5 (同步自 history.wxss)
- * 变量: css/app.css 提供的 --warm:#F5F5F7 --teal:#007AFF / 深色 --warm:#0B1120 --teal:#0A84FF
- * 注意: H5 中 scroll-view → div[data-scroll], canvas type=2d → canvas, 其余原样
- */
-
 /* history.wxss — Warm Clinical
  * 历史页专属样式 — 视觉增强: 编辑勾选、趋势间距、紧凑操作按钮
  */
 
 /* 编辑模式勾选框 */
-.check-box {
+.page-history .check-box {
   width: 20px;
   height: 20px;
   border: 1.5px solid var(--t3);
@@ -19,85 +14,85 @@
   flex-shrink: 0;
   margin-right: 8px;
 }
-.check-box.checked {
+.page-history .check-box.checked {
   border-color: var(--teal);
   background: var(--teal);
   box-shadow: 0 2px 6px rgba(0,122,255,0.25);
 }
-.check-mark { font-size: 12px; color: #fff; font-weight: 600; }
-.list-row.edit-mode { padding-left: 12px; }
+.page-history .check-mark { font-size: 12px; color: #fff; font-weight: 600; }
+.page-history .list-row.edit-mode { padding-left: 12px; }
 
 /* H5: 增大 stat-hero 与 trend-card 之间的间距 */
-.stat-hero { margin-bottom: 32px; }
-.trend-card { margin-top: 8px; }
+.page-history .stat-hero { margin-bottom: 32px; }
+.page-history .trend-card { margin-top: 8px; }
 
 /* H6: 编辑模式下给 container 加底部 padding */
-.edit-padding-bottom { padding-bottom: calc(72px + 60px + env(safe-area-inset-bottom)); }
+.page-history .edit-padding-bottom { padding-bottom: calc(72px + 60px + env(safe-area-inset-bottom)); }
 
 /* ===== 紧凑操作按钮增强 ===== */
-.compact-action-btn {
+.page-history .compact-action-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   font-weight: 600;
 }
-.compact-action-manage {
+.page-history .compact-action-manage {
   background: var(--teal-dim);
   border-color: rgba(0,122,255,0.15);
 }
-.compact-action-export {
+.page-history .compact-action-export {
   background: var(--indigo-dim);
   border-color: rgba(79,70,229,0.15);
   color: var(--indigo);
 }
-.compact-action-clear {
+.page-history .compact-action-clear {
   background: var(--red-dim);
   border-color: rgba(225,29,72,0.15);
 }
 
 /* ===== 底部删除栏 — 纯色背景，避免backdrop-filter性能损耗 ===== */
-.bottom-delete-bar {
+.page-history .bottom-delete-bar {
   background: var(--card);
   box-shadow: 0 -2px 12px rgba(15,23,42,0.06);
 }
 /* 深色模式: 阴影改为黑色, 避免浅色阴影在深色背景上不可见 */
-.dark .bottom-delete-bar {
+.page-history .dark .bottom-delete-bar {
   box-shadow: 0 -2px 12px rgba(0,0,0,0.4);
 }
-.delete-selected-btn.active {
+.page-history .delete-selected-btn.active {
   box-shadow: 0 3px 10px rgba(225,29,72,0.25);
 }
 
 /* ===== 趋势图柱状增强 — 更圆润的顶部 ===== */
-.trend-bar {
+.page-history .trend-bar {
   border-radius: 6px 6px 3px 3px;
 }
 
 /* ===== 风险卡增强 — 左侧装饰条 ===== */
-.risk-card {
+.page-history .risk-card {
   position: relative;
   overflow: hidden;
 }
-.risk-card-green, .risk-card-low {
+.page-history .risk-card-green, .page-history .risk-card-low {
   border-left: 3px solid var(--green);
 }
-.risk-card-orange, .risk-card-mid {
+.page-history .risk-card-orange, .page-history .risk-card-mid {
   border-left: 3px solid var(--amber);
 }
-.risk-card-red, .risk-card-high {
+.page-history .risk-card-red, .page-history .risk-card-high {
   border-left: 3px solid var(--red);
 }
 
 /* ===== 综合分析入口行增强 ===== */
-.list-group .list-row:first-child .list-icon {
+.page-history .list-group .list-row:first-child .list-icon {
   box-shadow: 0 2px 8px rgba(0,122,255,0.2);
 }
 
 /* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
-.dark .check-box.checked { box-shadow: 0 2px 6px rgba(10,132,255,0.25); }
-.dark .compact-action-manage { border-color: rgba(10,132,255,0.15); }
-.dark .compact-action-export { border-color: rgba(129,140,248,0.15); }
-.dark .compact-action-clear { border-color: rgba(251,113,133,0.15); }
-.dark .delete-selected-btn.active { box-shadow: 0 3px 10px rgba(251,113,133,0.25); }
-.dark .list-group .list-row:first-child .list-icon { box-shadow: 0 2px 8px rgba(10,132,255,0.2); }
+.page-history .dark .check-box.checked { box-shadow: 0 2px 6px rgba(10,132,255,0.25); }
+.page-history .dark .compact-action-manage { border-color: rgba(10,132,255,0.15); }
+.page-history .dark .compact-action-export { border-color: rgba(129,140,248,0.15); }
+.page-history .dark .compact-action-clear { border-color: rgba(251,113,133,0.15); }
+.page-history .dark .delete-selected-btn.active { box-shadow: 0 3px 10px rgba(251,113,133,0.25); }
+.page-history .dark .list-group .list-row:first-child .list-icon { box-shadow: 0 2px 8px rgba(10,132,255,0.2); }

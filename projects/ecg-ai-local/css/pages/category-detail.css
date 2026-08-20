@@ -1,7 +1,3 @@
-/* category-detail.css — 心韵深辨 H5 子页 (同步自 subpackages/extra/category-detail/category-detail.wxss)
- * 变量: css/app.css --warm:#F5F5F7 --teal:#007AFF
- */
-
 /* category-detail.wxss — Warm Clinical
  * 分类详情页专属样式 — 视觉增强: Hero 渐变背景、图标渐变+投影
  */
@@ -9,15 +5,15 @@
 /* ===== 头部 Hero 区域 — 渐变背景 ===== */
 /* 修复深色模式白色条带: hero 的 margin-top 会穿透 container(外边距折叠),
  * 露出 page 元素背景。改用 container padding-top 占位, 保证间距区域是容器深色背景 */
-.container { padding-top: 20px; }
-.detail-hero {
+.page-category-detail .container { padding-top: 20px; }
+.page-category-detail .detail-hero {
   margin-top: 0;
   text-align: center;
   padding: 32px 20px;
   position: relative;
   overflow: hidden;
 }
-.detail-hero::before {
+.page-category-detail .detail-hero::before {
   content: '';
   position: absolute;
   top: -20px;
@@ -29,30 +25,30 @@
 }
 
 /* 异常类型 Hero — 边框微红 + 红色光晕 */
-.detail-hero-abnormal {
+.page-category-detail .detail-hero-abnormal {
   border-color: rgba(225, 29, 72, 0.2);
   background: linear-gradient(135deg, var(--card) 0%, var(--red-dim) 100%);
 }
-.detail-hero-abnormal::before {
+.page-category-detail .detail-hero-abnormal::before {
   background: radial-gradient(circle, rgba(225,29,72,0.05) 0%, transparent 70%);
 }
 
 /* 正常类型 Hero — emerald 光晕 */
-.detail-hero-normal {
+.page-category-detail .detail-hero-normal {
   background: linear-gradient(135deg, var(--card) 0%, var(--green-dim) 100%);
 }
-.detail-hero-normal::before {
+.page-category-detail .detail-hero-normal::before {
   background: radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 70%);
 }
 
 /* 未分类类型 Hero — 中性边框 */
-.detail-hero-unclassified {
+.page-category-detail .detail-hero-unclassified {
   border-color: var(--border);
   background: linear-gradient(135deg, var(--card) 0%, var(--inp) 100%);
 }
 
 /* Hero 图标 — 大尺寸圆形带渐变背景色 */
-.detail-hero-icon {
+.page-category-detail .detail-hero-icon {
   width: 64px;
   height: 64px;
   border-radius: 50%;
@@ -68,25 +64,25 @@
 }
 
 /* 正常 — emerald 渐变 + 投影 */
-.detail-hero-icon-normal {
+.page-category-detail .detail-hero-icon-normal {
   background: linear-gradient(135deg, var(--emerald), #34D399);
   box-shadow: 0 4px 14px rgba(16,185,129,0.25);
 }
 
 /* 异常 — rose 渐变 + 投影 */
-.detail-hero-icon-abnormal {
+.page-category-detail .detail-hero-icon-abnormal {
   background: linear-gradient(135deg, var(--rose), #FB7185);
   box-shadow: 0 4px 14px rgba(225,29,72,0.25);
 }
 
 /* 未分类 — 中性渐变 */
-.detail-hero-icon-neutral {
+.page-category-detail .detail-hero-icon-neutral {
   background: linear-gradient(135deg, var(--t3), #94A3B8);
   box-shadow: 0 4px 14px rgba(120,144,156,0.2);
 }
 
 /* Hero 标题 */
-.detail-hero-title {
+.page-category-detail .detail-hero-title {
   font-size: 22px;
   font-weight: 700;
   color: var(--t1);
@@ -95,7 +91,7 @@
 }
 
 /* Hero 英文名 */
-.detail-hero-en {
+.page-category-detail .detail-hero-en {
   font-size: var(--fs-sm);
   color: var(--t3);
   margin-top: 4px;
@@ -104,45 +100,45 @@
 }
 
 /* Hero 标签间距 */
-.detail-hero-tag {
+.page-category-detail .detail-hero-tag {
   margin-top: 10px;
   position: relative;
   z-index: 1;
 }
 
 /* ===== ECG 波形卡 ===== */
-.detail-wave-card {
+.page-category-detail .detail-wave-card {
 }
-.detail-wave-card:active {
+.page-category-detail .detail-wave-card:active {
   opacity: 0.85;
 }
 
 /* ECG 暗色画布 */
-.ecg-chart {
+.page-category-detail .ecg-chart {
   background: var(--canvas);
   border-radius: var(--r-sm);
   padding: 4px;
   margin-top: 4px;
 }
-.ecg-canvas {
+.page-category-detail .ecg-canvas {
   width: 100%;
   height: 150px;
   display: block;
 }
 
 /* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
-.dark .detail-hero-icon-normal { box-shadow: 0 4px 14px rgba(52,211,153,0.25); }
-.dark .detail-hero-icon-abnormal { box-shadow: 0 4px 14px rgba(251,113,133,0.25); }
-.dark .detail-hero-icon-neutral { box-shadow: 0 4px 14px rgba(100,116,139,0.2); }
-.dark .detail-hero-abnormal { border-color: rgba(251,113,133,0.2); }
+.page-category-detail .dark .detail-hero-icon-normal { box-shadow: 0 4px 14px rgba(52,211,153,0.25); }
+.page-category-detail .dark .detail-hero-icon-abnormal { box-shadow: 0 4px 14px rgba(251,113,133,0.25); }
+.page-category-detail .dark .detail-hero-icon-neutral { box-shadow: 0 4px 14px rgba(100,116,139,0.2); }
+.page-category-detail .dark .detail-hero-abnormal { border-color: rgba(251,113,133,0.2); }
 
 /* ===== 心电图特征详解 ===== */
-.ecg-feature-list {
+.page-category-detail .ecg-feature-list {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
-.ecg-feature-row {
+.page-category-detail .ecg-feature-row {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -151,30 +147,30 @@
   border-radius: var(--r-sm);
   border-left: 3px solid var(--teal);
 }
-.ecg-feature-label {
+.page-category-detail .ecg-feature-label {
   font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--teal);
   flex-shrink: 0;
 }
-.ecg-feature-desc {
+.page-category-detail .ecg-feature-desc {
   font-size: var(--fs-xs);
   color: var(--t2);
   line-height: 1.6;
 }
 
 /* ===== 常见病因列表 ===== */
-.cause-list {
+.page-category-detail .cause-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-.cause-item {
+.page-category-detail .cause-item {
   display: flex;
   align-items: flex-start;
   gap: 10px;
 }
-.cause-num {
+.page-category-detail .cause-num {
   width: 22px;
   height: 22px;
   border-radius: 50%;
@@ -188,7 +184,7 @@
   flex-shrink: 0;
   margin-top: 1px;
 }
-.cause-text {
+.page-category-detail .cause-text {
   font-size: var(--fs-xs);
   color: var(--t2);
   line-height: 1.6;
@@ -196,12 +192,12 @@
 }
 
 /* ===== 相关疾病标签 ===== */
-.related-tags {
+.page-category-detail .related-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
-.related-tag {
+.page-category-detail .related-tag {
   padding: 6px 14px;
   border-radius: 100px;
   font-size: var(--fs-xs);
@@ -212,23 +208,23 @@
 }
 
 /* ===== 深色模式适配 ===== */
-.dark .ecg-feature-row { border-left-color: var(--teal); }
-.dark .ecg-feature-label { color: var(--teal); }
-.dark .cause-num { background: rgba(10,132,255,0.16); color: var(--teal); }
-.dark .related-tag { border-color: var(--border); }
+.page-category-detail .dark .ecg-feature-row { border-left-color: var(--teal); }
+.page-category-detail .dark .ecg-feature-label { color: var(--teal); }
+.page-category-detail .dark .cause-num { background: rgba(10,132,255,0.16); color: var(--teal); }
+.page-category-detail .dark .related-tag { border-color: var(--border); }
 
 /* ===== 诊断标准列表 ===== */
-.criteria-list {
+.page-category-detail .criteria-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-.criteria-item {
+.page-category-detail .criteria-item {
   display: flex;
   align-items: flex-start;
   gap: 10px;
 }
-.criteria-check {
+.page-category-detail .criteria-check {
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -242,7 +238,7 @@
   flex-shrink: 0;
   margin-top: 1px;
 }
-.criteria-text {
+.page-category-detail .criteria-text {
   font-size: var(--fs-xs);
   color: var(--t2);
   line-height: 1.6;
@@ -250,12 +246,12 @@
 }
 
 /* ===== 鉴别诊断列表 ===== */
-.diff-list {
+.page-category-detail .diff-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-.diff-item {
+.page-category-detail .diff-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -264,17 +260,17 @@
   border-radius: var(--r-sm);
   border-left: 3px solid var(--amber);
 }
-.diff-name {
+.page-category-detail .diff-name {
   font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--t1);
 }
-.diff-desc {
+.page-category-detail .diff-desc {
   font-size: var(--fs-xs);
   color: var(--t2);
   line-height: 1.6;
 }
 
 /* ===== 深色模式新章节适配 ===== */
-.dark .criteria-check { background: rgba(10,132,255,0.16); color: var(--teal); }
-.dark .diff-item { border-left-color: var(--amber); }
+.page-category-detail .dark .criteria-check { background: rgba(10,132,255,0.16); color: var(--teal); }
+.page-category-detail .dark .diff-item { border-left-color: var(--amber); }
