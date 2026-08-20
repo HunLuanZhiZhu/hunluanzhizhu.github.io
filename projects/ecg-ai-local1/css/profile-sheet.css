@@ -1,0 +1,174 @@
+/* components/profile-sheet/profile-sheet.wxss — 个人档案半屏面板
+ * Apple 半屏 Sheet 风格: 圆角弹出 + 毛玻璃 + 弹簧动画
+ */
+
+/* 遮罩 */
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.mask.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 面板 */
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-secondary, #FFFFFF);
+  border-radius: 20px 20px 0 0;
+  padding: 8px 20px calc(80px + env(safe-area-inset-bottom));
+  z-index: 1001;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.sheet.show {
+  transform: translateY(0);
+}
+
+/* 拖拽条 */
+.grabber {
+  width: 36px;
+  height: 5px;
+  border-radius: 100px;
+  background: rgba(60, 60, 67, 0.3);
+  margin: 0 auto 16px;
+}
+
+/* 标题区 */
+.sheet-header {
+  margin-bottom: 20px;
+}
+
+.sheet-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--label-primary, #000);
+  margin-bottom: 8px;
+}
+
+.sheet-desc {
+  font-size: 14px;
+  color: var(--label-secondary, rgba(60,60,67,0.85));
+  line-height: 1.6;
+}
+
+/* 表单 */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--label-primary, #000);
+}
+
+.form-optional {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--label-tertiary, rgba(60,60,67,0.7));
+  margin-left: 4px;
+}
+
+.form-input {
+  height: 44px;
+  border-radius: 12px;
+  background: var(--fill-tertiary, rgba(120,120,128,0.12));
+  padding: 0 14px;
+  font-size: 15px;
+  color: var(--label-primary, #000);
+}
+
+/* 分段选择器 */
+.seg-control {
+  display: flex;
+  gap: 8px;
+  background: var(--fill-tertiary, rgba(120,120,128,0.12));
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.seg-control-multi {
+  flex-wrap: wrap;
+}
+
+.seg-item {
+  flex: 1;
+  text-align: center;
+  padding: 9px 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--label-secondary, rgba(60,60,67,0.85));
+  transition: all 0.2s;
+  min-width: calc(33.33% - 6px);
+}
+
+.seg-active {
+  background: var(--bg-secondary, #FFFFFF);
+  color: var(--accent-blue, #007AFF);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 按钮 */
+.sheet-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-skip {
+  flex: 1;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: var(--fill-tertiary, rgba(120,120,128,0.12));
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--label-secondary, rgba(60,60,67,0.85));
+}
+
+.btn-save {
+  flex: 2;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: var(--accent-blue, #007AFF);
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.btn-skip:active,
+.btn-save:active {
+  opacity: 0.7;
+}

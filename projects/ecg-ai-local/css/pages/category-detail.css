@@ -1,138 +1,239 @@
-/* pages/category-detail/category-detail.wxss — 苹果设计风格 */
+/* category-detail.css — 心韵深辨 H5 子页 (同步自 subpackages/extra/category-detail/category-detail.wxss)
+ * 变量: css/app.css --warm:#F5F5F7 --teal:#007AFF
+ */
 
-.page-category-detail .wave-card {
-  padding: var(--card-padding);
+/* category-detail.wxss — Warm Clinical
+ * 分类详情页专属样式 — 视觉增强: Hero 渐变背景、图标渐变+投影
+ */
+
+/* ===== 头部 Hero 区域 — 渐变背景 ===== */
+/* 修复深色模式白色条带: hero 的 margin-top 会穿透 container(外边距折叠),
+ * 露出 page 元素背景。改用 container padding-top 占位, 保证间距区域是容器深色背景 */
+.container { padding-top: 20px; }
+.detail-hero {
+  margin-top: 0;
+  text-align: center;
+  padding: 32px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.detail-hero::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  pointer-events: none;
 }
 
-.page-category-detail .wave-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+/* 异常类型 Hero — 边框微红 + 红色光晕 */
+.detail-hero-abnormal {
+  border-color: rgba(225, 29, 72, 0.2);
+  background: linear-gradient(135deg, var(--card) 0%, var(--red-dim) 100%);
+}
+.detail-hero-abnormal::before {
+  background: radial-gradient(circle, rgba(225,29,72,0.05) 0%, transparent 70%);
 }
 
-.page-category-detail .cat-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+/* 正常类型 Hero — emerald 光晕 */
+.detail-hero-normal {
+  background: linear-gradient(135deg, var(--card) 0%, var(--green-dim) 100%);
+}
+.detail-hero-normal::before {
+  background: radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 70%);
+}
+
+/* 未分类类型 Hero — 中性边框 */
+.detail-hero-unclassified {
+  border-color: var(--border);
+  background: linear-gradient(135deg, var(--card) 0%, var(--inp) 100%);
+}
+
+/* Hero 图标 — 大尺寸圆形带渐变背景色 */
+.detail-hero-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-}
-
-.page-category-detail .cat-icon-N { background: var(--accent-green); }
-.page-category-detail .cat-icon-S { background: var(--accent-red); }
-.page-category-detail .cat-icon-V { background: var(--accent-indigo); }
-.page-category-detail .cat-icon-F { background: var(--accent-orange); }
-.page-category-detail .cat-icon-Q { background: var(--label-tertiary); }
-
-.page-category-detail .cat-icon-letter {
-  font-size: 17px;
+  margin: 0 auto 12px;
+  font-size: 28px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #fff;
+  position: relative;
+  z-index: 1;
 }
 
-.page-category-detail .wave-title-area {
-  flex: 1;
+/* 正常 — emerald 渐变 + 投影 */
+.detail-hero-icon-normal {
+  background: linear-gradient(135deg, var(--emerald), #34D399);
+  box-shadow: 0 4px 14px rgba(16,185,129,0.25);
 }
 
-.page-category-detail .wave-title {
-  font-size: 20px;
+/* 异常 — rose 渐变 + 投影 */
+.detail-hero-icon-abnormal {
+  background: linear-gradient(135deg, var(--rose), #FB7185);
+  box-shadow: 0 4px 14px rgba(225,29,72,0.25);
+}
+
+/* 未分类 — 中性渐变 */
+.detail-hero-icon-neutral {
+  background: linear-gradient(135deg, var(--t3), #94A3B8);
+  box-shadow: 0 4px 14px rgba(120,144,156,0.2);
+}
+
+/* Hero 标题 */
+.detail-hero-title {
+  font-size: 22px;
   font-weight: 700;
-  color: var(--label-primary);
-  letter-spacing: -0.3px;
+  color: var(--t1);
+  position: relative;
+  z-index: 1;
 }
 
-.page-category-detail .wave-en {
-  font-size: 12px;
-  color: var(--label-secondary);
-  margin-top: 2px;
+/* Hero 英文名 */
+.detail-hero-en {
+  font-size: var(--fs-sm);
+  color: var(--t3);
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
 }
 
-/* ECG Canvas */
-.page-category-detail .ecg-chart {
-  background: #0a1520;
-  border-radius: 14px;
+/* Hero 标签间距 */
+.detail-hero-tag {
+  margin-top: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== ECG 波形卡 ===== */
+.detail-wave-card {
+}
+.detail-wave-card:active {
+  opacity: 0.85;
+}
+
+/* ECG 暗色画布 */
+.ecg-chart {
+  background: var(--canvas);
+  border-radius: var(--r-sm);
   padding: 4px;
-  overflow: hidden;
-  border: 0.5px solid rgba(0, 200, 255, 0.12);
-  box-shadow: 0 2px 12px rgba(0, 200, 255, 0.06), inset 0 0 30px rgba(0, 200, 255, 0.02);
+  margin-top: 4px;
 }
-
-.page-category-detail .ecg-canvas {
+.ecg-canvas {
   width: 100%;
-  height: 160px;
+  height: 150px;
   display: block;
 }
 
-/* 详情区块 */
-.page-category-detail .detail-section-title {
-  font-size: 14px;
+/* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
+.dark .detail-hero-icon-normal { box-shadow: 0 4px 14px rgba(52,211,153,0.25); }
+.dark .detail-hero-icon-abnormal { box-shadow: 0 4px 14px rgba(251,113,133,0.25); }
+.dark .detail-hero-icon-neutral { box-shadow: 0 4px 14px rgba(100,116,139,0.2); }
+.dark .detail-hero-abnormal { border-color: rgba(251,113,133,0.2); }
+
+/* ===== 心电图特征详解 ===== */
+.ecg-feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ecg-feature-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--inp);
+  border-radius: var(--r-sm);
+  border-left: 3px solid var(--teal);
+}
+.ecg-feature-label {
+  font-size: var(--fs-sm);
   font-weight: 600;
-  color: var(--accent-blue);
-  margin-bottom: 8px;
-  letter-spacing: 0.3px;
+  color: var(--teal);
+  flex-shrink: 0;
+}
+.ecg-feature-desc {
+  font-size: var(--fs-xs);
+  color: var(--t2);
+  line-height: 1.6;
 }
 
-.page-category-detail .detail-text {
-  font-size: 14px;
-  color: var(--label-primary);
-  line-height: 1.65;
-}
-
-/* 特征列表 */
-.page-category-detail .feature-list {
+/* ===== 常见病因列表 ===== */
+.cause-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-
-.page-category-detail .feature-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.page-category-detail .feature-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.page-category-detail .dot-normal {
-  background: var(--accent-green);
-}
-
-.page-category-detail .dot-abnormal {
-  background: var(--accent-red);
-}
-
-.page-category-detail .feature-text {
-  font-size: 14px;
-  color: var(--label-primary);
-  line-height: 1.5;
-}
-
-/* 免责声明 */
-.page-category-detail .disclaimer-card {
+.cause-item {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  padding: 12px 14px;
-  margin-bottom: 12px;
-  background: rgba(255, 149, 0, 0.08);
-  border-radius: 12px;
-  border: 0.5px solid rgba(255, 149, 0, 0.15);
+  gap: 10px;
+}
+.cause-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--teal-dim);
+  color: var(--teal);
+  font-size: var(--fs-xxs);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.cause-text {
+  font-size: var(--fs-xs);
+  color: var(--t2);
+  line-height: 1.6;
+  flex: 1;
 }
 
-.page-category-detail .disclaimer-icon {
-  width: 18px;
-  height: 18px;
+/* ===== 相关疾病标签 ===== */
+.related-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.related-tag {
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: var(--fs-xs);
+  background: var(--inp);
+  color: var(--t2);
+  border: 1px solid var(--border);
+  font-weight: 500;
+}
+
+/* ===== 深色模式适配 ===== */
+.dark .ecg-feature-row { border-left-color: var(--teal); }
+.dark .ecg-feature-label { color: var(--teal); }
+.dark .cause-num { background: rgba(10,132,255,0.16); color: var(--teal); }
+.dark .related-tag { border-color: var(--border); }
+
+/* ===== 诊断标准列表 ===== */
+.criteria-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.criteria-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.criteria-check {
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: var(--accent-orange);
-  color: #FFFFFF;
+  background: var(--teal-dim);
+  color: var(--teal);
   font-size: 11px;
   font-weight: 700;
   display: flex;
@@ -141,10 +242,39 @@
   flex-shrink: 0;
   margin-top: 1px;
 }
-
-.page-category-detail .disclaimer-text {
-  font-size: 12px;
-  color: var(--label-secondary);
+.criteria-text {
+  font-size: var(--fs-xs);
+  color: var(--t2);
   line-height: 1.6;
   flex: 1;
 }
+
+/* ===== 鉴别诊断列表 ===== */
+.diff-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.diff-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--inp);
+  border-radius: var(--r-sm);
+  border-left: 3px solid var(--amber);
+}
+.diff-name {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--t1);
+}
+.diff-desc {
+  font-size: var(--fs-xs);
+  color: var(--t2);
+  line-height: 1.6;
+}
+
+/* ===== 深色模式新章节适配 ===== */
+.dark .criteria-check { background: rgba(10,132,255,0.16); color: var(--teal); }
+.dark .diff-item { border-left-color: var(--amber); }

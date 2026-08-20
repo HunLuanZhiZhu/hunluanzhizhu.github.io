@@ -1,0 +1,328 @@
+/* custom-tab-bar/index.wxss — 苹果设计风格自定义TabBar
+ * 大字号文字 + 清晰分隔 + 毛玻璃背景 + 活跃指示器
+ * 颜色采用固定值(不依赖外部CSS变量), 通过 .tab-dark 切换深色, 保证图标始终可见
+ */
+
+/* ===== 浅色(默认) ===== */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 0.5px solid rgba(60, 60, 67, 0.2);
+}
+
+.tab-bar-inner {
+  display: flex;
+  height: 58px;
+  align-items: stretch;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  gap: 4px;
+  transition: opacity 0.15s;
+}
+
+.tab-item:active {
+  opacity: 0.6;
+}
+
+/* 分隔线 */
+.tab-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 28%;
+  bottom: 28%;
+  width: 0.5px;
+  background: rgba(60, 60, 67, 0.18);
+}
+
+.tab-icon-wrap {
+  width: 30px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #3C3C43;            /* 浅色模式未选中: 深灰, 高对比 */
+  letter-spacing: 0.1px;
+  transition: color 0.2s;
+}
+
+.tab-active .tab-text {
+  color: #007AFF;
+  font-weight: 600;
+}
+
+/* 活跃指示器 (顶部小圆点) */
+.tab-indicator {
+  position: absolute;
+  top: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #007AFF;
+}
+
+/* ===== 深色模式 ===== */
+.tab-bar.tab-dark {
+  background: rgba(28, 28, 30, 0.94);
+  border-top: 0.5px solid rgba(84, 84, 88, 0.5);
+}
+
+.tab-bar.tab-dark .tab-item:not(:last-child)::after {
+  background: rgba(84, 84, 88, 0.5);
+}
+
+.tab-bar.tab-dark .tab-text {
+  color: #EBEBF0;            /* 深色模式未选中: 浅灰 */
+}
+
+.tab-bar.tab-dark .tab-active .tab-text {
+  color: #0A84FF;
+}
+
+.tab-bar.tab-dark .tab-indicator {
+  background: #0A84FF;
+}
+
+/* ===== CSS 绘制的图标 =====
+ * 未选中: #3C3C43(浅) / #EBEBF0(深)
+ * 选中:   #007AFF(浅) / #0A84FF(深)
+ */
+
+/* 检测 - 心电波形图标 (PQRST精致版) */
+.tab-icon-detect {
+  width: 28px;
+  height: 24px;
+  position: relative;
+}
+
+/* 心电波形 — 用SVG思路的clip-path在足够高度上绘制 */
+.tab-icon-detect::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: #3C3C43;
+  /* 整个区域作为画布, 用polygon裁出粗壮的PQRST波形带 */
+  clip-path: polygon(
+    /* 基线段 (左平) */
+    0% 52%, 8% 52%,
+    /* P波 (小凸起) */
+    10% 52%, 13% 38%, 16% 52%,
+    /* PR段 (平) */
+    18% 52%, 21% 52%,
+    /* Q波 (小下凹) */
+    22% 52%, 23% 58%, 24% 52%,
+    /* R波 (尖峰冲顶) */
+    25% 52%, 27% 0%, 29% 52%,
+    /* S波 (深谷) */
+    30% 52%, 32% 100%, 34% 52%,
+    /* ST段 (平) */
+    36% 52%, 44% 52%,
+    /* T波 (圆润凸起) */
+    46% 52%, 50% 32%, 54% 52%,
+    /* 基线段 (右平) */
+    56% 52%, 100% 52%,
+    /* 闭合回到底部 — 用高度让波形有粗细感 */
+    100% 54%, 0% 54%
+  );
+}
+
+/* 不再使用心形, 保持纯波形图标的简洁力量感 */
+.tab-icon-detect::after {
+  content: none;
+}
+
+/* 选中态: 波形变蓝 */
+.tab-icon-detect.icon-active::before {
+  background: #007AFF;
+}
+
+/* 历史 - 时钟图标 */
+.tab-icon-history {
+  width: 20px;
+  height: 20px;
+  border: 1.8px solid #3C3C43;
+  border-radius: 50%;
+  position: relative;
+}
+
+.tab-icon-history::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  width: 1.8px;
+  height: 6px;
+  background: #3C3C43;
+  transform: translateX(-50%);
+}
+
+.tab-icon-history::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 1.8px;
+  background: #3C3C43;
+  transform: translateY(-50%);
+}
+
+.tab-icon-history.icon-active {
+  border-color: #007AFF;
+}
+
+.tab-icon-history.icon-active::before,
+.tab-icon-history.icon-active::after {
+  background: #007AFF;
+}
+
+/* 科普 - 书本图标 */
+.tab-icon-science {
+  width: 18px;
+  height: 20px;
+  border: 1.8px solid #3C3C43;
+  border-radius: 2px 2px 0 0;
+  position: relative;
+}
+
+.tab-icon-science::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 2px;
+  right: 2px;
+  height: 1.8px;
+  background: #3C3C43;
+  box-shadow: 0 5px 0 #3C3C43;
+}
+
+.tab-icon-science.icon-active {
+  border-color: #007AFF;
+}
+
+.tab-icon-science.icon-active::before {
+  background: #007AFF;
+  box-shadow: 0 5px 0 #007AFF;
+}
+
+/* 团队 - 人群图标 */
+.tab-icon-team {
+  width: 22px;
+  height: 18px;
+  position: relative;
+}
+
+.tab-icon-team::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 8px;
+  border: 1.8px solid #3C3C43;
+  border-radius: 0 0 5px 5px;
+  border-top: none;
+}
+
+.tab-icon-team::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 7px;
+  height: 7px;
+  border: 1.8px solid #3C3C43;
+  border-radius: 50%;
+}
+
+.tab-icon-team.icon-active::before,
+.tab-icon-team.icon-active::after {
+  border-color: #007AFF;
+}
+
+/* 我的 - 人头图标 */
+.tab-icon-mine {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.tab-icon-mine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border: 1.8px solid #3C3C43;
+  border-radius: 50%;
+}
+
+.tab-icon-mine::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 7px;
+  border: 1.8px solid #3C3C43;
+  border-radius: 5px 5px 0 0;
+  border-bottom: none;
+}
+
+.tab-icon-mine.icon-active::before,
+.tab-icon-mine.icon-active::after {
+  border-color: #007AFF;
+}
+
+/* ===== 深色模式图标颜色覆盖 ===== */
+.tab-dark .tab-icon-detect::before { background: #EBEBF0; }
+.tab-dark .tab-icon-detect.icon-active::before { background: #0A84FF; }
+
+.tab-dark .tab-icon-history { border-color: #EBEBF0; }
+.tab-dark .tab-icon-history::before { background: #EBEBF0; }
+.tab-dark .tab-icon-history::after { background: #EBEBF0; }
+.tab-dark .tab-icon-history.icon-active { border-color: #0A84FF; }
+.tab-dark .tab-icon-history.icon-active::before,
+.tab-dark .tab-icon-history.icon-active::after { background: #0A84FF; }
+
+.tab-dark .tab-icon-science { border-color: #EBEBF0; }
+.tab-dark .tab-icon-science::before { background: #EBEBF0; box-shadow: 0 5px 0 #EBEBF0; }
+.tab-dark .tab-icon-science.icon-active { border-color: #0A84FF; }
+.tab-dark .tab-icon-science.icon-active::before { background: #0A84FF; box-shadow: 0 5px 0 #0A84FF; }
+
+.tab-dark .tab-icon-team::before { border-color: #EBEBF0; }
+.tab-dark .tab-icon-team::after { border-color: #EBEBF0; }
+.tab-dark .tab-icon-team.icon-active::before,
+.tab-dark .tab-icon-team.icon-active::after { border-color: #0A84FF; }
+
+.tab-dark .tab-icon-mine::before { border-color: #EBEBF0; }
+.tab-dark .tab-icon-mine::after { border-color: #EBEBF0; }
+.tab-dark .tab-icon-mine.icon-active::before,
+.tab-dark .tab-icon-mine.icon-active::after { border-color: #0A84FF; }

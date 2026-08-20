@@ -1,0 +1,32 @@
+/* pages/info-detail/info-detail.wxss — 详情页 (图标+扩写) */
+
+.page-info-detail .hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0 24px;
+  gap: 12px;
+}
+
+.page-info-detail .hero-icon {
+  font-size: 52px;
+  line-height: 1;
+}
+
+.page-info-detail .hero-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--label-primary);
+  text-align: center;
+}
+
+.page-info-detail .detail-card {
+  padding: var(--card-padding);
+}
+
+.page-info-detail .detail-text {
+  font-size: 15px;
+  color: var(--label-primary);
+  line-height: 1.75;
+  letter-spacing: 0.2px;
+}

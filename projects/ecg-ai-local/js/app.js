@@ -83,6 +83,7 @@ export function toggleTheme() {
 // 应用主题到 body (对应 wx.setNavigationBarColor/setBackgroundColor)
 export function applyThemeColors(theme) {
   const isDark = theme === 'dark'
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
   document.body.classList.toggle('dark', isDark)
   // 同步 meta theme-color (浏览器地址栏配色)
   let meta = document.querySelector('meta[name="theme-color"]')
@@ -91,7 +92,7 @@ export function applyThemeColors(theme) {
     meta.name = 'theme-color'
     document.head.appendChild(meta)
   }
-  meta.content = isDark ? '#000000' : '#F2F2F7'
+  meta.content = isDark ? '#0B1120' : '#F5F5F7'
 }
 
 // 初始化主题

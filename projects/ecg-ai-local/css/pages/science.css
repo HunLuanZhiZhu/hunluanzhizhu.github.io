@@ -1,235 +1,289 @@
-/* pages/science/science.wxss — 苹果设计风格 */
+/* science.css — 心韵深辨 H5 (同步自 science.wxss)
+ * 变量: css/app.css 提供的 --warm:#F5F5F7 --teal:#007AFF / 深色 --warm:#0B1120 --teal:#0A84FF
+ * 注意: H5 中 scroll-view → div[data-scroll], canvas type=2d → canvas, 其余原样
+ */
 
-/* 顶部Banner */
-.page-science .banner {
-  position: relative;
-  background: linear-gradient(135deg, #007AFF 0%, #0051D5 50%, #5856D6 100%);
-  border-radius: var(--card-radius);
-  padding: 24px 16px 20px;
-  margin-bottom: var(--card-gap);
-  overflow: hidden;
-  box-shadow: var(--shadow-elevated);
-}
+/* science.wxss — 心律科普页特有样式
+ * Sc1: feature-cover 浅teal渐变
+ * Sc2: AAMI 分类卡提取样式
+ * 视觉增强: 文章封面文字阴影、分类卡装饰条、健康提示图标
+ */
 
-.page-science .banner-bg-pattern {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  overflow: hidden;
-  opacity: 0.12;
-}
+/* Sc1(已移除 2026-08-10): feature-cover 单卡被精选轮播 feature-slide-cover 替代 */
 
-.page-science .pulse-line {
-  position: absolute;
-  height: 1.5px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 100px;
-}
-
-.page-science .pulse-line-1 {
-  top: 35%;
-  left: -10%;
-  width: 55%;
-  transform: rotate(-8deg);
-}
-
-.page-science .pulse-line-2 {
-  bottom: 25%;
-  right: -15%;
-  width: 50%;
-  transform: rotate(6deg);
-}
-
-.page-science .banner-content {
-  position: relative;
-  z-index: 1;
-}
-
-.page-science .banner-tag {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.2);
-  color: #FFFFFF;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 100px;
+/* ===== Sc2: AAMI 分类卡提取样式 ===== */
+.category-card {
   margin-bottom: 10px;
-  letter-spacing: 0.5px;
-  backdrop-filter: blur(10px);
+}
+.category-card:active {
+  opacity: 0.7;
 }
 
-.page-science .banner-title {
-  font-size: 22px;
+/* 分类卡头部 */
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+/* 分类图标容器 — 带投影增强 */
+.category-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
   font-weight: 700;
-  color: #FFFFFF;
-  margin-bottom: 8px;
-  letter-spacing: -0.3px;
+  color: #fff;
+  flex-shrink: 0;
 }
 
-.page-science .banner-desc {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.88);
+/* Sc3: 分类图标背景色 — 渐变增强 */
+.category-icon-emerald {
+  background: linear-gradient(135deg, var(--emerald), #34D399);
+  box-shadow: 0 2px 8px rgba(16,185,129,0.2);
+}
+.category-icon-amber {
+  background: linear-gradient(135deg, var(--amber), #FBBF24);
+  box-shadow: 0 2px 8px rgba(180,83,9,0.2);
+}
+.category-icon-rose {
+  background: linear-gradient(135deg, var(--rose), #FB7185);
+  box-shadow: 0 2px 8px rgba(225,29,72,0.2);
+}
+.category-icon-coral {
+  background: linear-gradient(135deg, var(--coral), #FB923C);
+  box-shadow: 0 2px 8px rgba(249,115,22,0.2);
+}
+.category-icon-slate {
+  background: linear-gradient(135deg, var(--t3), #94A3B8);
+  box-shadow: 0 2px 8px rgba(120,144,156,0.2);
+}
+
+/* 分类名称容器 */
+.category-name-wrap { flex: 1; }
+.category-name { font-size: 15px; font-weight: 600; }
+.category-en-name { font-size: 12px; color: var(--t3); margin-top: 2px; }
+
+/* Sc11: 分类卡波形背景 */
+.category-wave-bg {
+  height: 50px;
+  border-radius: var(--r-sm);
+  background: var(--inp);
+  overflow: hidden;
+}
+/* 波形canvas — 显式尺寸避免百分比渲染问题 */
+/* position:relative + z-index:0 确保canvas在TabBar(z-index:9999)之下 */
+.category-wave-canvas {
+  width: 100%;
+  height: 50px;
+  display: block;
+  position: relative;
+  z-index: 0;
+}
+
+/* 分类描述文字 */
+.category-desc {
+  font-size: 12px;
+  color: var(--t2);
+  margin-top: 8px;
   line-height: 1.6;
 }
 
-/* 章节标题 */
-.page-science .section-header {
-  display: flex;
-  flex-direction: column;
-  padding: 8px 4px 12px;
-}
-
-/* 分类卡片 */
-.page-science .category-list {
-  margin-bottom: 4px;
-}
-
-.page-science .category-card {
-  border-radius: var(--card-radius);
-  padding: var(--card-padding);
-  transition: transform 0.15s ease;
-}
-
-.page-science .category-card:active {
-  transform: scale(0.98);
-}
-
-/* 动态波形 */
-.page-science .cat-wave {
-  margin: 10px 0;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 0.5px solid rgba(0, 200, 255, 0.1);
-}
-
-.page-science .wave-canvas {
-  width: 100%;
-  height: 80px;
-  display: block;
-}
-
-/* 查看详情箭头 */
-.page-science .cat-arrow {
-  font-size: 12px;
-  color: var(--accent-blue);
-  font-weight: 500;
-  text-align: right;
+/* ===== 健康提示多条文本间距 ===== */
+.health-tip .health-tip-text + .health-tip-text {
   margin-top: 6px;
 }
 
-.page-science .cat-header {
+/* ===== 分类色卡速查条 (2026-08-10): 五类颜色+缩写+名称 ===== */
+.legend-strip-card {
   display: flex;
-  align-items: center;
-  margin-bottom: 10px;
+  padding: 14px var(--cp);
 }
-
-.page-science .cat-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 12px;
-  flex-shrink: 0;
-}
-
-.page-science .cat-icon-N { background: var(--accent-green); }
-.page-science .cat-icon-S { background: var(--accent-red); }
-.page-science .cat-icon-V { background: var(--accent-indigo); }
-.page-science .cat-icon-F { background: var(--accent-orange); }
-.page-science .cat-icon-Q { background: var(--label-tertiary); }
-
-.page-science .cat-icon-letter {
-  font-size: 17px;
-  font-weight: 700;
-  color: #FFFFFF;
-}
-
-.page-science .cat-info {
+.legend-strip {
   flex: 1;
-}
-
-.page-science .cat-name {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--label-primary);
-  margin-bottom: 1px;
-}
-
-.page-science .cat-en {
-  font-size: 11px;
-  color: var(--label-secondary);
-}
-
-.page-science .cat-desc {
-  font-size: 13px;
-  color: var(--label-primary);
-  line-height: 1.6;
-}
-
-/* 健康提示卡片 */
-.page-science .health-tip-card {
-  background: var(--bg-secondary);
-}
-
-.page-science .tip-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.page-science .tip-icon-wrap {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: rgba(255, 59, 48, 0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 10px;
-}
-
-.page-science .tip-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--accent-red);
-}
-
-.page-science .tip-title {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--label-primary);
-}
-
-.page-science .tip-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 5px;
 }
-
-.page-science .tip-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
+.legend-strip-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
 }
-
-.page-science .tip-num {
-  font-size: 13px;
+.legend-strip-abbr {
+  font-size: 10px;
   font-weight: 700;
-  color: var(--accent-blue);
+  color: var(--t3);
+}
+.legend-strip-name {
+  font-size: var(--fs-tag);
+  color: var(--t2);
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ===== 文章封面文字增强 — 文字阴影提升可读性 ===== */
+.article-cover {
+  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* ===== 搜索栏增强 ===== */
+.search-bar {
+  position: relative;
+}
+
+/* 搜索清空按钮 */
+.search-clear {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--t3);
+  color: #fff;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  min-width: 20px;
+  margin-left: 4px;
+}
+.search-clear:active {
+  opacity: 0.6;
 }
 
-.page-science .tip-text {
-  font-size: 13px;
-  color: var(--label-primary);
+/* ===== 芯片激活态增强 ===== */
+.chip.active {
+  box-shadow: 0 2px 8px rgba(0,122,255,0.25);
+}
+
+/* ===== 交互反馈 ===== */
+.article-card:active,
+.chip:active {
+  opacity: 0.6;
+}
+
+/* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
+.dark .chip.active { box-shadow: 0 2px 8px rgba(10,132,255,0.25); }
+.dark .category-icon-emerald { box-shadow: 0 2px 8px rgba(52,211,153,0.2); }
+.dark .category-icon-amber { box-shadow: 0 2px 8px rgba(251,191,36,0.2); }
+.dark .category-icon-rose { box-shadow: 0 2px 8px rgba(251,113,133,0.2); }
+.dark .category-icon-coral { box-shadow: 0 2px 8px rgba(251,146,60,0.2); }
+.dark .category-icon-slate { box-shadow: 0 2px 8px rgba(100,116,139,0.2); }
+
+/* ============================================================
+ * 精选科普轮播 — 2026-08-10
+ * 原生swiper + 自定义teal指示器, 深色画布+波形底纹+白字
+ * ============================================================ */
+.feature-swiper-wrap {
+  position: relative;
+  margin-top: 16px;
+}
+.feature-swiper {
+  height: 196px;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+.feature-slide {
+  height: 100%;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+/* 轮播封面卡 — 真实医学图片(用 image 组件保证真机兼容) + 底部渐变遮罩确保文字可读性 */
+.feature-slide-cover {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.feature-slide-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* 底部渐变遮罩: 从透明到深色, 确保白色文字可读 */
+.feature-slide-mask {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%);
+}
+/* 微弱光晕装饰 */
+.feature-slide-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 75% 25%, rgba(255,255,255,0.12) 0%, transparent 60%);
+  z-index: 1;
+}
+.feature-slide-content {
+  position: relative;
+  z-index: 2;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.feature-slide-tag {
+  align-self: flex-start;
+  font-size: var(--fs-tag);
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255,255,255,0.22);
+  padding: 3px 12px;
+  border-radius: 100px;
+  margin-bottom: 10px;
+  backdrop-filter: blur(4px);
+}
+.feature-slide-title {
+  font-size: 23px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+  max-width: 92%;
+}
+.feature-slide-desc {
+  font-size: var(--fs-xs);
+  color: rgba(255,255,255,0.78);
+  margin-top: 8px;
   line-height: 1.6;
-  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 92%;
 }
-
-/* 添加header到science页面 */
-.page-science .header {
-  padding: 16px 0 12px;
+.feature-slide-cta {
+  margin-top: 12px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: #fff;
 }
+/* 指示器: 圆点→active变宽(pill), 呼应脉冲语言 */
+.feature-dots {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  display: flex;
+  gap: 5px;
+  z-index: 2;
+}
+.feature-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.4);
+  transition: width 0.25s var(--ease), background-color 0.25s var(--ease);
+}
+.feature-dot.active {
+  width: 18px;
+  background: var(--teal);
+}
+.dark .feature-dot.active { background: #0A84FF; }

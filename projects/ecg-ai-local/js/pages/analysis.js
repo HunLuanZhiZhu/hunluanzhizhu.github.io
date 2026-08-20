@@ -17,80 +17,30 @@ function render() {
   if (!root) return
   const s = state
   let html = '<div class="' + themeClass() + '">'
-
   if (!s.analysis) {
-    // 空状态
-    html += '<div class="empty-state">' +
-      '<div class="empty-icon">📊</div>' +
-      '<span class="empty-text">暂无检测数据</span>' +
-      '<span class="empty-subtext">完成心电检测后可查看综合分析</span>' +
-    '</div>'
+    html += '<div class="empty-state ecg-bg-line"><div class="empty-icon empty-icon-text">析</div><div class="empty-text">暂无检测数据</div><div class="empty-subtext">完成心电检测后可查看综合分析</div><div class="empty-action-btn" data-go-detect>去检测</div></div>'
   } else {
     const a = s.analysis
-    // 风险概要卡片
-    html += '<div class="card risk-card">' +
-      '<div class="risk-header">' +
-        '<div class="risk-icon-wrap risk-' + a.riskColor + '">' +
-          '<span class="risk-icon-text">' + (a.riskLevel === '低' ? '✓' : '!') + '</span>' +
-        '</div>' +
-        '<div class="risk-info">' +
-          '<div class="risk-level">' + a.riskLevel + '风险</div>' +
-          '<div class="risk-desc">基于 ' + a.total + ' 次检测综合评估</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="analysis-summary">' + a.summary + '</div>' +
-    '</div>'
-
-    // 环形图卡片
-    html += '<div class="card chart-card">' +
-      '<div class="card-title">心搏分类分布</div>' +
-      '<div class="chart-container"><canvas id="donutChart" class="donut-chart"></canvas></div>' +
-    '</div>'
-
-    // 柱状图卡片
-    html += '<div class="card chart-card">' +
-      '<div class="card-title">各类检测次数</div>' +
-      '<div class="bar-container"><canvas id="barChart" class="bar-chart"></canvas></div>' +
-    '</div>'
-
-    // 正常/异常比例卡片
-    html += '<div class="card ratio-card">' +
-      '<div class="card-title">正常 / 异常比例</div>' +
-      '<div class="ratio-bar">' +
-        '<div class="ratio-normal" style="width: ' + a.normalRate + '%;"></div>' +
-        '<div class="ratio-abnormal" style="width: ' + a.abnormalRate + '%;"></div>' +
-      '</div>' +
-      '<div class="ratio-labels">' +
-        '<span class="ratio-normal-label">正常 ' + a.normalRate + '%</span>' +
-        '<span class="ratio-abnormal-label">异常 ' + a.abnormalRate + '%</span>' +
-      '</div>' +
-    '</div>'
-
-    // 健康建议卡片
-    if (a.suggestion) {
-      html += '<div class="card suggestion-card">' +
-        '<div class="suggestion-header">' +
-          '<span class="suggestion-icon">💡</span>' +
-          '<span class="suggestion-title">健康建议</span>' +
-        '</div>' +
-        '<div class="suggestion-text">' + a.suggestion + '</div>' +
-      '</div>'
+    html += '<div class="page-head fade-in-up"><div class="page-eyebrow">数据分析</div><div class="page-title">综合分析</div></div>'
+    html += '<div class="risk-card risk-card-' + a.riskColor + ' fade-in-up-d1"><div class="risk-icon risk-icon-' + a.riskColor + '">' + (a.riskLevel === '低' ? '✓' : '!') + '</div><div class="risk-info"><div class="risk-level risk-level-' + a.riskColor + '">' + a.riskLevel + '风险</div><div class="risk-desc">基于 ' + a.total + ' 次检测 · ' + a.summary + '</div></div></div>'
+    if (a.stats) {
+      html += '<div class="mini-grid fade-in-up-d1">' + a.stats.map(item => '<div class="mini-cell"><div class="mini-val ' + (item.cls ? 'mini-val-' + item.cls : '') + '">' + item.value + '</div><div class="mini-lbl">' + item.label + '</div></div>').join('') + '</div>'
     }
-
-    // 免责声明
-    html += '<div class="disclaimer">以上分析仅供参考，不构成医疗诊断建议。如有不适请及时就医。</div>'
+    html += '<div class="sec fade-in-up-d1"><div class="sec-title">心搏分类分布</div></div><div class="card fade-in-up-d2"><canvas id="donutChart" class="donut-canvas"></canvas></div>'
+    html += '<div class="sec sec-spacer fade-in-up-d2"><div class="sec-title">各类检测次数</div></div><div class="card fade-in-up-d3"><canvas id="barChart" class="bar-canvas"></canvas></div>'
+    html += '<div class="sec sec-spacer fade-in-up-d3"><div class="sec-title">正常 / 异常比例</div></div><div class="card fade-in-up-d4"><div class="ratio-bar"><div class="ratio-bar-normal bar-grow" style="width:' + a.normalRate + '%;"></div><div class="ratio-bar-abnormal bar-grow" style="width:' + a.abnormalRate + '%;"></div></div><div class="ratio-labels"><span class="ratio-normal-label">正常 ' + a.normalRate + '%</span><span class="ratio-abnormal-label">异常 ' + a.abnormalRate + '%</span></div></div>'
+    if (a.suggestion) {
+      const tipCls = a.riskColor === 'green' ? 'emerald' : a.riskColor === 'orange' ? 'amber' : 'rose'
+      html += '<div class="tip-strip tip-strip-' + tipCls + '"><div class="tip-icon tip-icon-' + tipCls + '">!</div><div class="tip-body"><div class="tip-title">健康建议</div><div class="tip-text">' + a.suggestion + '</div></div></div>'
+    }
+    html += '<div class="disclaimer-card"><div class="disclaimer-icon">!</div><div class="disclaimer-text">以上分析仅供参考，不构成医疗诊断建议。</div></div>'
   }
-
+  html += '<div class="footer-text">心韵深辨 · 用心感知，以智辨析</div>'
   html += '</div>'
   root.innerHTML = html
-
-  if (s.analysis) {
-    // 延迟绘制图表, 等 canvas 布局
-    setTimeout(function() {
-      drawDonut(s.analysis.dist, s.analysis.total)
-      drawBars(s.analysis.dist)
-    }, 300)
-  }
+  const goBtn = root.querySelector('[data-go-detect]')
+  if (goBtn) goBtn.addEventListener('click', () => { import('../router.js').then(m => m.switchTab('detect')) })
+  if (s.analysis) setTimeout(function() { drawDonut(s.analysis.dist, s.analysis.total); drawBars(s.analysis.dist) }, 300)
 }
 
 function computeAnalysis() {

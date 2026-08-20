@@ -1,197 +1,84 @@
-/* pages/analysis/analysis.wxss — 综合分析页 */
+/* analysis.css — 心韵深辨 H5 子页 (同步自 subpackages/extra/analysis/analysis.wxss)
+ * 变量: css/app.css --warm:#F5F5F7 --teal:#007AFF
+ */
 
-/* 空状态 */
-.page-analysis .empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 80px 0;
-  gap: 8px;
-}
+/* analysis.wxss — Warm Clinical
+ * 分析页专属样式 — 视觉增强: 比例条、图表卡片、风险卡装饰
+ */
 
-.page-analysis .empty-icon {
-  font-size: 48px;
-  margin-bottom: 8px;
-}
-
-.page-analysis .empty-text {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--label-primary);
-}
-
-.page-analysis .empty-subtext {
-  font-size: 14px;
-  color: var(--label-secondary);
-}
-
-/* 风险概要卡片 */
-.page-analysis .risk-card {
-  padding: var(--card-padding);
-  margin-bottom: var(--card-gap);
-}
-
-.page-analysis .risk-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 14px;
-}
-
-.page-analysis .risk-icon-wrap {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.page-analysis .risk-green { background: rgba(52, 199, 89, 0.15); }
-.page-analysis .risk-orange { background: rgba(255, 149, 0, 0.15); }
-.page-analysis .risk-red { background: rgba(255, 59, 48, 0.15); }
-
-.page-analysis .risk-icon-text {
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.page-analysis .risk-green .risk-icon-text { color: var(--accent-green); }
-.page-analysis .risk-orange .risk-icon-text { color: var(--accent-orange); }
-.page-analysis .risk-red .risk-icon-text { color: var(--accent-red); }
-
-.page-analysis .risk-info {
-  flex: 1;
-}
-
-.page-analysis .risk-level {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--label-primary);
-}
-
-.page-analysis .risk-desc {
-  font-size: 13px;
-  color: var(--label-secondary);
-  margin-top: 2px;
-}
-
-.page-analysis .analysis-summary {
-  font-size: 14px;
-  color: var(--label-primary);
-  line-height: 1.75;
-}
-
-/* 图表卡片 */
-.page-analysis .chart-card {
-  padding: var(--card-padding);
-  margin-bottom: var(--card-gap);
-}
-
-.page-analysis .card-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--label-primary);
-  margin-bottom: 12px;
-}
-
-.page-analysis .chart-container {
+/* A4: canvas 尺寸 — 响应式 */
+.donut-canvas {
   width: 100%;
-  height: 180px;
+  height: 200px;
+  display: block;
+  margin: 0 auto;
 }
 
-.page-analysis .donut-chart {
+.bar-canvas {
   width: 100%;
-  height: 100%;
+  height: 200px;
+  display: block;
 }
 
-/* 柱状图 */
-.page-analysis .bar-container {
-  width: 100%;
-  height: 160px;
+/* A8: sec 之间增加间距 */
+.sec-spacer {
+  margin-top: 36px;
 }
 
-.page-analysis .bar-chart {
-  width: 100%;
-  height: 100%;
-}
-
-/* 正常/异常比例卡片 */
-.page-analysis .ratio-card {
-  padding: var(--card-padding);
-  margin-bottom: var(--card-gap);
-}
-
-.page-analysis .ratio-bar {
+/* A2: 正常/异常比例条 — 渐变增强 */
+.ratio-bar {
   display: flex;
   height: 10px;
-  border-radius: 100px;
+  border-radius: 5px;
   overflow: hidden;
-  background: var(--fill-tertiary);
+  background: var(--inp);
   margin-bottom: 8px;
 }
-
-.page-analysis .ratio-normal {
-  background: var(--accent-green);
-  transition: width 0.5s ease;
+.ratio-bar-normal {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), #34D399);
+}
+.ratio-bar-abnormal {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), #FB7185);
 }
 
-.page-analysis .ratio-abnormal {
-  background: var(--accent-red);
-  transition: width 0.5s ease;
+/* ===== 图表卡片增强 — 内边距统一 ===== */
+.card canvas {
+  border-radius: var(--r-sm);
 }
 
-.page-analysis .ratio-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
+/* ===== 风险卡左侧装饰条 ===== */
+.risk-card-green, .risk-card-low {
+  border-left: 3px solid var(--green);
+}
+.risk-card-orange, .risk-card-mid {
+  border-left: 3px solid var(--amber);
+}
+.risk-card-red, .risk-card-high {
+  border-left: 3px solid var(--red);
 }
 
-.page-analysis .ratio-normal-label {
-  color: var(--accent-green);
-  font-weight: 500;
+/* ===== 风险图标增强 — 渐变背景 ===== */
+.risk-icon-green, .risk-icon-low {
+  background: linear-gradient(135deg, var(--green), #34D399);
+  box-shadow: 0 2px 8px rgba(16,185,129,0.2);
+}
+.risk-icon-orange, .risk-icon-mid {
+  background: linear-gradient(135deg, var(--amber), #FBBF24);
+  box-shadow: 0 2px 8px rgba(180,83,9,0.2);
+}
+.risk-icon-red, .risk-icon-high {
+  background: linear-gradient(135deg, var(--red), #FB7185);
+  box-shadow: 0 2px 8px rgba(225,29,72,0.2);
 }
 
-.page-analysis .ratio-abnormal-label {
-  color: var(--accent-red);
-  font-weight: 500;
-}
-
-/* 健康建议卡片 */
-.page-analysis .suggestion-card {
-  padding: var(--card-padding);
-  margin-bottom: var(--card-gap);
-}
-
-.page-analysis .suggestion-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-
-.page-analysis .suggestion-icon {
-  font-size: 18px;
-}
-
-.page-analysis .suggestion-title {
-  font-size: 16px;
+/* ===== 比例标签增强 ===== */
+.ratio-labels {
   font-weight: 600;
-  color: var(--label-primary);
 }
 
-.page-analysis .suggestion-text {
-  font-size: 14px;
-  color: var(--label-secondary);
-  line-height: 1.75;
-}
-
-/* 免责声明 */
-.page-analysis .disclaimer {
-  font-size: 12px;
-  color: var(--label-tertiary);
-  text-align: center;
-  line-height: 1.5;
-  padding: 8px 20px 20px;
-}
+/* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
+.dark .risk-icon-green, .dark .risk-icon-low { box-shadow: 0 2px 8px rgba(52,211,153,0.2); }
+.dark .risk-icon-orange, .dark .risk-icon-mid { box-shadow: 0 2px 8px rgba(251,191,36,0.2); }
+.dark .risk-icon-red, .dark .risk-icon-high { box-shadow: 0 2px 8px rgba(251,113,133,0.2); }

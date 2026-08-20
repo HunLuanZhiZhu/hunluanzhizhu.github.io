@@ -1,174 +1,323 @@
-/* components/profile-sheet/profile-sheet.wxss — 个人档案半屏面板
- * Apple 半屏 Sheet 风格: 圆角弹出 + 毛玻璃 + 弹簧动画
+/* css/profile-sheet.css — 个人档案半屏面板 (H5)
+ * 来源: components/profile-sheet/profile-sheet.wxss
+ * 变量: css/app.css --warm:#F5F5F7 --teal:#007AFF
  */
 
-/* 遮罩 */
+/* profile-sheet.wxss — Warm Clinical
+ * 个人档案半屏面板 — 三段式: 基础信息/过敏史/慢性疾病
+ * 重构: 新增标签页、开关、多选网格、空状态样式
+ */
+
+/* ===== 遮罩层 ===== */
+/* z-index: 10000 > TabBar(9999), 确保弹框始终在TabBar之上 */
 .mask {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1000;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.5);
+  z-index: 10000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
 }
-
 .mask.show {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* 面板 */
+/* ===== 面板主体 ===== */
+/* flex布局: header + tab + scroll-view(form) + actions 垂直排列 */
+/* 按钮自然固定在底部, 不依赖sticky */
 .sheet {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--bg-secondary, #FFFFFF);
-  border-radius: 20px 20px 0 0;
-  padding: 8px 20px calc(80px + env(safe-area-inset-bottom));
-  z-index: 1001;
-  transform: translateY(100%);
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  left: 0; right: 0; bottom: 0;
+  background: var(--card);
+  border-radius: 16px 16px 0 0;
+  padding: 12px 20px 0;
+  z-index: 10001;
+  display: none;
   max-height: 85vh;
-  overflow-y: auto;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-bottom: none;
 }
-
 .sheet.show {
-  transform: translateY(0);
+  display: flex;
 }
 
-/* 拖拽条 */
+/* ===== 拖拽指示条 ===== */
 .grabber {
   width: 36px;
-  height: 5px;
+  height: 4px;
   border-radius: 100px;
-  background: rgba(60, 60, 67, 0.3);
-  margin: 0 auto 16px;
+  background: var(--t3);
+  margin: 0 auto 18px;
 }
 
-/* 标题区 */
+/* ===== 标题区 ===== */
 .sheet-header {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
-
 .sheet-title {
   font-size: 20px;
   font-weight: 700;
-  color: var(--label-primary, #000);
+  color: var(--t1);
   margin-bottom: 8px;
 }
-
 .sheet-desc {
-  font-size: 14px;
-  color: var(--label-secondary, rgba(60,60,67,0.85));
-  line-height: 1.6;
+  font-size: var(--fs-sm);
+  color: var(--t2);
+  line-height: var(--lh);
 }
 
-/* 表单 */
+/* ===== 标签页切换栏 ===== */
+.tab-bar {
+  display: flex;
+  background: var(--inp);
+  border-radius: var(--r-sm);
+  padding: 3px;
+  margin-bottom: 20px;
+  gap: 3px;
+}
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 9px 4px;
+  border-radius: 6px;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--t2);
+  transition: all 0.2s ease;
+}
+.tab-active {
+  background: var(--card);
+  color: var(--teal);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* ===== 表单 — flex:1占剩余空间, overflow-y:auto支持内容滚动 ===== */
+/* min-height:0 确保flex子项可缩小至内容以下, 使overflow生效 */
 .form {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
 }
-
 .form-item {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 .form-label {
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 600;
-  color: var(--label-primary, #000);
+  color: var(--t1);
 }
-
 .form-optional {
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--label-tertiary, rgba(60,60,67,0.7));
+  font-size: var(--fs-xs);
+  color: var(--t3);
   margin-left: 4px;
+  font-weight: 400;
 }
 
+/* ===== 输入框 ===== */
 .form-input {
-  height: 44px;
-  border-radius: 12px;
-  background: var(--fill-tertiary, rgba(120,120,128,0.12));
+  height: 46px;
+  border-radius: var(--r-sm);
+  background: var(--inp);
   padding: 0 14px;
-  font-size: 15px;
-  color: var(--label-primary, #000);
+  font-size: var(--fs-md);
+  color: var(--t1);
+  border: 1px solid var(--border);
+}
+.form-input:focus {
+  border-color: var(--teal);
 }
 
-/* 分段选择器 */
+/* ===== 分段控制器 ===== */
 .seg-control {
   display: flex;
   gap: 8px;
-  background: var(--fill-tertiary, rgba(120,120,128,0.12));
-  border-radius: 10px;
+  background: var(--inp);
+  border-radius: var(--r-sm);
   padding: 3px;
 }
-
 .seg-control-multi {
   flex-wrap: wrap;
 }
-
 .seg-item {
   flex: 1;
   text-align: center;
-  padding: 9px 8px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--label-secondary, rgba(60,60,67,0.85));
-  transition: all 0.2s;
-  min-width: calc(33.33% - 6px);
+  padding: 9px 6px;
+  border-radius: 6px;
+  font-size: var(--fs-sm);
+  color: var(--t2);
+  min-width: calc(25% - 6px);
+  border: 1px solid transparent;
 }
-
 .seg-active {
-  background: var(--bg-secondary, #FFFFFF);
-  color: var(--accent-blue, #007AFF);
+  background: var(--card);
+  color: var(--teal);
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--teal);
 }
 
-/* 按钮 */
+/* ===== 开关切换 (toggle-switch) ===== */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.toggle-switch {
+  width: 46px;
+  height: 26px;
+  border-radius: 100px;
+  background: var(--t3);
+  position: relative;
+  transition: background 0.25s ease;
+  flex-shrink: 0;
+}
+.toggle-on {
+  background: var(--teal);
+}
+.toggle-knob {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+.toggle-on .toggle-knob {
+  transform: translateX(20px);
+}
+
+/* ===== 多选网格 (checkbox-grid) ===== */
+.checkbox-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.checkbox-item {
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: var(--fs-sm);
+  background: var(--inp);
+  color: var(--t2);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+.checkbox-checked {
+  background: rgba(0,122,255,0.08);
+  color: var(--teal);
+  border-color: var(--teal);
+  font-weight: 600;
+}
+
+/* ===== 空状态提示 ===== */
+.empty-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 0;
+  gap: 10px;
+}
+.empty-hint-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--emerald);
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.empty-hint-text {
+  font-size: var(--fs-sm);
+  color: var(--t3);
+}
+
+/* ===== 表单滚动区域 — flex:1 占据剩余空间 ===== */
+.form-scroll {
+  flex: 1;
+  min-height: 0;
+  padding-bottom: 8px;
+}
+
+/* ===== 操作按钮 — 固定在面板底部(flex自然布局) ===== */
 .sheet-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 24px;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 14px 0 calc(14px + env(safe-area-inset-bottom));
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
 }
-
 .btn-skip {
   flex: 1;
   height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
-  background: var(--fill-tertiary, rgba(120,120,128,0.12));
-  font-size: 16px;
+  border-radius: var(--r-md);
+  background: var(--inp);
+  border: 1px solid var(--border);
+  font-size: var(--fs-md);
   font-weight: 500;
-  color: var(--label-secondary, rgba(60,60,67,0.85));
+  color: var(--t1);
+  transition: transform 0.15s var(--ease), opacity 0.15s var(--ease);
 }
-
+.btn-skip:active {
+  transform: scale(0.97);
+  opacity: 0.88;
+}
 .btn-save {
-  flex: 2;
+  flex: 1.5;
   height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
-  background: var(--accent-blue, #007AFF);
-  font-size: 16px;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--teal), #5AC8FA);
+  font-size: var(--fs-md);
   font-weight: 600;
-  color: #FFFFFF;
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,122,255,0.2);
+  transition: transform 0.15s var(--ease), opacity 0.15s var(--ease);
+}
+.btn-save:active {
+  transform: scale(0.97);
+  opacity: 0.88;
+  box-shadow: 0 2px 6px rgba(0,122,255,0.15);
 }
 
-.btn-skip:active,
-.btn-save:active {
-  opacity: 0.7;
+/* ===== 深色模式对比度增强 ===== */
+.mask.dark {
+  background: rgba(0, 0, 0, 0.6);
 }
+.mask.dark .form-input {
+  border-color: var(--border);
+}
+.mask.dark .seg-active {
+  border-color: var(--teal);
+}
+.mask.dark .checkbox-checked {
+  background: rgba(45, 212, 191, 0.16);
+}
+
+/* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
+.mask.dark .seg-active { box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.mask.dark .btn-save { box-shadow: 0 4px 12px rgba(10,132,255,0.2); }
+.mask.dark .btn-save:active { box-shadow: 0 2px 6px rgba(10,132,255,0.15); }
+.mask.dark .toggle-on { box-shadow: 0 2px 8px rgba(10,132,255,0.25); }
