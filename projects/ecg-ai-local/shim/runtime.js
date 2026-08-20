@@ -278,6 +278,8 @@
             delegateEvents(container, inst)
             // 挂载组件
             mountComponents(container, inst)
+            // 重渲染后置处理（swiper 等需要重新初始化）
+            if (global.__afterMount) global.__afterMount(container, inst, route)
           }
         }
         mountComponents(container, inst)
