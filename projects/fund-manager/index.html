@@ -1,9 +1,12 @@
 <!doctype html>
+<!-- build: 2026-08-24-v16-wage-subpages-analysis -->
 <html lang="zh-CN" data-theme="light">
 <head>
+<!-- BUILD: 2026-08-24-v16-wage-subpages-analysis -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="color-scheme" content="light dark" />
+<meta name="fund-manager-build" content="2026-08-24-v16-wage-subpages-analysis" />
 <title>活动经费记账助手</title>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
@@ -1223,11 +1226,96 @@ tbody tr:hover{background:var(--bg-input)}
   *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
 }
 </style>
+
+<style id="financial-v3-overrides">
+@media(max-width:520px){
+  .topbar-inner{flex-wrap:wrap}
+  .topbar-inner .brand{flex:1 1 auto}
+  #modelBtn,#manualBtn{width:40px;padding-left:0;padding-right:0;justify-content:center}
+  #modelBtn span,#manualBtn span{display:none}
+}
+</style>
+
+<style id="activity-tag-styles">
+.tag-filter-field{flex:2 1 320px;min-width:260px}
+.tag-filter-options,.tag-known,.tag-selected,.card-tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tag-filter-options{min-height:42px;padding:7px 8px;border-radius:12px;background:rgba(118,118,128,.07)}
+.tag-chip,.tag-choice,.tag-filter-chip{appearance:none;border:0;border-radius:999px;padding:5px 9px;font:inherit;font-size:11px;line-height:1.3;white-space:nowrap}
+.tag-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(52,120,246,.10);color:#356fb9}
+.tag-chip .tag-remove{border:0;background:transparent;padding:0;margin:0;color:inherit;cursor:pointer;font-size:13px;line-height:1}
+.tag-choice,.tag-filter-chip{cursor:pointer;background:rgba(118,118,128,.10);color:var(--ink-soft);transition:background .15s,box-shadow .15s}
+.tag-choice:hover,.tag-filter-chip:hover{background:rgba(118,118,128,.16)}
+.tag-choice.selected,.tag-filter-chip.selected{background:rgba(52,120,246,.14);color:#2867b2;box-shadow:inset 0 0 0 1px rgba(52,120,246,.18)}
+.tag-picker{display:grid;gap:9px}
+.tag-picker-section{display:grid;gap:6px}
+.tag-picker-label{font-size:10px;color:var(--muted);font-weight:650}
+.tag-add-row{display:flex;gap:7px;align-items:center}
+.tag-add-row .field{flex:1;min-width:0}
+.card-tags{margin-top:7px;position:relative;z-index:1}
+.card-tags .tag-chip{padding:3px 7px;font-size:9px}
+.summary-cell.tags-cell{grid-column:span 2}
+@media(max-width:760px){.tag-filter-field{flex-basis:100%}.summary-cell.tags-cell{grid-column:1/-1}.tag-add-row{align-items:stretch}.tag-add-row .btn{flex:0 0 auto}}
+@media(prefers-color-scheme:dark){.tag-chip{background:rgba(64,156,255,.16);color:#8abfff}.tag-choice.selected,.tag-filter-chip.selected{background:rgba(64,156,255,.20);color:#9bc7ff}}
+
+.group-view-toggle{display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 10px;border-radius:10px;background:rgba(118,118,128,.08);font-size:11px;font-weight:650;color:var(--ink-soft);white-space:nowrap;cursor:pointer}
+.group-view-toggle input{width:16px;height:16px;accent-color:var(--teal);cursor:pointer}
+.tag-group-list{display:grid;gap:18px}
+.tag-group{background:rgba(255,255,255,.48);border:1px solid var(--rule);border-radius:18px;padding:14px;box-shadow:0 4px 18px rgba(20,32,28,.035)}
+.tag-group-head{display:flex;align-items:flex-start;gap:14px;justify-content:space-between;margin-bottom:12px;padding:2px 2px 12px;border-bottom:1px solid var(--rule)}
+.tag-group-title{display:flex;align-items:center;gap:9px;min-width:0}.tag-group-title i{font-size:20px;color:var(--navy)}
+.tag-group-title h3{margin:0;font-size:16px;color:var(--ink);font-weight:720}.tag-group-title .subtle{margin-top:2px}
+.tag-group-stats{display:grid;grid-template-columns:repeat(4,minmax(108px,1fr));gap:7px;min-width:min(540px,60%)}
+.tag-group-stat{padding:8px 10px;border-radius:10px;background:rgba(118,118,128,.065)}
+.tag-group-stat .k{font-size:9px;color:var(--muted);font-weight:650}.tag-group-stat .v{margin-top:2px;font-size:12px;font-weight:700;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.tag-group .grid{margin:0}
+.tag-stats-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 14px}.tag-stats-summary .preview-group{margin:0}
+.tag-stats-table-wrap{overflow:auto;border:1px solid var(--rule);border-radius:12px}.tag-stats-table{min-width:900px;margin:0}.tag-stats-table th,.tag-stats-table td{font-size:11px;padding:9px 10px}.tag-stats-table tfoot td{font-weight:750;background:rgba(118,118,128,.06)}
+@media(max-width:900px){.tag-group-head{display:grid}.tag-group-stats{min-width:0;width:100%;grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.group-view-toggle{flex:1;justify-content:center}.tag-stats-summary{grid-template-columns:1fr 1fr}.tag-group{padding:10px}.tag-group-stats{grid-template-columns:1fr 1fr}}
+</style>
+
+<style id="wage-module-style">
+.module-switch{display:flex;align-items:center;gap:4px;padding:3px;background:rgba(118,118,128,.10);border-radius:12px}
+.module-switch .btn{min-height:34px;padding:6px 10px;border-radius:9px;background:transparent;color:var(--muted)}
+.module-switch .btn.active{background:var(--sheet);color:var(--ink);box-shadow:0 1px 5px rgba(20,32,28,.08)}
+.wage-module{display:none}.wage-module.active{display:block}
+.wage-hero{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;margin-bottom:16px;padding:25px 27px;border-radius:24px;background:linear-gradient(135deg,#172d49,#244f6d 55%,#2c766f);color:#fff;box-shadow:var(--shadow)}
+.wage-hero h1{margin:4px 0 8px;font-size:32px;letter-spacing:-.035em}.wage-hero p{margin:0;color:rgba(255,255,255,.72);max-width:58em}.wage-kicker{font-size:11px;color:#b8dfd9;font-weight:700;letter-spacing:.06em}
+.wage-rule-badges{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.wage-rule-badges span{padding:7px 10px;border:1px solid rgba(255,255,255,.17);border-radius:999px;background:rgba(255,255,255,.08);font-size:11px;white-space:nowrap}
+.wage-stats{margin-bottom:16px;grid-template-columns:repeat(4,1fr);gap:10px;background:transparent;border:0;box-shadow:none;overflow:visible}.wage-stats .stat{border-radius:17px;border:1px solid var(--rule);box-shadow:var(--shadow-small)}
+.wage-toolbar{display:grid;grid-template-columns:minmax(240px,1fr) max-content max-content;gap:8px;margin-bottom:12px;padding:9px;background:rgba(255,255,255,.66);border:1px solid var(--rule);border-radius:17px;box-shadow:var(--shadow-small)}
+.wage-filter-panel{margin-bottom:20px}.wage-filter-summary{font-size:11px;color:var(--muted);padding-bottom:9px}
+.wage-sheet{margin-bottom:22px}.wage-table{min-width:1420px}.wage-row-warning{background:rgba(255,69,58,.075)!important;box-shadow:inset 4px 0 0 #d84a43}.wage-warning{margin-top:4px;color:#c9342d;font-size:10px;font-weight:700}.wage-money-income{color:#087e66;font-weight:750}.wage-money-expense{color:var(--ink);font-weight:750}.wage-preset-table{min-width:860px}.wage-preset-note{font-size:11px;color:var(--muted);line-height:1.65}.wage-readonly{background:rgba(118,118,128,.06)!important;color:var(--ink-soft);cursor:default}
+.wage-status-btn{border:0;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:700;cursor:pointer}.wage-status-btn.paid{background:rgba(48,209,88,.13);color:#087e5e}.wage-status-btn.unpaid{background:rgba(255,159,10,.14);color:#9d5c00}
+.wage-actions{display:flex;gap:5px;white-space:nowrap}.wage-actions .btn{min-height:32px}
+.wage-summary-shell{display:grid;gap:14px}.wage-summary-controls{display:flex;align-items:end;gap:10px;flex-wrap:wrap}.wage-summary-controls .filter-field{min-width:140px}.wage-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.wage-summary-card{background:var(--sheet);border:1px solid var(--rule);border-radius:18px;box-shadow:var(--shadow-small);overflow:hidden}.wage-summary-card h3{margin:0;padding:14px 16px;border-bottom:1px solid var(--rule);font-size:15px}.wage-summary-card .table-wrap{max-height:420px}.wage-summary-card table{min-width:620px}.wage-summary-card tfoot td{font-weight:800;background:rgba(118,118,128,.06)}
+.wage-quick-block{margin:8px 0 12px}.wage-quick-label{font-size:10px;color:var(--muted);font-weight:700;margin-bottom:6px}.wage-quick-list{display:flex;gap:6px;flex-wrap:wrap}.wage-quick-chip{border:1px solid var(--rule);background:rgba(118,118,128,.07);border-radius:999px;padding:5px 9px;font-size:11px;cursor:pointer}.wage-quick-chip:hover{background:rgba(118,118,128,.13)}
+.wage-calc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.wage-calc-item{background:rgba(118,118,128,.06);border-radius:12px;padding:10px}.wage-calc-item span{display:block;font-size:10px;color:var(--muted)}.wage-calc-item strong{display:block;margin-top:3px;font-size:16px}
+.wage-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}.wage-form-grid .form-row{grid-template-columns:110px 1fr}.wage-form-grid .form-row.full{grid-column:1/-1}.wage-tip{font-size:11px;color:var(--muted);line-height:1.7;margin-top:6px}.wage-record-kind{font-size:10px;font-weight:700;padding:4px 7px;border-radius:999px;display:inline-block}.wage-record-kind.income{background:rgba(48,209,88,.12);color:#087e5e}.wage-record-kind.work{background:rgba(52,120,246,.10);color:#356fb9}
+@media(max-width:1000px){.wage-summary-grid{grid-template-columns:1fr}.wage-toolbar{grid-template-columns:1fr 1fr}.wage-toolbar .search{grid-column:1/-1}.wage-stats{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.module-switch{order:3;width:100%}.module-switch .btn{flex:1}.wage-hero{display:block}.wage-rule-badges{justify-content:flex-start;margin-top:14px}.wage-toolbar{display:flex;flex-wrap:wrap}.wage-toolbar .search{flex-basis:100%}.wage-toolbar .btn{flex:1}.wage-form-grid{grid-template-columns:1fr}.wage-form-grid .form-row.full{grid-column:auto}.wage-calc{grid-template-columns:1fr}.wage-stats{grid-template-columns:1fr 1fr}}
+.wage-subnav{display:flex;gap:6px;margin:0 0 18px;padding:5px;background:rgba(118,118,128,.09);border:1px solid var(--rule);border-radius:16px;box-shadow:var(--shadow-small);width:max-content;max-width:100%}
+.wage-subnav .btn{background:transparent;color:var(--muted);border:0;box-shadow:none}.wage-subnav .btn.active{background:var(--sheet);color:var(--ink);box-shadow:0 2px 8px rgba(20,32,28,.08)}
+.wage-subpage{display:none}.wage-subpage.active{display:block}
+.wage-page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin:0 0 14px}.wage-page-head h2{margin:0;font-size:21px}.wage-page-head p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.65}
+.wage-analysis-controls{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr)) auto;gap:9px;align-items:end;margin-bottom:14px;padding:12px;background:var(--sheet);border:1px solid var(--rule);border-radius:18px;box-shadow:var(--shadow-small)}
+.wage-analysis-scope{margin:-3px 0 14px;font-size:11px;color:var(--muted);line-height:1.65}.wage-analysis-scope strong{color:var(--ink-soft)}
+.wage-analysis-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}.wage-analysis-kpi{padding:14px 15px;background:var(--sheet);border:1px solid var(--rule);border-radius:16px;box-shadow:var(--shadow-small)}.wage-analysis-kpi .k{font-size:10px;color:var(--muted);font-weight:700}.wage-analysis-kpi .v{margin-top:4px;font-size:22px;font-weight:800;letter-spacing:-.025em;font-variant-numeric:tabular-nums}.wage-analysis-kpi .s{margin-top:3px;font-size:10px;color:var(--muted)}
+.wage-analysis-section{margin-bottom:18px;background:var(--sheet);border:1px solid var(--rule);border-radius:18px;box-shadow:var(--shadow-small);overflow:hidden}.wage-analysis-section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;padding:14px 16px;border-bottom:1px solid var(--rule)}.wage-analysis-section-head h3{margin:0;font-size:15px}.wage-analysis-section-head p{margin:3px 0 0;font-size:10px;color:var(--muted)}.wage-analysis-section .table-wrap{max-height:430px}.wage-analysis-section table{min-width:820px}.wage-analysis-section tfoot td{font-weight:800;background:rgba(118,118,128,.055)}
+.wage-analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.wage-analysis-grid .wage-analysis-section{margin-bottom:0}
+.wage-share-cell{min-width:150px}.wage-share{height:6px;border-radius:999px;background:rgba(118,118,128,.12);overflow:hidden;margin-top:5px}.wage-share>i{display:block;height:100%;background:currentColor;opacity:.52;border-radius:inherit}.wage-analysis-warn{color:#c9342d;font-weight:750}.wage-analysis-positive{color:#087e66;font-weight:750}
+.wage-analysis-empty{padding:28px 16px;text-align:center;color:var(--muted);font-size:12px}.wage-analysis-note{padding:10px 12px;border-radius:12px;background:rgba(52,120,246,.07);color:var(--ink-soft);font-size:11px;line-height:1.65;margin-bottom:14px}.wage-analysis-note strong{color:var(--ink)}
+@media(max-width:1100px){.wage-analysis-controls{grid-template-columns:repeat(3,1fr)}.wage-analysis-grid{grid-template-columns:1fr}.wage-analysis-kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.wage-subnav{width:100%;overflow:auto}.wage-subnav .btn{flex:1;white-space:nowrap}.wage-page-head{display:block}.wage-page-head .btn{margin-top:10px}.wage-analysis-controls{grid-template-columns:1fr 1fr}.wage-analysis-controls .btn{grid-column:1/-1}.wage-analysis-kpis{grid-template-columns:1fr 1fr}}
+
+</style>
+
 </head>
 <body>
 <div class="app">
   <div class="topbar"><div class="topbar-inner">
-    <div class="brand"><i class="ri-wallet-3-line" aria-hidden="true"></i><span>活动经费记账助手</span></div><div class="spacer"></div>
+    <div class="brand"><i class="ri-wallet-3-line" aria-hidden="true"></i><span id="brandText">活动经费记账助手</span></div><div class="module-switch" aria-label="功能模块"><button id="activityModuleBtn" class="btn small active" type="button"><i class="ri-calendar-event-line" aria-hidden="true"></i><span>活动经费</span></button><button id="wageModuleBtn" class="btn small" type="button"><i class="ri-user-star-line" aria-hidden="true"></i><span>实习生工资</span></button></div><div class="spacer"></div>
+    <button id="modelBtn" class="btn small"><i class="ri-calculator-line" aria-hidden="true"></i><span>财务模型</span></button>
     <button id="manualBtn" class="btn small"><i class="ri-book-open-line" aria-hidden="true"></i><span>使用说明</span></button>
     <div id="modePill" class="mode-pill"><span class="mode-dot"></span><span id="modeText">普通模式</span></div>
     <button id="modeBtn" class="btn small"><i class="ri-eye-line" aria-hidden="true"></i><span>进入秘密模式</span></button>
@@ -1237,14 +1325,14 @@ tbody tr:hover{background:var(--bg-input)}
     <section id="home" class="home">
       <div class="home-lead">
         <div class="hero">
-          <div class="hero-copy"><div class="hero-kicker">校园活动经费台账</div><h1>活动总览</h1><p>先处理需要催办的活动，再进入单项核对支出。</p></div>
+          <div class="hero-copy"><div class="hero-kicker">校园活动经费台账 · 统计范围</div><h1 id="heroStatsTitle">全部活动汇总</h1><p id="heroStatsDesc">当前未设置筛选条件，四项金额汇总全部活动。</p></div>
           <div class="hero-stamp"><span>今天</span><strong id="heroToday">—</strong></div>
         </div>
         <div class="stats">
-        <div class="stat"><div class="k">活动数量</div><div class="v" id="statCount">0</div></div>
-        <div class="stat"><div class="k">超预算活动</div><div class="v" id="statOverBudget">0</div></div>
-        <div class="stat"><div class="k">预支合计</div><div class="v money" id="statAdvance">￥0.00</div></div>
-        <div class="stat"><div class="k">待处理活动</div><div class="v" id="statPending">0</div></div>
+        <div class="stat"><div class="k">实际支出合计</div><div class="v money" id="statActual">￥0.00</div></div>
+        <div class="stat"><div class="k">已拨付合计</div><div class="v money" id="statFunded">￥0.00</div></div>
+        <div class="stat"><div class="k">已报销合计</div><div class="v money" id="statReimbursed">￥0.00</div></div>
+        <div class="stat"><div class="k">待报销合计</div><div class="v money" id="statPendingAmount">￥0.00</div></div>
         </div>
       </div>
 
@@ -1260,10 +1348,11 @@ tbody tr:hover{background:var(--bg-input)}
 
       <div class="filter-panel" aria-label="活动筛选">
         <div class="filter-field filter-grow"><label for="statusFilter">活动状态</label><select id="statusFilter" class="field"><option value="all">全部活动</option><option value="unsettled">仅未结清</option></select></div>
+        <div class="filter-field tag-filter-field"><label>活动标签（可多选，同时满足）</label><div id="tagFilterOptions" class="tag-filter-options" aria-label="活动标签筛选"></div></div>
         <div class="filter-field"><label for="filterStart">创建日期从</label><input id="filterStart" class="field" type="date"></div>
         <div class="filter-field"><label for="filterEnd">创建日期到</label><input id="filterEnd" class="field" type="date"></div>
         <div id="filterSummary" class="filter-summary"></div>
-        <div class="filter-actions"><button id="clearFiltersBtn" class="btn small"><i class="ri-refresh-line" aria-hidden="true"></i><span>清除筛选</span></button></div>
+        <div class="filter-actions"><label class="group-view-toggle" title="只改变当前结果的主页展示方式，不改变筛选或统计范围"><input id="groupByTagToggle" type="checkbox"><span>按标签分组</span></label><button id="tagStatsBtn" class="btn small"><i class="ri-bar-chart-grouped-line" aria-hidden="true"></i><span>按标签统计</span></button><button id="clearFiltersBtn" class="btn small"><i class="ri-refresh-line" aria-hidden="true"></i><span>清除筛选</span></button></div>
       </div>
       <div id="managePanel" class="manage-panel" style="display:none" aria-label="活动批量管理">
         <div class="manage-info"><strong>活动管理</strong><span>已选 <b id="selectedCount">0</b> 个活动</span></div>
@@ -1279,16 +1368,16 @@ tbody tr:hover{background:var(--bg-input)}
       <input id="singleActivityFileInput" type="file" accept=".xlsx,.xls" hidden />
 
       <div id="reminderSection" style="display:none">
-        <div class="section-title"><h2>催办提醒</h2><span class="subtle">已预支的活动创建满一个自然月后，只要未结清且未手动处理，每次打开或刷新都会提醒</span></div>
+        <div class="section-title"><h2>催办提醒</h2><span class="subtle">活动创建满一个自然月后，只要仍有待报销或待退 / 待补事项，每次打开或刷新都会提醒</span></div>
         <div id="reminders" class="reminders"></div>
       </div>
 
-      <div class="section-title"><h2>全部活动</h2><span id="activityCountText" class="subtle"></span></div>
+      <div class="section-title"><h2>活动列表</h2><span id="activityCountText" class="subtle"></span></div>
       <div id="activityGrid" class="grid"></div>
     </section>
 
     <section id="detail" class="detail">
-      <button id="backBtn" class="btn ghost back"><i class="ri-arrow-left-line" aria-hidden="true"></i><span>返回活动总览</span></button>
+      <button id="backBtn" class="btn ghost back"><i class="ri-arrow-left-line" aria-hidden="true"></i><span>返回活动统计</span></button>
       <div class="detail-title">
         <div class="grow"><div class="subtle" id="detailId"></div><h1 id="detailNameTitle">活动</h1><div class="subtle" id="detailCreated"></div></div>
       </div>
@@ -1304,17 +1393,121 @@ tbody tr:hover{background:var(--bg-input)}
       </div>
     </section>
 
+    <section id="wageModule" class="wage-module" aria-label="实习生工资管理">
+      <div class="wage-hero">
+        <div><div class="wage-kicker">独立模块 · 以记录为中心</div><h1>实习生工资管理</h1><p>工资模块分为记录流水、任务预设、统计分析三个独立子页面。记录负责事实数据，预设负责减少重复输入，统计分析只从记录实时计算，并支持任意起止日期筛选与 XLSX 导出。</p></div>
+        <div class="wage-rule-badges"><span>学期中 ≤ 8 小时 / 周</span><span>假期 ≤ 40 小时 / 周</span><span>超限只标红首次越线记录</span></div>
+      </div>
+
+      <nav class="wage-subnav" aria-label="工资模块子页面">
+        <button id="wageRecordsTab" class="btn small active" type="button"><i class="ri-file-list-3-line" aria-hidden="true"></i><span>记录流水</span></button>
+        <button id="wagePresetsTab" class="btn small" type="button"><i class="ri-list-settings-line" aria-hidden="true"></i><span>任务预设</span></button>
+        <button id="wageAnalysisTab" class="btn small" type="button"><i class="ri-bar-chart-box-line" aria-hidden="true"></i><span>统计分析</span></button>
+      </nav>
+
+      <section id="wageRecordsPage" class="wage-subpage active" aria-label="工资记录流水">
+        <div class="wage-page-head"><div><h2>记录流水</h2><p>收入和工资都以一条条记录保存。筛选只影响当前流水视图，不会改变统计分析页的独立筛选条件。</p></div></div>
+        <div class="stats wage-stats">
+          <div class="stat"><div class="k">收入记录合计</div><div class="v" id="wageStatIncome">￥0.00</div></div>
+          <div class="stat"><div class="k">工资应付合计</div><div class="v" id="wageStatDue">￥0.00</div></div>
+          <div class="stat"><div class="k">已支付工资</div><div class="v" id="wageStatPaid">￥0.00</div></div>
+          <div class="stat"><div class="k">未支付工资</div><div class="v" id="wageStatUnpaid">￥0.00</div></div>
+        </div>
+        <div class="wage-toolbar">
+          <input id="wageSearch" class="search" placeholder="搜索实习生、任务或备注" />
+          <button id="newIncomeBtn" class="btn"><i class="ri-add-circle-line" aria-hidden="true"></i><span>新增收入记录</span></button>
+          <button id="newWorkBtn" class="btn primary"><i class="ri-user-add-line" aria-hidden="true"></i><span>新增工资记录</span></button>
+        </div>
+        <div class="filter-panel wage-filter-panel" aria-label="工资记录筛选">
+          <div class="filter-field"><label for="wageTypeFilter">记录类型</label><select id="wageTypeFilter" class="field"><option value="all">全部记录</option><option value="income">仅收入</option><option value="work">仅工资</option></select></div>
+          <div class="filter-field"><label for="wagePersonFilter">实习生</label><select id="wagePersonFilter" class="field"><option value="all">全部实习生</option></select></div>
+          <div class="filter-field"><label for="wageStart">日期从</label><input id="wageStart" class="field" type="date"></div>
+          <div class="filter-field"><label for="wageEnd">日期到</label><input id="wageEnd" class="field" type="date"></div>
+          <div id="wageFilterSummary" class="wage-filter-summary"></div>
+          <div class="filter-actions"><button id="clearWageFiltersBtn" class="btn small"><i class="ri-refresh-line" aria-hidden="true"></i><span>清除筛选</span></button></div>
+        </div>
+        <div class="section-title"><h2>全部记录</h2><span id="wageRecordCount" class="subtle"></span></div>
+        <div class="sheet wage-sheet"><div class="table-wrap"><table class="wage-table">
+          <thead><tr><th>日期</th><th>类型</th><th>实习生 / 来源</th><th>任务 / 内容</th><th>数量</th><th>每单位折合工时</th><th>标准工时</th><th>工资标准</th><th>应付金额</th><th>支付状态</th><th>备注</th><th>操作</th></tr></thead>
+          <tbody id="wageRecordBody"></tbody>
+        </table></div></div>
+      </section>
+
+      <section id="wagePresetsPage" class="wage-subpage" aria-label="任务预设管理">
+        <div class="wage-page-head"><div><h2>任务预设</h2><p>预设是独立可维护的数据表。记录里第一次保存新任务时自动新增预设，也可以在这里手动新增、编辑或删除。</p></div><button id="newWagePresetBtn" class="btn primary small"><i class="ri-add-line" aria-hidden="true"></i><span>新增预设</span></button></div>
+        <div class="sheet wage-sheet">
+          <div class="sheet-head"><div><h2>任务预设表</h2><div id="wagePresetCount" class="wage-preset-note">用于快速填写工资记录</div></div></div>
+          <div class="table-wrap"><table class="wage-preset-table"><thead><tr><th>工作类型</th><th>任务名称</th><th>计量单位</th><th>每单位折合工时</th><th>说明</th><th>操作</th></tr></thead><tbody id="wagePresetBody"></tbody></table></div>
+        </div>
+        <div class="wage-analysis-note"><strong>记录与预设分离：</strong>修改或删除任务预设只影响以后填写记录时的快捷规则，不反向修改已经保存的历史工资记录。</div>
+      </section>
+
+      <section id="wageAnalysisPage" class="wage-subpage" aria-label="工资统计分析">
+        <div class="wage-page-head"><div><h2>统计分析</h2><p>所有结果直接从工资记录实时计算。年月用于快速查看固定月份；也可以独立填写起止日期做任意时间段分析，并可将当前分析结果导出为 XLSX。</p></div><button id="exportWageAnalysisBtn" class="btn primary small"><i class="ri-file-excel-2-line" aria-hidden="true"></i><span>导出分析 XLSX</span></button></div>
+        <div class="wage-analysis-controls">
+          <div class="filter-field"><label for="wageAnalysisYear">年份（快捷）</label><select id="wageAnalysisYear" class="field"></select></div>
+          <div class="filter-field"><label for="wageAnalysisMonth">月份（快捷）</label><select id="wageAnalysisMonth" class="field"><option value="all">全年</option></select></div>
+          <div class="filter-field"><label for="wageAnalysisStart">开始日期</label><input id="wageAnalysisStart" class="field" type="date"></div>
+          <div class="filter-field"><label for="wageAnalysisEnd">结束日期</label><input id="wageAnalysisEnd" class="field" type="date"></div>
+          <div class="filter-field"><label for="wageAnalysisPerson">实习生</label><select id="wageAnalysisPerson" class="field"><option value="all">全部实习生</option></select></div>
+          <div class="filter-field"><label for="wageAnalysisTask">任务</label><select id="wageAnalysisTask" class="field"><option value="all">全部任务</option></select></div>
+          <div class="filter-field"><label for="wageAnalysisPaid">支付状态</label><select id="wageAnalysisPaid" class="field"><option value="all">全部状态</option><option value="paid">仅已支付</option><option value="unpaid">仅未支付</option></select></div>
+          <button id="clearWageAnalysisBtn" class="btn small"><i class="ri-refresh-line" aria-hidden="true"></i><span>重置分析</span></button>
+        </div>
+        <div id="wageAnalysisScope" class="wage-analysis-scope"></div>
+        <div class="wage-analysis-note"><strong>时间筛选规则：</strong>年月和起止日期是两套独立入口。只要填写了开始或结束日期，就按自定义日期范围统计；年月选择会保留但暂不参与计算。清空起止日期后立即恢复年月统计。收入记录没有实习生、任务或支付状态，因此“期间收入”只受当前有效时间范围影响。</div>
+
+        <div class="wage-analysis-kpis">
+          <div class="wage-analysis-kpi"><div class="k">期间收入</div><div class="v" id="waIncome">￥0.00</div><div class="s">只按时间范围统计</div></div>
+          <div class="wage-analysis-kpi"><div class="k">工资应付</div><div class="v" id="waDue">￥0.00</div><div class="s" id="waDueSub">0 条工资记录</div></div>
+          <div class="wage-analysis-kpi"><div class="k">已支付</div><div class="v" id="waPaid">￥0.00</div><div class="s" id="waPaidSub">—</div></div>
+          <div class="wage-analysis-kpi"><div class="k">未支付</div><div class="v" id="waUnpaid">￥0.00</div><div class="s" id="waUnpaidSub">—</div></div>
+          <div class="wage-analysis-kpi"><div class="k">标准工时</div><div class="v" id="waHours">0 h</div><div class="s">数量 × 每单位折合工时</div></div>
+          <div class="wage-analysis-kpi"><div class="k">实习生人数</div><div class="v" id="waPeople">0</div><div class="s">当前工资分析范围</div></div>
+          <div class="wage-analysis-kpi"><div class="k">任务种类</div><div class="v" id="waTasks">0</div><div class="s">当前工资分析范围</div></div>
+          <div class="wage-analysis-kpi"><div class="k">周工时超限提醒</div><div class="v" id="waWarnings">0</div><div class="s">首次导致越线的记录</div></div>
+        </div>
+
+        <div class="wage-analysis-section">
+          <div class="wage-analysis-section-head"><div><h3 id="waTrendTitle">时间趋势</h3><p id="waTrendHint">全年按月份汇总；选择具体月份后按周汇总。</p></div></div>
+          <div class="table-wrap"><table><thead><tr><th>时间</th><th>收入</th><th>工资记录</th><th>人数</th><th>标准工时</th><th>应付工资</th><th>已支付</th><th>未支付</th></tr></thead><tbody id="waTrendBody"></tbody><tfoot id="waTrendFoot"></tfoot></table></div>
+        </div>
+
+        <div class="wage-analysis-grid">
+          <div class="wage-analysis-section">
+            <div class="wage-analysis-section-head"><div><h3>按实习生分配</h3><p>用于查看当前范围内工资主要分配给哪些人。</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>实习生</th><th>记录数</th><th>任务数</th><th>工时</th><th>应付</th><th>已支付</th><th>未支付</th><th>应付占比</th></tr></thead><tbody id="waPeopleBody"></tbody><tfoot id="waPeopleFoot"></tfoot></table></div>
+          </div>
+          <div class="wage-analysis-section">
+            <div class="wage-analysis-section-head"><div><h3>按任务分析</h3><p>任务统计基于历史工资记录，不依赖当前预设是否仍存在。</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>任务</th><th>工作类型</th><th>记录数</th><th>数量</th><th>工时</th><th>应付</th><th>已支付</th></tr></thead><tbody id="waTaskBody"></tbody><tfoot id="waTaskFoot"></tfoot></table></div>
+          </div>
+        </div>
+
+        <div class="wage-analysis-grid" style="margin-top:14px">
+          <div class="wage-analysis-section">
+            <div class="wage-analysis-section-head"><div><h3>未支付明细</h3><p>直接列出当前分析范围中仍未支付的工资记录，便于追溯。</p></div><span id="waUnpaidCount" class="subtle"></span></div>
+            <div class="table-wrap"><table><thead><tr><th>日期</th><th>实习生</th><th>任务</th><th>工时</th><th>工资标准</th><th>应付金额</th></tr></thead><tbody id="waUnpaidBody"></tbody></table></div>
+          </div>
+          <div class="wage-analysis-section">
+            <div class="wage-analysis-section-head"><div><h3>周工时超限提醒</h3><p>只展示首次导致该周累计超过 8 / 40 小时的具体记录。</p></div><span id="waWarningCount" class="subtle"></span></div>
+            <div class="table-wrap"><table><thead><tr><th>日期</th><th>实习生</th><th>任务</th><th>本次工时</th><th>本次后周累计</th><th>上限</th></tr></thead><tbody id="waWarningBody"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+    </section>
+
     <section id="manual" class="manual">
       <div class="manual-shell">
         <div class="manual-actions"><button id="manualBackBtn" class="btn ghost"><i class="ri-arrow-left-line" aria-hidden="true"></i><span>返回</span></button></div>
         <div class="manual-head">
-          <div class="manual-kicker">活动经费记账助手 · 内置说明书</div>
+          <div class="manual-kicker">经费管理助手 · 内置说明书</div>
           <h1>使用说明</h1>
-          <p>本工具是管理员个人使用的活动经费记账与催办助手，不是正式财务系统。</p>
+          <p>本工具包含相互独立的“活动经费”和“实习生工资”两个本地记录模块，不是正式财务系统。</p>
           <div class="manual-head-alert"><strong>重要：</strong>业务数据只保存在当前浏览器本地。更换电脑、清理网站数据或重置浏览器都可能导致数据不可访问，请优先阅读下方“本地数据与备份”并定期执行完整备份。</div>
         </div>
         <nav class="manual-nav" aria-label="说明书目录">
-          <a href="#m-storage">本地数据与备份（必读）</a><a href="#m-start">快速开始</a><a href="#m-import">预算导入</a><a href="#m-activity">活动管理</a><a href="#m-reimburse">报销</a><a href="#m-remind">催办</a><a href="#m-privacy">隐私模式</a><a href="#m-backup">备份恢复</a><a href="#m-export">统计导出</a>
+          <a href="#m-storage">本地数据与备份（必读）</a><a href="#m-start">快速开始</a><a href="#m-import">预算导入</a><a href="#m-activity">活动管理</a><a href="#m-reimburse">报销与无法报销</a><a href="#m-settle">资金平账</a><a href="#m-remind">催办</a><a href="#m-privacy">隐私模式</a><a href="#m-backup">备份恢复</a><a href="#m-export">统计导出</a><a href="#m-wage">实习生工资</a>
         </nav>
 
         <section id="m-storage" class="manual-section manual-critical">
@@ -1323,23 +1516,26 @@ tbody tr:hover{background:var(--bg-input)}
           <ul>
             <li><strong>业务数据只保存在当前浏览器本地</strong>，不会上传到网络数据库。</li>
             <li>更换电脑、清理浏览器网站数据、重置浏览器配置或浏览器故障，都可能使本地数据无法继续访问。</li>
-            <li><strong>建议定期点击“完整备份”下载电子表格工作簿，并把备份文件保存到可靠位置。</strong></li>
+            <li><strong>活动经费应定期点击“完整备份”保存工作簿；实习生工资模块当前独立保存在另一套本地数据库中。</strong></li>
             <li>执行完整恢复前，系统会先要求保存一份“恢复前自动备份”，用于误恢复后的回退。</li>
-            <li>本工具不保存修改历史，只保存当前值和各可编辑单元格的最后编辑日期。</li>
-            <li>金额以人民币元显示，最多两位小数；内部按“分”的整数计算。预算、预支、单价和总价不接受负数；经费差额可以为负数。</li>
+            <li>本工具不保存完整修改历史，只保存当前值和各可编辑字段的最后编辑日期。</li>
+            <li>金额以人民币元显示，最多两位小数；内部按“分”的整数计算。预算、首次预支、无法报销、单价和总价不接受负数；“后续补款”允许正负数，正数表示后续补款，负数表示实际退回。</li>
           </ul>
         </section>
 
         <section id="m-start" class="manual-section">
           <h2>二、快速开始</h2>
           <ol>
-            <li>在首页点击“新建活动”，只填写活动名称；或者从预算电子表格直接创建活动。</li>
+            <li>在首页点击“新建活动”，填写活动名称，并可添加任意数量“活动标签”；可以一键选择已经使用过的标签，也可以现场输入并创建新标签。也可以从预算电子表格直接创建活动。</li>
             <li>活动编号自动取现有最大编号加 1；创建日期自动取电脑当天日期。</li>
-            <li>新活动的预支金额默认为 <strong>0.00</strong>，首页状态显示“未预支”。实际发生预支后，进入活动详情修改“预支金额”。</li>
-            <li>学生报销时，在支出清单中核对实际金额并勾选“已报销”。系统自动累计已报销金额并计算经费差额。</li>
-            <li>遇到无法由金额自动表达、但管理员已经线下处理完成的情况，可勾选“经费已手动处理”，停止该活动催办。</li>
+            <li>“初步预算”用于保留计划值；“实际支出”由支出清单中的总价自动汇总，两者互不覆盖。</li>
+            <li>资金记录分为“首次预支”和“后续补款”；系统自动计算“已拨付金额 = 首次预支 + 后续补款”。后续补款允许为负数，用于记录实际退回的资金。</li>
+            <li>学生报销时，在支出清单中核对实际金额并勾选“已报销”。系统自动累计已报销金额。</li>
+            <li>如果某部分实际支出已经确定无法报销，可在活动详情填写“无法报销”。系统自动计算剩余“待报销”。</li>
+            <li>如果全部未报销余额都确定无法报销，可勾选“自动将未报销余额计入无法报销”。开启瞬间系统立即计算“无法报销 = 实际支出 − 已报销”。界面上的“无法报销”直接显示这个公式结果，不再读取原来的手工金额；待报销立即归零。</li>
+            <li>系统始终实时显示资金差额：“已拨付金额 − 已报销 − 无法报销”。因此待报销尚未处理时，该部分仍包含在待退 / 待补差额中；当剩余待报销转为“已报销”或“无法报销”后，资金差额会同步变化。实际退款以负数记入“后续补款”，补款记正数；差额为 0 时自动平账。</li>
           </ol>
-          <div class="manual-note">经费差额 = 预支金额 − 已报销金额。正数表示仍有预支经费需要追踪；负数表示已报销金额超过预支金额，需要更多经费。</div>
+          <div class="manual-note">新版核心关系：实际支出 = 已报销 + 无法报销 + 待报销；已拨付金额 = 首次预支 + 后续补款。预支不再用来统计实际支出。</div>
         </section>
 
         <section id="m-import" class="manual-section">
@@ -1348,99 +1544,254 @@ tbody tr:hover{background:var(--bg-input)}
           <div class="template-inline"><button id="manualTemplateBtn" class="btn small"><i class="ri-file-excel-2-line" aria-hidden="true"></i><span>下载标准预算模板</span></button><span class="subtle">模板直接由当前网页生成，工作表顶部自带填写说明和示例，不需要另外查看说明书。</span></div>
           <table class="manual-table"><thead><tr><th>活动</th><th>物品</th><th>单价</th><th>总价</th></tr></thead><tbody><tr><td>迎新晚会</td><td>横幅</td><td>80.00</td><td>160.00</td></tr><tr><td></td><td>矿泉水</td><td></td><td>100.00</td></tr></tbody></table>
           <ul>
-            <li>不再兼容旧表头名称。</li>
             <li>“活动”单元格可以留空。空着时，自动继承上方最近一个非空活动名称。</li>
-            <li>“单价”可以留空；留空后活动详情中也保持为空。</li>
-            <li>“总价”是预算汇总与报销汇总真正使用的金额字段。</li>
+            <li>“单价”可以留空；“总价”是实际支出计算真正使用的金额字段。</li>
             <li>普通预算表不导入“备注”。导入后每条支出的备注默认为空，可在活动详情中手动填写。</li>
             <li>同一个文件可以包含多个活动，系统会按活动名称分组；导入预览时可以选择“新建活动”或“追加到现有活动”。</li>
           </ul>
-          <p>普通预算导入新活动时，预算金额初始化为该活动所有“总价”的合计；预支金额初始化为 0.00。</p>
+          <p>普通预算导入新活动时，初步预算初始化为该活动所有“总价”的合计；首次预支、后续补款和无法报销均初始化为 0.00。导入后的支出明细同时形成实际支出。</p>
         </section>
 
         <section id="m-activity" class="manual-section">
           <h2>四、活动查看与批量管理</h2>
           <h3>主页查看与筛选</h3>
-          <p>主页每个活动对应一张活动卡片。可以按活动名称或编号搜索，也可以选择“仅未结清”，并按照创建日期设置开始和结束日期。状态筛选、时间筛选和搜索可以组合使用。</p>
-          <div class="manual-note">“未结清”包括未预支、待追缴和需追加经费的活动，不包括已结清或已手动处理的活动。</div>
+          <p>主页每个活动对应一张活动卡片。卡片四项核心金额为“实际支出、已拨付、已报销、待报销”。普通模式下金额统一打码。</p>
+          <p>可以按活动名称或编号搜索，也可以按一个或多个“活动标签”、活动状态和创建日期筛选。多标签采用“同时满足（AND）”逻辑，例如同时选择“心理协会”和“2026秋季”时，只显示同时拥有这两个标签的活动；也可筛选“未设置标签”的活动。标签、状态、时间和搜索条件可以组合使用。<strong>主页筛选的本质是生成“当前结果集”：</strong>活动卡片、顶部四项统计、按标签分组和按标签统计都以这同一批活动为输入。</p>
+          <div class="manual-note">主页统计统一为“实际支出合计、已拨付合计、已报销合计、待报销合计”。未设置筛选条件时，当前结果集自然就是全部活动；存在筛选条件时，统计立即跟随当前结果变化。活动管理中的手动勾选只用于批量导出和删除，不改变统计范围。</div>
+          <h3>按标签分组</h3>
+          <p>“按标签分组”是独立的主页展示开关，只改变当前结果集的呈现方式，不改变筛选条件和统计口径。开启后，每个标签成为一个动态分组并显示本组的四项金额汇总；一个活动如果拥有多个标签，会同时出现在多个标签分组中。没有标签的活动进入“未设置标签”分组。</p>
+          <h3>按标签统计</h3>
+          <p>点击“按标签统计”会直接统计<strong>当前结果集</strong>中的全部标签，不再另外选择统计范围。弹窗先显示当前结果整体汇总及各标签的汇总对比；可直接导出为 XLSX。标签统计允许同一个活动计入多个标签，因此各标签汇总之间可能重复包含同一活动，不能把所有标签行再次相加当作当前结果集总额。</p>
+          <div class="manual-note">“未结清”指仍有待报销，或资金差额仍不为 0（待退 / 待补）的活动。资金差额会在待报销尚未归零时照常显示。空白的新活动不自动算作待处理。</div>
           <h3>活动管理已经集中到主页</h3>
           <ol>
             <li>点击主页工具栏中的“活动管理”。普通模式下需要先输入密码；秘密模式下可直接进入。</li>
-            <li>进入活动管理后，每张活动卡片会出现选择框。可以逐个勾选，也可以点击“全选当前结果”，一次选择当前搜索和筛选结果中的所有活动。</li>
-            <li>“清空选择”会取消全部已选活动；管理条会始终显示当前已选活动数量。</li>
-            <li>点击“导出选中”，会生成适合人工阅读的电子表格工作簿：第一张为“选中活动总览”，之后每个选中活动各一张工作表。</li>
-            <li>点击“删除选中”会先显示二次确认；确认后一次删除所有选中活动及其支出数据。删除没有回收站。</li>
-            <li>点击“完成管理”退出批量管理，活动卡片恢复为点击进入详情的正常行为。</li>
+            <li>进入活动管理后，每张活动卡片会出现选择框，可逐个勾选或“全选当前结果”。</li>
+            <li>“导出选中”生成“总览 + 每活动一张工作表”的统计工作簿。</li>
+            <li>“删除选中”会二次确认后永久删除活动及其全部支出数据。</li>
           </ol>
-          <div class="manual-warn">“全选当前结果”只会增加当前筛选结果中的活动。已经选择但后来被筛选隐藏的活动仍保持选中，应以“已选 X 个活动”的数量为准；需要重新开始时点击“清空选择”。</div>
           <h3>单个活动详情</h3>
-          <p>点击活动卡片进入该活动的子界面。活动详情只负责编辑这个活动自身的数据和支出，不再承担删除整个活动的操作。</p>
           <ul>
-            <li>活动总体信息包括活动名称、创建日期、预算金额、预支金额、已报销金额、经费差额和“经费已手动处理”状态。预算主要用于判断是否发生超支。</li>
-            <li>预算金额在导入时初始取支出总价之和，之后成为独立可编辑字段，不会因为后续修改支出自动变化。当已报销金额超过预算金额时，首页会显示“超出预算”及超出金额；未超出时显示预算剩余。</li>
-            <li>预支金额只保存当前总值，不记录多次预支历史；需要追加预支时直接修改该值。</li>
-            <li>已报销金额由所有已勾选支出的“总价”自动求和，不能直接编辑。</li>
-            <li>每个可编辑单元格下方都会显示该单元格自己的最后编辑日期。</li>
+            <li><strong>活动标签：</strong>每个活动可以拥有任意数量标签。新增或编辑活动时，可快速选择已有标签，也可现场创建新标签；主页可多标签 AND 筛选、按标签动态分组，并可对当前结果集一键执行按标签统计。标签只用于组织、筛选和统计，不参与任何财务公式。</li>
+            <li><strong>初步预算：</strong>计划参考值，可编辑；不随支出变化自动修改。</li>
+            <li><strong>实际支出：</strong>所有支出明细“总价”的合计，自动计算。</li>
+            <li><strong>首次预支 / 后续补款：</strong>记录资金流。首次预支不接受负数；后续补款可正可负，正数表示追加拨款，负数表示实际退回。系统自动得到已拨付金额。</li>
+            <li><strong>已报销：</strong>所有已勾选支出“总价”的合计，自动计算。</li>
+            <li><strong>无法报销：</strong>活动级金额字段，可手工填写，也可由“自动将未报销余额计入无法报销”自动计算。</li>
+            <li><strong>待报销：</strong>实际支出 − 已报销 − 无法报销，自动计算且不可直接编辑。</li>
           </ul>
-          <h3>支出清单</h3>
-          <p>每条支出包含“物品、单价、总价、备注、已报销、报销日期”。可以新增、编辑或直接删除单条支出。删除单条支出不二次确认。</p>
-          <div class="manual-note">系统不记录数量，也不支持单条支出“部分报销”。如果实际可报销金额发生变化，应先修改该条支出的总价，再勾选已报销。</div>
         </section>
 
         <section id="m-reimburse" class="manual-section">
-          <h2>五、报销操作</h2>
+          <h2>五、报销与无法报销</h2>
           <ol>
             <li>进入对应活动详情，找到实际已经报销的支出。</li>
-            <li>如实际金额与原预算不同，先修改“总价”。</li>
-            <li>勾选“已报销”。系统立即把这条支出的总价计入已报销金额，并自动记录当天为报销日期。</li>
+            <li>如实际金额与原记录不同，先修改该条支出的“总价”；实际支出会立即同步变化。</li>
+            <li>勾选“已报销”后，该条总价计入已报销金额，并自动记录当天为报销日期。</li>
             <li>取消“已报销”时，原报销日期自动清空；以后再次勾选时，日期改为再次勾选的当天。</li>
+            <li>如果已经明确有一部分钱无法报销，在活动级“无法报销”字段填写金额。该值不得超过当前尚未报销的金额。</li>
           </ol>
-          <p>报销日期由系统自动维护，不允许手工修改。</p>
+          <div class="manual-note">默认模式下“无法报销”是自由金额字段。系统始终保证：无法报销 ≤ 实际支出 − 已报销。</div>
+          <h3>剩余全部无法报销</h3>
+          <p>勾选“自动将未报销余额计入无法报销”后，“无法报销”变为只读，并实时保持：</p>
+          <p><code>无法报销 = 实际支出 − 已报销</code></p>
+          <p>因此“待报销”自动变为 0。以后即使支出总价或已报销金额变化，该字段也会跟随重新计算。取消勾选时保留当前金额，只重新开放手工编辑。</p>
+        </section>
+
+        <section id="m-settle" class="manual-section">
+          <h2>六、资金平账</h2>
+          <p>资金差额始终实时显示，不需要等待“待报销”归零：</p>
+          <p><code>资金差额 = 已拨付金额 − 已报销 − 无法报销</code></p>
+          <ul>
+            <li>差额大于 0：显示“待退”，表示当前已拨付金额高于已经完成处理的支出。</li>
+            <li>差额小于 0：显示“待补”，表示已经完成处理的支出高于当前已拨付金额。</li>
+            <li>差额等于 0：显示“已平账”。</li>
+          </ul>
+          <p>“待报销”属于已经发生但尚未完成处理的支出，因此在它被转为“已报销”或“无法报销”之前，不从资金差额中扣除。系统不提供“已退 / 已补”或人工结清按钮；实际退款或补款直接修改“后续补款”：补款填正数，退回填负数。</p>
+          <div class="manual-note">例如：预支 6000、已报销 5777、无法报销 0、待报销 111 时，资金差额 = 6000 − 5777 − 0 = 待退 223；开启自动无法报销规则后，“无法报销”立即变为 111，资金差额同步变为待退 112。</div>
         </section>
 
         <section id="m-remind" class="manual-section">
-          <h2>六、催办规则</h2>
-          <p>网页每次首次打开或刷新时，都会读取电脑当天日期并重新判断全部活动。</p>
-          <p>一个活动只有同时满足以下条件，才会进入催办：</p>
+          <h2>七、催办规则</h2>
+          <p>网页每次首次打开或刷新时，都会读取电脑当天日期并重新判断全部活动。活动创建满一个自然月后：</p>
           <ul>
-            <li>预支金额大于 0；</li>
-            <li>未勾选“经费已手动处理”；</li>
-            <li>预支金额 − 已报销金额不等于 0；</li>
-            <li>从活动创建日期起已经满一个自然月。</li>
+            <li>如果资金差额不为 0，按当前差额进入<strong>待退 / 待补催办</strong>；如果此时同时还有待报销金额，主状态仍显示待退 / 待补，并在下方辅助显示“其中仍有 X 待报销”；</li>
+            <li>如果资金差额已经为 0，但仍有“待报销 &gt; 0”，进入<strong>待报销催办</strong>；</li>
+            <li>资金差额为 0 且待报销为 0 时，不再催办。</li>
           </ul>
-          <p>一旦进入催办期，此后每次打开或刷新都会继续提醒，直到差额变为 0 或管理员勾选“经费已手动处理”。如果存在待催办活动，首次加载时会弹窗提示活动数量，具体活动列在首页“催办提醒”区域。</p>
-          <div class="manual-warn">预支金额为 0 的活动显示“未预支”，不会进入催办。给活动填写实际预支金额后，系统才把它纳入催办判断。</div>
+          <p>旧版“经费已手动处理”开关已取消。旧数据中曾经勾选该开关的活动，升级后会转换为“自动将未报销余额计入无法报销”。资金是否结清只看资金差额是否为 0。</p>
         </section>
 
         <section id="m-privacy" class="manual-section">
-          <h2>七、普通模式、活动详情与秘密模式</h2>
+          <h2>八、普通模式、活动详情与秘密模式</h2>
           <ul>
             <li><strong>普通模式主页：</strong>金额统一打码，适合学生在旁边时查看活动列表和状态。</li>
             <li><strong>普通模式进入活动：</strong>需要输入密码。验证成功后，仅本次活动详情显示真实金额；返回首页后，主页继续打码。</li>
             <li><strong>秘密模式：</strong>输入密码进入后，主页显示真实金额，进入活动详情不再重复验证。</li>
             <li><strong>刷新：</strong>刷新页面后恢复普通模式，避免下次打开页面时直接暴露金额。</li>
           </ul>
-          <p>说明书不会展示实际密码。密码校验用于日常屏幕隐私保护，不等同于专业的数据加密系统。</p>
+          <p>密码校验用于日常屏幕隐私保护，不等同于专业的数据加密系统。</p>
         </section>
 
         <section id="m-backup" class="manual-section">
-          <h2>八、完整备份与恢复</h2>
+          <h2>九、完整备份与恢复</h2>
           <h3>完整备份</h3>
-          <p>点击“完整备份”会生成一个电子表格工作簿，其中包含一个“总览”工作表，以及每个活动各自的“活动_编号”工作表。完整备份会保存活动状态、支出、备注、报销日期和每个可编辑字段的最后编辑日期。</p>
+          <p>点击“完整备份”会生成一个电子表格工作簿，其中包含一个“总览”工作表，以及每个活动各自的“活动_编号”工作表。新版备份保存活动标签及其最后编辑日期，以及初步预算、首次预支、后续补款、无法报销、自动无法报销规则、支出、备注、报销日期及最后编辑日期；不再保存独立的退补完成状态。</p>
           <h3>完整恢复</h3>
           <p>通过“导入工作簿”选择本工具生成的完整备份文件。恢复采用整体覆盖方式，不与当前数据自动合并。</p>
+          <p>新版可以恢复当前新版备份，也兼容旧版完整备份。旧版“活动归属”会自动迁移为一个同名标签；旧“预支金额”迁移为“首次预支”，后续补款默认为 0；旧“经费已手动处理”会迁移为“自动将未报销余额计入无法报销”；旧备份中的“退补已完成”字段仅兼容读取并忽略。</p>
           <p>真正覆盖当前数据以前，系统会先要求把当前状态另存为一份安全备份。如果用户取消安全备份保存，则恢复操作也会取消。</p>
           <div class="manual-warn">完整恢复会替换当前浏览器中的全部活动数据。请确认选择的是正确备份文件。</div>
         </section>
 
         <section id="m-export" class="manual-section">
-          <h2>九、按时间统计导出</h2>
-          <p>点击“按时间导出”可以按活动创建日期选择范围。默认范围为最近一个自然月。</p>
-          <p>统计文件以人工阅读为目的：第一张工作表为“统计总览”，包含活动数量和各项金额汇总；后续每个活动各有一张工作表，列出活动概况和支出明细。</p>
-          <p>除了按时间导出，还可以在主页进入“活动管理”，勾选任意活动后使用“导出选中”。选中导出不要求活动时间连续，适合临时整理某几个活动；同样采用“总览 + 每活动一张工作表”的人工阅读结构。</p>
-          <p>统计导出与完整备份用途不同：统计导出适合阅读和归档；完整备份用于无损恢复系统。</p>
+          <h2>十、统计导出</h2>
+          <p>“按时间导出”和“导出选中”会同时导出活动标签，以及新版财务字段：初步预算、实际支出、首次预支、后续补款、已拨付、已报销、无法报销、待报销、资金差额和处理状态。</p>
+          <p><strong>“按标签统计”导出始终使用当前结果集。</strong>生成的 XLSX 第一张为“全部活动汇总”，其中当前结果的每个活动只出现一次，并在最下方给出去重后的整体汇总；随后每个标签各占一张工作表，表内只列活动级整体数据，不展开单品支出，最下方是该标签的汇总。多标签活动会分别出现在多个标签工作表中；无标签活动使用“未设置标签”工作表。</p>
+          <p>统计导出适合人工阅读和归档；完整备份用于无损恢复系统。两者用途不同。</p>
         </section>
 
+        <section id="m-wage" class="manual-section">
+          <h2>十一、实习生工资管理</h2>
+          <p>实习生工资模块与活动经费模块完全独立，使用单独的本地数据库，不共享活动、标签、财务公式或统计结果。模块仍以<strong>记录</strong>为中心；人员无需单独建库，任务则使用独立的“任务预设表”降低重复输入。</p>
+          <ul>
+            <li><strong>收入记录：</strong>登记日期、收到金额和备注；每次到账单独保存一条记录。</li>
+            <li><strong>工资记录：</strong>登记日期、实习生、任务、数量、工资标准、支付状态和备注。选择任务预设后自动带入计量单位和“每单位折合工时”；<strong>标准工时 = 数量 × 每单位折合工时</strong>，不允许手工直接填写标准工时；工资金额再按“标准工时 × 工资标准”自动计算。</li>
+            <li><strong>快速复用：</strong>历史记录中出现过的实习生会自动成为快捷选项；任务通过“任务预设”快速选择。工资标准默认继承上一条工资记录的标准，但可以随时修改。</li>
+            <li><strong>任务预设：</strong>预设表保存工作类型、任务名称、计量单位、每单位折合工时和说明，支持手动新增、编辑、删除。内置初始规则包括推文排版 2 小时/篇、推文排版审核 1 小时/篇、推文文案 4 小时/篇、现场志愿者 1 小时/小时、前期策划 16 小时/月、统筹管理 16 小时/月、坐班 1 小时/小时。工资记录中第一次保存一个新的任务名称时，会自动把该任务当前规则增加到预设表。</li>
+            <li><strong>周工时提醒：</strong>学期中每人每周上限 8 小时，假期（含寒暑假）上限 40 小时。超过上限不阻止保存，只把<strong>首次导致该周累计越线的那一条记录</strong>标红提醒，其他记录不受影响。</li>
+            <li><strong>已支付仍可修改：</strong>“已支付”只是记录状态，目前不会锁定记录。</li>
+            <li><strong>三个独立子页面：</strong>“记录流水”负责新增、编辑、筛选具体记录；“任务预设”单独维护任务规则；“统计分析”拥有自己的统计筛选，不与流水筛选耦合。</li>
+            <li><strong>统计分析：</strong>支持两套独立的时间入口：年份/月份用于快速查看固定年月，也可以填写开始日期/结束日期分析任意时间段；只要起止日期有任一项填写，就优先按自定义日期范围统计，清空后恢复年月筛选。还可按实习生、任务和支付状态组合筛选；提供期间收入、应付/已支付/未支付、标准工时、人数、任务数和超限提醒等指标，并进一步提供时间趋势、按实习生分配、按任务分析、未支付明细和周工时超限明细。</li>
+            <li><strong>统计导出：</strong>“统计分析”页可将当前分析范围导出为 XLSX，包含分析汇总、时间趋势、按实习生、按任务、工资明细、收入明细、未支付明细和超限提醒等工作表。</li>
+          </ul>
+          <div class="manual-note">工资数据是独立记录，不参与活动经费的任何筛选、标签、平账或统计。</div>
+        </section>
+      </div>
+    </section>
+
+    <section id="financialModel" class="manual">
+      <div class="manual-shell">
+        <div class="manual-actions"><button id="modelBackBtn" class="btn ghost"><i class="ri-arrow-left-line" aria-hidden="true"></i><span>返回</span></button></div>
+        <div class="manual-head">
+          <div class="manual-kicker">活动经费记账助手 · 业务定义</div>
+          <h1>财务模型</h1>
+          <p>本页定义程序中各金额字段的业务含义和固定计算关系。它与“使用说明”并列，用于查账、验算和后续维护。</p>
+        </div>
+        <nav class="manual-nav" aria-label="财务模型目录">
+          <a href="#fm-principle">模型原则</a><a href="#fm-fields">字段定义</a><a href="#fm-formulas">固定公式</a><a href="#fm-unreimb">无法报销</a><a href="#fm-settlement">资金平账</a><a href="#fm-status">状态与催办</a><a href="#fm-example">完整示例</a><a href="#fm-migration">旧数据迁移</a>
+        </nav>
+
+        <section id="fm-principle" class="manual-section">
+          <h2>一、模型原则</h2>
+          <p>新版把“实际花了多少钱”“报销到了什么程度”“一共拨了多少钱”“最终应退还是应补”拆成互不混淆的四件事。</p>
+          <ul>
+            <li><strong>初步预算</strong>只表示计划值。</li>
+            <li><strong>实际支出</strong>只由支出明细决定，不由预支或报销状态决定。</li>
+            <li><strong>已拨付金额</strong>表示当前净拨付资金：首次预支加上后续补款；后续退款以负数冲减。</li>
+            <li><strong>报销状态</strong>把实际支出分成已报销、无法报销和待报销。</li>
+            <li><strong>活动标签</strong>用于组织、组合筛选、动态分组和按标签统计；一个活动可以拥有任意数量标签，标签不参与任何财务计算。</li>
+            <li><strong>主页统计范围</strong>由当前搜索、多标签、状态和日期筛选共同决定；没有筛选时当前结果集自然等于全部活动。按标签分组只改变展示，按标签统计直接使用当前结果集，二者都不创建额外的统计范围。</li>
+          </ul>
+        </section>
+
+        <section id="fm-fields" class="manual-section">
+          <h2>二、字段定义</h2>
+          <table class="manual-table"><thead><tr><th>字段</th><th>来源</th><th>是否可编辑</th><th>含义</th></tr></thead><tbody>
+            <tr><td>初步预算</td><td>用户 / 预算导入</td><td>是</td><td>活动最初计划支出</td></tr>
+            <tr><td>实际支出</td><td>支出明细总价合计</td><td>否</td><td>实际已经发生的全部支出</td></tr>
+            <tr><td>首次预支</td><td>用户</td><td>是</td><td>活动首次拨出的资金</td></tr>
+            <tr><td>后续补款</td><td>用户</td><td>是</td><td>后续资金调整：正数表示补款，负数表示实际退回</td></tr>
+            <tr><td>已拨付金额</td><td>自动</td><td>否</td><td>当前净拨付金额 = 首次预支 + 后续补款</td></tr>
+            <tr><td>已报销</td><td>已勾选支出合计</td><td>否</td><td>已经完成报销的实际支出</td></tr>
+            <tr><td>无法报销</td><td>用户 / 自动</td><td>条件性</td><td>确实发生但确认不能报销的金额</td></tr>
+            <tr><td>待报销</td><td>自动</td><td>否</td><td>仍需继续处理的报销金额</td></tr>
+            <tr><td>资金差额</td><td>自动</td><td>否</td><td>已拨付金额 − 已报销 − 无法报销；归零即平账</td></tr>
+          </tbody></table>
+        </section>
+
+        <section id="fm-formulas" class="manual-section">
+          <h2>三、固定公式与不变量</h2>
+          <div class="manual-note"><strong>公式 1：</strong>实际支出 = 所有支出明细总价之和</div>
+          <div class="manual-note"><strong>公式 2：</strong>实际支出 = 已报销 + 无法报销 + 待报销</div>
+          <div class="manual-note"><strong>公式 3：</strong>已拨付金额 = 首次预支 + 后续补款</div>
+          <div class="manual-note"><strong>公式 4：</strong>资金差额 = 已拨付金额 − 已报销 − 无法报销</div>
+          <p>程序必须始终维持这些等式成立。待报销和已拨付金额均不允许手工输入。</p>
+        </section>
+
+        <section id="fm-unreimb" class="manual-section">
+          <h2>四、无法报销的活动级规则</h2>
+          <p>本版本只实现<strong>活动级无法报销金额</strong>，不为每一条支出增加“无法报销”状态。</p>
+          <ul>
+            <li>默认状态下，“无法报销”可自由填写，但不能超过“实际支出 − 已报销”。</li>
+            <li>勾选“自动将未报销余额计入无法报销”后，系统<strong>立即</strong>把“无法报销”改为“实际支出 − 已报销”。对外显示直接取公式值而不是旧字段值，待报销立即变为 0。</li>
+            <li>自动模式下，支出金额或已报销金额变化时，“无法报销”实时重新计算，使待报销始终为 0。</li>
+            <li>取消自动模式后保留当前无法报销金额，只恢复手工编辑。</li>
+          </ul>
+        </section>
+
+        <section id="fm-settlement" class="manual-section">
+          <h2>五、资金平账</h2>
+          <p>资金差额以<strong>已经完成处理的支出</strong>为基准实时计算。待报销虽然属于实际支出，但尚未进入已报销或无法报销，因此暂不从资金差额中扣除。</p>
+          <div class="manual-note"><strong>资金差额 = 已拨付金额 − 已报销 − 无法报销</strong></div>
+          <table class="manual-table"><thead><tr><th>资金差额</th><th>显示</th><th>处理方式</th></tr></thead><tbody>
+            <tr><td>&gt; 0</td><td>待退</td><td>实际收到退款后，在“后续补款”中填写对应负数</td></tr>
+            <tr><td>&lt; 0</td><td>待补</td><td>实际追加资金后，在“后续补款”中填写对应正数</td></tr>
+            <tr><td>= 0</td><td>已平账</td><td>不需要额外确认按钮</td></tr>
+          </tbody></table>
+          <p>系统没有“已退”“已补”“退补完成”或“人工结清”按钮。所有资金变化都直接记录到“后续补款”：正数为补款，负数为退回。</p>
+        </section>
+
+        <section id="fm-status" class="manual-section">
+          <h2>六、活动状态与催办</h2>
+          <ol>
+            <li>没有实际支出且没有拨款：<strong>未发生支出</strong>。</li>
+            <li>资金差额 &gt; 0：<strong>待退</strong>。</li>
+            <li>资金差额 &lt; 0：<strong>待补</strong>。</li>
+            <li>资金差额 = 0 但待报销 &gt; 0：<strong>待报销</strong>。</li>
+            <li>资金差额 = 0 且待报销 = 0：<strong>已结清</strong>。</li>
+          </ol>
+          <p>创建满一个自然月后，对当前仍存在的待退 / 待补 / 待报销事项进行催办。若资金差额和待报销同时存在，待退 / 待补作为主状态，待报销金额作为辅助信息显示，不会被隐藏。</p>
+        </section>
+
+        <section id="fm-example" class="manual-section">
+          <h2>七、客户案例验算</h2>
+          <h3>自动无法报销规则关闭</h3>
+          <table class="manual-table"><thead><tr><th>字段</th><th>金额</th></tr></thead><tbody>
+            <tr><td>实际支出</td><td>5888</td></tr>
+            <tr><td>已报销</td><td>5777</td></tr>
+            <tr><td>无法报销</td><td>0</td></tr>
+            <tr><td>待报销</td><td>111</td></tr>
+            <tr><td>首次预支</td><td>6000</td></tr>
+            <tr><td>后续补款</td><td>0</td></tr>
+            <tr><td>资金差额</td><td>待退 223</td></tr>
+          </tbody></table>
+          <p><code>5888 = 5777 + 0 + 111</code></p>
+          <p><code>6000 + 0 − 5777 − 0 = 223</code>，因此此时显示待退 223。</p>
+
+          <h3>开启“自动将未报销余额计入无法报销”</h3>
+          <p>开关开启的瞬间，“无法报销”必须立即自动改为并锁定：</p>
+          <p><code>无法报销 = 5888 − 5777 = 111</code></p>
+          <p>于是待报销自动变为 0，其他金额不变，资金差额重新计算：</p>
+          <p><code>6000 + 0 − 5777 − 111 = 112</code></p>
+          <p>因此此时显示<strong>待退 112</strong>。</p>
+
+          <h3>实际收到退款后平账</h3>
+          <p>收到 112 元退款后，把“后续补款”手工改为 <strong>-112</strong>：</p>
+          <p><code>6000 + (-112) − 5777 − 111 = 0</code></p>
+          <p>系统自动显示<strong>已平账</strong>，不需要额外的退补确认按钮。</p>
+        </section>
+
+        <section id="fm-migration" class="manual-section">
+          <h2>八、旧数据迁移</h2>
+          <ul>
+            <li>旧“预算金额”直接保留为“初步预算”。</li>
+            <li>旧“预支金额”迁移为“首次预支”；后续补款初始化为 0。新版后续补款允许为负数。</li>
+            <li>旧活动的实际支出继续由原有支出明细自动汇总。</li>
+            <li>旧“经费已手动处理 = 是”迁移为“自动将未报销余额计入无法报销 = 是”，以保留“未报销余额不再继续处理”的含义。</li>
+            <li>旧备份中的“退补已完成”不再映射为任何状态；如存在资金差额，需用“后续补款”的正负金额把账调平。</li>
+          </ul>
+        </section>
       </div>
     </section>
 
@@ -1452,16 +1803,23 @@ tbody tr:hover{background:var(--bg-input)}
 <script>
 (() => {
 'use strict';
+const BUILD_ID='2026-08-24-v16-wage-subpages-analysis';
 const DB_NAME='fund_manager_local_v1', STORE='state', KEY='main';
 const PASSWORD_HASH='47ce1ee20a6bea301e40c4b0eab06dd30114220c97f12273338ca675da915fe6';
 let state={activities:[]};
 let secretMode=false;
 let currentActivityId=null;
 let currentActivityAuthorized=false;
-let manualReturn='home';
+let documentReturn='home';
 let pendingImport=null;
 let managementMode=false;
 let selectedActivityIds=new Set();
+let selectedTagFilters=new Set();
+let groupByTag=false;
+let activeModule='activity';
+const WAGE_DB_NAME='intern_wage_local_v1', WAGE_STORE='state', WAGE_KEY='main';
+let wageState={records:[],taskPresets:[],lastRateCents:0,lastPeriodMode:'term'};
+let wageSubpage='records';
 
 const $=s=>document.querySelector(s);
 const THEME_KEY='fund-manager-theme';
@@ -1477,6 +1835,7 @@ applyTheme(localStorage.getItem(THEME_KEY)||preferredTheme());
 const today=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`};
 const oneMonthBefore=(dateStr)=>{const d=parseDate(dateStr);if(!d)return dateStr;const day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()-1);const last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();d.setDate(Math.min(day,last));const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`};
 const toCents=v=>Math.max(0,Math.round((Number(v)||0)*100));
+const toSignedCents=v=>Math.round((Number(v)||0)*100);
 const toOptionalCents=v=>String(v??'').trim()===''?null:toCents(v);
 const fromCents=c=>(Number(c||0)/100).toFixed(2);
 const optionalMoneyValue=c=>c===null||c===undefined?'':fromCents(c);
@@ -1498,29 +1857,140 @@ function addCalendarMonth(dateStr){
   d.setDate(Math.min(day,last)); return d;
 }
 function daysBetween(a,b){return Math.floor((b-a)/86400000)}
-function reminderInfo(a){
-  if(a.manualHandled.value) return null;
-  if(Number(a.advance?.cents||0)===0) return null;
-  const diff=getDiff(a); if(diff===0) return null;
-  const due=addCalendarMonth(a.createdDate); if(!due) return null;
-  const now=parseDate(today()); if(now<due) return null;
-  const overdue=daysBetween(due,now);
-  return {due,overdue};
+function getActualSpending(a){return (a.items||[]).reduce((s,x)=>s+Number(x.totalPrice?.cents||0),0)}
+function getReimbursed(a){return (a.items||[]).filter(x=>x.reimbursed?.value).reduce((s,x)=>s+Number(x.totalPrice?.cents||0),0)}
+function getAutoUnreimbursableAmount(a){return Math.max(0,getActualSpending(a)-getReimbursed(a))}
+function getUnreimbursable(a){
+  const remaining=getAutoUnreimbursableAmount(a);
+  if(a.autoUnreimbursable?.value)return remaining;
+  return Math.min(Math.max(0,Number(a.unreimbursable?.cents||0)),remaining);
 }
-function getReimbursed(a){return a.items.filter(x=>x.reimbursed.value).reduce((s,x)=>s+x.totalPrice.cents,0)}
-function getDiff(a){return a.advance.cents-getReimbursed(a)}
-function getOverBudget(a){return Math.max(0,getReimbursed(a)-Number(a.budget?.cents||0))}
-function getBudgetRemaining(a){return Math.max(0,Number(a.budget?.cents||0)-getReimbursed(a))}
+function getPendingReimbursement(a){return Math.max(0,getActualSpending(a)-getReimbursed(a)-getUnreimbursable(a))}
+function getFunded(a){return Number(a.advance?.cents||0)+Number(a.additionalFunding?.cents||0)}
+function getSettlementDiff(a){return getFunded(a)-getReimbursed(a)-getUnreimbursable(a)}
+function getOverBudget(a){return Math.max(0,getActualSpending(a)-Number(a.budget?.cents||0))}
+function getBudgetRemaining(a){return Math.max(0,Number(a.budget?.cents||0)-getActualSpending(a))}
 function lastEdited(valueObj){return valueObj?.edited||''}
 function maxId(){return state.activities.reduce((m,a)=>Math.max(m,Number(a.id)||0),0)}
-function activityStatus(a){const diff=getDiff(a);if(a.manualHandled.value)return {text:'已手动处理',cls:'done'};if(Number(a.advance?.cents||0)===0)return {text:'未预支',cls:'unfunded'};if(diff===0)return {text:'已结清',cls:'done'};if(diff>0)return {text:'待追缴',cls:'todo'};return {text:'需追加经费',cls:'need'}}
+function normalizeTagValue(v){return String(v??'').trim()}
+function normalizeTags(values){
+  const arr=Array.isArray(values)?values:parseTagText(values);
+  const seen=new Set(),out=[];
+  for(const raw of arr){const v=normalizeTagValue(raw);if(!v||seen.has(v))continue;seen.add(v);out.push(v)}
+  return out;
+}
+function parseTagText(v){
+  if(Array.isArray(v))return normalizeTags(v);
+  const text=String(v??'').trim();if(!text)return [];
+  return normalizeTags(text.split(/[；;,，\n]+/));
+}
+function getActivityTags(a){
+  if(Array.isArray(a.tags))return normalizeTags(a.tags);
+  if(a.tags&&Array.isArray(a.tags.values))return normalizeTags(a.tags.values);
+  const legacy=typeof a.owner==='string'?a.owner:a.owner?.value;
+  return legacy?normalizeTags([legacy]):[];
+}
+function formatActivityTags(a){return getActivityTags(a).join('；')}
+function setActivityTags(a,tags,edited=today()){a.tags={values:normalizeTags(tags),edited}}
+function getKnownTags(){return [...new Set(state.activities.flatMap(getActivityTags))].sort((a,b)=>a.localeCompare(b,'zh-CN'))}
+function tagChipsHtml(tags,removable=false){
+  const values=normalizeTags(tags);if(!values.length)return '<span class="subtle">未设置标签</span>';
+  return values.map(v=>`<span class="tag-chip">${esc(v)}${removable?`<button type="button" class="tag-remove" data-remove-tag="${esc(v)}" aria-label="移除标签 ${esc(v)}">×</button>`:''}</span>`).join('');
+}
+function tagPickerHtml(prefix,selected=[]){
+  return `<div class="tag-picker" data-tag-picker="${esc(prefix)}"><div class="tag-picker-section"><div class="tag-picker-label">已选标签</div><div id="${esc(prefix)}SelectedTags" class="tag-selected">${tagChipsHtml(selected,true)}</div></div><div class="tag-picker-section"><div class="tag-picker-label">快速选择已有标签</div><div id="${esc(prefix)}KnownTags" class="tag-known"></div></div><div class="tag-add-row"><input id="${esc(prefix)}TagInput" class="field" placeholder="输入新标签，例如：心理协会"><button type="button" id="${esc(prefix)}AddTag" class="btn small">添加标签</button></div><div class="cell-note">点击已有标签可快速添加或取消；也可以输入新标签后按回车。一个活动可以拥有任意数量标签。</div></div>`;
+}
+function bindTagPicker(root,prefix,initialTags,onChange=null){
+  let selected=normalizeTags(initialTags);
+  const selectedBox=root.querySelector(`#${prefix}SelectedTags`),knownBox=root.querySelector(`#${prefix}KnownTags`),input=root.querySelector(`#${prefix}TagInput`),addBtn=root.querySelector(`#${prefix}AddTag`);
+  const emit=()=>{if(onChange)Promise.resolve(onChange([...selected])).catch(console.error)};
+  const renderPicker=()=>{
+    selectedBox.innerHTML=tagChipsHtml(selected,true);
+    const known=getKnownTags();
+    knownBox.innerHTML=known.length?known.map(v=>`<button type="button" class="tag-choice ${selected.includes(v)?'selected':''}" data-tag-choice="${esc(v)}">${esc(v)}</button>`).join(''):'<span class="subtle">还没有已有标签，可直接新建。</span>';
+    selectedBox.querySelectorAll('[data-remove-tag]').forEach(btn=>btn.onclick=()=>{selected=selected.filter(v=>v!==btn.dataset.removeTag);renderPicker();emit()});
+    knownBox.querySelectorAll('[data-tag-choice]').forEach(btn=>btn.onclick=()=>{const v=btn.dataset.tagChoice;selected=selected.includes(v)?selected.filter(x=>x!==v):normalizeTags([...selected,v]);renderPicker();emit()});
+  };
+  const addFromInput=()=>{const incoming=parseTagText(input.value);if(!incoming.length)return;selected=normalizeTags([...selected,...incoming]);input.value='';renderPicker();emit()};
+  addBtn.onclick=addFromInput;input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addFromInput()}};
+  renderPicker();
+  return {getTags:()=>[...selected],render:renderPicker};
+}
+function refreshTagFilter(){
+  const box=$('#tagFilterOptions');if(!box)return;
+  const known=getKnownTags(),valid=new Set(known);
+  selectedTagFilters=new Set([...selectedTagFilters].filter(t=>t==='__untagged__'||valid.has(t)));
+  const untaggedSelected=selectedTagFilters.has('__untagged__');
+  box.innerHTML=`<button type="button" class="tag-filter-chip ${untaggedSelected?'selected':''}" data-tag-filter="__untagged__">未设置标签</button>${known.map(v=>`<button type="button" class="tag-filter-chip ${selectedTagFilters.has(v)?'selected':''}" data-tag-filter="${esc(v)}">${esc(v)}</button>`).join('')}${known.length?'':'<span class="subtle">暂无已有标签</span>'}`;
+  box.querySelectorAll('[data-tag-filter]').forEach(btn=>btn.onclick=()=>{const tag=btn.dataset.tagFilter;if(tag==='__untagged__'){if(selectedTagFilters.has(tag))selectedTagFilters.delete(tag);else{selectedTagFilters.clear();selectedTagFilters.add(tag)}}else{selectedTagFilters.delete('__untagged__');if(selectedTagFilters.has(tag))selectedTagFilters.delete(tag);else selectedTagFilters.add(tag)}renderHome()});
+}
+function isActivityPending(a){
+  return getPendingReimbursement(a)>0||getSettlementDiff(a)!==0;
+}
+function settlementLabel(a){
+  const diff=getSettlementDiff(a);
+  if(diff>0)return '待退';
+  if(diff<0)return '待补';
+  return '已平账';
+}
+function activityStatus(a){
+  const actual=getActualSpending(a),funded=getFunded(a),pending=getPendingReimbursement(a),diff=getSettlementDiff(a);
+  if(actual===0&&funded===0)return {text:'未发生支出',cls:'unfunded'};
+  if(diff>0)return {text:'待退',cls:'todo'};
+  if(diff<0)return {text:'待补',cls:'need'};
+  if(pending>0)return {text:'待报销',cls:'todo'};
+  return {text:'已结清',cls:'done'};
+}
+function reminderInfo(a){
+  if(!isActivityPending(a))return null;
+  const due=addCalendarMonth(a.createdDate); if(!due)return null;
+  const now=parseDate(today()); if(now<due)return null;
+  const overdue=daysBetween(due,now),pending=getPendingReimbursement(a),diff=getSettlementDiff(a);
+  // 催办主状态优先显示资金差额；如果同时仍有待报销，作为辅助信息一并展示。
+  if(diff!==0)return {due,overdue,kind:diff>0?'待退':'待补',amount:Math.abs(diff),pendingAmount:pending};
+  if(pending>0)return {due,overdue,kind:'待报销',amount:pending,pendingAmount:0};
+  return null;
+}
+function reconcileActivity(a,markEdited=false){
+  const d=today(),remaining=getAutoUnreimbursableAmount(a);
+  if(!a.unreimbursable)a.unreimbursable={cents:0,edited:a.createdDate||d};
+  if(!a.autoUnreimbursable)a.autoUnreimbursable={value:false,edited:a.createdDate||d};
+  const current=Math.max(0,Number(a.unreimbursable.cents||0));
+  const target=a.autoUnreimbursable.value?remaining:Math.min(current,remaining);
+  if(target!==Number(a.unreimbursable.cents||0))a.unreimbursable={cents:target,edited:markEdited?d:(a.unreimbursable.edited||a.createdDate||d)};
+}
 
 function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=()=>r.result.createObjectStore(STORE);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
 async function load(){try{const db=await openDB();const data=await new Promise((res,rej)=>{const tx=db.transaction(STORE,'readonly');const r=tx.objectStore(STORE).get(KEY);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});if(data&&Array.isArray(data.activities))state=data}catch(e){console.error(e)}normalizeState();render();showStartupReminderIfNeeded()}
-function normalizeState(){for(const a of state.activities){for(const x of (a.items||[])){if(!x.note)x.note={value:'',edited:x.detail?.edited||a.createdDate||today()};if(!x.unitPrice)x.unitPrice={cents:null,edited:a.createdDate||today()};if(x.unitPrice.cents===undefined)x.unitPrice.cents=null}}}
+function normalizeState(){
+  for(const a of state.activities){
+    const d=a.createdDate||today();
+    if(!a.items)a.items=[];
+    for(const x of a.items){
+      if(!x.note)x.note={value:'',edited:x.detail?.edited||d};
+      if(!x.unitPrice)x.unitPrice={cents:null,edited:d};
+      if(x.unitPrice.cents===undefined)x.unitPrice.cents=null;
+      if(!x.reimbursed)x.reimbursed={value:false,edited:d};
+      if(!x.reimbursementDate)x.reimbursementDate='';
+    }
+    if(!a.tags){const legacyOwner=typeof a.owner==='string'?a.owner:a.owner?.value;a.tags={values:legacyOwner?normalizeTags([legacyOwner]):[],edited:a.owner?.edited||d}}
+    else if(Array.isArray(a.tags))a.tags={values:normalizeTags(a.tags),edited:d};
+    else{a.tags.values=normalizeTags(a.tags.values||[]);if(!a.tags.edited)a.tags.edited=d}
+    if(a.owner)delete a.owner;
+    if(!a.budget)a.budget={cents:0,edited:d};
+    if(!a.advance)a.advance={cents:0,edited:d};
+    if(!a.additionalFunding)a.additionalFunding={cents:0,edited:d};
+    const legacyManual=!!a.manualHandled?.value;
+    const legacyEdited=a.manualHandled?.edited||d;
+    if(!a.unreimbursable)a.unreimbursable={cents:0,edited:d};
+    if(!a.autoUnreimbursable)a.autoUnreimbursable={value:legacyManual,edited:legacyManual?legacyEdited:d};
+    if(a.settlementDone)delete a.settlementDone;
+    if(a.manualHandled)delete a.manualHandled;
+    reconcileActivity(a,false);
+  }
+}
 async function save(){const db=await openDB();await new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(state,KEY);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
-function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
-
+function toast(msg){const t=$('#toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
 function modeUI(){
   $('#modeText').textContent=secretMode?'秘密模式':'普通模式';
   $('#modePill').classList.toggle('secret',secretMode);
@@ -1535,13 +2005,64 @@ function getHomeFilteredActivities(){
   const filterEnd=$('#filterEnd')?.value||'';
   return acts.filter(a=>{
     if(q&&!String(a.id).includes(q)&&!a.name.value.toLowerCase().includes(q))return false;
-    const unsettled=!a.manualHandled.value&&(Number(a.advance?.cents||0)===0||getDiff(a)!==0);
+    const tags=getActivityTags(a);
+    if(selectedTagFilters.has('__untagged__')&&tags.length)return false;
+    if(!selectedTagFilters.has('__untagged__')&&[...selectedTagFilters].some(tag=>!tags.includes(tag)))return false;
+    const unsettled=isActivityPending(a);
     if(statusFilter==='unsettled'&&!unsettled)return false;
     if(filterStart&&a.createdDate<filterStart)return false;
     if(filterEnd&&a.createdDate>filterEnd)return false;
     return true;
   }).sort((a,b)=>b.id-a.id);
 }
+function getCurrentFilterParts(){
+  const q=$('#search')?.value.trim()||'';
+  const statusFilter=$('#statusFilter')?.value||'all';
+  const filterStart=$('#filterStart')?.value||'';
+  const filterEnd=$('#filterEnd')?.value||'';
+  const parts=[];
+  if(q)parts.push(`搜索：${q}`);
+  if(selectedTagFilters.has('__untagged__'))parts.push('标签：未设置');
+  else if(selectedTagFilters.size)parts.push(`标签：${[...selectedTagFilters].join(' + ')}`);
+  if(statusFilter==='unsettled')parts.push('未结清');
+  if(filterStart||filterEnd)parts.push(`${filterStart||'最早'} 至 ${filterEnd||'今天'}`);
+  return parts;
+}
+function activityTotals(acts){
+  return acts.reduce((t,a)=>{t.budget+=Number(a.budget?.cents||0);t.actual+=getActualSpending(a);t.advance+=Number(a.advance?.cents||0);t.additional+=Number(a.additionalFunding?.cents||0);t.funded+=getFunded(a);t.reimb+=getReimbursed(a);t.unreimb+=getUnreimbursable(a);t.pending+=getPendingReimbursement(a);t.settlement+=getSettlementDiff(a);return t},{budget:0,actual:0,advance:0,additional:0,funded:0,reimb:0,unreimb:0,pending:0,settlement:0});
+}
+function getTagGroups(acts){
+  const map=new Map();
+  for(const a of acts){
+    const tags=getActivityTags(a);
+    const keys=tags.length?tags:['__untagged__'];
+    for(const key of keys){if(!map.has(key))map.set(key,[]);map.get(key).push(a)}
+  }
+  return [...map.entries()].sort((a,b)=>{
+    if(a[0]==='__untagged__')return 1;if(b[0]==='__untagged__')return -1;
+    return a[0].localeCompare(b[0],'zh-CN');
+  });
+}
+function activityCardHtml(a){
+  const actual=getActualSpending(a),funded=getFunded(a),reimb=getReimbursed(a),pending=getPendingReimbursement(a),status=activityStatus(a),selected=selectedActivityIds.has(a.id),tags=getActivityTags(a);
+  return `<article class="card ${managementMode?'manage-card':''} ${selected?'selected':''}" data-id="${a.id}">${managementMode?`<label class="card-select" title="选择活动"><input class="activity-select" type="checkbox" ${selected?'checked':''} aria-label="选择活动 ${esc(a.name.value)}"></label>`:''}<div class="card-head"><div><div class="card-id">活动 #${a.id}</div><h3>${esc(a.name.value)}</h3><div class="card-date">创建于 ${a.createdDate}</div><div class="card-tags">${tags.length?tagChipsHtml(tags):'<span class="subtle">未设置标签</span>'}</div></div><span class="status ${status.cls}">${status.text}</span></div><div class="card-metrics"><div class="metric"><div class="k">实际支出</div><div class="v">${displayMoney(actual)}</div></div><div class="metric"><div class="k">已拨付</div><div class="v">${displayMoney(funded)}</div></div><div class="metric"><div class="k">已报销</div><div class="v">${displayMoney(reimb)}</div></div><div class="metric ${pending>0?'over-budget':''}"><div class="k">待报销</div><div class="v">${displayMoney(pending)}</div></div></div></article>`;
+}
+function tagGroupHtml(key,acts){
+  const label=key==='__untagged__'?'未设置标签':key,t=activityTotals(acts);
+  return `<section class="tag-group" data-tag-group="${esc(key)}"><div class="tag-group-head"><div class="tag-group-title"><i class="ri-folder-3-line" aria-hidden="true"></i><div><h3>${esc(label)}</h3><div class="subtle">${acts.length} 个活动${key==='__untagged__'?'':' · 动态标签分组'}</div></div></div><div class="tag-group-stats"><div class="tag-group-stat"><div class="k">实际支出</div><div class="v">${displayMoney(t.actual)}</div></div><div class="tag-group-stat"><div class="k">已拨付</div><div class="v">${displayMoney(t.funded)}</div></div><div class="tag-group-stat"><div class="k">已报销</div><div class="v">${displayMoney(t.reimb)}</div></div><div class="tag-group-stat"><div class="k">待报销</div><div class="v">${displayMoney(t.pending)}</div></div></div></div><div class="grid">${acts.map(activityCardHtml).join('')}</div></section>`;
+}
+function bindHomeActivityCards(root){
+  root.querySelectorAll('.card').forEach(el=>el.onclick=e=>{
+    const id=Number(el.dataset.id);
+    if(managementMode){
+      if(e.target.closest('.card-select'))return;
+      if(selectedActivityIds.has(id))selectedActivityIds.delete(id);else selectedActivityIds.add(id);
+      renderHome();
+    }else openActivity(id);
+  });
+  root.querySelectorAll('.activity-select').forEach(ch=>ch.onchange=e=>{const id=Number(e.target.closest('.card').dataset.id);if(e.target.checked)selectedActivityIds.add(id);else selectedActivityIds.delete(id);renderHome()});
+}
+
 function updateManagementPanel(){
   const panel=$('#managePanel');if(!panel)return;
   panel.style.display=managementMode?'flex':'none';
@@ -1555,32 +2076,36 @@ function updateManagementPanel(){
 }
 function renderHome(){
   $('#heroToday').textContent=today();
-  const acts=state.activities; $('#statCount').textContent=acts.length;
-  const adv=acts.reduce((sum,a)=>sum+a.advance.cents,0);
-  $('#statOverBudget').textContent=acts.filter(a=>getOverBudget(a)>0).length; $('#statAdvance').textContent=displayMoney(adv);
-  $('#statPending').textContent=acts.filter(a=>!a.manualHandled.value&&(Number(a.advance?.cents||0)===0||getDiff(a)!==0)).length;
+  refreshTagFilter();
+  const acts=state.activities;
   const statusFilter=$('#statusFilter')?.value||'all';
   const filterStart=$('#filterStart')?.value||'';
   const filterEnd=$('#filterEnd')?.value||'';
   const filtered=getHomeFilteredActivities();
-  $('#activityCountText').textContent=`显示 ${filtered.length} / ${acts.length}`;
-  if($('#filterSummary')){const parts=[];if(statusFilter==='unsettled')parts.push('未结清');if(filterStart||filterEnd)parts.push(`${filterStart||'最早'} 至 ${filterEnd||'今天'}`);$('#filterSummary').textContent=parts.length?`筛选：${parts.join(' · ')}`:'未启用筛选'}
+  const q=$('#search')?.value.trim()||'';
+  const hasActiveFilters=Boolean(q||selectedTagFilters.size||statusFilter==='unsettled'||filterStart||filterEnd);
+  if($('#heroStatsTitle'))$('#heroStatsTitle').textContent=hasActiveFilters?'当前筛选汇总':'全部活动汇总';
+  if($('#heroStatsDesc'))$('#heroStatsDesc').textContent=hasActiveFilters
+    ?`当前筛选出 ${filtered.length} / ${acts.length} 个活动，四项金额仅汇总这些活动。`
+    :`当前未设置筛选条件，四项金额汇总全部 ${acts.length} 个活动。`;
+  const totalActual=filtered.reduce((sum,a)=>sum+getActualSpending(a),0);
+  const totalFunded=filtered.reduce((sum,a)=>sum+getFunded(a),0);
+  const totalReimbursed=filtered.reduce((sum,a)=>sum+getReimbursed(a),0);
+  const totalPending=filtered.reduce((sum,a)=>sum+getPendingReimbursement(a),0);
+  $('#statActual').textContent=displayMoney(totalActual);
+  $('#statFunded').textContent=displayMoney(totalFunded);
+  $('#statReimbursed').textContent=displayMoney(totalReimbursed);
+  $('#statPendingAmount').textContent=displayMoney(totalPending);
+  $('#activityCountText').textContent=`当前结果 ${filtered.length} / 全部 ${acts.length} 个活动${groupByTag?' · 按标签分组展示':''}`;
+  if($('#filterSummary')){const parts=getCurrentFilterParts();$('#filterSummary').textContent=parts.length?`统计范围：${parts.join(' · ')} · ${filtered.length}/${acts.length} 个活动`:`统计范围：全部活动 · ${acts.length} 个活动`}
+  const groupToggle=$('#groupByTagToggle');if(groupToggle)groupToggle.checked=groupByTag;
   updateManagementPanel();
   const grid=$('#activityGrid');
+  grid.className=groupByTag?'tag-group-list':'grid';
   if(!filtered.length){grid.innerHTML=`<div class="empty" style="grid-column:1/-1">${acts.length?'当前筛选条件下没有活动。':'还没有活动。可以新建活动，或导入预算工作簿。'}</div>`}
-  else grid.innerHTML=filtered.map(a=>{
-    const reimb=getReimbursed(a), diff=getDiff(a), overBudget=getOverBudget(a), budgetRemaining=getBudgetRemaining(a), status=activityStatus(a), selected=selectedActivityIds.has(a.id);
-    return `<article class="card ${managementMode?'manage-card':''} ${selected?'selected':''}" data-id="${a.id}">${managementMode?`<label class="card-select" title="选择活动"><input class="activity-select" type="checkbox" ${selected?'checked':''} aria-label="选择活动 ${esc(a.name.value)}"></label>`:''}<div class="card-head"><div><div class="card-id">活动 #${a.id}</div><h3>${esc(a.name.value)}</h3><div class="card-date">创建于 ${a.createdDate}</div></div><span class="status ${status.cls}">${status.text}</span></div><div class="card-metrics"><div class="metric"><div class="k">预支金额</div><div class="v">${displayMoney(a.advance.cents)}</div></div><div class="metric"><div class="k">经费差额</div><div class="v">${displayMoney(diff)}</div></div><div class="metric"><div class="k">已报销</div><div class="v">${displayMoney(reimb)}</div></div><div class="metric ${overBudget>0?'over-budget':''}"><div class="k">${overBudget>0?'超出预算':'预算剩余'}</div><div class="v">${displayMoney(overBudget>0?overBudget:budgetRemaining)}</div></div></div></article>`
-  }).join('');
-  grid.querySelectorAll('.card').forEach(el=>el.onclick=e=>{
-    const id=Number(el.dataset.id);
-    if(managementMode){
-      if(e.target.closest('.card-select'))return;
-      if(selectedActivityIds.has(id))selectedActivityIds.delete(id);else selectedActivityIds.add(id);
-      renderHome();
-    }else openActivity(id);
-  });
-  grid.querySelectorAll('.activity-select').forEach(ch=>ch.onchange=e=>{const id=Number(e.target.closest('.card').dataset.id);if(e.target.checked)selectedActivityIds.add(id);else selectedActivityIds.delete(id);renderHome()});
+  else if(groupByTag)grid.innerHTML=getTagGroups(filtered).map(([key,groupActs])=>tagGroupHtml(key,groupActs)).join('');
+  else grid.innerHTML=filtered.map(activityCardHtml).join('');
+  bindHomeActivityCards(grid);
   renderReminders();
 }
 function getReminderList(){
@@ -1589,41 +2114,82 @@ function getReminderList(){
 function renderReminders(){
   const list=getReminderList();
   $('#reminderSection').style.display=list.length?'block':'none';
-  $('#reminders').innerHTML=list.map(({a,info})=>`<div class="reminder"><div class="grow"><strong>${esc(a.name.value)} · 活动 #${a.id}</strong><div class="meta">${info.overdue===0?'今天开始催办':`已到催办期 ${info.overdue} 天`} · 当前差额 ${displayMoney(getDiff(a))}</div></div><button class="btn small" data-open="${a.id}">查看</button></div>`).join('');
+  $('#reminders').innerHTML=list.map(({a,info})=>`<div class="reminder"><div class="grow"><strong>${esc(a.name.value)} · 活动 #${a.id}</strong><div class="meta">${info.overdue===0?'今天开始催办':`已到催办期 ${info.overdue} 天`} · ${info.kind} ${displayMoney(info.amount)}</div>${info.pendingAmount>0?`<div class="meta">其中仍有 ${displayMoney(info.pendingAmount)} 待报销</div>`:''}</div><button class="btn small" data-open="${a.id}">查看</button></div>`).join('');
   $('#reminders').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openActivity(Number(b.dataset.open)));
 }
 function showStartupReminderIfNeeded(){
   const count=getReminderList().length;
   if(!count)return;
-  showModal(`<div class="modal-head"><h3>有活动需要催办</h3></div><div class="modal-body"><p style="font-size:15px;line-height:1.8">当前共有 <strong>${count}</strong> 个活动处于催办状态。</p><div class="tip">详见首页“催办提醒”区域。</div></div><div class="modal-foot"><button class="btn primary" id="startupReminderOk">知道了</button></div>`,root=>{root.querySelector('#startupReminderOk').onclick=closeModal});
+  showModal(`<div class="modal-head"><h3>有活动需要催办</h3></div><div class="modal-body"><p style="font-size:15px;line-height:1.8">当前共有 <strong>${count}</strong> 个活动存在待报销或尚未平账的待退 / 待补事项。</p><div class="tip">详见首页“催办提醒”区域。</div></div><div class="modal-foot"><button class="btn primary" id="startupReminderOk">知道了</button></div>`,root=>{root.querySelector('#startupReminderOk').onclick=closeModal});
 }
 
-function enterActivity(id,authorized){currentActivityId=id;currentActivityAuthorized=!!authorized||secretMode;$('#home').classList.add('hidden');$('#detail').classList.add('active');renderDetail();window.scrollTo({top:0,behavior:'smooth'})}
+function enterActivity(id,authorized){currentActivityId=id;currentActivityAuthorized=!!authorized||secretMode;$('#home').classList.add('hidden');$('#detail').classList.add('active');$('#manual').classList.remove('active');$('#financialModel').classList.remove('active');renderDetail();window.scrollTo({top:0,behavior:'smooth'})}
 function openActivity(id){if(secretMode){enterActivity(id,true);return}activityPasswordModal(id)}
 function closeActivity(){currentActivityId=null;currentActivityAuthorized=false;$('#detail').classList.remove('active');$('#home').classList.remove('hidden');renderHome();window.scrollTo({top:0,behavior:'smooth'})}
-function openManual(){manualReturn=(currentActivityId!==null&&$('#detail').classList.contains('active'))?'detail':'home';$('#home').classList.add('hidden');$('#detail').classList.remove('active');$('#manual').classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
-function closeManual(){$('#manual').classList.remove('active');if(manualReturn==='detail'&&currentActivityId!==null){$('#home').classList.add('hidden');$('#detail').classList.add('active');renderDetail()}else{$('#detail').classList.remove('active');$('#home').classList.remove('hidden');renderHome()}window.scrollTo({top:0,behavior:'smooth'})}
+function openDocument(id){
+  const documentAlreadyOpen=$('#manual').classList.contains('active')||$('#financialModel').classList.contains('active');
+  if(!documentAlreadyOpen){
+    if(activeModule==='wage'&&$('#wageModule').classList.contains('active'))documentReturn='wage';
+    else documentReturn=(currentActivityId!==null&&$('#detail').classList.contains('active'))?'detail':'home';
+  }
+  $('#home').classList.add('hidden');$('#detail').classList.remove('active');$('#wageModule').classList.remove('active');$('#manual').classList.remove('active');$('#financialModel').classList.remove('active');
+  $(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeDocument(id){
+  $(id).classList.remove('active');
+  if(documentReturn==='wage'){$('#home').classList.add('hidden');$('#detail').classList.remove('active');$('#wageModule').classList.add('active');renderWage()}
+  else if(documentReturn==='detail'&&currentActivityId!==null){$('#home').classList.add('hidden');$('#detail').classList.add('active');renderDetail()}
+  else{$('#detail').classList.remove('active');$('#home').classList.remove('hidden');renderHome()}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function openManual(){openDocument('#manual')}
+function closeManual(){closeDocument('#manual')}
+function openFinancialModel(){openDocument('#financialModel')}
+function closeFinancialModel(){closeDocument('#financialModel')}
 function current(){return state.activities.find(a=>a.id===currentActivityId)}
 
 function editableBlock(obj,type,fieldKey,extra=''){
-  const val=type==='money'?fromCents(obj.cents):obj.value;
-  const masked=type==='money'&&!detailCanReveal();
-  const inputType=masked?'text':(type==='money'?'number':'text');
-  const step=type==='money'?'step="0.01" min="0"':'';
-  return `<div class="editable ${masked?'locked':''}"><div class="edit-main"><input class="cell-input ${type==='money'?'money-input':''}" data-field="${fieldKey}" type="${inputType}" ${step} value="${esc(masked?'••••':val)}" ${masked?'disabled':''} ${extra}></div><div class="cell-note">最后编辑 ${lastEdited(obj)||'—'}</div></div>`
+  const isMoney=type==='money'||type==='money-signed',signed=type==='money-signed';
+  const val=isMoney?fromCents(obj.cents):obj.value;
+  const masked=isMoney&&!detailCanReveal();
+  const inputType=masked?'text':(isMoney?'number':'text');
+  const step=isMoney?`step="0.01"${signed?'':' min="0"'}`:'';
+  return `<div class="editable ${masked?'locked':''}"><div class="edit-main"><input class="cell-input ${isMoney?'money-input':''}" data-field="${fieldKey}" type="${inputType}" ${step} value="${esc(masked?'••••':val)}" ${masked?'disabled':''} ${extra}></div><div class="cell-note">最后编辑 ${lastEdited(obj)||'—'}</div></div>`
+}
+function readonlyMoneyBlock(cents,note='自动计算'){
+  const masked=!detailCanReveal();
+  return `<div class="editable locked"><div class="edit-main"><input class="cell-input money-input" type="${masked?'text':'number'}" step="0.01" value="${esc(masked?'••••':fromCents(cents))}" disabled></div><div class="cell-note">${esc(note)}</div></div>`
 }
 function renderDetail(){
   const a=current(); if(!a){closeActivity();return}
-  $('#detailId').textContent=`活动 #${a.id}`; $('#detailNameTitle').textContent=a.name.value; $('#detailCreated').textContent=`创建日期 ${a.createdDate}`;
-  const reimb=getReimbursed(a),diff=getDiff(a),overBudget=getOverBudget(a);
+  reconcileActivity(a,false);
+  $('#detailId').textContent=`活动 #${a.id}`; $('#detailNameTitle').textContent=a.name.value; $('#detailCreated').textContent=`创建日期 ${a.createdDate} · 标签 ${getActivityTags(a).join('、')||'未设置'}`;
+  const actual=getActualSpending(a),reimb=getReimbursed(a),auto=a.autoUnreimbursable.value;
+  // 对外显示采用公式结果。自动规则开启时，绝不读取旧的 unreimbursable.cents。
+  const autoUnreimbAmount=Math.max(0,actual-reimb);
+  const unreimb=auto?autoUnreimbAmount:getUnreimbursable(a);
+  const pending=Math.max(0,actual-reimb-unreimb),funded=getFunded(a),settleDiff=getSettlementDiff(a),overBudget=getOverBudget(a);
+  const settleAmount=Math.abs(settleDiff);
+  // 资金差额实时反映“已拨付金额 − 已报销 − 无法报销”，待报销尚未处理时也照常显示。
+  const settleCls=settleDiff<0?'negative':settleDiff>0?'positive':'';
+  const settleText=settleDiff>0?`待退 ${detailMoney(settleAmount)}`:settleDiff<0?`待补 ${detailMoney(settleAmount)}`:'已平账';
+  const pendingContext=pending>0?` 其中仍有 ${detailMoney(pending)} 待报销。`:'';
+  const settleNote=settleDiff===0?(pending>0?`当前已处理支出已与已拨付金额平账，但仍有 ${detailMoney(pending)} 待报销。`:'已拨付金额与已处理支出相等，系统自动判定平账。'):settleDiff>0?`资金差额 = 已拨付 − 已报销 − 无法报销；实际收到退款后，在“后续补款”填写对应负数。${pendingContext}`:`资金差额 = 已拨付 − 已报销 − 无法报销；实际追加补款后，在“后续补款”填写对应正数。${pendingContext}`;
   $('#summary').innerHTML=`
     <div class="summary-cell"><label>活动名称</label>${editableBlock(a.name,'text','name')}</div>
-    <div class="summary-cell ${overBudget>0?'over-budget':''}"><label>预算金额</label>${editableBlock(a.budget,'money','budget')}${overBudget>0?`<div class="budget-alert">已超出预算 ${detailMoney(overBudget)}</div>`:''}</div>
-    <div class="summary-cell"><label>预支金额</label>${editableBlock(a.advance,'money','advance')}</div>
-    <div class="summary-cell"><label>已报销金额</label><div class="big">${detailMoney(reimb)}</div><div class="cell-note">由已勾选支出自动计算</div></div>
-    <div class="summary-cell ${diff<0?'negative':diff>0?'positive':''}"><label>经费差额</label><div class="big">${detailMoney(diff)}</div><div class="cell-note">预支金额 − 已报销金额</div></div>
-    <div class="summary-cell" style="grid-column:1/-1"><label>经费已手动处理</label><div class="switch-row"><label class="switch"><input id="manualHandled" type="checkbox" ${a.manualHandled.value?'checked':''}><span class="slider"></span></label><strong>${a.manualHandled.value?'已停止催办':'未手动处理'}</strong></div><div class="cell-note">最后编辑 ${a.manualHandled.edited||'—'}</div></div>`;
+    <div class="summary-cell tags-cell"><label>活动标签</label>${tagPickerHtml('detail',getActivityTags(a))}<div class="cell-note">最后编辑 ${a.tags?.edited||'—'}</div></div>
+    <div class="summary-cell ${overBudget>0?'over-budget':''}"><label>初步预算</label>${editableBlock(a.budget,'money','budget')}${overBudget>0?`<div class="budget-alert">实际支出超预算 ${detailMoney(overBudget)}</div>`:''}</div>
+    <div class="summary-cell"><label>实际支出</label><div class="big">${detailMoney(actual)}</div><div class="cell-note">由全部支出总价自动汇总</div></div>
+    <div class="summary-cell"><label>首次预支</label>${editableBlock(a.advance,'money','advance')}</div>
+    <div class="summary-cell"><label>后续补款</label>${editableBlock(a.additionalFunding,'money-signed','additionalFunding')}<div class="cell-note">正数表示补款，负数表示实际退回</div></div>
+    <div class="summary-cell"><label>已拨付金额</label><div class="big">${detailMoney(funded)}</div><div class="cell-note">首次预支 + 后续补款</div></div>
+    <div class="summary-cell"><label>已报销</label><div class="big">${detailMoney(reimb)}</div><div class="cell-note">由已勾选支出自动计算</div></div>
+    <div class="summary-cell"><label>无法报销</label>${auto?`<div class="big" id="autoUnreimbursableAmount">${detailMoney(autoUnreimbAmount)}</div><div class="cell-note">自动计算：实际支出 − 已报销；此处直接显示公式值，不读取旧的手工金额</div>`:editableBlock(a.unreimbursable,'money','unreimbursable')}</div>
+    <div class="summary-cell ${pending>0?'positive':''}"><label>待报销</label><div class="big">${detailMoney(pending)}</div><div class="cell-note">实际支出 − 已报销 − 无法报销</div></div>
+    <div class="summary-cell ${settleCls}"><label>资金差额</label><div class="big">${settleText}</div><div class="cell-note">${settleNote}</div></div>
+    <div class="summary-cell" style="grid-column:1/-1"><label>无法报销规则</label><div class="switch-row"><label class="switch"><input id="autoUnreimbursable" type="checkbox" ${auto?'checked':''}><span class="slider"></span></label><strong>自动将未报销余额计入无法报销</strong></div><div class="cell-note">${auto?'已开启：无法报销 = 实际支出 − 已报销，待报销自动变为 0，字段不可手动编辑。':'关闭时“无法报销”可自由填写；开启瞬间系统立即把当前全部未报销余额计入“无法报销”。'} 最后编辑 ${a.autoUnreimbursable.edited||'—'}</div></div>`;
   bindSummaryEditors(a);
+  bindTagPicker($('#summary'),'detail',getActivityTags(a),async tags=>{setActivityTags(a,tags,today());await save();render()});
   const body=$('#itemBody');
   if(!a.items.length) body.innerHTML='<tr><td colspan="7"><div class="empty">还没有支出项目。</div></td></tr>';
   else body.innerHTML=a.items.map(x=>`<tr data-item="${x.id}">
@@ -1642,19 +2208,63 @@ function bindSummaryEditors(a){
   $('#summary').querySelectorAll('[data-field]').forEach(inp=>{
     inp.onchange=async()=>{
       const k=inp.dataset.field,d=today();
-      if(k==='name'){const nv=inp.value.trim();if(!nv){renderDetail();return}if(nv!==a.name.value){a.name={value:nv,edited:d}}}
-      else {const cents=toCents(inp.value);const target=k==='budget'?'budget':'advance';if(cents!==a[target].cents)a[target]={cents,edited:d}}
+      if(k==='name'){
+        const nv=inp.value.trim();if(!nv){renderDetail();return}if(nv!==a.name.value)a.name={value:nv,edited:d};
+      }else if(k==='unreimbursable'){
+        const max=Math.max(0,getActualSpending(a)-getReimbursed(a)),requested=toCents(inp.value),cents=Math.min(requested,max);
+        if(cents!==requested)toast(`无法报销最多可填写 ${money(max)}`);
+        if(cents!==a.unreimbursable.cents)a.unreimbursable={cents,edited:d};
+        reconcileActivity(a,true);
+      }else{
+        const target=k==='budget'?'budget':k==='advance'?'advance':'additionalFunding',cents=target==='additionalFunding'?toSignedCents(inp.value):toCents(inp.value);
+        if(cents!==a[target].cents)a[target]={cents,edited:d}
+        reconcileActivity(a,true);
+      }
       await save();render();
     }
   });
-  $('#manualHandled').onchange=async e=>{a.manualHandled={value:e.target.checked,edited:today()};await save();render()}
+  $('#autoUnreimbursable').onchange=async e=>{
+    const d=today(),enabled=e.target.checked;
+    if(enabled){
+      // 开启规则：公式是唯一真值。立即覆盖旧手工金额，并立即重绘对外显示。
+      const computed=Math.max(0,getActualSpending(a)-getReimbursed(a));
+      a.autoUnreimbursable={value:true,edited:d};
+      a.unreimbursable={cents:computed,edited:d};
+    }else{
+      // 关闭规则：保留自动规则关闭前的公式结果，随后恢复自由填写。
+      const frozen=Math.max(0,getActualSpending(a)-getReimbursed(a));
+      a.unreimbursable={cents:frozen,edited:a.unreimbursable?.edited||d};
+      a.autoUnreimbursable={value:false,edited:d};
+      reconcileActivity(a,false);
+    }
+    // 先同步重绘详情，确保用户看到的“无法报销”立即变成公式值；再持久化。
+    renderDetail();
+    renderHome();
+    await save();
+  };
 }
 function bindItemEditors(a){
   $('#itemBody').querySelectorAll('tr[data-item]').forEach(tr=>{
     const x=a.items.find(i=>i.id===tr.dataset.item); if(!x)return;
-    tr.querySelectorAll('.item-edit').forEach(inp=>inp.onchange=async()=>{const k=inp.dataset.key,t=inp.dataset.type,d=today();if(k==='detail'){const nv=inp.value.trim();if(!nv){renderDetail();return}if(nv!==x.detail.value)x.detail={value:nv,edited:d}}else if(k==='note'){const nv=inp.value.trim();if(nv!==x.note.value)x.note={value:nv,edited:d}}else{const cents=t==='money-optional'?toOptionalCents(inp.value):toCents(inp.value);if(cents!==x[k].cents)x[k]={cents,edited:d}}await save();render()});
-    tr.querySelector('.reimb-check').onchange=async e=>{x.reimbursed={value:e.target.checked,edited:today()};x.reimbursementDate=e.target.checked?today():'';await save();render()};
-    tr.querySelector('.delete-item').onclick=async()=>{a.items=a.items.filter(i=>i.id!==x.id);await save();render();toast('支出已删除')};
+    tr.querySelectorAll('.item-edit').forEach(inp=>inp.onchange=async()=>{
+      const k=inp.dataset.key,t=inp.dataset.type,d=today();
+      if(k==='detail'){
+        const nv=inp.value.trim();if(!nv){renderDetail();return}if(nv!==x.detail.value)x.detail={value:nv,edited:d};
+      }else if(k==='note'){
+        const nv=inp.value.trim();if(nv!==x.note.value)x.note={value:nv,edited:d};
+      }else{
+        const cents=t==='money-optional'?toOptionalCents(inp.value):toCents(inp.value);
+        if(cents!==x[k].cents){x[k]={cents,edited:d}}
+      }
+      reconcileActivity(a,true);await save();render();
+    });
+    tr.querySelector('.reimb-check').onchange=async e=>{
+      x.reimbursed={value:e.target.checked,edited:today()};x.reimbursementDate=e.target.checked?today():'';
+      reconcileActivity(a,true);await save();render();
+    };
+    tr.querySelector('.delete-item').onclick=async()=>{
+      a.items=a.items.filter(i=>i.id!==x.id);reconcileActivity(a,true);await save();render();toast('支出已删除');
+    };
   })
 }
 
@@ -1692,24 +2302,25 @@ function deleteSelectedActivities(){
   })
 }
 
-function newActivityModal(){showModal(`<div class="modal-head"><h3>新建活动</h3></div><div class="modal-body"><div class="form-row"><label>活动名称</label><input id="newName" class="field" placeholder="例如：迎新晚会"></div><div class="tip">手工创建只需要活动名称。创建日期取电脑今天日期；活动编号为当前最大编号加 1；预算初始为 0；预支初始为 0，主页状态显示“未预支”，可进入活动后填写实际预支金额。</div><div style="height:1px;background:var(--line);margin:18px 0"></div><div class="tip"><strong>也可以直接从单个活动预算表创建</strong><br>支持电子表格工作簿(XLSX)，表头为：活动、物品、单价、总价。活动列可向下留空并继承上方最近的活动；单价值可以留空。备注不从普通预算表导入，可进入活动后手动填写。系统会自动以总价之和初始化预算金额。</div><div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="createFromXlsx">选择单活动预算表</button><button class="btn" id="createDownloadTemplate">下载预算模板</button></div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="createOk">手工创建</button></div>`,root=>{
+function newActivityModal(){showModal(`<div class="modal-head"><h3>新建活动</h3></div><div class="modal-body"><div class="form-row"><label>活动名称</label><input id="newName" class="field" placeholder="例如：迎新晚会"></div><div class="form-row" style="align-items:start"><label>活动标签</label><div>${tagPickerHtml('new',[])} </div></div><div class="tip">手工创建需要活动名称；标签可以不填，也可以快速选择已经使用过的标签，或现场创建新标签。一个活动可拥有任意数量标签。创建日期取电脑今天日期；活动编号为当前最大编号加 1；初步预算、首次预支、后续补款和无法报销均从 0 开始。实际支出由后续支出明细自动汇总。</div><div style="height:1px;background:var(--line);margin:18px 0"></div><div class="tip"><strong>也可以直接从单个活动预算表创建</strong><br>支持电子表格工作簿(XLSX)，表头为：活动、物品、单价、总价。活动列可向下留空并继承上方最近的活动；单价可以留空。普通预算表中的总价会形成支出明细，同时用于初始化初步预算。</div><div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="createFromXlsx">选择单活动预算表</button><button class="btn" id="createDownloadTemplate">下载预算模板</button></div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="createOk">手工创建</button></div>`,root=>{
   root.querySelector('[data-cancel]').onclick=closeModal;
   root.querySelector('#createFromXlsx').onclick=()=>{$('#singleActivityFileInput').click()};
   root.querySelector('#createDownloadTemplate').onclick=downloadBudgetTemplate;
-  root.querySelector('#createOk').onclick=async()=>{const name=root.querySelector('#newName').value.trim();if(!name)return;const d=today();const a={id:maxId()+1,name:{value:name,edited:d},createdDate:d,budget:{cents:0,edited:d},advance:{cents:0,edited:d},manualHandled:{value:false,edited:d},items:[]};state.activities.push(a);await save();closeModal();render();openActivity(a.id);toast('活动已创建')}
+  const tagPicker=bindTagPicker(root,'new',[]);
+  root.querySelector('#createOk').onclick=async()=>{const name=root.querySelector('#newName').value.trim();if(!name)return;const d=today();const a={id:maxId()+1,name:{value:name,edited:d},tags:{values:tagPicker.getTags(),edited:d},createdDate:d,budget:{cents:0,edited:d},advance:{cents:0,edited:d},additionalFunding:{cents:0,edited:d},unreimbursable:{cents:0,edited:d},autoUnreimbursable:{value:false,edited:d},items:[]};state.activities.push(a);await save();closeModal();render();openActivity(a.id);toast('活动已创建')}
 })}
 function addItemModal(){const a=current();showModal(`<div class="modal-head"><h3>新增支出</h3></div><div class="modal-body"><div class="form-row"><label>物品</label><input id="itName" class="field"></div><div class="form-row"><label>单价</label><input id="itUnit" class="field" type="number" min="0" step="0.01" placeholder="可留空"></div><div class="form-row"><label>总价</label><input id="itTotal" class="field" type="number" min="0" step="0.01" value="0.00"></div><div class="form-row"><label>备注</label><input id="itNote" class="field" placeholder="可留空"></div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="itOk">新增</button></div>`,root=>{
-  root.querySelector('[data-cancel]').onclick=closeModal;root.querySelector('#itOk').onclick=async()=>{const name=root.querySelector('#itName').value.trim();if(!name)return;const d=today();a.items.push({id:uid(),detail:{value:name,edited:d},unitPrice:{cents:toOptionalCents(root.querySelector('#itUnit').value),edited:d},totalPrice:{cents:toCents(root.querySelector('#itTotal').value),edited:d},note:{value:root.querySelector('#itNote').value.trim(),edited:d},reimbursed:{value:false,edited:d},reimbursementDate:''});await save();closeModal();render();toast('支出已新增')}
+  root.querySelector('[data-cancel]').onclick=closeModal;root.querySelector('#itOk').onclick=async()=>{const name=root.querySelector('#itName').value.trim();if(!name)return;const d=today();a.items.push({id:uid(),detail:{value:name,edited:d},unitPrice:{cents:toOptionalCents(root.querySelector('#itUnit').value),edited:d},totalPrice:{cents:toCents(root.querySelector('#itTotal').value),edited:d},note:{value:root.querySelector('#itNote').value.trim(),edited:d},reimbursed:{value:false,edited:d},reimbursementDate:''});reconcileActivity(a,true);await save();closeModal();render();toast('支出已新增')}
 })}
 function makeFullBackupWorkbook(activities=state.activities){
   const wb=XLSX.utils.book_new();
-  const summary=[['活动经费记账助手完整备份'],['备份版本','2'],['导出日期',today()],[],['活动编号','活动名称','名称最后编辑','创建日期','预算金额','预算最后编辑','预支金额','预支最后编辑','已报销金额','经费差额','经费已手动处理','状态最后编辑']];
-  activities.slice().sort((a,b)=>a.id-b.id).forEach(a=>summary.push([a.id,a.name.value,a.name.edited,a.createdDate,Number(fromCents(a.budget.cents)),a.budget.edited,Number(fromCents(a.advance.cents)),a.advance.edited,Number(fromCents(getReimbursed(a))),Number(fromCents(getDiff(a))),a.manualHandled.value?'是':'否',a.manualHandled.edited]));
-  const ws=XLSX.utils.aoa_to_sheet(summary);ws['!cols']=[8,24,14,14,14,14,14,14,14,14,16,14].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,'总览');
+  const summary=[['活动经费记账助手完整备份'],['备份版本','6'],['导出日期',today()],[],['活动编号','活动名称','名称最后编辑','活动标签','标签最后编辑','创建日期','初步预算金额','预算最后编辑','首次预支金额','首次预支最后编辑','后续补款金额','后续补款最后编辑','已拨付金额','实际支出金额','已报销金额','无法报销金额','无法报销最后编辑','自动将未报销余额计入无法报销','规则最后编辑','待报销金额','资金差额','活动状态']];
+  activities.slice().sort((a,b)=>a.id-b.id).forEach(a=>summary.push([a.id,a.name.value,a.name.edited,formatActivityTags(a),a.tags?.edited||a.createdDate,a.createdDate,Number(fromCents(a.budget.cents)),a.budget.edited,Number(fromCents(a.advance.cents)),a.advance.edited,Number(fromCents(a.additionalFunding.cents)),a.additionalFunding.edited,Number(fromCents(getFunded(a))),Number(fromCents(getActualSpending(a))),Number(fromCents(getReimbursed(a))),Number(fromCents(getUnreimbursable(a))),a.unreimbursable.edited,a.autoUnreimbursable.value?'是':'否',a.autoUnreimbursable.edited,Number(fromCents(getPendingReimbursement(a))),Number(fromCents(getSettlementDiff(a))),activityStatus(a).text]));
+  const ws=XLSX.utils.aoa_to_sheet(summary);ws['!cols']=[8,24,14,20,14,14,14,14,14,14,14,14,14,14,14,14,14,16,14,14,14,14].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,'总览');
   activities.slice().sort((a,b)=>a.id-b.id).forEach(a=>{
-    const rows=[['活动信息'],['字段','值','最后编辑日期'],['活动编号',a.id,''],['活动名称',a.name.value,a.name.edited],['创建日期',a.createdDate,''],['预算金额',Number(fromCents(a.budget.cents)),a.budget.edited],['预支金额',Number(fromCents(a.advance.cents)),a.advance.edited],['已报销金额',Number(fromCents(getReimbursed(a))),'自动计算'],['经费差额',Number(fromCents(getDiff(a))),'自动计算'],['经费已手动处理',a.manualHandled.value?'是':'否',a.manualHandled.edited],[],['支出清单'],['物品','物品最后编辑','单价','单价最后编辑','总价','总价最后编辑','备注','备注最后编辑','已报销','状态最后编辑','报销日期']];
+    const rows=[['活动信息'],['字段','值','最后编辑日期'],['活动编号',a.id,''],['活动名称',a.name.value,a.name.edited],['活动标签',formatActivityTags(a),a.tags?.edited||a.createdDate],['创建日期',a.createdDate,''],['初步预算金额',Number(fromCents(a.budget.cents)),a.budget.edited],['实际支出金额',Number(fromCents(getActualSpending(a))),'自动计算'],['首次预支金额',Number(fromCents(a.advance.cents)),a.advance.edited],['后续补款金额',Number(fromCents(a.additionalFunding.cents)),a.additionalFunding.edited],['已拨付金额',Number(fromCents(getFunded(a))),'自动计算'],['已报销金额',Number(fromCents(getReimbursed(a))),'自动计算'],['无法报销金额',Number(fromCents(getUnreimbursable(a))),a.unreimbursable.edited],['自动将未报销余额计入无法报销',a.autoUnreimbursable.value?'是':'否',a.autoUnreimbursable.edited],['待报销金额',Number(fromCents(getPendingReimbursement(a))),'自动计算'],['资金差额',Number(fromCents(getSettlementDiff(a))),'自动计算'],['活动状态',activityStatus(a).text,'自动计算'],[],['支出清单'],['物品','物品最后编辑','单价','单价最后编辑','总价','总价最后编辑','备注','备注最后编辑','已报销','状态最后编辑','报销日期']];
     a.items.forEach(x=>rows.push([x.detail.value,x.detail.edited,optionalXlsxMoney(x.unitPrice.cents),x.unitPrice.edited,Number(fromCents(x.totalPrice.cents)),x.totalPrice.edited,x.note?.value||'',x.note?.edited||x.detail.edited,x.reimbursed.value?'是':'否',x.reimbursed.edited,x.reimbursementDate||'']));
-    const s=XLSX.utils.aoa_to_sheet(rows);s['!cols']=[28,14,12,14,12,14,28,14,10,14,14].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,s,`活动_${a.id}`.slice(0,31));
+    const sh=XLSX.utils.aoa_to_sheet(rows);sh['!cols']=[30,16,14,16,14,16,30,16,12,16,14].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,sh,`活动_${a.id}`.slice(0,31));
   }); return wb;
 }
 async function downloadWb(wb,name){
@@ -1732,7 +2343,7 @@ function makeBudgetTemplateWorkbook(){
   rows[0][5]='预算表填写说明（请先阅读）';
   rows[1][5]='1. 请只在左侧 A:D 四列填写数据，四个表头不要修改。';
   rows[2][5]='2. 同一活动有多行物品时，只需第一行填写活动名称；后续“活动”可留空，系统会继承上方最近一个非空活动。';
-  rows[3][5]='3. 单价可以留空；总价请填写该物品的实际预算总额，系统以“总价”参与预算和报销金额计算。';
+  rows[3][5]='3. 单价可以留空；总价请填写该物品的金额。导入后总价形成实际支出，导入新活动时同时作为初步预算的起始依据。';
   rows[4][5]='4. 一个工作簿可以填写多个活动；开始新活动时，在“活动”列重新填写新的活动名称。';
   rows[5][5]='5. 备注不用写在普通预算表中；导入后可进入活动详情，在对应物品后填写备注。';
   rows[7][5]='填写示例';
@@ -1766,77 +2377,127 @@ async function downloadBudgetTemplate(){
 }
 async function fullBackup(auto=false){return await downloadWb(makeFullBackupWorkbook(),`${auto?'恢复前自动备份':'完整备份'}_${today()}.xlsx`)}
 function rangeExportModal(){const end=today(),start=oneMonthBefore(end);showModal(`<div class="modal-head"><h3>按创建日期导出</h3></div><div class="modal-body"><div class="form-row"><label>开始日期</label><input id="start" class="field" type="date" value="${start}"></div><div class="form-row"><label>结束日期</label><input id="end" class="field" type="date" value="${end}"></div><div class="tip">默认范围为最近一个月。导出文件用于人工阅读：第一张为统计总览，之后每个活动一张工作表。</div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="rangeOk">导出</button></div>`,root=>{root.querySelector('[data-cancel]').onclick=closeModal;root.querySelector('#rangeOk').onclick=async()=>{const s=root.querySelector('#start').value,e=root.querySelector('#end').value;if(!s||!e||s>e)return;const acts=state.activities.filter(a=>a.createdDate>=s&&a.createdDate<=e);const ok=await downloadWb(makeRangeWorkbook(acts,s,e),`活动经费统计_${s}_至_${e}.xlsx`);if(ok){closeModal();toast(`已导出 ${acts.length} 个活动`)}}})}
-function makeRangeWorkbook(acts,start,end){
-  const wb=XLSX.utils.book_new(); const totalBudget=acts.reduce((s,a)=>s+a.budget.cents,0), totalAdvance=acts.reduce((s,a)=>s+a.advance.cents,0), totalReimb=acts.reduce((s,a)=>s+getReimbursed(a),0), totalOverBudget=acts.reduce((s,a)=>s+getOverBudget(a),0);
-  const rows=[['活动经费统计'],['导出日期',today()],['筛选开始日期',start],['筛选结束日期',end],['活动数量',acts.length],[],['编号','活动名称','创建日期','预算金额','预支金额','已报销金额','超出预算','经费差额','处理状态']];
-  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>rows.push([a.id,a.name.value,a.createdDate,Number(fromCents(a.budget.cents)),Number(fromCents(a.advance.cents)),Number(fromCents(getReimbursed(a))),Number(fromCents(getOverBudget(a))),Number(fromCents(getDiff(a))),activityStatus(a).text]));
-  rows.push([],['合计','','',Number(fromCents(totalBudget)),Number(fromCents(totalAdvance)),Number(fromCents(totalReimb)),Number(fromCents(totalOverBudget)),Number(fromCents(totalAdvance-totalReimb)),'']);
-  const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[8,25,14,14,14,14,14,14,15].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,'统计总览');
-  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>{const rs=[['活动概况'],['项目','内容'],['活动编号',a.id],['活动名称',a.name.value],['创建日期',a.createdDate],['预算金额',Number(fromCents(a.budget.cents))],['预支金额',Number(fromCents(a.advance.cents))],['已报销金额',Number(fromCents(getReimbursed(a)))],['超出预算',Number(fromCents(getOverBudget(a)))],['经费差额',Number(fromCents(getDiff(a)))],['经费已手动处理',a.manualHandled.value?'是':'否'],[],['支出明细'],['物品','单价','总价','备注','报销状态','报销日期']];a.items.forEach(x=>rs.push([x.detail.value,optionalXlsxMoney(x.unitPrice.cents),Number(fromCents(x.totalPrice.cents)),x.note?.value||'',x.reimbursed.value?'已报销':'未报销',x.reimbursementDate||'']));rs.push([],['支出总额','',Number(fromCents(a.items.reduce((s,x)=>s+x.totalPrice.cents,0)))],['已报销支出总额','',Number(fromCents(getReimbursed(a)))],['未报销支出总额','',Number(fromCents(a.items.filter(x=>!x.reimbursed.value).reduce((s,x)=>s+x.totalPrice.cents,0)))]);const sh=XLSX.utils.aoa_to_sheet(rs);sh['!cols']=[28,14,14,30,14,14].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,sh,`活动_${a.id}`.slice(0,31))});return wb;
+function activityExportRows(a){
+  const settlement=getSettlementDiff(a),settlementText=settlement>0?`待退 ${fromCents(settlement)}`:settlement<0?`待补 ${fromCents(Math.abs(settlement))}`:'已平账';
+  const rs=[['活动概况'],['项目','内容'],['活动编号',a.id],['活动名称',a.name.value],['活动标签',formatActivityTags(a)],['创建日期',a.createdDate],['初步预算金额',Number(fromCents(a.budget.cents))],['实际支出金额',Number(fromCents(getActualSpending(a)))],['首次预支金额',Number(fromCents(a.advance.cents))],['后续补款金额',Number(fromCents(a.additionalFunding.cents))],['已拨付金额',Number(fromCents(getFunded(a)))],['已报销金额',Number(fromCents(getReimbursed(a)))],['无法报销金额',Number(fromCents(getUnreimbursable(a)))],['自动将未报销余额计入无法报销',a.autoUnreimbursable.value?'是':'否'],['待报销金额',Number(fromCents(getPendingReimbursement(a)))],['资金差额',Number(fromCents(settlement))],['资金差额显示',settlementText],['处理状态',activityStatus(a).text],[],['支出明细'],['物品','单价','总价','备注','报销状态','报销日期']];
+  a.items.forEach(x=>rs.push([x.detail.value,optionalXlsxMoney(x.unitPrice.cents),Number(fromCents(x.totalPrice.cents)),x.note?.value||'',x.reimbursed.value?'已报销':'未报销',x.reimbursementDate||'']));
+  rs.push([],['实际支出合计','',Number(fromCents(getActualSpending(a)))],['已报销合计','',Number(fromCents(getReimbursed(a)))],['无法报销','',Number(fromCents(getUnreimbursable(a)))],['待报销','',Number(fromCents(getPendingReimbursement(a)))]);
+  return rs;
 }
-
+function makeRangeWorkbook(acts,start,end){
+  const wb=XLSX.utils.book_new();
+  const totals={budget:0,actual:0,advance:0,additional:0,funded:0,reimb:0,unreimb:0,pending:0,settlement:0};
+  acts.forEach(a=>{totals.budget+=a.budget.cents;totals.actual+=getActualSpending(a);totals.advance+=a.advance.cents;totals.additional+=a.additionalFunding.cents;totals.funded+=getFunded(a);totals.reimb+=getReimbursed(a);totals.unreimb+=getUnreimbursable(a);totals.pending+=getPendingReimbursement(a);totals.settlement+=getSettlementDiff(a)});
+  const rows=[['活动经费统计'],['导出日期',today()],['筛选开始日期',start],['筛选结束日期',end],['活动数量',acts.length],[],['编号','活动名称','活动标签','创建日期','初步预算','实际支出','首次预支','后续补款','已拨付','已报销','无法报销','待报销','资金差额','处理状态']];
+  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>rows.push([a.id,a.name.value,formatActivityTags(a),a.createdDate,Number(fromCents(a.budget.cents)),Number(fromCents(getActualSpending(a))),Number(fromCents(a.advance.cents)),Number(fromCents(a.additionalFunding.cents)),Number(fromCents(getFunded(a))),Number(fromCents(getReimbursed(a))),Number(fromCents(getUnreimbursable(a))),Number(fromCents(getPendingReimbursement(a))),Number(fromCents(getSettlementDiff(a))),activityStatus(a).text]));
+  rows.push([],['合计','','','',Number(fromCents(totals.budget)),Number(fromCents(totals.actual)),Number(fromCents(totals.advance)),Number(fromCents(totals.additional)),Number(fromCents(totals.funded)),Number(fromCents(totals.reimb)),Number(fromCents(totals.unreimb)),Number(fromCents(totals.pending)),Number(fromCents(totals.settlement)),'']);
+  const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[8,25,20,14,14,14,14,14,14,14,14,14,14,15].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,'统计总览');
+  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>{const sh=XLSX.utils.aoa_to_sheet(activityExportRows(a));sh['!cols']=[30,16,16,30,14,14].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,sh,`活动_${a.id}`.slice(0,31))});return wb;
+}
 function makeSelectedWorkbook(acts){
   const wb=XLSX.utils.book_new();
-  const totalBudget=acts.reduce((sum,a)=>sum+a.budget.cents,0),totalAdvance=acts.reduce((sum,a)=>sum+a.advance.cents,0),totalReimb=acts.reduce((sum,a)=>sum+getReimbursed(a),0),totalOverBudget=acts.reduce((sum,a)=>sum+getOverBudget(a),0);
-  const rows=[['选中活动经费统计'],['导出日期',today()],['选中活动数量',acts.length],[],['编号','活动名称','创建日期','预算金额','预支金额','已报销金额','超出预算','经费差额','处理状态']];
-  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>rows.push([a.id,a.name.value,a.createdDate,Number(fromCents(a.budget.cents)),Number(fromCents(a.advance.cents)),Number(fromCents(getReimbursed(a))),Number(fromCents(getOverBudget(a))),Number(fromCents(getDiff(a))),activityStatus(a).text]));
-  rows.push([],['合计','','',Number(fromCents(totalBudget)),Number(fromCents(totalAdvance)),Number(fromCents(totalReimb)),Number(fromCents(totalOverBudget)),Number(fromCents(totalAdvance-totalReimb)),'']);
-  const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[8,25,14,14,14,14,14,14,15].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,'选中活动总览');
-  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>{const rs=[['活动概况'],['项目','内容'],['活动编号',a.id],['活动名称',a.name.value],['创建日期',a.createdDate],['预算金额',Number(fromCents(a.budget.cents))],['预支金额',Number(fromCents(a.advance.cents))],['已报销金额',Number(fromCents(getReimbursed(a)))],['超出预算',Number(fromCents(getOverBudget(a)))],['经费差额',Number(fromCents(getDiff(a)))],['经费已手动处理',a.manualHandled.value?'是':'否'],[],['支出明细'],['物品','单价','总价','备注','报销状态','报销日期']];a.items.forEach(x=>rs.push([x.detail.value,optionalXlsxMoney(x.unitPrice.cents),Number(fromCents(x.totalPrice.cents)),x.note?.value||'',x.reimbursed.value?'已报销':'未报销',x.reimbursementDate||'']));rs.push([],['支出总额','',Number(fromCents(a.items.reduce((sum,x)=>sum+x.totalPrice.cents,0)))],['已报销支出总额','',Number(fromCents(getReimbursed(a)))],['未报销支出总额','',Number(fromCents(a.items.filter(x=>!x.reimbursed.value).reduce((sum,x)=>sum+x.totalPrice.cents,0)))]);const sh=XLSX.utils.aoa_to_sheet(rs);sh['!cols']=[28,14,14,30,14,14].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,sh,`活动_${a.id}`.slice(0,31))});
+  const rows=[['选中活动经费统计'],['导出日期',today()],['选中活动数量',acts.length],[],['编号','活动名称','活动标签','创建日期','初步预算','实际支出','首次预支','后续补款','已拨付','已报销','无法报销','待报销','资金差额','处理状态']];
+  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>rows.push([a.id,a.name.value,formatActivityTags(a),a.createdDate,Number(fromCents(a.budget.cents)),Number(fromCents(getActualSpending(a))),Number(fromCents(a.advance.cents)),Number(fromCents(a.additionalFunding.cents)),Number(fromCents(getFunded(a))),Number(fromCents(getReimbursed(a))),Number(fromCents(getUnreimbursable(a))),Number(fromCents(getPendingReimbursement(a))),Number(fromCents(getSettlementDiff(a))),activityStatus(a).text]));
+  const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[8,25,20,14,14,14,14,14,14,14,14,14,14,15].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,'选中活动总览');
+  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>{const sh=XLSX.utils.aoa_to_sheet(activityExportRows(a));sh['!cols']=[30,16,16,30,14,14].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,sh,`活动_${a.id}`.slice(0,31))});
   return wb;
 }
 async function exportSelectedActivities(){const acts=selectedActivities();if(!acts.length)return;const ok=await downloadWb(makeSelectedWorkbook(acts),`选中活动经费统计_${today()}.xlsx`);if(ok)toast(`已导出 ${acts.length} 个选中活动`)}
+
+function tagStatsRowsForActivities(acts,title){
+  const t=activityTotals(acts);
+  const header=['编号','活动名称','全部标签','创建日期','初步预算','实际支出','首次预支','后续补款','已拨付','已报销','无法报销','待报销','资金差额','处理状态'];
+  const rows=[[title],['导出日期',today()],['活动数量',acts.length],[],header];
+  acts.slice().sort((a,b)=>a.id-b.id).forEach(a=>rows.push([a.id,a.name.value,formatActivityTags(a),a.createdDate,Number(fromCents(a.budget.cents)),Number(fromCents(getActualSpending(a))),Number(fromCents(a.advance.cents)),Number(fromCents(a.additionalFunding.cents)),Number(fromCents(getFunded(a))),Number(fromCents(getReimbursed(a))),Number(fromCents(getUnreimbursable(a))),Number(fromCents(getPendingReimbursement(a))),Number(fromCents(getSettlementDiff(a))),activityStatus(a).text]));
+  rows.push([],['汇总','','','',Number(fromCents(t.budget)),Number(fromCents(t.actual)),Number(fromCents(t.advance)),Number(fromCents(t.additional)),Number(fromCents(t.funded)),Number(fromCents(t.reimb)),Number(fromCents(t.unreimb)),Number(fromCents(t.pending)),Number(fromCents(t.settlement)),'']);
+  return rows;
+}
+function safeSheetBaseName(name){
+  const cleaned=String(name||'标签').replace(/[\\/?*\[\]:]/g,' ').replace(/\s+/g,' ').trim()||'标签';
+  return cleaned.slice(0,31);
+}
+function uniqueSheetName(base,used){
+  let candidate=safeSheetBaseName(base),i=2;
+  while(used.has(candidate)){const suffix=`_${i++}`;candidate=`${safeSheetBaseName(base).slice(0,31-suffix.length)}${suffix}`}
+  used.add(candidate);return candidate;
+}
+function makeTagStatsWorkbook(acts){
+  const wb=XLSX.utils.book_new(),used=new Set();
+  const allRows=tagStatsRowsForActivities(acts,'当前筛选结果 · 全部活动汇总');
+  const parts=getCurrentFilterParts();
+  allRows.splice(3,0,['统计范围',parts.length?parts.join(' · '):'全部活动']);
+  const allWs=XLSX.utils.aoa_to_sheet(allRows);allWs['!cols']=[8,26,28,14,14,14,14,14,14,14,14,14,14,15].map(w=>({wch:w}));
+  const allName=uniqueSheetName('全部活动汇总',used);XLSX.utils.book_append_sheet(wb,allWs,allName);
+  for(const [key,groupActs] of getTagGroups(acts)){
+    const label=key==='__untagged__'?'未设置标签':key;
+    const rows=tagStatsRowsForActivities(groupActs,`${label} · 标签统计`);
+    const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[8,26,28,14,14,14,14,14,14,14,14,14,14,15].map(w=>({wch:w}));
+    XLSX.utils.book_append_sheet(wb,ws,uniqueSheetName(label,used));
+  }
+  return wb;
+}
+function tagStatsModal(){
+  const acts=getHomeFilteredActivities();
+  if(!acts.length){toast('当前结果没有可统计的活动');return}
+  const total=activityTotals(acts),groups=getTagGroups(acts);
+  const body=groups.map(([key,groupActs])=>{const label=key==='__untagged__'?'未设置标签':key,t=activityTotals(groupActs);return `<tr><td>${esc(label)}</td><td>${groupActs.length}</td><td>${displayMoney(t.actual)}</td><td>${displayMoney(t.funded)}</td><td>${displayMoney(t.reimb)}</td><td>${displayMoney(t.unreimb)}</td><td>${displayMoney(t.pending)}</td><td>${displayMoney(t.settlement)}</td></tr>`}).join('');
+  showModal(`<div class="modal-head"><h3>按标签统计</h3></div><div class="modal-body"><div class="tip">统计对象就是主页当前结果集，共 <strong>${acts.length}</strong> 个活动。标签之间允许重叠，同一个多标签活动会分别计入对应标签，因此标签行之间不能再次相加作为全部活动总额。</div><div class="tag-stats-summary"><div class="preview-group"><strong>实际支出</strong><div class="rows">${displayMoney(total.actual)}</div></div><div class="preview-group"><strong>已拨付</strong><div class="rows">${displayMoney(total.funded)}</div></div><div class="preview-group"><strong>已报销</strong><div class="rows">${displayMoney(total.reimb)}</div></div><div class="preview-group"><strong>待报销</strong><div class="rows">${displayMoney(total.pending)}</div></div></div><div class="tag-stats-table-wrap"><table class="tag-stats-table"><thead><tr><th>标签</th><th>活动数</th><th>实际支出</th><th>已拨付</th><th>已报销</th><th>无法报销</th><th>待报销</th><th>资金差额</th></tr></thead><tbody>${body}</tbody></table></div><div class="manual-note">导出的 XLSX 第一张是当前结果的去重活动明细汇总；之后每个标签一张工作表，每张只包含活动级整体数据，并在最下方给出该标签汇总。</div></div><div class="modal-foot"><button class="btn" data-cancel>关闭</button><button class="btn primary" id="exportTagStatsOk"><i class="ri-file-excel-2-line" aria-hidden="true"></i><span>导出 XLSX</span></button></div>`,root=>{root.querySelector('[data-cancel]').onclick=closeModal;root.querySelector('#exportTagStatsOk').onclick=async()=>{const ok=await downloadWb(makeTagStatsWorkbook(acts),`按标签统计_${today()}.xlsx`);if(ok)toast(`已按 ${groups.length} 个标签导出 ${acts.length} 个活动`)}})
+}
 
 function sheetRows(ws){return XLSX.utils.sheet_to_json(ws,{header:1,defval:''})}
 function detectBackup(wb){return wb.SheetNames.includes('总览')&&String(sheetRows(wb.Sheets['总览'])?.[0]?.[0]||'').includes('完整备份')}
 function detectRange(wb){return wb.SheetNames.includes('统计总览')&&String(sheetRows(wb.Sheets['统计总览'])?.[0]?.[0]||'').includes('活动经费统计')}
 function parseFullBackup(wb){
-  const sum=sheetRows(wb.Sheets['总览']); const headerIdx=sum.findIndex(r=>r[0]==='活动编号'); if(headerIdx<0)throw new Error('总览缺少活动编号表头');
-  const acts=[]; for(const r of sum.slice(headerIdx+1)){if(r[0]==='')continue;const id=Number(r[0]);if(!Number.isInteger(id)||id<1)throw new Error('活动编号无效');const a={id,name:{value:String(r[1]),edited:String(r[2]||r[3]||today())},createdDate:String(r[3]),budget:{cents:toCents(r[4]),edited:String(r[5]||r[3]||today())},advance:{cents:toCents(r[6]),edited:String(r[7]||r[3]||today())},manualHandled:{value:String(r[10])==='是',edited:String(r[11]||r[3]||today())},items:[]};const sname=`活动_${id}`;if(!wb.Sheets[sname])throw new Error(`缺少 ${sname} 工作表`);const rows=sheetRows(wb.Sheets[sname]);const hi=rows.findIndex(x=>(x[0]==='物品'||x[0]==='购买明细')&&(x[1]==='物品最后编辑'||x[1]==='明细最后编辑'));if(hi<0)throw new Error(`${sname} 缺少支出表头`);const hdr=rows[hi].map(v=>String(v).trim());const idx=(...names)=>names.map(n=>hdr.indexOf(n)).find(i=>i>=0)??-1;const di=idx('物品','购买明细'),de=idx('物品最后编辑','明细最后编辑'),ui=idx('单价'),ue=idx('单价最后编辑'),ti=idx('总价'),te=idx('总价最后编辑'),ni=idx('备注'),ne=idx('备注最后编辑'),ri=idx('已报销'),re=idx('状态最后编辑'),rdi=idx('报销日期');for(const x of rows.slice(hi+1)){if(!String(x[di]).trim())continue;a.items.push({id:uid(),detail:{value:String(x[di]),edited:String(x[de]||a.createdDate)},unitPrice:{cents:toOptionalCents(x[ui]),edited:String(x[ue]||a.createdDate)},totalPrice:{cents:toCents(x[ti]),edited:String(x[te]||a.createdDate)},note:{value:ni>=0?String(x[ni]||''):'',edited:String((ne>=0?x[ne]:'')||a.createdDate)},reimbursed:{value:String(x[ri])==='是',edited:String(x[re]||a.createdDate)},reimbursementDate:String(x[rdi]||'')})}acts.push(a)}
+  const sum=sheetRows(wb.Sheets['总览']),headerIdx=sum.findIndex(r=>r[0]==='活动编号');if(headerIdx<0)throw new Error('总览缺少活动编号表头');
+  const hdr=sum[headerIdx].map(v=>String(v).trim()),col=(...names)=>{for(const n of names){const i=hdr.indexOf(n);if(i>=0)return i}return -1},cell=(r,names,fallback='')=>{const i=col(...names);return i>=0?r[i]:fallback};
+  const version=Number(sheetRows(wb.Sheets['总览'])?.find(r=>r[0]==='备份版本')?.[1]||2),acts=[];
+  for(const r of sum.slice(headerIdx+1)){
+    if(r[0]==='')continue;const id=Number(r[0]);if(!Number.isInteger(id)||id<1)throw new Error('活动编号无效');
+    const created=String(cell(r,['创建日期'],today())),legacyManual=version<3&&String(cell(r,['经费已手动处理'],'否'))==='是';
+    const a={id,name:{value:String(cell(r,['活动名称'],'')),edited:String(cell(r,['名称最后编辑'],created)||created)},tags:{values:parseTagText(cell(r,['活动标签','活动归属'],'')),edited:String(cell(r,['标签最后编辑','归属最后编辑'],created)||created)},createdDate:created,budget:{cents:toCents(cell(r,['初步预算金额','预算金额'],0)),edited:String(cell(r,['预算最后编辑'],created)||created)},advance:{cents:toCents(cell(r,['首次预支金额','预支金额'],0)),edited:String(cell(r,['首次预支最后编辑','预支最后编辑'],created)||created)},additionalFunding:{cents:toSignedCents(cell(r,['后续补款金额'],0)),edited:String(cell(r,['后续补款最后编辑'],created)||created)},unreimbursable:{cents:toCents(cell(r,['无法报销金额'],0)),edited:String(cell(r,['无法报销最后编辑'],created)||created)},autoUnreimbursable:{value:version>=3?String(cell(r,['剩余均无法报销','自动将未报销余额计入无法报销','剩余待报销全部计入无法报销'],'否'))==='是':legacyManual,edited:String(cell(r,['规则最后编辑'],created)||created)},items:[]};
+    const sname=`活动_${id}`;if(!wb.Sheets[sname])throw new Error(`缺少 ${sname} 工作表`);const rows=sheetRows(wb.Sheets[sname]);const hi=rows.findIndex(x=>(x[0]==='物品'||x[0]==='购买明细')&&(x[1]==='物品最后编辑'||x[1]==='明细最后编辑'));if(hi<0)throw new Error(`${sname} 缺少支出表头`);const ih=rows[hi].map(v=>String(v).trim());const idx=(...names)=>{for(const n of names){const i=ih.indexOf(n);if(i>=0)return i}return -1};const di=idx('物品','购买明细'),de=idx('物品最后编辑','明细最后编辑'),ui=idx('单价'),ue=idx('单价最后编辑'),ti=idx('总价'),te=idx('总价最后编辑'),ni=idx('备注'),ne=idx('备注最后编辑'),ri=idx('已报销'),re=idx('状态最后编辑'),rdi=idx('报销日期');
+    for(const x of rows.slice(hi+1)){if(!String(x[di]).trim())continue;a.items.push({id:uid(),detail:{value:String(x[di]),edited:String(x[de]||a.createdDate)},unitPrice:{cents:toOptionalCents(x[ui]),edited:String(x[ue]||a.createdDate)},totalPrice:{cents:toCents(x[ti]),edited:String(x[te]||a.createdDate)},note:{value:ni>=0?String(x[ni]||''):'',edited:String((ne>=0?x[ne]:'')||a.createdDate)},reimbursed:{value:String(x[ri])==='是',edited:String(x[re]||a.createdDate)},reimbursementDate:String(x[rdi]||'')})}
+    reconcileActivity(a,false);acts.push(a);
+  }
   const ids=new Set();acts.forEach(a=>{if(ids.has(a.id))throw new Error('活动编号重复');ids.add(a.id);if(!parseDate(a.createdDate))throw new Error(`活动 #${a.id} 创建日期无效`)});return acts;
 }
 function parseRangeExport(wb){
-  const groups=[]; for(const name of wb.SheetNames.filter(n=>/^活动_\d+$/.test(n))){const rows=sheetRows(wb.Sheets[name]);const get=(label)=>{const r=rows.find(x=>x[0]===label);return r?r[1]:''};const actName=String(get('活动名称')||'').trim();if(!actName)continue;const hi=rows.findIndex(x=>(x[0]==='物品'||x[0]==='购买明细')&&x[1]==='单价');const items=[];if(hi>=0){const hdr=rows[hi].map(v=>String(v).trim());const idx=n=>hdr.indexOf(n);const di=idx('物品')>=0?idx('物品'):idx('购买明细'),ui=idx('单价'),ti=idx('总价'),ni=idx('备注'),ri=idx('报销状态'),rdi=idx('报销日期');for(const r of rows.slice(hi+1)){if(!String(r[di]).trim()||String(r[di]).includes('总额'))break;items.push({detail:String(r[di]),unitPrice:r[ui],totalPrice:r[ti],note:ni>=0?String(r[ni]||''):'',reimbursed:String(r[ri])==='已报销',reimbursementDate:String(r[rdi]||'')})}}groups.push({name:actName,createdDate:String(get('创建日期')||today()),budget:get('预算金额'),advance:get('预支金额'),manual:String(get('经费已手动处理'))==='是',items,source:'range'})}return groups;
+  const groups=[];
+  for(const name of wb.SheetNames.filter(n=>/^活动_\d+$/.test(n))){
+    const rows=sheetRows(wb.Sheets[name]);const get=(...labels)=>{for(const label of labels){const r=rows.find(x=>x[0]===label);if(r)return r[1]}return ''};const actName=String(get('活动名称')||'').trim();if(!actName)continue;
+    const hi=rows.findIndex(x=>(x[0]==='物品'||x[0]==='购买明细')&&x[1]==='单价'),items=[];
+    if(hi>=0){const hdr=rows[hi].map(v=>String(v).trim());const idx=n=>hdr.indexOf(n);const di=idx('物品')>=0?idx('物品'):idx('购买明细'),ui=idx('单价'),ti=idx('总价'),ni=idx('备注'),ri=idx('报销状态'),rdi=idx('报销日期');for(const r of rows.slice(hi+1)){if(!String(r[di]).trim()||String(r[di]).includes('总额')||String(r[di]).includes('合计'))break;items.push({detail:String(r[di]),unitPrice:r[ui],totalPrice:r[ti],note:ni>=0?String(r[ni]||''):'',reimbursed:String(r[ri])==='已报销',reimbursementDate:String(r[rdi]||'')})}}
+    const legacyManual=String(get('经费已手动处理'))==='是';
+    groups.push({name:actName,tags:parseTagText(get('活动标签','活动归属')),createdDate:String(get('创建日期')||today()),budget:get('初步预算金额','预算金额'),advance:get('首次预支金额','预支金额'),additionalFunding:get('后续补款金额'),unreimbursable:get('无法报销金额'),autoUnreimbursable:String(get('自动将未报销余额计入无法报销','剩余待报销全部计入无法报销'))==='是'||legacyManual,items,source:'range'});
+  }
+  return groups;
 }
 function parseRegularWorkbook(wb){
   const map=new Map();
   for(const sn of wb.SheetNames){
-    const rows=sheetRows(wb.Sheets[sn]);
-    if(!rows.length)continue;
-    let h=-1,cols={};
-    for(let i=0;i<Math.min(rows.length,20);i++){
-      const r=rows[i].map(x=>String(x).trim());
-      const ai=r.indexOf('活动'),di=r.indexOf('物品'),ui=r.indexOf('单价'),ti=r.indexOf('总价');
-      if(ai>=0&&di>=0&&ui>=0&&ti>=0){h=i;cols={ai,di,ui,ti};break}
-    }
-    if(h<0)continue;
-    let inheritedName='';
-    for(const r of rows.slice(h+1)){
-      const explicitName=String(r[cols.ai]||'').trim();
-      if(explicitName)inheritedName=explicitName;
-      const detail=String(r[cols.di]||'').trim();
-      if(!detail)continue;
-      if(!inheritedName)continue;
-      if(!map.has(inheritedName))map.set(inheritedName,[]);
-      map.get(inheritedName).push({detail,unitPrice:r[cols.ui],totalPrice:r[cols.ti],note:''});
-    }
+    const rows=sheetRows(wb.Sheets[sn]);if(!rows.length)continue;let h=-1,cols={};
+    for(let i=0;i<Math.min(rows.length,20);i++){const r=rows[i].map(x=>String(x).trim());const ai=r.indexOf('活动'),di=r.indexOf('物品'),ui=r.indexOf('单价'),ti=r.indexOf('总价');if(ai>=0&&di>=0&&ui>=0&&ti>=0){h=i;cols={ai,di,ui,ti};break}}
+    if(h<0)continue;let inheritedName='';
+    for(const r of rows.slice(h+1)){const explicitName=String(r[cols.ai]||'').trim();if(explicitName)inheritedName=explicitName;const detail=String(r[cols.di]||'').trim();if(!detail||!inheritedName)continue;if(!map.has(inheritedName))map.set(inheritedName,[]);map.get(inheritedName).push({detail,unitPrice:r[cols.ui],totalPrice:r[cols.ti],note:''})}
   }
   return [...map.entries()].map(([name,items])=>({name,items,source:'regular'}));
 }
+function makeImportedActivity(g,d,createdDate=d){
+  const isRange=g.source==='range';
+  const a={id:maxId()+1,name:{value:g.name,edited:d},tags:{values:isRange?normalizeTags(g.tags||[]):[],edited:d},createdDate,budget:{cents:isRange&&g.budget!==undefined&&String(g.budget)!==''?toCents(g.budget):g.items.reduce((sum,x)=>sum+toCents(x.totalPrice),0),edited:d},advance:{cents:isRange&&g.advance!==undefined?toCents(g.advance):0,edited:d},additionalFunding:{cents:isRange&&g.additionalFunding!==undefined?toSignedCents(g.additionalFunding):0,edited:d},unreimbursable:{cents:isRange&&g.unreimbursable!==undefined?toCents(g.unreimbursable):0,edited:d},autoUnreimbursable:{value:isRange?!!g.autoUnreimbursable:false,edited:d},items:[]};
+  return a;
+}
 function importPreview(groups){pendingImport=groups;if(!groups.length){toast('没有识别到可导入的活动数据');return}
-  showModal(`<div class="modal-head"><h3>确认导入</h3></div><div class="modal-body"><div class="tip">每组可以新建为一个活动，也可以追加到现有活动。追加时只增加支出，不覆盖原预算和预支。</div>${groups.map((g,i)=>`<div class="preview-group"><strong>${esc(g.name)}</strong><div class="rows">${g.items.length} 条支出</div><select class="field import-target" data-i="${i}"><option value="new">新建活动</option>${state.activities.map(a=>`<option value="${a.id}">追加到 #${a.id} ${esc(a.name.value)}</option>`).join('')}</select></div>`).join('')}</div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="importOk">执行导入</button></div>`,root=>{root.querySelector('[data-cancel]').onclick=closeModal;root.querySelector('#importOk').onclick=async()=>{const d=today();for(const sel of root.querySelectorAll('.import-target')){const g=groups[Number(sel.dataset.i)];let a;if(sel.value==='new'){a={id:maxId()+1,name:{value:g.name,edited:d},createdDate:g.createdDate&&parseDate(g.createdDate)?g.createdDate:d,budget:{cents:g.budget!==undefined?toCents(g.budget):g.items.reduce((s,x)=>s+toCents(x.totalPrice),0),edited:d},advance:{cents:g.advance!==undefined?toCents(g.advance):0,edited:d},manualHandled:{value:!!g.manual,edited:d},items:[]};state.activities.push(a)}else a=state.activities.find(x=>x.id===Number(sel.value));for(const it of g.items){a.items.push({id:uid(),detail:{value:it.detail,edited:d},unitPrice:{cents:toOptionalCents(it.unitPrice),edited:d},totalPrice:{cents:toCents(it.totalPrice),edited:d},note:{value:it.note||'',edited:d},reimbursed:{value:!!it.reimbursed,edited:d},reimbursementDate:it.reimbursed?(it.reimbursementDate||d):''})}}await save();closeModal();render();toast(`已导入 ${groups.length} 组活动数据`)}})
+  showModal(`<div class="modal-head"><h3>确认导入</h3></div><div class="modal-body"><div class="tip">每组可以新建为一个活动，也可以追加到现有活动。追加时只增加支出，不覆盖初步预算、拨款或无法报销规则。</div>${groups.map((g,i)=>`<div class="preview-group"><strong>${esc(g.name)}</strong><div class="rows">${g.items.length} 条支出</div><select class="field import-target" data-i="${i}"><option value="new">新建活动</option>${state.activities.map(a=>`<option value="${a.id}">追加到 #${a.id} ${esc(a.name.value)}</option>`).join('')}</select></div>`).join('')}</div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button class="btn primary" id="importOk">执行导入</button></div>`,root=>{root.querySelector('[data-cancel]').onclick=closeModal;root.querySelector('#importOk').onclick=async()=>{const d=today();for(const sel of root.querySelectorAll('.import-target')){const g=groups[Number(sel.dataset.i)];let a;if(sel.value==='new'){a=makeImportedActivity(g,d,g.createdDate&&parseDate(g.createdDate)?g.createdDate:d);state.activities.push(a)}else a=state.activities.find(x=>x.id===Number(sel.value));for(const it of g.items){a.items.push({id:uid(),detail:{value:it.detail,edited:d},unitPrice:{cents:toOptionalCents(it.unitPrice),edited:d},totalPrice:{cents:toCents(it.totalPrice),edited:d},note:{value:it.note||'',edited:d},reimbursed:{value:!!it.reimbursed,edited:d},reimbursementDate:it.reimbursed?(it.reimbursementDate||d):''})}reconcileActivity(a,true)}await save();closeModal();render();toast(`已导入 ${groups.length} 组活动数据`)}})
 }
 async function importSingleActivityFile(file){
   try{
-    const data=await file.arrayBuffer();const wb=XLSX.read(data,{type:'array'});
-    let groups;
-    if(detectBackup(wb))throw new Error('完整备份请使用“导入工作簿”入口恢复');
-    if(detectRange(wb))groups=parseRangeExport(wb);else groups=parseRegularWorkbook(wb);
+    const data=await file.arrayBuffer();const wb=XLSX.read(data,{type:'array'});let groups;
+    if(detectBackup(wb))throw new Error('完整备份请使用“导入工作簿”入口恢复');if(detectRange(wb))groups=parseRangeExport(wb);else groups=parseRegularWorkbook(wb);
     if(groups.length!==1)throw new Error(groups.length===0?'没有识别到活动':'该文件包含多个活动，请使用顶部“导入工作簿”批量导入');
-    const g=groups[0],d=today();
-    const a={id:maxId()+1,name:{value:g.name,edited:d},createdDate:d,budget:{cents:g.source==='range'&&g.budget!==undefined?toCents(g.budget):g.items.reduce((sum,x)=>sum+toCents(x.totalPrice),0),edited:d},advance:{cents:g.source==='range'&&g.advance!==undefined?toCents(g.advance):0,edited:d},manualHandled:{value:g.source==='range'?!!g.manual:false,edited:d},items:[]};
+    const g=groups[0],d=today(),a=makeImportedActivity(g,d,d);
     for(const it of g.items)a.items.push({id:uid(),detail:{value:it.detail,edited:d},unitPrice:{cents:toOptionalCents(it.unitPrice),edited:d},totalPrice:{cents:toCents(it.totalPrice),edited:d},note:{value:it.note||'',edited:d},reimbursed:{value:!!it.reimbursed,edited:d},reimbursementDate:it.reimbursed?(it.reimbursementDate||d):''});
-    state.activities.push(a);await save();closeModal();render();openActivity(a.id);toast('已从预算表创建活动');
+    reconcileActivity(a,true);state.activities.push(a);await save();closeModal();render();openActivity(a.id);toast('已从预算表创建活动');
   }catch(e){console.error(e);toast(`创建失败：${e.message||'文件格式错误'}`)}
 }
 async function importFile(file){
@@ -1846,10 +2507,241 @@ async function importFile(file){
   }catch(e){console.error(e);toast(`导入失败：${e.message||'文件格式错误'}`)}
 }
 
-$('#modeBtn').onclick=()=>{if(secretMode){secretMode=false;managementMode=false;selectedActivityIds.clear();if($('#manual').classList.contains('active')){render();toast('已退出秘密模式')}else if(currentActivityId!==null){closeActivity();toast('已退出秘密模式并返回普通主页')}else{render();toast('已退出秘密模式')}}else passwordModal()};
-$('#manualBtn').onclick=openManual; $('#manualBackBtn').onclick=closeManual;
+
+const BUILTIN_WAGE_TASKS=[
+  {name:'推文排版',category:'日常类',unit:'篇',hoursPerUnit:2,description:'含基础设计及排版'},
+  {name:'推文排版审核',category:'日常类',unit:'篇',hoursPerUnit:1,description:'仅审核，不参与制作'},
+  {name:'推文文案',category:'日常类',unit:'篇',hoursPerUnit:4,description:'含资料收集与撰写'},
+  {name:'现场志愿者',category:'活动类',unit:'小时',hoursPerUnit:1,description:'按实际参与小时数计，需签到记录工时'},
+  {name:'前期策划',category:'活动类',unit:'月',hoursPerUnit:16,description:'16小时/月'},
+  {name:'统筹管理',category:'行政类',unit:'月',hoursPerUnit:16,description:'16小时/月'},
+  {name:'坐班',category:'暑期专项',unit:'小时',hoursPerUnit:1,description:'按实际签到小时数计，仅暑期执行期间适用'}
+];
+function openWageDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(WAGE_DB_NAME,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(WAGE_STORE))r.result.createObjectStore(WAGE_STORE)};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function loadWage(){try{const db=await openWageDB();const data=await new Promise((res,rej)=>{const tx=db.transaction(WAGE_STORE,'readonly');const r=tx.objectStore(WAGE_STORE).get(WAGE_KEY);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});if(data&&Array.isArray(data.records))wageState=data}catch(e){console.error('工资数据读取失败',e)}normalizeWageState();renderWage()}
+async function saveWage(){const db=await openWageDB();await new Promise((res,rej)=>{const tx=db.transaction(WAGE_STORE,'readwrite');tx.objectStore(WAGE_STORE).put(wageState,WAGE_KEY);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
+function normalizeWageState(){
+  if(!Array.isArray(wageState.records))wageState.records=[];
+  const hadPresets=Array.isArray(wageState.taskPresets);
+  if(!hadPresets)wageState.taskPresets=BUILTIN_WAGE_TASKS.map((t,i)=>({id:`preset_builtin_${i+1}`,...t,createdAt:Date.now()+i,updatedAt:Date.now()+i}));
+  wageState.taskPresets=(wageState.taskPresets||[]).map((p,i)=>({
+    id:p.id||uid(),name:String(p.name||'').trim(),category:String(p.category||'').trim(),unit:String(p.unit||'次').trim()||'次',hoursPerUnit:Math.max(0,Number(p.hoursPerUnit||0)),description:String(p.description||''),createdAt:Number(p.createdAt||Date.now()+i),updatedAt:Number(p.updatedAt||p.createdAt||Date.now()+i)
+  })).filter(p=>p.name&&p.hoursPerUnit>0);
+  for(const r of wageState.records){
+    if(!r.id)r.id=uid();if(!r.date)r.date=today();if(!r.createdAt)r.createdAt=Date.now();
+    if(r.type==='work'){
+      r.person=String(r.person||'').trim();r.task=String(r.task||'').trim();r.category=String(r.category||'').trim();r.unit=String(r.unit||'次').trim()||'次';
+      r.quantity=Math.max(0,Number(r.quantity||0));r.hoursPerUnit=Math.max(0,Number(r.hoursPerUnit||0));r.hours=r.quantity*r.hoursPerUnit;
+      r.rateCents=Math.max(0,Number(r.rateCents||0));r.wageCents=Math.round(r.hours*r.rateCents);r.periodMode=r.periodMode==='holiday'?'holiday':'term';r.paid=!!r.paid;r.note=String(r.note||'');
+      if(!hadPresets&&r.task&&!wageState.taskPresets.some(p=>p.name===r.task)&&r.hoursPerUnit>0)wageState.taskPresets.push({id:uid(),name:r.task,category:r.category,unit:r.unit,hoursPerUnit:r.hoursPerUnit,description:r.taskDescription||'',createdAt:Number(r.createdAt||Date.now()),updatedAt:Number(r.createdAt||Date.now())});
+    }else{r.type='income';r.amountCents=Math.max(0,Number(r.amountCents||0));r.note=String(r.note||'')}
+  }
+  const recent=[...wageState.records].filter(r=>r.type==='work').sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))[0];
+  if(!Number.isFinite(Number(wageState.lastRateCents)))wageState.lastRateCents=recent?.rateCents||0;
+  if(!['term','holiday'].includes(wageState.lastPeriodMode))wageState.lastPeriodMode=recent?.periodMode||'term';
+}
+function setActiveModule(module){
+  activeModule=module==='wage'?'wage':'activity';
+  const wage=activeModule==='wage';
+  $('#activityModuleBtn').classList.toggle('active',!wage);$('#wageModuleBtn').classList.toggle('active',wage);
+  $('#brandText').textContent=wage?'实习生工资管理':'活动经费记账助手';
+  $('#wageModule').classList.toggle('active',wage);
+  $('#modelBtn').style.display=wage?'none':'';$('#modePill').style.display=wage?'none':'';$('#modeBtn').style.display=wage?'none':'';
+  if(wage){
+    closeModal();$('#home').classList.add('hidden');$('#detail').classList.remove('active');$('#manual').classList.remove('active');$('#financialModel').classList.remove('active');renderWage();
+  }else{
+    $('#wageModule').classList.remove('active');$('#manual').classList.remove('active');$('#financialModel').classList.remove('active');currentActivityId=null;currentActivityAuthorized=false;$('#detail').classList.remove('active');$('#home').classList.remove('hidden');renderHome();
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function wageHours(r){return r.type==='work'?Math.max(0,Number(r.quantity||0))*Math.max(0,Number(r.hoursPerUnit||0)):0}
+function getKnownInterns(){
+  const latest=new Map();for(const r of wageState.records){if(r.type!=='work'||!r.person)continue;const t=Number(r.createdAt||0);if(!latest.has(r.person)||t>latest.get(r.person))latest.set(r.person,t)}
+  return [...latest.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+}
+function getWageTaskPresets(){return [...(wageState.taskPresets||[])].sort((a,b)=>String(a.category).localeCompare(String(b.category),'zh-CN')||String(a.name).localeCompare(String(b.name),'zh-CN'))}
+function getKnownWageTasks(){return getWageTaskPresets()}
+function getWageTask(name){const n=String(name||'').trim();return (wageState.taskPresets||[]).find(t=>t.name===n)||null}
+function autoAddWagePreset(data){
+  const name=String(data.task||'').trim();if(!name||!Number(data.hoursPerUnit))return false;
+  if((wageState.taskPresets||[]).some(p=>p.name===name))return false;
+  wageState.taskPresets.push({id:uid(),name,category:String(data.category||'').trim(),unit:String(data.unit||'次').trim()||'次',hoursPerUnit:Math.max(0,Number(data.hoursPerUnit||0)),description:'由工资记录自动增加',createdAt:Date.now(),updatedAt:Date.now()});return true;
+}
+function weekStartKey(dateStr){const d=parseDate(dateStr);if(!d)return dateStr;const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`}
+function getWageOverLimitMap(){
+  const groups=new Map();
+  for(const r of wageState.records.filter(r=>r.type==='work'&&r.person&&parseDate(r.date))){const k=`${r.person}__${weekStartKey(r.date)}`;if(!groups.has(k))groups.set(k,[]);groups.get(k).push(r)}
+  const out=new Map();
+  for(const rows of groups.values()){
+    rows.sort((a,b)=>a.date.localeCompare(b.date)||(Number(a.createdAt||0)-Number(b.createdAt||0))||String(a.id).localeCompare(String(b.id)));
+    let total=0,alreadyMarked=false;
+    for(const r of rows){const h=wageHours(r),limit=r.periodMode==='holiday'?40:8,next=total+h;if(!alreadyMarked&&total<=limit&&next>limit){out.set(r.id,{limit,total:next,mode:r.periodMode});alreadyMarked=true}total=next}
+  }
+  return out;
+}
+function getFilteredWageRecords(){
+  const q=($('#wageSearch')?.value||'').trim().toLowerCase(),type=$('#wageTypeFilter')?.value||'all',person=$('#wagePersonFilter')?.value||'all',start=$('#wageStart')?.value||'',end=$('#wageEnd')?.value||'';
+  return wageState.records.filter(r=>{
+    if(type!=='all'&&r.type!==type)return false;if(person!=='all'&&(r.type!=='work'||r.person!==person))return false;if(start&&r.date<start)return false;if(end&&r.date>end)return false;
+    if(q){const hay=r.type==='work'?`${r.person} ${r.task} ${r.category} ${r.note}`:`${r.note}`;if(!hay.toLowerCase().includes(q))return false}return true;
+  }).sort((a,b)=>b.date.localeCompare(a.date)||(Number(b.createdAt||0)-Number(a.createdAt||0)));
+}
+function refreshWagePersonFilter(){const sel=$('#wagePersonFilter');if(!sel)return;const old=sel.value||'all',people=getKnownInterns();sel.innerHTML='<option value="all">全部实习生</option>'+people.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('');sel.value=people.includes(old)?old:'all'}
+function renderWage(){if(!$('#wageModule'))return;refreshWagePersonFilter();renderWageRecords();renderWagePresets();renderWageAnalysis();setWageSubpage(wageSubpage,false)}
+function renderWageRecords(){
+  const rows=getFilteredWageRecords(),warn=getWageOverLimitMap();let income=0,due=0,paid=0;
+  for(const r of rows){if(r.type==='income')income+=r.amountCents;else{const w=Math.round(wageHours(r)*Number(r.rateCents||0));due+=w;if(r.paid)paid+=w}}
+  $('#wageStatIncome').textContent=money(income);$('#wageStatDue').textContent=money(due);$('#wageStatPaid').textContent=money(paid);$('#wageStatUnpaid').textContent=money(due-paid);
+  $('#wageRecordCount').textContent=`当前 ${rows.length} 条 / 全部 ${wageState.records.length} 条记录`;
+  const parts=[];const q=($('#wageSearch')?.value||'').trim(),type=$('#wageTypeFilter')?.value||'all',person=$('#wagePersonFilter')?.value||'all',start=$('#wageStart')?.value||'',end=$('#wageEnd')?.value||'';
+  if(q)parts.push(`搜索：${q}`);if(type!=='all')parts.push(type==='income'?'仅收入':'仅工资');if(person!=='all')parts.push(`实习生：${person}`);if(start||end)parts.push(`日期：${start||'不限'} 至 ${end||'不限'}`);$('#wageFilterSummary').textContent=`记录范围：${parts.length?parts.join(' · '):'全部记录'} · ${rows.length}/${wageState.records.length}`;
+  const body=$('#wageRecordBody');
+  if(!rows.length){body.innerHTML='<tr><td colspan="12"><div class="empty">暂无符合条件的记录</div></td></tr>';return}
+  body.innerHTML=rows.map(r=>{
+    if(r.type==='income')return `<tr><td>${esc(r.date)}</td><td><span class="wage-record-kind income">收入</span></td><td>—</td><td>收到工资经费</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="wage-money-income">+${money(r.amountCents)}</td><td>—</td><td>${esc(r.note||'')}</td><td><div class="wage-actions"><button class="btn small" data-wage-edit="${esc(r.id)}">编辑</button><button class="btn small danger" data-wage-delete="${esc(r.id)}">删除</button></div></td></tr>`;
+    const w=warn.get(r.id),hours=wageHours(r),wage=Math.round(hours*Number(r.rateCents||0));return `<tr class="${w?'wage-row-warning':''}"><td>${esc(r.date)}</td><td><span class="wage-record-kind work">工资</span></td><td><strong>${esc(r.person)}</strong><div class="subtle">${esc(r.periodMode==='holiday'?'假期规则':'学期规则')}</div></td><td>${esc(r.task)}<div class="subtle">${esc(r.category||'')}</div>${w?`<div class="wage-warning">本次后本周累计 ${Number(w.total.toFixed(2))} 小时，超过 ${w.limit} 小时上限</div>`:''}</td><td>${Number(r.quantity||0)} ${esc(r.unit||'')}</td><td>${Number(r.hoursPerUnit||0)} h/${esc(r.unit||'')}</td><td><strong>${Number(hours.toFixed(2))} h</strong></td><td>${money(r.rateCents)}/小时</td><td class="wage-money-expense">${money(wage)}</td><td><button class="wage-status-btn ${r.paid?'paid':'unpaid'}" data-wage-toggle-paid="${esc(r.id)}">${r.paid?'已支付':'未支付'}</button></td><td>${esc(r.note||'')}</td><td><div class="wage-actions"><button class="btn small" data-wage-edit="${esc(r.id)}">编辑</button><button class="btn small danger" data-wage-delete="${esc(r.id)}">删除</button></div></td></tr>`;
+  }).join('');
+  body.querySelectorAll('[data-wage-edit]').forEach(b=>b.onclick=()=>editWageRecord(b.dataset.wageEdit));
+  body.querySelectorAll('[data-wage-delete]').forEach(b=>b.onclick=async()=>{const r=wageState.records.find(x=>x.id===b.dataset.wageDelete);if(!r||!confirm('确认删除这条记录？'))return;wageState.records=wageState.records.filter(x=>x.id!==r.id);await saveWage();renderWage();toast('记录已删除')});
+  body.querySelectorAll('[data-wage-toggle-paid]').forEach(b=>b.onclick=async()=>{const r=wageState.records.find(x=>x.id===b.dataset.wageTogglePaid);if(!r||r.type!=='work')return;r.paid=!r.paid;await saveWage();renderWage();toast(r.paid?'已标记为已支付':'已改为未支付')});
+}
+function renderWagePresets(){
+  const presets=getWageTaskPresets(),body=$('#wagePresetBody');if(!body)return;$('#wagePresetCount').textContent=`共 ${presets.length} 个预设 · 新任务可由工资记录自动增加`;
+  body.innerHTML=presets.length?presets.map(p=>`<tr><td>${esc(p.category||'—')}</td><td><strong>${esc(p.name)}</strong></td><td>${esc(p.unit||'次')}</td><td>${Number(p.hoursPerUnit||0)} 小时/${esc(p.unit||'次')}</td><td>${esc(p.description||'')}</td><td><div class="wage-actions"><button class="btn small" data-preset-edit="${esc(p.id)}">编辑</button><button class="btn small danger" data-preset-delete="${esc(p.id)}">删除</button></div></td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">暂无任务预设，可手动新增，或在工资记录中保存一个新任务后自动增加。</div></td></tr>';
+  body.querySelectorAll('[data-preset-edit]').forEach(b=>b.onclick=()=>wagePresetModal((wageState.taskPresets||[]).find(p=>p.id===b.dataset.presetEdit)||null));
+  body.querySelectorAll('[data-preset-delete]').forEach(b=>b.onclick=async()=>{const p=(wageState.taskPresets||[]).find(x=>x.id===b.dataset.presetDelete);if(!p||!confirm(`删除任务预设“${p.name}”？已有工资记录不会被删除或改变。`))return;wageState.taskPresets=wageState.taskPresets.filter(x=>x.id!==p.id);await saveWage();renderWagePresets();toast('任务预设已删除')});
+}
+function wagePresetModal(preset=null){
+  const editing=!!preset;showModal(`<div class="modal-head"><h3>${editing?'编辑':'新增'}任务预设</h3></div><div class="modal-body"><div class="form-row"><label>工作类型</label><input id="wpCategory" class="field" value="${esc(preset?.category||'')}" placeholder="例如：日常类"></div><div class="form-row"><label>任务名称</label><input id="wpName" class="field" value="${esc(preset?.name||'')}" placeholder="例如：推文排版"></div><div class="form-row"><label>计量单位</label><input id="wpUnit" class="field" value="${esc(preset?.unit||'篇')}" placeholder="篇 / 小时 / 月 / 次"></div><div class="form-row"><label>每单位折合工时</label><input id="wpHours" class="field" inputmode="decimal" value="${preset?Number(preset.hoursPerUnit||0):''}" placeholder="例如：2"></div><div class="form-row"><label>说明</label><input id="wpDescription" class="field" value="${esc(preset?.description||'')}" placeholder="可选"></div><div class="tip">工资记录中的标准工时始终由“数量 × 每单位折合工时”自动计算。修改预设只影响以后选择该预设的新记录，不反向修改历史工资记录。</div><div id="wpErr" class="error"></div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button id="wpSave" class="btn primary">保存预设</button></div>`,root=>{
+    root.querySelector('[data-cancel]').onclick=closeModal;root.querySelector('#wpSave').onclick=async()=>{const name=root.querySelector('#wpName').value.trim(),category=root.querySelector('#wpCategory').value.trim(),unit=root.querySelector('#wpUnit').value.trim()||'次',hours=Math.max(0,Number(root.querySelector('#wpHours').value)||0),description=root.querySelector('#wpDescription').value.trim();if(!name||hours<=0){root.querySelector('#wpErr').textContent='请填写任务名称和大于 0 的每单位折合工时';return}const duplicate=(wageState.taskPresets||[]).find(p=>p.name===name&&p.id!==preset?.id);if(duplicate){root.querySelector('#wpErr').textContent='已有同名任务预设，请编辑已有预设或使用不同名称';return}if(editing)Object.assign(preset,{name,category,unit,hoursPerUnit:hours,description,updatedAt:Date.now()});else wageState.taskPresets.push({id:uid(),name,category,unit,hoursPerUnit:hours,description,createdAt:Date.now(),updatedAt:Date.now()});await saveWage();closeModal();renderWagePresets();toast(editing?'任务预设已更新':'任务预设已新增')};
+  });
+}
+function setWageSubpage(page,scroll=true){
+  wageSubpage=['records','presets','analysis'].includes(page)?page:'records';
+  const map={records:['wageRecordsTab','wageRecordsPage'],presets:['wagePresetsTab','wagePresetsPage'],analysis:['wageAnalysisTab','wageAnalysisPage']};
+  for(const [k,[tabId,pageId]] of Object.entries(map)){const on=k===wageSubpage;$('#'+tabId)?.classList.toggle('active',on);$('#'+pageId)?.classList.toggle('active',on)}
+  if(wageSubpage==='records')renderWageRecords();else if(wageSubpage==='presets')renderWagePresets();else renderWageAnalysis();
+  if(scroll)window.scrollTo({top:0,behavior:'smooth'});
+}
+function ensureWageAnalysisOptions(){
+  const yearSel=$('#wageAnalysisYear'),monthSel=$('#wageAnalysisMonth'),personSel=$('#wageAnalysisPerson'),taskSel=$('#wageAnalysisTask');if(!yearSel||!monthSel||!personSel||!taskSel)return;
+  const current=String(new Date().getFullYear()),years=[...new Set(wageState.records.map(r=>String(r.date||'').slice(0,4)).filter(y=>/^\d{4}$/.test(y)))];if(!years.includes(current))years.push(current);years.sort((a,b)=>b.localeCompare(a));
+  const oldY=yearSel.value||current;yearSel.innerHTML=years.map(y=>`<option value="${y}">${y}年</option>`).join('');yearSel.value=years.includes(oldY)?oldY:current;
+  const oldM=monthSel.value||'all';monthSel.innerHTML='<option value="all">全年</option>'+Array.from({length:12},(_,i)=>{const m=String(i+1).padStart(2,'0');return `<option value="${m}">${i+1}月</option>`}).join('');monthSel.value=oldM==='all'||/^(0[1-9]|1[0-2])$/.test(oldM)?oldM:'all';
+  const people=[...new Set(wageState.records.filter(r=>r.type==='work'&&r.person).map(r=>r.person))].sort((a,b)=>a.localeCompare(b,'zh-CN')),oldP=personSel.value||'all';personSel.innerHTML='<option value="all">全部实习生</option>'+people.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');personSel.value=people.includes(oldP)?oldP:'all';
+  const tasks=[...new Set(wageState.records.filter(r=>r.type==='work'&&r.task).map(r=>r.task))].sort((a,b)=>a.localeCompare(b,'zh-CN')),oldT=taskSel.value||'all';taskSel.innerHTML='<option value="all">全部任务</option>'+tasks.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');taskSel.value=tasks.includes(oldT)?oldT:'all';
+}
+function getWageAnalysisSelection(){
+  ensureWageAnalysisOptions();
+  const start=$('#wageAnalysisStart')?.value||'',end=$('#wageAnalysisEnd')?.value||'';
+  return {year:$('#wageAnalysisYear')?.value||String(new Date().getFullYear()),month:$('#wageAnalysisMonth')?.value||'all',start,end,customTime:!!(start||end),dateRangeValid:!(start&&end&&start>end),person:$('#wageAnalysisPerson')?.value||'all',task:$('#wageAnalysisTask')?.value||'all',paid:$('#wageAnalysisPaid')?.value||'all'};
+}
+function wageRecordInAnalysisTime(r,sel){
+  const d=String(r.date||'');
+  if(sel.customTime){if(!sel.dateRangeValid)return false;if(sel.start&&d<sel.start)return false;if(sel.end&&d>sel.end)return false;return true}
+  if(!d.startsWith(sel.year+'-'))return false;if(sel.month!=='all'&&!d.startsWith(`${sel.year}-${sel.month}`))return false;return true;
+}
+function wageWorkMatchesAnalysis(r,sel,timeOverride=null){
+  if(r.type!=='work')return false;const effective=timeOverride?{...sel,...timeOverride}:sel;if(!wageRecordInAnalysisTime(r,effective))return false;if(sel.person!=='all'&&r.person!==sel.person)return false;if(sel.task!=='all'&&r.task!==sel.task)return false;if(sel.paid==='paid'&&!r.paid)return false;if(sel.paid==='unpaid'&&r.paid)return false;return true;
+}
+function wageAgg(rows){return rows.reduce((a,r)=>{const h=wageHours(r),due=Math.round(h*Number(r.rateCents||0));a.count++;a.hours+=h;a.due+=due;if(r.paid)a.paid+=due;a.people.add(r.person);a.tasks.add(r.task);return a},{count:0,hours:0,due:0,paid:0,people:new Set(),tasks:new Set()})}
+function wageIncomeSum(rows){return rows.reduce((s,r)=>s+(r.type==='income'?Number(r.amountCents||0):0),0)}
+function wagePct(n,d){return d>0?`${(n/d*100).toFixed(1)}%`:'0.0%'}
+function wageWeekLabel(key){const d=parseDate(key);if(!d)return key;const e=new Date(d);e.setDate(e.getDate()+6);const p=n=>String(n).padStart(2,'0');return `${p(d.getMonth()+1)}-${p(d.getDate())} ~ ${p(e.getMonth()+1)}-${p(e.getDate())}`}
+function wageMonthKey(dateStr){const d=String(dateStr||'');return /^\d{4}-\d{2}/.test(d)?d.slice(0,7):''}
+function wageMonthLabel(key){const m=String(key||'').match(/^(\d{4})-(\d{2})$/);return m?`${m[1]}年${Number(m[2])}月`:key}
+function wageAnalysisTimeLabel(sel){if(sel.customTime)return `${sel.start||'不限'} 至 ${sel.end||'不限'}`;return `${sel.year}年${sel.month==='all'?'全年':Number(sel.month)+'月'}`}
+function getWageAnalysisData(){
+  const sel=getWageAnalysisSelection(),timeRows=wageState.records.filter(r=>wageRecordInAnalysisTime(r,sel)),works=wageState.records.filter(r=>wageWorkMatchesAnalysis(r,sel)),income=wageIncomeSum(timeRows),agg=wageAgg(works),unpaid=agg.due-agg.paid,warnMap=getWageOverLimitMap(),warnings=works.filter(r=>warnMap.has(r.id));
+  const peopleMap=new Map();for(const r of works){const k=r.person||'未命名';if(!peopleMap.has(k))peopleMap.set(k,{rows:[],taskNames:new Set()});const x=peopleMap.get(k);x.rows.push(r);x.taskNames.add(r.task)}
+  const peopleRows=[...peopleMap.entries()].map(([name,x])=>{const a=wageAgg(x.rows);return {name,taskCount:x.taskNames.size,...a}}).sort((a,b)=>b.due-a.due||a.name.localeCompare(b.name,'zh-CN'));
+  const taskMap=new Map();for(const r of works){const k=r.task||'未命名任务';if(!taskMap.has(k))taskMap.set(k,{rows:[],categories:new Set(),units:new Set(),quantity:0});const x=taskMap.get(k);x.rows.push(r);if(r.category)x.categories.add(r.category);if(r.unit)x.units.add(r.unit);x.quantity+=Number(r.quantity||0)}
+  const taskRows=[...taskMap.entries()].map(([name,x])=>({name,categories:[...x.categories].join(' / ')||'—',units:[...x.units],quantity:x.quantity,...wageAgg(x.rows)})).sort((a,b)=>b.due-a.due||a.name.localeCompare(b.name,'zh-CN'));
+  const unpaidRows=works.filter(r=>!r.paid).sort((a,b)=>b.date.localeCompare(a.date)||(Number(b.createdAt||0)-Number(a.createdAt||0)));
+  const warningRows=[...warnings].sort((a,b)=>b.date.localeCompare(a.date)||(Number(b.createdAt||0)-Number(a.createdAt||0)));
+  return {sel,timeRows,works,income,agg,unpaid,warnMap,warnings,peopleRows,taskRows,unpaidRows,warningRows};
+}
+function buildWageTrend(data){
+  const {sel,timeRows,works}=data,trendRows=[];let trendIncome=0,trendAgg={count:0,hours:0,due:0,paid:0,people:new Set(),tasks:new Set()},title='',hint='';
+  const pushRow=(label,ins,ws)=>{const x=wageAgg(ws),inc=wageIncomeSum(ins);trendIncome+=inc;trendAgg.count+=x.count;trendAgg.hours+=x.hours;trendAgg.due+=x.due;trendAgg.paid+=x.paid;x.people.forEach(p=>trendAgg.people.add(p));x.tasks.forEach(t=>trendAgg.tasks.add(t));trendRows.push({label,inc,x})};
+  if(sel.customTime){
+    const dates=timeRows.map(r=>parseDate(r.date)).filter(Boolean).sort((a,b)=>a-b),first=dates[0],last=dates[dates.length-1],span=first&&last?Math.round((last-first)/86400000)+1:0;
+    if(span>0&&span<=62){title=`自定义日期范围 · 周趋势`;hint='自定义范围较短，按自然周汇总。';const keys=[...new Set(timeRows.map(r=>weekStartKey(r.date)))].filter(Boolean).sort();for(const k of keys)pushRow(wageWeekLabel(k),timeRows.filter(r=>r.type==='income'&&weekStartKey(r.date)===k),works.filter(r=>weekStartKey(r.date)===k));}
+    else{title=`自定义日期范围 · 月度趋势`;hint='自定义范围按月份汇总。';const keys=[...new Set(timeRows.map(r=>wageMonthKey(r.date)))].filter(Boolean).sort();for(const k of keys)pushRow(wageMonthLabel(k),timeRows.filter(r=>r.type==='income'&&wageMonthKey(r.date)===k),works.filter(r=>wageMonthKey(r.date)===k));}
+  }else if(sel.month==='all'){
+    title=`${sel.year} 年月度趋势`;hint='全年按月份汇总；人员、任务和支付状态筛选只作用于工资数据。';
+    for(let i=1;i<=12;i++){const m=String(i).padStart(2,'0'),periodSel={...sel,month:m,customTime:false,start:'',end:'',dateRangeValid:true};pushRow(`${i}月`,wageState.records.filter(r=>r.type==='income'&&wageRecordInAnalysisTime(r,periodSel)),wageState.records.filter(r=>wageWorkMatchesAnalysis(r,sel,{month:m,customTime:false,start:'',end:'',dateRangeValid:true})))}
+  }else{
+    title=`${sel.year}年${Number(sel.month)}月周趋势`;hint='具体月份按自然周汇总，便于和每周 8 / 40 小时规则一起核对。';
+    const keys=[...new Set(timeRows.map(r=>weekStartKey(r.date)))].filter(Boolean).sort();for(const k of keys)pushRow(wageWeekLabel(k),timeRows.filter(r=>r.type==='income'&&weekStartKey(r.date)===k),works.filter(r=>weekStartKey(r.date)===k));
+  }
+  return {trendRows,trendIncome,trendAgg,title,hint};
+}
+function renderWageAnalysis(){
+  if(!$('#wageAnalysisPage'))return;const data=getWageAnalysisData(),{sel,works,income,agg,unpaid,warnMap,warnings,peopleRows,taskRows,unpaidRows,warningRows}=data;
+  const scope=[];if(!sel.dateRangeValid)scope.push('日期范围无效：开始日期晚于结束日期');else scope.push(sel.customTime?`自定义日期：${wageAnalysisTimeLabel(sel)}`:`年月：${wageAnalysisTimeLabel(sel)}`);if(sel.customTime)scope.push(`年月快捷值保留为 ${sel.year}年${sel.month==='all'?'全年':Number(sel.month)+'月'}`);if(sel.person!=='all')scope.push(`实习生：${sel.person}`);if(sel.task!=='all')scope.push(`任务：${sel.task}`);if(sel.paid!=='all')scope.push(sel.paid==='paid'?'仅已支付':'仅未支付');$('#wageAnalysisScope').innerHTML=`当前统计范围：<strong>${esc(scope.join(' · '))}</strong> · 工资记录 ${works.length} 条`;
+  $('#waIncome').textContent=money(income);$('#waDue').textContent=money(agg.due);$('#waPaid').textContent=money(agg.paid);$('#waUnpaid').textContent=money(unpaid);$('#waHours').textContent=`${Number(agg.hours.toFixed(2))} h`;$('#waPeople').textContent=agg.people.size;$('#waTasks').textContent=agg.tasks.size;$('#waWarnings').textContent=warnings.length;
+  $('#waDueSub').textContent=`${agg.count} 条工资记录`;$('#waPaidSub').textContent=agg.due?`占应付 ${wagePct(agg.paid,agg.due)}`:'暂无应付工资';$('#waUnpaidSub').textContent=agg.due?`占应付 ${wagePct(unpaid,agg.due)}`:'暂无应付工资';
+  const trend=buildWageTrend(data);$('#waTrendTitle').textContent=trend.title;$('#waTrendHint').textContent=trend.hint;
+  $('#waTrendBody').innerHTML=trend.trendRows.length?trend.trendRows.map(r=>`<tr><td>${esc(r.label)}</td><td>${money(r.inc)}</td><td>${r.x.count}</td><td>${r.x.people.size}</td><td>${Number(r.x.hours.toFixed(2))} h</td><td>${money(r.x.due)}</td><td>${money(r.x.paid)}</td><td>${money(r.x.due-r.x.paid)}</td></tr>`).join(''):'<tr><td colspan="8"><div class="wage-analysis-empty">当前范围暂无记录</div></td></tr>';
+  $('#waTrendFoot').innerHTML=`<tr><td>合计</td><td>${money(trend.trendIncome)}</td><td>${trend.trendAgg.count}</td><td>${trend.trendAgg.people.size}</td><td>${Number(trend.trendAgg.hours.toFixed(2))} h</td><td>${money(trend.trendAgg.due)}</td><td>${money(trend.trendAgg.paid)}</td><td>${money(trend.trendAgg.due-trend.trendAgg.paid)}</td></tr>`;
+  $('#waPeopleBody').innerHTML=peopleRows.length?peopleRows.map(x=>`<tr><td><strong>${esc(x.name)}</strong></td><td>${x.count}</td><td>${x.taskCount}</td><td>${Number(x.hours.toFixed(2))} h</td><td>${money(x.due)}</td><td>${money(x.paid)}</td><td>${money(x.due-x.paid)}</td><td class="wage-share-cell">${wagePct(x.due,agg.due)}<div class="wage-share"><i style="width:${agg.due?Math.min(100,x.due/agg.due*100):0}%"></i></div></td></tr>`).join(''):'<tr><td colspan="8"><div class="wage-analysis-empty">当前范围暂无工资记录</div></td></tr>';
+  $('#waPeopleFoot').innerHTML=`<tr><td>合计</td><td>${agg.count}</td><td>${agg.tasks.size}</td><td>${Number(agg.hours.toFixed(2))} h</td><td>${money(agg.due)}</td><td>${money(agg.paid)}</td><td>${money(unpaid)}</td><td>${agg.due?'100%':'0%'}</td></tr>`;
+  $('#waTaskBody').innerHTML=taskRows.length?taskRows.map(x=>{const q=x.units.length===1?`${Number(x.quantity.toFixed(2))} ${esc(x.units[0])}`:`${Number(x.quantity.toFixed(2))}（混合单位）`;return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.categories)}</td><td>${x.count}</td><td>${q}</td><td>${Number(x.hours.toFixed(2))} h</td><td>${money(x.due)}</td><td>${money(x.paid)}</td></tr>`}).join(''):'<tr><td colspan="7"><div class="wage-analysis-empty">当前范围暂无工资记录</div></td></tr>';
+  $('#waTaskFoot').innerHTML=`<tr><td>合计</td><td>—</td><td>${agg.count}</td><td>—</td><td>${Number(agg.hours.toFixed(2))} h</td><td>${money(agg.due)}</td><td>${money(agg.paid)}</td></tr>`;
+  $('#waUnpaidCount').textContent=`${unpaidRows.length} 条`;$('#waUnpaidBody').innerHTML=unpaidRows.length?unpaidRows.map(r=>{const h=wageHours(r),due=Math.round(h*Number(r.rateCents||0));return `<tr><td>${esc(r.date)}</td><td>${esc(r.person)}</td><td>${esc(r.task)}</td><td>${Number(h.toFixed(2))} h</td><td>${money(r.rateCents)}/h</td><td class="wage-analysis-warn">${money(due)}</td></tr>`}).join(''):'<tr><td colspan="6"><div class="wage-analysis-empty">当前范围没有未支付工资记录</div></td></tr>';
+  $('#waWarningCount').textContent=`${warningRows.length} 条`;$('#waWarningBody').innerHTML=warningRows.length?warningRows.map(r=>{const w=warnMap.get(r.id);return `<tr><td>${esc(r.date)}</td><td>${esc(r.person)}</td><td>${esc(r.task)}</td><td>${Number(wageHours(r).toFixed(2))} h</td><td class="wage-analysis-warn">${Number(w.total.toFixed(2))} h</td><td>${w.limit} h</td></tr>`}).join(''):'<tr><td colspan="6"><div class="wage-analysis-empty">当前范围没有周工时超限提醒记录</div></td></tr>';
+}
+function wageAnalysisSheet(rows,widths){const ws=XLSX.utils.aoa_to_sheet(rows);if(widths)ws['!cols']=widths.map(w=>({wch:w}));return ws}
+function wageAnalysisYuan(cents){return Number(fromCents(Number(cents||0)))}
+function makeWageAnalysisWorkbook(){
+  const data=getWageAnalysisData(),{sel,timeRows,works,income,agg,unpaid,warnMap,peopleRows,taskRows,unpaidRows,warningRows}=data;if(!sel.dateRangeValid)throw new Error('开始日期不能晚于结束日期');const trend=buildWageTrend(data),wb=XLSX.utils.book_new(),timeLabel=wageAnalysisTimeLabel(sel);
+  const summary=[['实习生工资统计分析'],['导出日期',today()],['有效时间筛选',sel.customTime?'自定义起止日期':'年月快捷筛选'],['时间范围',timeLabel],['年月快捷值',`${sel.year}年${sel.month==='all'?'全年':Number(sel.month)+'月'}`],['实习生筛选',sel.person==='all'?'全部实习生':sel.person],['任务筛选',sel.task==='all'?'全部任务':sel.task],['支付状态',sel.paid==='all'?'全部状态':sel.paid==='paid'?'仅已支付':'仅未支付'],[],['指标','值'],['期间收入',wageAnalysisYuan(income)],['工资应付',wageAnalysisYuan(agg.due)],['已支付',wageAnalysisYuan(agg.paid)],['未支付',wageAnalysisYuan(unpaid)],['标准工时',Number(agg.hours.toFixed(2))],['工资记录数',agg.count],['实习生人数',agg.people.size],['任务种类',agg.tasks.size],['周工时超限提醒',warningRows.length]];
+  XLSX.utils.book_append_sheet(wb,wageAnalysisSheet(summary,[22,24]),'分析汇总');
+  const trendRows=[['时间','收入','工资记录','人数','标准工时','应付工资','已支付','未支付'],...trend.trendRows.map(r=>[r.label,wageAnalysisYuan(r.inc),r.x.count,r.x.people.size,Number(r.x.hours.toFixed(2)),wageAnalysisYuan(r.x.due),wageAnalysisYuan(r.x.paid),wageAnalysisYuan(r.x.due-r.x.paid)]),['合计',wageAnalysisYuan(trend.trendIncome),trend.trendAgg.count,trend.trendAgg.people.size,Number(trend.trendAgg.hours.toFixed(2)),wageAnalysisYuan(trend.trendAgg.due),wageAnalysisYuan(trend.trendAgg.paid),wageAnalysisYuan(trend.trendAgg.due-trend.trendAgg.paid)]];XLSX.utils.book_append_sheet(wb,wageAnalysisSheet(trendRows,[20,14,12,10,12,14,14,14]),'时间趋势');
+  const personRows=[['实习生','记录数','任务数','标准工时','应付','已支付','未支付','应付占比'],...peopleRows.map(x=>[x.name,x.count,x.taskCount,Number(x.hours.toFixed(2)),wageAnalysisYuan(x.due),wageAnalysisYuan(x.paid),wageAnalysisYuan(x.due-x.paid),agg.due?x.due/agg.due:0]),['合计',agg.count,agg.tasks.size,Number(agg.hours.toFixed(2)),wageAnalysisYuan(agg.due),wageAnalysisYuan(agg.paid),wageAnalysisYuan(unpaid),agg.due?1:0]];const personWs=wageAnalysisSheet(personRows,[18,10,10,12,14,14,14,12]);for(let r=1;r<personRows.length;r++){const c=personWs[XLSX.utils.encode_cell({r,c:7})];if(c)c.z='0.0%'}XLSX.utils.book_append_sheet(wb,personWs,'按实习生');
+  const taskRowsX=[['任务','工作类型','记录数','数量','计量单位','标准工时','应付','已支付'],...taskRows.map(x=>[x.name,x.categories,x.count,Number(x.quantity.toFixed(2)),x.units.length===1?x.units[0]:'混合单位',Number(x.hours.toFixed(2)),wageAnalysisYuan(x.due),wageAnalysisYuan(x.paid)]),['合计','—',agg.count,'—','—',Number(agg.hours.toFixed(2)),wageAnalysisYuan(agg.due),wageAnalysisYuan(agg.paid)]];XLSX.utils.book_append_sheet(wb,wageAnalysisSheet(taskRowsX,[22,16,10,12,12,12,14,14]),'按任务');
+  const workRows=[['日期','实习生','工作类型','任务','数量','单位','每单位折合工时','标准工时','工资标准(元/小时)','应付金额','支付状态','周工时规则','备注'],...works.slice().sort((a,b)=>a.date.localeCompare(b.date)||(Number(a.createdAt||0)-Number(b.createdAt||0))).map(r=>{const h=wageHours(r),due=Math.round(h*Number(r.rateCents||0));return [r.date,r.person,r.category||'',r.task,Number(r.quantity||0),r.unit||'',Number(r.hoursPerUnit||0),Number(h.toFixed(2)),wageAnalysisYuan(r.rateCents),wageAnalysisYuan(due),r.paid?'已支付':'未支付',r.periodMode==='holiday'?'假期 40小时/周':'学期中 8小时/周',r.note||'']})];XLSX.utils.book_append_sheet(wb,wageAnalysisSheet(workRows,[12,16,16,22,10,10,16,12,18,14,12,18,28]),'工资明细');
+  const incomeRows=[['日期','收到金额','备注'],...timeRows.filter(r=>r.type==='income').sort((a,b)=>a.date.localeCompare(b.date)||(Number(a.createdAt||0)-Number(b.createdAt||0))).map(r=>[r.date,wageAnalysisYuan(r.amountCents),r.note||'']),['合计',wageAnalysisYuan(income),'']];XLSX.utils.book_append_sheet(wb,wageAnalysisSheet(incomeRows,[12,14,32]),'收入明细');
+  const unpaidX=[['日期','实习生','任务','标准工时','工资标准(元/小时)','应付金额'],...unpaidRows.map(r=>{const h=wageHours(r),due=Math.round(h*Number(r.rateCents||0));return [r.date,r.person,r.task,Number(h.toFixed(2)),wageAnalysisYuan(r.rateCents),wageAnalysisYuan(due)]})];XLSX.utils.book_append_sheet(wb,wageAnalysisSheet(unpaidX,[12,16,22,12,18,14]),'未支付明细');
+  const warnX=[['日期','实习生','任务','本次工时','本次后周累计','上限','规则'],...warningRows.map(r=>{const w=warnMap.get(r.id);return [r.date,r.person,r.task,Number(wageHours(r).toFixed(2)),Number(w.total.toFixed(2)),w.limit,r.periodMode==='holiday'?'假期':'学期中']})];XLSX.utils.book_append_sheet(wb,wageAnalysisSheet(warnX,[12,16,22,12,14,10,12]),'超限提醒');
+  return wb;
+}
+async function exportWageAnalysis(){try{const sel=getWageAnalysisSelection();if(!sel.dateRangeValid){toast('开始日期不能晚于结束日期');return}const label=sel.customTime?`${sel.start||'不限'}_至_${sel.end||'不限'}`:`${sel.year}${sel.month==='all'?'全年':sel.month+'月'}`,ok=await downloadWb(makeWageAnalysisWorkbook(),`实习生工资统计_${label}.xlsx`);if(ok)toast('工资统计分析已导出')}catch(e){console.error(e);toast(`导出失败：${e?.message||e}`)}}
+function wageQuickChips(items,attr){return items.length?`<div class="wage-quick-list">${items.map(x=>`<button type="button" class="wage-quick-chip" ${attr}="${esc(typeof x==='string'?x:x.name)}">${esc(typeof x==='string'?x:x.name)}</button>`).join('')}</div>`:'<span class="subtle">暂无历史选项</span>'}
+function incomeRecordModal(record=null){
+  const editing=!!record;showModal(`<div class="modal-head"><h3>${editing?'编辑':'新增'}收入记录</h3></div><div class="modal-body"><div class="form-row"><label>日期</label><input id="wIncomeDate" class="field" type="date" value="${esc(record?.date||today())}"></div><div class="form-row"><label>收到金额</label><input id="wIncomeAmount" class="field" inputmode="decimal" value="${record?fromCents(record.amountCents):''}" placeholder="0.00"></div><div class="form-row"><label>备注</label><input id="wIncomeNote" class="field" value="${esc(record?.note||'')}" placeholder="例如：8月第二笔工资经费"></div><div id="wIncomeErr" class="error"></div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button id="wIncomeSave" class="btn primary">保存记录</button></div>`,root=>{
+    root.querySelector('[data-cancel]').onclick=closeModal;root.querySelector('#wIncomeSave').onclick=async()=>{const date=root.querySelector('#wIncomeDate').value,amount=toCents(root.querySelector('#wIncomeAmount').value),note=root.querySelector('#wIncomeNote').value.trim();if(!date||amount<=0){root.querySelector('#wIncomeErr').textContent='请填写日期和大于 0 的收到金额';return}if(editing){Object.assign(record,{date,amountCents:amount,note})}else wageState.records.push({id:uid(),type:'income',date,amountCents:amount,note,createdAt:Date.now()});await saveWage();closeModal();renderWage();toast(editing?'收入记录已更新':'收入记录已新增')};
+  })
+}
+function workRecordModal(record=null){
+  const editing=!!record,interns=getKnownInterns().slice(0,10),tasks=getWageTaskPresets(),rateCents=record?.rateCents??Number(wageState.lastRateCents||0),period=record?.periodMode||wageState.lastPeriodMode||'term';
+  showModal(`<div class="modal-head"><h3>${editing?'编辑':'新增'}工资记录</h3></div><div class="modal-body"><div class="wage-quick-block"><div class="wage-quick-label">快速选择已有实习生</div>${wageQuickChips(interns,'data-wage-person')}</div><div class="wage-form-grid"><div class="form-row"><label>日期</label><input id="wWorkDate" class="field" type="date" value="${esc(record?.date||today())}"></div><div class="form-row"><label>实习生</label><input id="wPerson" class="field" value="${esc(record?.person||'')}" placeholder="可直接输入新姓名"></div><div class="form-row full"><label>任务</label><input id="wTask" class="field" value="${esc(record?.task||'')}" placeholder="选择预设或输入新任务名称"></div></div><div class="wage-quick-block"><div class="wage-quick-label">任务预设 · 点击快速带入计量规则</div>${wageQuickChips(tasks.slice(0,18),'data-wage-task')}</div><div class="wage-form-grid"><div class="form-row"><label>工作类型</label><input id="wCategory" class="field" value="${esc(record?.category||'')}" placeholder="选择预设后自动带入"></div><div class="form-row"><label>计量单位</label><input id="wUnit" class="field" value="${esc(record?.unit||'篇')}" placeholder="篇 / 小时 / 月 / 次"></div><div class="form-row"><label>数量</label><input id="wQuantity" class="field" inputmode="decimal" value="${record?Number(record.quantity||0):1}"></div><div class="form-row"><label>每单位折合工时</label><input id="wHoursPerUnit" class="field" inputmode="decimal" value="${record?Number(record.hoursPerUnit||0):''}" placeholder="例如：2 小时/篇"></div><div class="form-row"><label>标准工时</label><input id="wStandardHours" class="field wage-readonly" value="0" readonly tabindex="-1"></div><div class="form-row"><label>工资标准</label><input id="wRate" class="field" inputmode="decimal" value="${rateCents?fromCents(rateCents):''}" placeholder="元 / 小时"></div><div class="form-row"><label>周工时规则</label><select id="wPeriodMode" class="field"><option value="term" ${period==='term'?'selected':''}>学期中 · 8小时/周</option><option value="holiday" ${period==='holiday'?'selected':''}>假期 · 40小时/周</option></select></div><div class="form-row"><label>支付状态</label><label class="checkwrap"><input id="wPaid" type="checkbox" ${record?.paid?'checked':''}><span>已支付</span></label></div><div class="form-row full"><label>备注</label><input id="wWorkNote" class="field" value="${esc(record?.note||'')}" placeholder="可选"></div></div><div class="wage-calc"><div class="wage-calc-item"><span>标准工时 = 数量 × 每单位工时</span><strong id="wCalcHours">0 h</strong></div><div class="wage-calc-item"><span>工资标准</span><strong id="wCalcRate">￥0.00 / h</strong></div><div class="wage-calc-item"><span>应付工资</span><strong id="wCalcWage">￥0.00</strong></div></div><div class="wage-tip" id="wTaskTip">选择任务预设会带入工作类型、单位和每单位折合工时。直接输入一个新任务并保存记录时，会自动把当前任务规则增加到“任务预设表”。</div><div id="wWorkErr" class="error"></div></div><div class="modal-foot"><button class="btn" data-cancel>取消</button><button id="wWorkSave" class="btn primary">保存记录</button></div>`,root=>{
+    const person=root.querySelector('#wPerson'),task=root.querySelector('#wTask'),cat=root.querySelector('#wCategory'),unit=root.querySelector('#wUnit'),qty=root.querySelector('#wQuantity'),hpu=root.querySelector('#wHoursPerUnit'),standard=root.querySelector('#wStandardHours'),rate=root.querySelector('#wRate'),tip=root.querySelector('#wTaskTip');
+    const calc=()=>{const q=Math.max(0,Number(qty.value)||0),h=Math.max(0,Number(hpu.value)||0),rc=toCents(rate.value),hours=q*h,wage=Math.round(hours*rc);standard.value=`${Number(hours.toFixed(2))} 小时`;root.querySelector('#wCalcHours').textContent=`${Number(hours.toFixed(2))} h`;root.querySelector('#wCalcRate').textContent=`${money(rc)} / h`;root.querySelector('#wCalcWage').textContent=money(wage);return {q,h,rc,hours,wage}};
+    const applyTask=name=>{const t=getWageTask(name);if(!t)return;task.value=t.name;cat.value=t.category||'';unit.value=t.unit||'次';hpu.value=Number(t.hoursPerUnit||0);tip.textContent=t.description?`${t.name}：${t.description}`:`已带入任务预设“${t.name}”`;calc()};
+    root.querySelectorAll('[data-wage-person]').forEach(b=>b.onclick=()=>{person.value=b.dataset.wagePerson});root.querySelectorAll('[data-wage-task]').forEach(b=>b.onclick=()=>applyTask(b.dataset.wageTask));task.onchange=()=>applyTask(task.value);[qty,hpu,rate].forEach(el=>el.oninput=calc);root.querySelector('[data-cancel]').onclick=closeModal;calc();
+    root.querySelector('#wWorkSave').onclick=async()=>{const c=calc(),date=root.querySelector('#wWorkDate').value,p=person.value.trim(),taskName=task.value.trim(),category=cat.value.trim(),unitName=unit.value.trim()||'次',periodMode=root.querySelector('#wPeriodMode').value,paid=root.querySelector('#wPaid').checked,note=root.querySelector('#wWorkNote').value.trim();if(!date||!p||!taskName||c.q<=0||c.h<=0||c.rc<=0){root.querySelector('#wWorkErr').textContent='请填写日期、实习生、任务、数量、每单位折合工时和大于 0 的工资标准';return}const data={date,person:p,task:taskName,category,unit:unitName,quantity:c.q,hoursPerUnit:c.h,hours:c.hours,rateCents:c.rc,wageCents:c.wage,periodMode,paid,note};if(editing)Object.assign(record,data);else wageState.records.push({id:uid(),type:'work',...data,createdAt:Date.now()});const added=autoAddWagePreset(data);wageState.lastRateCents=c.rc;wageState.lastPeriodMode=periodMode;await saveWage();closeModal();renderWage();toast(editing?'工资记录已更新':added?'工资记录已新增，并自动增加任务预设':'工资记录已新增')};
+  })
+}
+function editWageRecord(id){const r=wageState.records.find(x=>x.id===id);if(!r)return;r.type==='income'?incomeRecordModal(r):workRecordModal(r)}
+
+
+$('#activityModuleBtn').onclick=()=>setActiveModule('activity');
+$('#wageModuleBtn').onclick=()=>setActiveModule('wage');
+$('#wageRecordsTab').onclick=()=>setWageSubpage('records');$('#wagePresetsTab').onclick=()=>setWageSubpage('presets');$('#wageAnalysisTab').onclick=()=>setWageSubpage('analysis');
+$('#newIncomeBtn').onclick=()=>incomeRecordModal();$('#newWorkBtn').onclick=()=>workRecordModal();
+$('#newWagePresetBtn').onclick=()=>wagePresetModal();
+$('#wageSearch').oninput=renderWageRecords;$('#wageTypeFilter').onchange=renderWageRecords;$('#wagePersonFilter').onchange=renderWageRecords;$('#wageStart').onchange=renderWageRecords;$('#wageEnd').onchange=renderWageRecords;
+$('#clearWageFiltersBtn').onclick=()=>{$('#wageSearch').value='';$('#wageTypeFilter').value='all';$('#wagePersonFilter').value='all';$('#wageStart').value='';$('#wageEnd').value='';renderWageRecords()};
+['wageAnalysisYear','wageAnalysisMonth','wageAnalysisStart','wageAnalysisEnd','wageAnalysisPerson','wageAnalysisTask','wageAnalysisPaid'].forEach(id=>$('#'+id).onchange=renderWageAnalysis);
+$('#exportWageAnalysisBtn').onclick=exportWageAnalysis;
+$('#clearWageAnalysisBtn').onclick=()=>{$('#wageAnalysisYear').value=String(new Date().getFullYear());$('#wageAnalysisMonth').value='all';$('#wageAnalysisStart').value='';$('#wageAnalysisEnd').value='';$('#wageAnalysisPerson').value='all';$('#wageAnalysisTask').value='all';$('#wageAnalysisPaid').value='all';renderWageAnalysis()};
+
+$('#modeBtn').onclick=()=>{if(secretMode){secretMode=false;managementMode=false;selectedActivityIds.clear();if($('#manual').classList.contains('active')||$('#financialModel').classList.contains('active')){render();toast('已退出秘密模式')}else if(currentActivityId!==null){closeActivity();toast('已退出秘密模式并返回普通主页')}else{render();toast('已退出秘密模式')}}else passwordModal()};
+$('#manualBtn').onclick=openManual; $('#manualBackBtn').onclick=closeManual; $('#modelBtn').onclick=openFinancialModel; $('#modelBackBtn').onclick=closeFinancialModel;
 $('#manualTemplateBtn').onclick=downloadBudgetTemplate; $('#templateBtn').onclick=downloadBudgetTemplate;
-$('#search').oninput=renderHome; $('#statusFilter').onchange=renderHome; $('#filterStart').onchange=renderHome; $('#filterEnd').onchange=renderHome; $('#clearFiltersBtn').onclick=()=>{$('#statusFilter').value='all';$('#filterStart').value='';$('#filterEnd').value='';renderHome()};
+$('#search').oninput=renderHome; $('#statusFilter').onchange=renderHome; $('#filterStart').onchange=renderHome; $('#filterEnd').onchange=renderHome; $('#groupByTagToggle').onchange=e=>{groupByTag=e.target.checked;renderHome()}; $('#tagStatsBtn').onclick=tagStatsModal; $('#clearFiltersBtn').onclick=()=>{$('#statusFilter').value='all';selectedTagFilters.clear();$('#filterStart').value='';$('#filterEnd').value='';renderHome()};
 $('#newActivityBtn').onclick=newActivityModal; $('#backBtn').onclick=closeActivity; $('#addItemBtn').onclick=addItemModal;
 $('#manageActivitiesBtn').onclick=enterManagementMode; $('#exitManageBtn').onclick=exitManagementMode;
 $('#selectVisibleBtn').onclick=()=>{getHomeFilteredActivities().forEach(a=>selectedActivityIds.add(a.id));renderHome()};
@@ -1860,6 +2752,8 @@ $('#importBtn').onclick=()=>$('#fileInput').click(); $('#fileInput').onchange=e=
 $('#themeToggle').onclick=()=>{const current=document.documentElement.getAttribute('data-theme')||preferredTheme();applyTheme(current==='dark'?'light':'dark',true)};
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 load();
+loadWage();
+setActiveModule('activity');
 })();
 </script>
 </body>
