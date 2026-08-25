@@ -68,6 +68,10 @@ Page({
     batchTotal: 0,
     batchLabel: '',
     hasBatchNext: false,    // 结果页: 是否还有下一条可检测
+    // 历史详情浏览模式：从历史页进入时启用独立的前后记录导航。
+    viewingHistory: false,
+    historyNavIndex: -1,
+    historyNavTotal: 0,
     // 示例数据列表 — 性能优化: 初始为空, 在onLoad中懒加载demoSamples.js后填充
     demoSamples: [],
     // 健康提示 (根据近期检测动态生成)
@@ -188,13 +192,24 @@ Page({
       return
     }
 
-    // === 非首次: 检查全局数据脏标记 ===
-    // 数据未变更时, 跳过所有重计算和setData
-    if (!app.globalData.dataDirty) {
+    // 先于 dataDirty 判断消费待查看记录。历史页点击记录只是导航意图，不一定伴随数据变更；
+    // 如果这里先按 dataDirty 提前 return，会出现点击历史记录却停在检测首页的问题。
+    if (!this._pendingHistoryId && app.globalData.pendingHistoryId) {
+      this._pendingHistoryId = app.globalData.pendingHistoryId
+      app.globalData.pendingHistoryId = null
+    }
+    var pendingLoadId = null
+    if (this._pendingHistoryId) {
+      pendingLoadId = this._pendingHistoryId
+      this._pendingHistoryId = null
+    }
+
+    // 数据未变更且没有待查看记录时，才跳过重计算。
+    if (!app.globalData.dataDirty && !pendingLoadId) {
       return
     }
 
-    // === 数据有变更, 执行完整的数据重新计算 (合并为一次setData) ===
+    // === 数据有变更或存在待查看记录, 执行必要刷新 ===
     var mergedData = {
       theme: app.globalData.theme
     }
@@ -237,18 +252,11 @@ Page({
     // 数据已更新, 清除脏标记
     app.globalData.dataDirty = false
 
-    // 处理待跳转的历史记录ID
-    if (app.globalData.pendingHistoryId) {
-      var id = app.globalData.pendingHistoryId
-      app.globalData.pendingHistoryId = null
-      this._pendingHistoryId = id
-    }
-    if (this._pendingHistoryId) {
-      var loadId = this._pendingHistoryId
-      this._pendingHistoryId = null
+    // 从历史页点击记录进入时，延迟到统计区域刷新后再切换结果视图。
+    if (pendingLoadId) {
       var self = this
       setTimeout(function() {
-        self.loadHistoryRecord(loadId)
+        self.loadHistoryRecord(pendingLoadId)
       }, 150)
     }
   },
@@ -440,7 +448,10 @@ Page({
       ecgLength: ecgData.length,
       ecgMin: min.toFixed(3),
       ecgMax: max.toFixed(3),
-      hasBatchNext: hasBatchNext
+      hasBatchNext: hasBatchNext,
+      viewingHistory: false,
+      historyNavIndex: -1,
+      historyNavTotal: 0
     })
     var self = this
     // v3: waveAnimator自带60ms重试, 初始延迟降至100ms
@@ -622,16 +633,23 @@ Page({
       step: 'import',
       ecgData: null,
       result: null,
-      detecting: false
+      detecting: false,
+      viewingHistory: false,
+      historyNavIndex: -1,
+      historyNavTotal: 0
     })
   },
 
+  // 加载历史记录详情，并记录它在“最新→最早”列表中的位置。
   loadHistoryRecord: function(id) {
     var history = wx.getStorageSync('history') || []
+    var sorted = history.slice().sort(function(a, b) { return b.timestamp - a.timestamp })
     var record = null
-    for (var i = 0; i < history.length; i++) {
-      if (history[i].id === id) {
-        record = history[i]
+    var recordIndex = -1
+    for (var i = 0; i < sorted.length; i++) {
+      if (sorted[i].id === id) {
+        record = sorted[i]
+        recordIndex = i
         break
       }
     }
@@ -678,7 +696,10 @@ Page({
       confidencePercent: confPercent,
       probDisplay: probDisplay,
       classInfo: classInfo,
-      hasBatchNext: false
+      hasBatchNext: false,
+      viewingHistory: true,
+      historyNavIndex: recordIndex,
+      historyNavTotal: sorted.length
     }, function() {
       // 置信度大数字滚动 (结果页编排: 图标pop-in → 数字滚动 → 概率条生长)
       self.animateConfidence(confPercent)
@@ -699,6 +720,34 @@ Page({
         })
       }, 100)
     })
+  },
+
+  // 历史浏览每次重新读取 ID，确保浏览过程中数据发生增删后导航仍按当前列表工作。
+  getSortedHistoryIds: function() {
+    var history = wx.getStorageSync('history') || []
+    return history.slice().sort(function(a, b) { return b.timestamp - a.timestamp }).map(function(item) {
+      return item.id
+    })
+  },
+
+  // 上一条：列表中更靠前、时间更新的记录。
+  onHistoryPrev: function() {
+    var idx = this.data.historyNavIndex
+    if (idx <= 0) return
+    var ids = this.getSortedHistoryIds()
+    if (ids[idx - 1]) this.loadHistoryRecord(ids[idx - 1])
+  },
+
+  // 下一条：列表中更靠后、时间更早的记录。
+  onHistoryNext: function() {
+    var idx = this.data.historyNavIndex
+    if (idx < 0 || idx >= this.data.historyNavTotal - 1) return
+    var ids = this.getSortedHistoryIds()
+    if (ids[idx + 1]) this.loadHistoryRecord(ids[idx + 1])
+  },
+
+  onBackToHistory: function() {
+    wx.switchTab({ url: '/pages/history/history' })
   }
 })
 

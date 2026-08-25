@@ -60,6 +60,17 @@
       evt.detail = { value: el.value, current: parseInt(el.getAttribute('data-current') || '0', 10) }
       page[method](evt)
     })
+
+    // H5 对应小程序 bindconfirm：搜索输入框按 Enter 时立即触发确认方法。
+    container.addEventListener('keydown', function(e) {
+      if (e.key !== 'Enter') return
+      var el = e.target
+      var method = el && el.getAttribute && el.getAttribute('data-bind-confirm')
+      if (!method || !page[method]) return
+      var evt = buildEvent(e, el)
+      evt.detail = { value: el.value }
+      page[method](evt)
+    })
   }
 
   function buildEvent(e, el) {

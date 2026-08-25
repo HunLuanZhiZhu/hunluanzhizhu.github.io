@@ -282,3 +282,12 @@
   background: var(--teal);
 }
 .page-science .dark .feature-dot.active { background: #0A84FF; }
+
+/* ===== 搜索关键词高亮 ===== */
+.kw-hit {
+  background: rgba(245, 158, 11, 0.28);
+  color: inherit;
+  border-radius: 4px;
+  padding: 0 2px;
+}
+.dark .kw-hit { background: rgba(251, 191, 36, 0.35); }

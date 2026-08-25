@@ -175,6 +175,23 @@
   line-height: 1.6;
 }
 
+/* ===== 历史详情浏览模式 ===== */
+.history-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 16px 0 4px;
+}
+.history-nav-pos {
+  min-width: 56px;
+  text-align: center;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--t3);
+  font-variant-numeric: tabular-nums;
+}
+
 /* ===== 深色模式品牌色阴影统一适配 — 2026-08-12 ===== */
 .page-detect .dark .summary-icon-normal { box-shadow: 0 2px 8px rgba(52,211,153,0.15); }
 .page-detect .dark .summary-icon-abnormal { box-shadow: 0 2px 8px rgba(251,113,133,0.15); }

@@ -14,12 +14,31 @@ var app = getApp()
 var ecgSamples = null
 var waveAnimator = null
 
+// 搜索关键词高亮: 把文本按关键词出现位置切分为 [{text, hit}] 分段数组
+// H5 模板无法直接做字符串替换，因此由逻辑层预先构建分段。
+function buildHighlightSegs(text, kw) {
+  if (!text) return [{ text: '', hit: false }]
+  var segs = []
+  var lower = text.toLowerCase()
+  var idx = 0
+  var found
+  while ((found = lower.indexOf(kw, idx)) > -1) {
+    if (found > idx) segs.push({ text: text.slice(idx, found), hit: false })
+    segs.push({ text: text.slice(found, found + kw.length), hit: true })
+    idx = found + kw.length
+  }
+  if (idx < text.length) segs.push({ text: text.slice(idx), hit: false })
+  return segs.length > 0 ? segs : [{ text: text, hit: false }]
+}
+
 Page({
   data: {
     theme: 'light',
     activeCategory: '全部',
     filteredArticles: [],
     searchKeyword: '',
+    // 搜索态仅在关键词空/非空切换时更新，避免中文输入法组合过程中频繁 setData。
+    searchActive: false,
     // 精选科普轮播 (3篇, 点击跳转文章详情)
     // Sc-R4: 每篇轮播使用对应主题的渐变背景
     // 2026-08-20: 封面图转回 JPG(q78, 103KB)以保证旧机型兼容; 原 WebP 体积略小但兼容性不足
@@ -81,7 +100,15 @@ Page({
   onLoad: function() {
     // 性能优化: 首次加载时设置数据和启动波形动画
     app.applyThemeColors(app.globalData.theme)
-    this.setData({ theme: app.globalData.theme, filteredArticles: this.data.articles })
+    var initialArticles = this.data.articles.map(function(a) {
+      return {
+        id: a.id, category: a.category, cover: a.cover, iconText: a.iconText,
+        author: a.author, time: a.time, readTime: a.readTime,
+        titleSegs: [{ text: a.title, hit: false }],
+        descSegs: [{ text: a.desc, hit: false }]
+      }
+    })
+    this.setData({ theme: app.globalData.theme, filteredArticles: initialArticles })
     // 波形动画仅在首次加载时启动, 后续onShow不重启
     // Sc-R5: 延迟增至800ms, 确保所有canvas节点已挂载
     var self = this
@@ -221,30 +248,46 @@ Page({
     }
   },
 
-  // Sc-R1: 搜索输入 — 使用setData更新关键字(清空按钮需要响应式显隐)
-  // 不绑定value到input, 避免受控输入导致的光标跳动
+  // 搜索输入：关键词只存内部变量，避免中文拼音组合输入被受控 value + setData 打断。
+  // data 仅维护 searchActive，用于搜索态布局和清空按钮显隐。
   onSearchInput: function(e) {
-    var keyword = e.detail.value
-    this.setData({ searchKeyword: keyword })
-    if (this._searchTimer) {
-      clearTimeout(this._searchTimer)
-    }
+    this._keyword = e.detail.value
+    // H5 shim 的 setData 会整页重绘；这里只更新内存状态，避免输入过程中重建 input。
+    // 同步内存中的 searchKeyword，确保用户在防抖结束前切换分类时也不会丢失输入框内容。
+    this.data.searchKeyword = this._keyword
+    this.data.searchActive = !!this._keyword
+    if (this._searchTimer) clearTimeout(this._searchTimer)
     var that = this
     this._searchTimer = setTimeout(function() {
       that.filterArticles()
     }, 300)
   },
 
-  // 清空搜索
-  onSearchClear: function() {
-    this.setData({ searchKeyword: '' })
+  // 键盘搜索键/回车：清除防抖并立即过滤。
+  onSearchConfirm: function() {
+    if (this._searchTimer) {
+      clearTimeout(this._searchTimer)
+      this._searchTimer = null
+    }
     this.filterArticles()
   },
 
+  // 清空搜索：searchKeyword 仅用于把 H5 输入框显示值重置为空。
+  onSearchClear: function() {
+    this._keyword = ''
+    this.setData({ searchKeyword: '', searchActive: false })
+    if (this._searchTimer) {
+      clearTimeout(this._searchTimer)
+      this._searchTimer = null
+    }
+    this.filterArticles()
+  },
+
+  // 分类 + 关键词过滤，并为标题/摘要构建命中高亮分段。
   filterArticles: function() {
     var articles = this.data.articles
     var cat = this.data.activeCategory
-    var kw = (this.data.searchKeyword || '').toLowerCase().trim()
+    var kw = (this._keyword !== undefined ? this._keyword : this.data.searchKeyword || '').toLowerCase().trim()
     if (cat !== '全部') {
       articles = articles.filter(function(a) { return a.category === cat })
     }
@@ -253,7 +296,19 @@ Page({
         return a.title.toLowerCase().indexOf(kw) > -1 || a.desc.toLowerCase().indexOf(kw) > -1
       })
     }
-    this.setData({ filteredArticles: articles })
+    var results = articles.map(function(a) {
+      return {
+        id: a.id, category: a.category, cover: a.cover, iconText: a.iconText,
+        author: a.author, time: a.time, readTime: a.readTime,
+        titleSegs: kw ? buildHighlightSegs(a.title, kw) : [{ text: a.title, hit: false }],
+        descSegs: kw ? buildHighlightSegs(a.desc, kw) : [{ text: a.desc, hit: false }]
+      }
+    })
+    this.setData({
+      filteredArticles: results,
+      searchActive: !!kw,
+      searchKeyword: this._keyword !== undefined ? this._keyword : this.data.searchKeyword
+    })
   },
 
   onArticleTap: function(e) {
