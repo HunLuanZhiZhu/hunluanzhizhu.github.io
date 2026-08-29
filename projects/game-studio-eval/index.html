@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<title>AI 游戏生成评测 · 0 额外提示词</title>
+<meta name="description" content="同一套 Claude Code Game Studios 框架，仅给一个目标、零额外人工提示词，让模型自主生成可玩游戏并横向对比。">
+<style>
+  :root{
+    --bg:#0a0a0a; --bg-2:#0f0f0f; --ink:#e8e8e8; --ink-dim:#7a7a7a; --ink-faint:#3a3a3a;
+    --line:#1f1f1f; --line-2:#2a2a2a;
+    --acid:#c6ff00; --acid-dim:rgba(198,255,0,.16);
+    --mono:'JetBrains Mono','SFMono-Regular',ui-monospace,'Cascadia Code','Liberation Mono',Menlo,Consolas,monospace;
+    --pad:clamp(20px,5vw,72px);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{background:var(--bg)}
+  body{font-family:var(--mono);color:var(--ink);background:var(--bg);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:radial-gradient(circle at center, rgba(255,255,255,.045) 1px, transparent 1.4px);
+    background-size:26px 26px;animation:drift 32s linear infinite}
+  @keyframes drift{to{background-position:260px 260px}}
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:clamp(28px,6vw,72px) var(--pad) 80px}
+  a{color:inherit;text-decoration:none}
+  .back{display:inline-block;color:var(--ink-dim);font-size:13px;letter-spacing:.04em;margin-bottom:28px}
+  .back:hover{color:var(--acid)}
+  .kicker{color:var(--acid);font-size:13px;letter-spacing:.22em;text-transform:uppercase}
+  h1{font-size:clamp(30px,6vw,56px);line-height:1.05;margin:10px 0 16px;letter-spacing:-.01em}
+  .lede{color:var(--ink-dim);max-width:62ch;font-size:15px}
+  .lede b{color:var(--ink);font-weight:600}
+  .method{margin:34px 0 8px;border:1px solid var(--line-2);border-radius:14px;background:linear-gradient(180deg,rgba(198,255,0,.04),transparent);padding:22px 24px}
+  .method h2{font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--acid);margin-bottom:14px}
+  .method ol{list-style:none;counter-reset:step;display:grid;gap:12px}
+  .method li{counter-increment:step;display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:start;font-size:14px;color:var(--ink-dim)}
+  .method li::before{content:counter(step,decimal-leading-zero);color:var(--acid);font-size:13px;font-weight:700;padding-top:1px}
+  .method li b{color:var(--ink);font-weight:600}
+  .method code{background:var(--acid-dim);color:var(--acid);padding:1px 7px;border-radius:6px;font-size:13px}
+  .grid{margin-top:40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+  .card{border:1px solid var(--line-2);border-radius:14px;padding:22px;background:var(--bg-2);display:flex;flex-direction:column;gap:12px;transition:border-color .18s,transform .18s}
+  .card.live{border-color:rgba(198,255,0,.35)}
+  .card.live:hover{border-color:var(--acid);transform:translateY(-3px)}
+  .card-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .model{font-size:12px;letter-spacing:.12em;color:var(--ink-dim);text-transform:uppercase}
+  .badge{font-size:11px;letter-spacing:.08em;padding:3px 9px;border-radius:999px;border:1px solid var(--line-2);color:var(--ink-dim)}
+  .badge.done{color:var(--acid);border-color:rgba(198,255,0,.4);background:var(--acid-dim)}
+  .badge.pending{color:#ffb454;border-color:rgba(255,180,84,.35);background:rgba(255,180,84,.08)}
+  .game{font-size:20px;font-weight:700;letter-spacing:-.01em}
+  .genre{font-size:13px;color:var(--ink-dim)}
+  .rule{height:1px;background:var(--line);margin:2px 0}
+  .desc{font-size:13px;color:var(--ink-dim);flex:1}
+  .cta{font-size:13px;color:var(--acid);letter-spacing:.04em}
+  .cta.muted{color:var(--ink-faint)}
+  .foot{margin-top:56px;color:var(--ink-faint);font-size:12px;border-top:1px solid var(--line);padding-top:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/">← hunluanzhizhu / 项目合集</a>
+
+  <div class="kicker">Benchmark · 0 extra prompts</div>
+  <h1>AI 游戏生成评测</h1>
+  <p class="lede">同一套 <b>Claude Code Game Studios</b> 框架，仅给模型一个目标、<b>全程零额外人工提示词</b>，让它自主把游戏从概念做到可在浏览器游玩。本页横向对比各模型的「交卷」结果。</p>
+
+  <div class="method">
+    <h2>评测设定</h2>
+    <ol>
+      <li><span>统一框架：每个模型拿到同一份 Game Studios（49 agents / 74 skills / 12 hooks）。</span></li>
+      <li><span>唯一人工输入：一条 <code>/goal</code> 描述想要的游戏。</span></li>
+      <li><span>之后只触发 <code>/auto-game-in-sleep</code>，<b>无人工追问、无人工改码</b>，模型自主跑完设计→开发→构建→自测。</span></li>
+      <li><span>验收基线：能在浏览器完整游玩、核心循环跑通、零控制台错误。产物含网页版（Godot Web 导出）。</span></li>
+    </ol>
+  </div>
+
+  <div class="grid">
+    <a class="card live" href="hy3/web/">
+      <div class="card-top"><span class="model">hy3</span><span class="badge done">已交卷</span></div>
+      <div class="game">脉冲回廊 / Pulse Corridor</div>
+      <div class="genre">2D 霓虹竞技场生存 Roguelite</div>
+      <div class="rule"></div>
+      <p class="desc">光点冲刺穿弹幕——冲刺既是闪避也是攻击。含完整 GDD、设计/架构评审、ADR 与可玩网页构建。</p>
+      <span class="cta">试玩 →</span>
+    </a>
+
+    <a class="card live" href="mimo/web/">
+      <div class="card-top"><span class="model">mimo-v2.5</span><span class="badge done">已交卷</span></div>
+      <div class="game">RUNEFORGE</div>
+      <div class="genre">2D 动作 Roguelike</div>
+      <div class="rule"></div>
+      <p class="desc">战斗中实时锻造魔法武器、镶嵌符文，每局构筑独特 build。含可玩网页构建。</p>
+      <span class="cta">试玩 →</span>
+    </a>
+
+    <div class="card">
+      <div class="card-top"><span class="model">GLM-5.3-Flash</span><span class="badge pending">未交卷</span></div>
+      <div class="game">—</div>
+      <div class="genre">待提交</div>
+      <div class="rule"></div>
+      <p class="desc">尚未纳入本评测的交卷流程。</p>
+      <span class="cta muted">敬请期待</span>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><span class="model">Qwen3.8-27B</span><span class="badge pending">未交卷</span></div>
+      <div class="game">—</div>
+      <div class="genre">待提交</div>
+      <div class="rule"></div>
+      <p class="desc">尚未纳入本评测的交卷流程。</p>
+      <span class="cta muted">敬请期待</span>
+    </div>
+  </div>
+
+  <p class="foot">评测维度（可玩性 / 代码完整度 / 设计文档 / 自测通过率等）将持续补充。所有游戏由模型在 0 额外提示词下自主生成，人工仅给定初始目标。</p>
+</div>
+</body>
+</html>
