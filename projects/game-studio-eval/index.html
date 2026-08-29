@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <title>AI 游戏生成评测 · 0 额外提示词</title>
-<meta name="description" content="同一套 Claude Code Game Studios 框架，仅给一个目标、零额外人工提示词，让模型自主生成可玩游戏并横向对比。">
+<meta name="description" content="同一套 ZCode Game Studios 框架，仅给一个目标、零额外人工提示词，让模型自主生成可玩游戏并横向对比。">
 <style>
   :root{
     --bg:#0a0a0a; --bg-2:#0f0f0f; --ink:#e8e8e8; --ink-dim:#7a7a7a; --ink-faint:#3a3a3a;
@@ -52,6 +52,7 @@
   .cta{font-size:13px;color:var(--acid);letter-spacing:.04em}
   .cta.muted{color:var(--ink-faint)}
   .foot{margin-top:56px;color:var(--ink-faint);font-size:12px;border-top:1px solid var(--line);padding-top:20px}
+  .foot a{color:var(--acid);text-decoration:none;border-bottom:1px solid var(--acid-dim)}
 </style>
 </head>
 <body>
@@ -60,12 +61,12 @@
 
   <div class="kicker">Benchmark · 0 extra prompts</div>
   <h1>AI 游戏生成评测</h1>
-  <p class="lede">同一套 <b>Claude Code Game Studios</b> 框架，仅给模型一个目标、<b>全程零额外人工提示词</b>，让它自主把游戏从概念做到可在浏览器游玩。本页横向对比各模型的「交卷」结果。</p>
+  <p class="lede">同一套 <b><a class="src" href="https://github.com/HunLuanZhiZhu/ZCode-Game-Studios" target="_blank" rel="noopener">ZCode Game Studios</a></b> 框架（源自 Claude Code Game Studios），仅给模型一个目标、<b>全程零额外人工提示词</b>，让它自主把游戏从概念做到可在浏览器游玩。本页横向对比各模型的「交卷」结果。</p>
 
   <div class="method">
     <h2>评测设定</h2>
     <ol>
-      <li><span>统一框架：每个模型拿到同一份 Game Studios（49 agents / 74 skills / 12 hooks）。</span></li>
+      <li><span>统一框架：每个模型拿到同一份 ZCode Game Studios（49 agents / 74 skills / 12 hooks）。</span></li>
       <li><span>唯一人工输入：一条 <code>/goal</code> 描述想要的游戏。</span></li>
       <li><span>之后只触发 <code>/auto-game-in-sleep</code>，<b>无人工追问、无人工改码</b>，模型自主跑完设计→开发→构建→自测。</span></li>
       <li><span>验收基线：能在浏览器完整游玩、核心循环跑通、零控制台错误。产物含网页版（Godot Web 导出）。</span></li>
@@ -119,7 +120,7 @@
     </div>
   </div>
 
-  <p class="foot">评测维度（可玩性 / 代码完整度 / 设计文档 / 自测通过率等）将持续补充。所有游戏由模型在 0 额外提示词下自主生成，人工仅给定初始目标。</p>
+  <p class="foot">评测维度（可玩性 / 代码完整度 / 设计文档 / 自测通过率等）将持续补充。所有游戏由模型在 0 额外提示词下自主生成，人工仅给定初始目标。框架源自 <a class="src" href="https://github.com/HunLuanZhiZhu/ZCode-Game-Studios" target="_blank" rel="noopener">ZCode Game Studios</a>（基于 Claude Code Game Studios）。</p>
 </div>
 </body>
 </html>
