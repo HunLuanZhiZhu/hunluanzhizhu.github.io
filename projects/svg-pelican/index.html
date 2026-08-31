@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>动态SVG鹈鹕骑自行车 · Dynamic SVG Pelican</title>
+<meta name="description" content="多次尝试：用 AI 生成动态 SVG 的迭代画廊。第一次尝试为一只骑自行车的鹈鹕。">
+<style>
+  :root{
+    --paper:#f4f1ea;
+    --paper-2:#fbf9f4;
+    --ink:#1d1b16;
+    --ink-dim:#6b665c;
+    --ink-faint:#a39c8e;
+    --line:#e1dccf;
+    --line-2:#d2cbbb;
+    --accent:#c0532b;
+    --accent-dim:rgba(192,83,43,.14);
+    --mono:'JetBrains Mono','SFMono-Regular',ui-monospace,'Cascadia Code','Liberation Mono',Menlo,Consolas,monospace;
+    --sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --pad:clamp(20px,5vw,72px);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{background:var(--paper)}
+  body{
+    font-family:var(--sans);
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(192,83,43,.06), transparent 30%),
+      radial-gradient(circle at 88% 92%, rgba(60,90,120,.06), transparent 32%),
+      var(--paper);
+    min-height:100vh;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .shell{position:relative;max-width:1180px;margin:0 auto;padding:0 var(--pad) 64px}
+
+  /* 顶栏 */
+  .bar{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:22px 0 18px;border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:.06em}
+  .brand .mark{color:var(--accent);font-weight:700;letter-spacing:.12em}
+  .brand .slash{color:var(--ink-faint)}
+  .brand .name{color:var(--ink-dim)}
+  .back{
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-dim);text-decoration:none;border:1px solid var(--line-2);
+    padding:6px 12px;transition:color .2s,border-color .2s,background .2s;
+  }
+  .back:hover{color:var(--paper);background:var(--accent);border-color:var(--accent)}
+
+  /* Hero */
+  .hero{padding:clamp(34px,6vw,64px) 0 clamp(24px,4vw,40px)}
+  .hero .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.34em;color:var(--accent);text-transform:uppercase}
+  .hero h1{margin-top:10px;font-size:clamp(30px,6vw,60px);font-weight:800;line-height:1.04;letter-spacing:-.02em}
+  .hero p{margin-top:16px;max-width:60ch;color:var(--ink-dim);font-size:clamp(14px,1.4vw,16px)}
+  .hero p .hl{color:var(--ink)}
+
+  /* 区块标题 */
+  .sec-head{display:flex;align-items:center;gap:14px;margin:8px 0 26px}
+  .sec-head .bar-v{width:4px;height:18px;background:var(--accent)}
+  .sec-head h2{font-size:12px;letter-spacing:.28em;color:var(--ink);font-weight:700;text-transform:uppercase}
+  .sec-head .rule{flex:1;height:1px;background:var(--line)}
+  .sec-head .count{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.1em}
+
+  /* 尝试列表 */
+  .attempts{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+
+  .attempt{
+    position:relative;display:flex;flex-direction:column;
+    background:var(--paper-2);border:1px solid var(--line-2);
+    border-radius:14px;overflow:hidden;
+    transition:transform .26s cubic-bezier(.2,.7,.2,1),border-color .26s,box-shadow .26s;
+  }
+  .attempt:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 14px 34px rgba(60,40,20,.14)}
+
+  /* 预览窗格（内联播放 SVG 动画） */
+  .preview{position:relative;aspect-ratio:4/3;background:#0c1020;overflow:hidden}
+  .preview object{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+  .preview .badge{
+    position:absolute;top:12px;left:12px;z-index:2;
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--paper);background:rgba(192,83,43,.88);padding:4px 9px;border-radius:6px;
+  }
+
+  .attempt-body{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1}
+  .attempt-title{
+    font-size:19px;font-weight:700;letter-spacing:-.01em;
+    color:var(--ink);text-decoration:none;transition:color .2s;
+  }
+  .attempt:hover .attempt-title{color:var(--accent)}
+  .attempt-sub{margin-top:4px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-faint)}
+  .attempt-meta{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px}
+  .chip{
+    font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--ink-dim);
+    border:1px solid var(--line-2);padding:3px 8px;border-radius:5px;background:var(--paper);
+  }
+  .chip::before{content:"//";color:var(--ink-faint);margin-right:4px}
+  .attempt-desc{margin-top:14px;color:var(--ink-dim);font-size:13px;flex:1}
+  .attempt-cta{
+    margin-top:18px;display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;
+    color:var(--accent);text-decoration:none;border-top:1px solid var(--line);padding-top:14px;
+    transition:gap .2s;
+  }
+  .attempt-cta .arrow{transition:transform .2s}
+  .attempt:hover .attempt-cta .arrow{transform:translateX(5px)}
+
+  footer{
+    margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+    font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.1em;
+  }
+  footer a{color:var(--ink-dim);text-decoration:none;border-bottom:1px solid var(--line-2);transition:color .2s,border-color .2s}
+  footer a:hover{color:var(--accent);border-color:var(--accent)}
+
+  .attempt:focus-within{outline:2px solid var(--accent);outline-offset:3px}
+
+  @media(prefers-reduced-motion:reduce){
+    .attempt,.attempt-cta .arrow{transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- 顶栏 -->
+  <header class="bar">
+    <div class="brand">
+      <span class="mark">▶ SVG</span>
+      <span class="name">hunluanzhizhu<span class="slash">.github.io</span></span>
+    </div>
+    <a class="back" href="../../index.html">← 返回首页</a>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="eyebrow">AI-GENERATED · ITERATION LOG</p>
+    <h1>动态SVG鹈鹕<br>骑自行车</h1>
+    <p>用 AI 反复尝试、生成<span class="hl">动态 SVG 动画</span>的实验画廊。每一次尝试单独成版本，既可在下方直接预览，也可点开独立页面全屏观看。当前为<span class="hl">第一次尝试</span>。</p>
+  </section>
+
+  <!-- 尝试列表 -->
+  <div class="sec-head">
+    <span class="bar-v"></span>
+    <h2>Attempts</h2>
+    <span class="rule"></span>
+    <span class="count" id="count">/ 01</span>
+  </div>
+
+  <main class="attempts" id="grid"></main>
+
+  <footer>
+    <span>© 2026 · 纯前端 · 无框架 · SVG/SMIL</span>
+    <a href="https://github.com/hunluanzhizhu" target="_blank" rel="noopener">github.com/hunluanzhizhu →</a>
+  </footer>
+
+</div>
+
+<script>
+  // ============ 尝试数据（新增一次尝试只需在此追加一条） ============
+  const attempts = [
+    {
+      file:'attempts/v1-pelican-bicycle.svg',
+      badge:'v1',
+      title:'骑自行车的鹈鹕',
+      sub:'2026-08-31',
+      model:'DeepSeek-V4-Pro · 网页对话版',
+      stack:['svg','smil','deepseek-v4-pro'],
+      desc:'第一次尝试，由 DeepSeek-V4-Pro 网页对话版本直接创建。一只鹈鹕骑着自行车在落日山景前前行，腿随踏板循环摆动，背景云、山、草作单向循环滚动。'
+    }
+  ];
+
+  const grid = document.getElementById('grid');
+  const frag = document.createDocumentFragment();
+  attempts.forEach(a => {
+    const card = document.createElement('article');
+    card.className = 'attempt';
+    card.innerHTML =
+      '<div class="preview">' +
+        '<span class="badge">' + a.badge + '</span>' +
+        '<object type="image/svg+xml" data="' + a.file + '" aria-label="' + a.title + ' 动态预览"></object>' +
+      '</div>' +
+      '<div class="attempt-body">' +
+        '<a class="attempt-title" href="' + a.file + '" target="_blank" rel="noopener">' + a.title + '</a>' +
+        '<div class="attempt-sub">' + a.sub + ' · ' + a.model + '</div>' +
+        '<div class="attempt-meta">' + a.stack.map(s => '<span class="chip">' + s + '</span>').join('') + '</div>' +
+        '<p class="attempt-desc">' + a.desc + '</p>' +
+        '<a class="attempt-cta" href="' + a.file + '" target="_blank" rel="noopener">打开独立页面 <span class="arrow">→</span></a>' +
+      '</div>';
+    frag.appendChild(card);
+  });
+  grid.appendChild(frag);
+
+  // 计数同步
+  document.getElementById('count').textContent = '/ ' + String(attempts.length).padStart(2,'0');
+</script>
+</body>
+</html>
