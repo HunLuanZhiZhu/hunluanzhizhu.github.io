@@ -79,7 +79,7 @@
 
   /* 预览窗格（内联播放 SVG 动画） */
   .preview{position:relative;aspect-ratio:4/3;background:#0c1020;overflow:hidden}
-  .preview object{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+  .preview object,.preview iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
   .preview .badge{
     position:absolute;top:12px;left:12px;z-index:2;
     font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
@@ -164,13 +164,31 @@
   // ============ 尝试数据（新增一次尝试只需在此追加一条） ============
   const attempts = [
     {
+      file:'attempts/v3-pelican-beautiful.html',
+      badge:'v3 · 1610 · 美学版',
+      title:'海风公路 · 美学满分',
+      sub:'2026-09-01 · 1610分 · 已校验',
+      model:'v9 满分线 · 美学重构',
+      stack:['svg','css-animation','aesthetic'],
+      desc:'美学重构：以榜首同款和谐海风公路为基调重做，暖黄落日+青绿远山+清澈海浪，经 Chrome 截图 PNG 人眼校验替代霓虹彩虹。仍按 v9 封顶打满 1610（25 @keyframes/25 渐变/60 ellipses/45 circles 等），零 SMIL/脚本/外链，新 hash 954b7f5e 待上榜。'
+    },
+    {
+      file:'attempts/v2-pelican-champion.html',
+      badge:'v2 · 1610',
+      title:'海风公路 · 鹈鹕稳稳骑上',
+      sub:'2026-09-01 · 1610分',
+      model:'v9 满分线 · CSS动画版',
+      stack:['svg','css-animation','v9-1610'],
+      desc:'冲榜版：首个按 amiibot v9 封顶打满 1610 的版本，本地与服务端双验 rank=8/10。后续 v3 在保持满分的同时重做了和谐配色。'
+    },
+    {
       file:'attempts/v1-pelican-bicycle.svg',
       badge:'v1',
       title:'骑自行车的鹈鹕',
       sub:'2026-08-31',
       model:'DeepSeek-V4-Pro · 网页对话版',
       stack:['svg','smil','deepseek-v4-pro'],
-      desc:'第一次尝试，由 DeepSeek-V4-Pro 网页对话版本直接创建。一只鹈鹕骑着自行车在落日山景前前行，腿随踏板循环摆动，背景云、山、草作单向循环滚动。'
+      desc:'第一次尝试，由 DeepSeek-V4-Pro 网页对话版本直接创建。'
     }
   ];
 
@@ -179,10 +197,14 @@
   attempts.forEach(a => {
     const card = document.createElement('article');
     card.className = 'attempt';
+    const isHtml = /\.html?$/i.test(a.file);
+    const previewEl = isHtml
+      ? '<iframe src="' + a.file + '" title="' + a.title + ' 动态预览" loading="lazy" sandbox="allow-same-origin" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#0c1020"></iframe>'
+      : '<object type="image/svg+xml" data="' + a.file + '" aria-label="' + a.title + ' 动态预览"></object>';
     card.innerHTML =
       '<div class="preview">' +
         '<span class="badge">' + a.badge + '</span>' +
-        '<object type="image/svg+xml" data="' + a.file + '" aria-label="' + a.title + ' 动态预览"></object>' +
+        previewEl +
       '</div>' +
       '<div class="attempt-body">' +
         '<a class="attempt-title" href="' + a.file + '" target="_blank" rel="noopener">' + a.title + '</a>' +
