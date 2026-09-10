@@ -100,6 +100,15 @@
   }
   .chip::before{content:"//";color:var(--ink-faint);margin-right:4px}
   .attempt-desc{margin-top:14px;color:var(--ink-dim);font-size:13px;flex:1}
+  .attempt-prompt{
+    margin-top:14px;padding:9px 11px;border-left:3px solid var(--accent);
+    background:var(--accent-dim);border-radius:0 6px 6px 0;
+    font-size:12.5px;color:var(--ink);line-height:1.5;
+  }
+  .attempt-prompt .q{
+    display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:3px;
+  }
   .attempt-cta{
     margin-top:18px;display:inline-flex;align-items:center;gap:9px;
     font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;
@@ -140,7 +149,7 @@
   <section class="hero">
     <p class="eyebrow">AI-GENERATED · ITERATION LOG</p>
     <h1>动态SVG鹈鹕<br>骑自行车</h1>
-    <p>用 AI 反复尝试、生成<span class="hl">动态 SVG 动画</span>的实验画廊。每一次尝试单独成版本，既可在下方直接预览，也可点开独立页面全屏观看。当前为<span class="hl">第一次尝试</span>。</p>
+    <p>用 AI 反复尝试、生成<span class="hl">动态 SVG 动画</span>的实验画廊。每一次尝试单独成版本，既可在下方直接预览，也可点开独立页面全屏观看。</p>
   </section>
 
   <!-- 尝试列表 -->
@@ -163,6 +172,16 @@
 <script>
   // ============ 尝试数据（新增一次尝试只需在此追加一条） ============
   const attempts = [
+    {
+      file:'attempts/v4-pelican-pedaling.html',
+      badge:'v4 · 实时 IK 版',
+      title:'海风栈道 · 鹈鹕踩踏',
+      sub:'2026-09-10 · 单句提示词生成',
+      model:'deepseek-v4.1-flash',
+      stack:['svg','js-animation','inverse-kinematics'],
+      prompt:'帮我生成一个HTML，以SVG绘制一个鹈鹕骑着自行车的2D动画',
+      desc:'一句提示词直接生成，未追加任何修改指令。海边栈道场景，全场景由同一个 requestAnimationFrame 主循环驱动，车轮转速、曲柄相位与身体起伏严格同步。双腿不用关键帧硬编码，而是两段式反向 IK 实时解算膝关节，并按鸟类后弯方向取解，踩踏一圈 720 个采样点均无关节拉直或穿透；栈道滚动与轮缘线速度按 1:1 配平，避免视觉打滑。经无头 Chrome 逐帧截图人眼校验。'
+    },
     {
       file:'attempts/v3-pelican-beautiful.html',
       badge:'v3 · 1610 · 美学版',
@@ -199,7 +218,7 @@
     card.className = 'attempt';
     const isHtml = /\.html?$/i.test(a.file);
     const previewEl = isHtml
-      ? '<iframe src="' + a.file + '" title="' + a.title + ' 动态预览" loading="lazy" sandbox="allow-same-origin" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#0c1020"></iframe>'
+      ? '<iframe src="' + a.file + '" title="' + a.title + ' 动态预览" loading="lazy" sandbox="allow-same-origin allow-scripts" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#0c1020"></iframe>'
       : '<object type="image/svg+xml" data="' + a.file + '" aria-label="' + a.title + ' 动态预览"></object>';
     card.innerHTML =
       '<div class="preview">' +
@@ -210,6 +229,7 @@
         '<a class="attempt-title" href="' + a.file + '" target="_blank" rel="noopener">' + a.title + '</a>' +
         '<div class="attempt-sub">' + a.sub + ' · ' + a.model + '</div>' +
         '<div class="attempt-meta">' + a.stack.map(s => '<span class="chip">' + s + '</span>').join('') + '</div>' +
+        (a.prompt ? '<p class="attempt-prompt"><span class="q">提示词</span>' + a.prompt + '</p>' : '') +
         '<p class="attempt-desc">' + a.desc + '</p>' +
         '<a class="attempt-cta" href="' + a.file + '" target="_blank" rel="noopener">打开独立页面 <span class="arrow">→</span></a>' +
       '</div>';
