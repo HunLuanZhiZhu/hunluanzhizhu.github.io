@@ -38,9 +38,26 @@
     100%{transform:translateX(-160px);opacity:0}
   }
   @media (prefers-reduced-motion: reduce){
-    .cloud,.bird,.puff,.streak{animation:none}
-    .puff,.streak{opacity:0}
+    html:not(.motion-on) .cloud,
+    html:not(.motion-on) .bird,
+    html:not(.motion-on) .puff,
+    html:not(.motion-on) .streak{animation:none}
+    html:not(.motion-on) .puff,
+    html:not(.motion-on) .streak{opacity:0}
   }
+
+  /* 播放控制：静止时页面必须自己说明原因，而不是让访客对着静止画猜 */
+  .ctl{margin:12px auto 0;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+  .ctl button{
+    font:inherit;font-size:12.5px;letter-spacing:.04em;cursor:pointer;
+    color:#0e2a3d;background:rgba(255,255,255,.72);border:1px solid rgba(14,42,61,.28);
+    padding:7px 16px;border-radius:999px;
+    transition:background .2s,border-color .2s,transform .15s;
+  }
+  .ctl button:hover{background:#fff;border-color:rgba(14,42,61,.5)}
+  .ctl button:active{transform:scale(.97)}
+  .ctl button:focus-visible{outline:2px solid #b0304c;outline-offset:2px}
+  .why{font-size:11.5px;color:#0e2a3d;opacity:.6}
 </style>
 </head>
 <body>
@@ -247,6 +264,10 @@
   <span>作者 <b>deepseek-v4.1-flash</b></span>
   <span>提示词 <i>“帮我生成一个HTML，以SVG绘制一个鹈鹕骑着自行车的2D动画”</i></span>
 </p>
+<p class="ctl">
+  <button id="playBtn" type="button" aria-pressed="false">▶ 播放动画</button>
+  <span class="why" id="why"></span>
+</p>
 </div>
 
 <script>
@@ -312,9 +333,9 @@
     $('leg' + tag + 'Foot').setAttribute('transform', 'translate(' + P.x + ',' + P.y + ')');
   }
 
-  /* ---------- 主循环 ---------- */
-  var dist = 0, last = 0;
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* ---------- 主循环与播放控制 ---------- */
+  var dist = 0, last = 0, ticks = 0;
+  var running = false, rafId = 0, timerId = 0, watchdog = 0;
 
   function render(dt) {
     dist += SPEED * dt;
@@ -348,16 +369,61 @@
     waveG.setAttribute('transform',  'translate(' + (-(dist * 0.28 % WS)).toFixed(1) + ',0)');
   }
 
-  function loop(ts) {
+  function step(ts) {
     if (!last) last = ts;
     var dt = Math.min(60, ts - last) / 1000;
     last = ts;
+    ticks++;
     render(dt);
-    requestAnimationFrame(loop);
+  }
+  function rafLoop(ts) {
+    if (!running) return;
+    step(ts);
+    rafId = requestAnimationFrame(rafLoop);
+  }
+  function start() {
+    if (running) return;
+    running = true; last = 0; ticks = 0;
+    document.documentElement.classList.add('motion-on');
+    rafId = requestAnimationFrame(rafLoop);
+    // 少数内嵌 webview 会节流甚至不派发 rAF：1.2s 内一帧都没来就退回定时器
+    clearTimeout(watchdog);
+    watchdog = setTimeout(function () {
+      if (running && ticks === 0) {
+        cancelAnimationFrame(rafId);
+        timerId = setInterval(function () { step(Date.now()); }, 1000 / 60);
+      }
+    }, 1200);
+  }
+  function stop() {
+    running = false;
+    cancelAnimationFrame(rafId);
+    clearInterval(timerId);
+    clearTimeout(watchdog);
+    document.documentElement.classList.remove('motion-on');
   }
 
+  var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var btn = $('playBtn'), why = $('why');
+
+  function sync() {
+    btn.textContent = running ? '⏸ 暂停' : '▶ 播放动画';
+    btn.setAttribute('aria-pressed', running ? 'true' : 'false');
+    why.textContent = running
+      ? (reduce ? '系统已开启「减少动态效果」，可随时暂停' : '')
+      : '已暂停';
+  }
+
+  btn.addEventListener('click', function () {
+    if (running) { stop(); } else { start(); }
+    sync();
+  });
+
+  // 与 v1–v3 保持一致：默认就播放，静态页面本身就是“坏掉”的样子。
+  // 命中 reduce 时不再停播，而是给出说明并把暂停权交回访客。
   render(0);
-  if (!reduce) requestAnimationFrame(loop);
+  start();
+  sync();
 })();
 </script>
 </body>
