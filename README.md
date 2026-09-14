@@ -8,7 +8,7 @@
 hunluanzhizhu.github.io/
 ├── index.html              # 门户首页（导航页）
 ├── favicon.ico
-└── projects/               # 所有子项目
+└── projects/               # 子项目（示例，完整清单见下表）
     ├── minecraft-web/      # Minecraft Web（Rust + Bevy · WASM 3D 沙盒）
     │   ├── index.html
     │   ├── minecraft_web.js
@@ -27,6 +27,10 @@ hunluanzhizhu.github.io/
 | 04 | GUON Optimizer | `/projects/guon-paper/`     | llm · optimizer · satire |
 | 05 | 心韵深辨 (ECG AI Local) | `/projects/ecg-ai-local/` | tfjs · snn · local-ai |
 | 06 | AI 连续版 · 滑动变祖器 (Liang Calibrator) | `/projects/liang-intensity-calibrator/` | image2 · h3-ai · video · canvas |
+| 07 | 活动经费记账 (Fund Manager) | `/projects/fund-manager/` | indexeddb · sheetjs · single-page |
+| 08 | AI 游戏生成评测 (Game Studio Eval) | `/projects/game-studio-eval/` | benchmark · godot · wasm |
+| 09 | 动态 SVG 鹈鹕 (Dynamic SVG Pelican) | `/projects/svg-pelican/` | svg · smil · deepseek-v4-pro |
+| 10 | 把 CT 读懂 · 组会文献汇报 (CT Trio Talk) | `/projects/group-meeting-ct/` | slides · katex · svg |
 
 ## 新增子项目
 
