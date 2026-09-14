@@ -264,6 +264,16 @@
 
   <main class="grid" id="grid"></main>
 
+  <!-- 客户项目区块 -->
+  <div class="sec-head">
+    <span class="bar-v"></span>
+    <h2 data-i18n="clients">Client Works</h2>
+    <span class="rule"></span>
+    <span class="count" id="count3">/ 01</span>
+  </div>
+
+  <main class="grid" id="client-grid"></main>
+
   <!-- 页脚 -->
   <footer>
     <span data-i18n="footer"></span>
@@ -368,12 +378,27 @@
     }
   ];
 
+  // ============ 客户项目（客户委托 / 外包）数据 ============
+  // 与个人项目分开渲染：首页单独一个「客户项目」区块
+  const clientProjects = [
+    {
+      id:'C01',
+      slug:'clients/breakout',
+      title:'BREAKOUT',
+      tag:'CLIENT · RESTYLE',
+      stack:['godot','svg','wasm'],
+      descZh:'客户委托：把原项目 <a class="src" href="https://github.com/240700/Breakout" target="_blank" rel="noopener">240700/Breakout</a>（Godot 打砖块）从代码色块重制为霓虹矢量风 —— 7 组手绘 SVG 贴图替换全部视觉，物理与碰撞逻辑原样保留。含可玩网页构建。',
+      descEn:'Client commission: a neon-vector restyle of <a class="src" href="https://github.com/240700/Breakout" target="_blank" rel="noopener">240700/Breakout</a> (Godot brick-breaker) — seven hand-drawn SVG asset sets replace every code-drawn visual, physics and collision left untouched. Playable web build included.'
+    }
+  ];
+
   // ============ i18n 文案字典 ============
   const I18N = {
     zh:{
       projects_label:'项目',
       hero_desc:'一个个人静态网页项目合集。<span class="hl">浏览器实验与游戏</span>，每个子项目独立文件夹，首页负责导航。全部纯前端，无框架、无构建。',
       projects:'项目',
+      clients:'客户项目',
       footer:'© 2026 · 由 html / css / js 构建 · 无框架',
       enter:'进入'
     },
@@ -381,6 +406,7 @@
       projects_label:'PROJECTS',
       hero_desc:'A personal collection of static web projects. <span class="hl">Browser experiments & games</span>, each in its own folder, navigated from this home. Pure frontend, no frameworks, no build step.',
       projects:'Projects',
+      clients:'CLIENT WORKS',
       footer:'© 2026 · built with html / css / js · no frameworks',
       enter:'ENTER'
     }
@@ -397,9 +423,12 @@
       const key = el.getAttribute('data-i18n');
       if(dict[key] !== undefined) el.innerHTML = dict[key];
     });
-    // 卡片描述
-    document.querySelectorAll('.card-desc').forEach((el,i) => {
+    // 卡片描述（按区块分别配对，避免个人/客户两个区块错位）
+    document.querySelectorAll('#grid .card-desc').forEach((el,i) => {
       if(projects[i]) el.innerHTML = projects[i]['desc' + lang.charAt(0).toUpperCase() + lang.slice(1)];
+    });
+    document.querySelectorAll('#client-grid .card-desc').forEach((el,i) => {
+      if(clientProjects[i]) el.innerHTML = clientProjects[i]['desc' + lang.charAt(0).toUpperCase() + lang.slice(1)];
     });
     // 卡片 CTA
     document.querySelectorAll('.card-cta').forEach(el => {
@@ -417,32 +446,36 @@
   document.getElementById('lang-en').addEventListener('click', () => { lang='en'; applyLang(); });
 
   // ============ 渲染卡片 ============
-  const grid = document.getElementById('grid');
-  const frag = document.createDocumentFragment();
-  projects.forEach(p => {
-    const a = document.createElement('a');
-    a.className = 'card';
-    a.href = 'projects/' + p.slug + '/';
-    a.innerHTML =
-      '<div class="card-top">' +
-        '<span class="card-num">' + p.id + '</span>' +
-        '<span class="card-tag">' + p.tag + '</span>' +
-      '</div>' +
-      '<h3 class="card-title">' + p.title + '</h3>' +
-      '<div class="card-rule"></div>' +
-      '<div class="card-stack">' +
-        p.stack.map(s => '<span class="chip">' + s + '</span>').join('') +
-      '</div>' +
-      '<p class="card-desc">' + p['desc' + lang.charAt(0).toUpperCase() + lang.slice(1)] + '</p>' +
-      '<span class="card-cta">' + I18N[lang].enter + ' <span class="arrow">→</span></span>';
-    frag.appendChild(a);
-  });
-  grid.appendChild(frag);
+  function renderCards(list, container){
+    const frag = document.createDocumentFragment();
+    list.forEach(p => {
+      const a = document.createElement('a');
+      a.className = 'card';
+      a.href = 'projects/' + p.slug + '/';
+      a.innerHTML =
+        '<div class="card-top">' +
+          '<span class="card-num">' + p.id + '</span>' +
+          '<span class="card-tag">' + p.tag + '</span>' +
+        '</div>' +
+        '<h3 class="card-title">' + p.title + '</h3>' +
+        '<div class="card-rule"></div>' +
+        '<div class="card-stack">' +
+          p.stack.map(s => '<span class="chip">' + s + '</span>').join('') +
+        '</div>' +
+        '<p class="card-desc">' + p['desc' + lang.charAt(0).toUpperCase() + lang.slice(1)] + '</p>' +
+        '<span class="card-cta">' + I18N[lang].enter + ' <span class="arrow">→</span></span>';
+      frag.appendChild(a);
+    });
+    container.appendChild(frag);
+  }
+  renderCards(projects, document.getElementById('grid'));
+  renderCards(clientProjects, document.getElementById('client-grid'));
 
   // 计数徽章同步
   const n = String(projects.length).padStart(2,'0');
   document.getElementById('count').textContent = n;
   document.getElementById('count2').textContent = '/ ' + n;
+  document.getElementById('count3').textContent = '/ ' + String(clientProjects.length).padStart(2,'0');
 
   // 应用初始语言
   applyLang();
