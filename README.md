@@ -31,6 +31,7 @@ hunluanzhizhu.github.io/
 | 08 | AI 游戏生成评测 (Game Studio Eval) | `/projects/game-studio-eval/` | benchmark · godot · wasm |
 | 09 | 动态 SVG 鹈鹕 (Dynamic SVG Pelican) | `/projects/svg-pelican/` | svg · smil · deepseek-v4-pro |
 | 10 | 把 CT 读懂 · 组会文献汇报 (CT Trio Talk) | `/projects/group-meeting-ct/` | slides · katex · svg |
+| 11 | Blender 3D 建模 (Blender 3D) | `/projects/blender-3d/` | blender · gltf · webgl · deepseek-v4.1-flash |
 
 ## 新增子项目
 

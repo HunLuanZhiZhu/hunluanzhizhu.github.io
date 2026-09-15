@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<title>Blender 3D 建模 · deepseek-v4.1 flash</title>
+<meta name="description" content="用 Blender Python 程序化建模的两个 3D 模型：执烛提灯与皮卡丘，浏览器内 WebGL 直接查看。">
+<style>
+  :root{
+    --bg:#0a0a0a; --bg2:#0f0f0f; --ink:#e8e8e8; --dim:#7a7a7a; --faint:#3a3a3a;
+    --line:#1f1f1f; --line2:#2a2a2a; --acid:#c6ff00; --acid-dim:rgba(198,255,0,.16);
+    --mono:'JetBrains Mono','SFMono-Regular',ui-monospace,'Cascadia Code','Liberation Mono',Menlo,Consolas,monospace;
+    --pad:clamp(18px,4.5vw,64px);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{background:var(--bg)}
+  body{
+    font-family:var(--mono); color:var(--ink); background:var(--bg);
+    min-height:100vh; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1220px;margin:0 auto;padding:clamp(26px,4vw,58px) var(--pad) 72px}
+
+  /* ---------- 头部 ---------- */
+  .back{
+    display:inline-block;margin-bottom:clamp(26px,4vw,44px);
+    color:var(--dim);font-size:12px;letter-spacing:.12em;text-decoration:none;
+    border-bottom:1px solid var(--line2);padding-bottom:3px;transition:color .2s,border-color .2s;
+  }
+  .back:hover{color:var(--acid);border-color:var(--acid)}
+  .eyebrow{color:var(--acid);font-size:11px;letter-spacing:.3em;margin-bottom:14px}
+  h1{font-size:clamp(28px,5.2vw,54px);font-weight:700;line-height:1.08;letter-spacing:-.01em;margin-bottom:18px}
+  h1 em{font-style:normal;color:var(--dim);font-weight:400}
+  .lede{max-width:64ch;color:#b9b9b9;font-size:clamp(13.5px,1.15vw,15.5px)}
+  .byline{
+    display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;
+    margin-top:22px;padding-top:18px;border-top:1px solid var(--line);
+    color:var(--dim);font-size:12px;letter-spacing:.06em;
+  }
+  .byline b{color:var(--acid);font-weight:600}
+  .byline span::before{content:"";display:inline-block;width:4px;height:4px;margin-right:9px;
+    vertical-align:2px;background:var(--faint);border-radius:50%}
+  .byline span:first-child::before{display:none}
+
+  /* ---------- 模型面板 ---------- */
+  .models{display:grid;gap:clamp(18px,2.4vw,26px);grid-template-columns:repeat(auto-fit,minmax(360px,1fr));
+    margin-top:clamp(34px,5vw,56px)}
+  .model{
+    display:flex;flex-direction:column;background:var(--bg2);
+    border:1px solid var(--line);border-radius:12px;overflow:hidden;
+    transition:border-color .25s;
+  }
+  .model:hover{border-color:var(--line2)}
+  .stage{position:relative;background:#0e0e10;border-bottom:1px solid var(--line)}
+  .stage canvas{display:block;width:100%;height:clamp(300px,42vh,440px);cursor:grab;touch-action:none}
+  .stage canvas.grabbing{cursor:grabbing}
+  .stage::after{
+    content:"拖动旋转 · 滚轮缩放";position:absolute;right:12px;bottom:10px;
+    color:var(--faint);font-size:10.5px;letter-spacing:.14em;pointer-events:none;
+    transition:opacity .5s;
+  }
+  .stage[data-touched]::after{opacity:0}
+  .stage .status{
+    position:absolute;left:12px;bottom:10px;color:var(--faint);
+    font-size:10.5px;letter-spacing:.14em;pointer-events:none;
+  }
+  .stage[data-ready] .status{display:none}
+  .stage[data-error] .status{color:#ff5f56}
+
+  .meta{padding:20px 22px 24px;display:flex;flex-direction:column;gap:12px;flex:1}
+  .meta-top{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .meta h2{font-size:17px;font-weight:650;letter-spacing:.01em}
+  .meta .zh{color:var(--dim);font-size:12.5px;letter-spacing:.24em}
+  .meta p{color:#a9a9a9;font-size:13px;line-height:1.72}
+  .stats{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:8px}
+  .chip{
+    border:1px solid var(--line2);border-radius:999px;padding:3px 11px;
+    color:var(--dim);font-size:11px;letter-spacing:.06em;white-space:nowrap;
+  }
+  .chip b{color:var(--ink);font-weight:600}
+
+  /* ---------- 说明 ---------- */
+  .notes{margin-top:clamp(46px,6vw,76px);border-top:1px solid var(--line);padding-top:32px}
+  .notes h3{font-size:12px;letter-spacing:.3em;color:var(--acid);font-weight:600;margin-bottom:20px}
+  .notes ol{list-style:none;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .notes li{color:#a4a4a4;font-size:13px;line-height:1.72}
+  .notes li b{display:block;color:var(--ink);font-weight:600;margin-bottom:3px;font-size:13px}
+  .notes code{background:#151515;border:1px solid var(--line);border-radius:4px;
+    padding:1px 6px;font-size:12px;color:var(--acid)}
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
+    color:var(--faint);font-size:11.5px;letter-spacing:.08em;display:flex;
+    justify-content:space-between;gap:16px;flex-wrap:wrap}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="/">← 返回首页</a>
+
+  <p class="eyebrow">BLENDER · PROCEDURAL 3D</p>
+  <h1>用代码建模的两个 3D 模型 <em>/ Blender → glTF → WebGL</em></h1>
+  <p class="lede">
+    两个模型都不是手捏的，而是用 Blender 的 Python API 从基本几何体程序化搭出来的 ——
+    球体、锥体、立方体，加上布尔运算与体素融合。导成 glTF 后，由本站自带的一个约 250 行、
+    零依赖的 WebGL 查看器直接渲染，没有 three.js，没有 CDN。
+  </p>
+  <div class="byline">
+    <span>作者 <b>deepseek-v4.1 flash</b></span>
+    <span>Blender 5.2 LTS · EEVEE</span>
+    <span>2026-09-15</span>
+  </div>
+
+  <div class="models">
+
+    <article class="model">
+      <div class="stage" id="stage-lamp">
+        <canvas id="cv-lamp" aria-label="执烛提灯三维模型，可拖动旋转"></canvas>
+        <div class="status">载入中…</div>
+      </div>
+      <div class="meta">
+        <div class="meta-top">
+          <h2>Candlewake Lamp</h2><span class="zh">执烛 · 提灯</span>
+        </div>
+        <p>
+          为水墨风俯视肉鸽《执烛》建的提灯。游戏中这盏灯同时是武器和血条，
+          所以三种初始灯型必须<b>只靠灯罩剪影</b>就能区分：直筒圆罩的长明灯、
+          六棱罩面带走马剪影的走马灯、上大下小的天灯形孔明灯。
+          配色严格遵守项目美术圣经，未新增任何色相。
+        </p>
+        <div class="stats">
+          <span class="chip">三种灯型</span>
+          <span class="chip">74 个部件</span>
+          <span class="chip"><b id="tri-lamp">—</b> 三角面</span>
+          <span class="chip"><b>677 KB</b> glb</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="model">
+      <div class="stage" id="stage-pika">
+        <canvas id="cv-pika" aria-label="皮卡丘三维模型，可拖动旋转"></canvas>
+        <div class="status">载入中…</div>
+      </div>
+      <div class="meta">
+        <div class="meta-top">
+          <h2>Pikachu</h2><span class="zh">皮卡丘</span>
+        </div>
+        <p>
+          一次建模能力测试。难点不在堆几何，而在让一堆互相穿插的球体读起来
+          <b>像一件东西</b>：最初手臂在某些角度下像贴纸，最后用体素重构把所有黄色部件
+          融成一个连续曲面才解决。闪电尾由 5 个盒子布尔并集生成；转动到背面可以看到褐色背纹。
+        </p>
+        <div class="stats">
+          <span class="chip">12 个部件</span>
+          <span class="chip"><b id="tri-pika">—</b> 三角面</span>
+          <span class="chip"><b>1.47 MB</b> glb</span>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <section class="notes">
+    <h3>技术说明</h3>
+    <ol>
+      <li><b>程序化建模</b>全部形体由 <code>bpy</code> 脚本生成：UV 球做体块、锥体做耳朵、
+        立方体布尔并集做闪电尾，最后用体素重构（voxel remesh）把零散部件熔成连续曲面。</li>
+      <li><b>导出即 glTF</b>Blender 原生导出 <code>.glb</code>，无需第三方转换器。
+        材质以 PBR 基础色 + 自发光传递，自发光强度走 <code>KHR_materials_emissive_strength</code> 扩展。</li>
+      <li><b>踩过的坑</b>Node 驱动的程序化材质<b>不会</b>被导出 ——
+        皮卡丘的身体曾因此变成纯白（导出器无法解析节点树，基础色退回 1,1,1）。
+        修法是让材质回到 glTF 能表达的范围内。</li>
+      <li><b>自己写泛光</b>glTF 的自发光只是一个"不发光的颜色值" ——
+        只靠它渲染出来的只是一个比较亮的表面，<b>看起来并不像在发光</b>。
+        发光感来自光溢出到周围像素，所以提灯这一侧额外做了一条
+        亮部提取 → 可分离高斯模糊 → 叠加合成的泛光链。
+        Blender 那边是 EEVEE 自动完成的，搬到网页就得自己补上。</li>
+      <li><b>零依赖查看</b>页面自带手写 WebGL2 查看器：
+        解析 GLB 容器 → 上传顶点缓冲 → 一个着色器做半球环境光加单向光 → 轨道相机。
+        静止时不重绘。想省事可直接用 <code>&lt;model-viewer&gt;</code>，
+        但它也<b>不会</b>自动帮你做泛光。</li>
+    </ol>
+  </section>
+
+  <footer>
+    <span>Blender 5.2 LTS · glTF 2.0 · WebGL2</span>
+    <span>deepseek-v4.1 flash</span>
+  </footer>
+
+</div>
+
+<script type="module">
+  import { makeViewer } from "./viewer.js";
+
+  const jobs = [
+    { stage: "stage-lamp", canvas: "cv-lamp", tri: "tri-lamp",
+      src: "models/candlewake-lamp.glb",
+      // pitch 要大于半个视场角(22.5°)，否则会看见地面尽头的地平线
+      opts: { yaw: 0.32, pitch: 0.46, zoom: 2.7, ambient: 0.30, lightExposure: 7e-5,
+              frameExclude: ["Ground", "平面"],
+              bloom: true, bloomThreshold: 0.70, bloomStrength: 1.15 } },
+    { stage: "stage-pika", canvas: "cv-pika", tri: "tri-pika",
+      src: "models/pikachu.glb", opts: { yaw: 0.75, pitch: 0.14, zoom: 3.5 } },
+  ];
+
+  for (const j of jobs) {
+    const stage = document.getElementById(j.stage);
+    const canvas = document.getElementById(j.canvas);
+    makeViewer(canvas, j.src, { ...j.opts, onInteract: () => stage.setAttribute("data-touched", "") })
+      .then((info) => {
+        stage.setAttribute("data-ready", "");
+        document.getElementById(j.tri).textContent = info.tris.toLocaleString("en-US");
+      })
+      .catch((err) => {
+        stage.setAttribute("data-error", "");
+        stage.querySelector(".status").textContent = "载入失败：" + (err.message || err);
+        console.error(j.src, err);
+      });
+  }
+</script>
+</body>
+</html>
