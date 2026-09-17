@@ -16,7 +16,23 @@ Requires playwright + chromium. Run by hand; never at deploy time.
 import sys
 from pathlib import Path
 
+import re
+
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def project_count():
+    """Read the count out of the site's own data so the card can never claim a
+    number the homepage does not show. Fails loudly rather than shipping a
+    stale figure."""
+    html = (ROOT / "index.html").read_text(encoding="utf-8")
+    n = len(re.findall(r"\{\s*id:'C?\d+'", html))
+    if n < 2:
+        sys.exit(f"could not read the project list out of index.html (found {n})")
+    return n
+
+
+N = project_count()
 FACE = "'Cascadia Mono','Cascadia Mono Subset',ui-monospace,Consolas,monospace"
 CJK = "'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif"
 
@@ -49,7 +65,7 @@ canvas{height:100%;width:auto;max-width:100%}
 <div class="lat"></div><div class="blob"></div><div class="beam"></div>
 <div class="wrap">
   <p class="k"><i></i>~/projects — index</p>
-  <h1><em>12</em> PROJECTS.<br>ZERO BUILD STEP</h1>
+  <h1><em>@@N@@</em> PROJECTS.<br>ZERO BUILD STEP</h1>
   <div class="mid"><canvas id="c" width="620" height="620"></canvas></div>
   <div class="foot">
     <p class="sub">浏览器实验 · 游戏 · 讲稿 · 工具 &nbsp;|&nbsp; no framework, no build</p>
@@ -87,7 +103,7 @@ function poly(pts, fill, stroke){
   poly([iso(x+1,0,z), iso(x+1,0,z+1), iso(x+1,top,z+1), iso(x+1,top,z)], 'rgba(198,255,0,.12)', 'rgba(198,255,0,.75)');
   poly([iso(x,top,z), iso(x+1,top,z), iso(x+1,top,z+1), iso(x,top,z+1)], 'rgba(198,255,0,.40)', 'rgba(198,255,0,.75)');
 });
-</script></body></html>""".replace("@FACE@", FACE).replace("@CJK@", CJK)
+</script></body></html>""".replace("@FACE@", FACE).replace("@CJK@", CJK).replace("@@N@@", str(N))
 
 ICON = """<!DOCTYPE html><html><head><meta charset="utf-8"><style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -108,6 +124,8 @@ def main():
         from playwright.sync_api import sync_playwright
     except ImportError:
         sys.exit("needs playwright:  python -m pip install playwright")
+
+    print(f"project count read from index.html: {N}")
 
     with sync_playwright() as p:
         b = p.chromium.launch(headless=True)

@@ -19,7 +19,7 @@
 <meta property="og:image" content="https://zyh.sryze.cc/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="索引终端：12 个项目，零构建步骤">
+<meta property="og:image:alt" content="索引终端：浏览器实验与游戏合集，零构建步骤">
 <meta name="twitter:card" content="summary_large_image">
 <style id="font">/* Cascadia Mono, SIL OFL 1.1 -- subset to 177 glyphs, 20380 bytes.
    Regenerate with: python tools/subset-font.py --inject index.html */
@@ -51,6 +51,8 @@
   --surface:rgba(255,255,255,.045);
   --hairline:rgba(255,255,255,.13);
   --hairline-2:rgba(255,255,255,.065);
+  /* a card edge has to be legible at rest, not just on hover */
+  --line:rgba(255,255,255,.26);
   --ink:var(--paper);
   --ink-2:var(--grey);
   --ink-3:var(--grey-2);
@@ -323,11 +325,13 @@ h1.disp .caret{
 
 .card{
   position:relative;display:flex;flex-direction:column;
-  border:1px solid var(--hairline);
+  border:1px solid var(--line);
   background:none;
+  cursor:pointer;
   transition:border-color var(--t-std) var(--e-out-expo);
 }
-.card:hover,.card:focus-within{border-color:var(--accent-60)}
+/* always drawn, recoloured on hover rather than appearing out of nowhere */
+.card:hover,.card:focus-within{border-color:var(--accent)}
 .card[data-state="run"]{border-color:var(--accent)}
 
 .card__head{
@@ -356,15 +360,18 @@ h1.disp .caret{
   max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
 }
 .card[data-state="run"] .card__cap{color:var(--accent)}
-.card__link{position:relative;display:block;padding:0 var(--s4)}
-.card__link::after{content:"";position:absolute;inset:0;z-index:0}
+/* the overlay has to resolve against the CARD, so the link itself is not
+   positioned and the overlay can cover the whole thing. Everything that is
+   not itself a control sits under it; the controls are lifted above it. */
+.card__link{display:block;padding:0 var(--s4) var(--s3)}
+.card__link::after{content:"";position:absolute;inset:0;z-index:1}
 .card__title{
   font-size:var(--fs-title);line-height:1.18;letter-spacing:-.01em;
   color:var(--ink);padding-top:var(--s3);
   transition:color var(--t-fast) var(--e-lin);
 }
 .card:hover .card__title,.card:focus-within .card__title{color:var(--accent)}
-.card__body{position:relative;z-index:1;padding:var(--s3) var(--s4) 0;flex:1}
+.card__body{position:relative;padding:0 var(--s4);flex:1}
 .card__stack{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:var(--s3)}
 .chip{
   font-size:var(--fs-micro);letter-spacing:.1em;color:var(--ink-2);
@@ -378,12 +385,13 @@ h1.disp .caret{
 .card__desc a{color:var(--accent);border-bottom:1px solid var(--acid-34);position:relative;z-index:2}
 .card__desc a:hover{border-bottom-color:var(--accent)}
 .card__foot{
-  position:relative;z-index:1;
+  position:relative;
   display:flex;align-items:center;gap:var(--s3);
   padding:var(--s4);margin-top:var(--s4);
   border-top:1px solid var(--hairline-2);
 }
 .card__cta{
+  position:relative;z-index:2;
   display:inline-flex;align-items:center;gap:var(--s2);
   font-size:var(--fs-meta);letter-spacing:.16em;text-transform:uppercase;
   font-weight:700;color:var(--ink-2);min-height:44px;
@@ -397,6 +405,7 @@ h1.disp .caret{
    On a pointer-fine device hover already runs it and the control would be
    chrome; on a coarse pointer it is the only way in, so it is always shown. */
 .card__run{
+  position:relative;z-index:2;
   display:none;align-items:center;gap:var(--s2);
   min-height:44px;padding:0 var(--s4);
   border:1px solid var(--hairline);color:var(--ink-2);
@@ -458,7 +467,7 @@ h1.disp .caret{
 .commission .card__cap{background:var(--ground-2)}
 .commission__grid{display:flex;flex-direction:column;gap:var(--s5)}
 .commission__title{
-  font-size:clamp(1.5rem,1.1rem+1.8vw,2.5rem);line-height:1.05;
+  font-size:clamp(1.5rem, 1.1rem + 1.8vw, 2.5rem);line-height:1.05;
   letter-spacing:-.02em;color:var(--ink);margin-bottom:var(--s3);
 }
 .commission__desc{color:var(--ink-2);max-width:var(--read);font-size:var(--fs-body)}
@@ -809,7 +818,6 @@ var projects = [
      served at their own paths; this card's own link is the collection's repo. */
   { id:'03', slug:'group-meeting-ppts', title:'GROUP MEETING PPTS', tag:'SLIDES · TALK',
     kind:'talk', stack:['slides','katex','svg','webgl'], fig:'deck', d:1,
-    href:'https://github.com/HunLuanZhiZhu/zuhui-ppt', cta:'github',
     labelZh:'论文胶片', labelEn:'PAPER DECK',
     descZh:'组会汇报用的网页 PPT 合集 —— 横向翻页，公式与术语就地注解，逐页演讲者备注（按 N）。已含 EML 单算子重构初等函数、CT 三篇文献精读（合成 · 检测 · 分割，43 页）等场次。源码与后续场次：<a class="src" href="https://github.com/HunLuanZhiZhu/zuhui-ppt" target="_blank" rel="noopener">HunLuanZhiZhu/zuhui-ppt</a>。',
     descEn:'A collection of group-meeting talks as horizontal web decks — formulas and terms annotated in place, per-page speaker notes (press N). So far: EML reconstructing elementary functions from one operator, and a close reading of three CT papers (synthesis · detection · segmentation, 43 pages). Source and new talks: <a class="src" href="https://github.com/HunLuanZhiZhu/zuhui-ppt" target="_blank" rel="noopener">HunLuanZhiZhu/zuhui-ppt</a>.' },
@@ -894,7 +902,7 @@ var I18N = {
     kMove:'移动', kOpen:'打开', kTag:'补全标签', kClose:'关闭',
     enter:'进入', run:'运行', running:'运行中', figOf:'图', frame:'帧', blk:'格', fee:'费用',
     rProjects:'项目', rClients:'客户', rKinds:'类型',
-    github:'GITHUB', newTab:'（在新标签页打开仓库）',
+    ghh:'',
     count:'共', results:'条结果', noResult:'没有匹配的项目',
     noResultHint:'换个关键词，或者直接浏览下面的索引。',
     noMatch:'没有匹配', clearNow:'清除筛选', placeholder:'按标题、标签或技术栈筛选…',
@@ -913,7 +921,7 @@ var I18N = {
     kMove:'move', kOpen:'open', kTag:'complete tag', kClose:'close',
     enter:'ENTER', run:'RUN', running:'RUNNING', figOf:'FIG', frame:'f', blk:'blk', fee:'FEE',
     rProjects:'projects', rClients:'client', rKinds:'kinds',
-    github:'GITHUB', newTab:'(opens the repository in a new tab)',
+    ghh:'',
     count:'', results:'results', noResult:'No project matches',
     noResultHint:'Try another term, or just browse the index below.',
     noMatch:'No match for', clearNow:'CLEAR FILTER', placeholder:'Filter by title, tag or stack…',
@@ -1528,14 +1536,9 @@ var band = document.getElementById('client-band');
 
 function cardHTML(p){
   var i18nKey = lang === 'zh' ? 'descZh' : 'descEn';
-  /* a card normally points at its own folder; a project that lives elsewhere
-     says so in words as well as in where it goes */
-  var ext = !!p.href;
-  var url = p.href || ('projects/' + p.slug + '/');
-  var attrs = ext ? ' target="_blank" rel="noopener"' : '';
+  var url = 'projects/' + p.slug + '/';
   return '' +
-  '<article class="card" data-d="' + p.d + '" data-state="idle" data-slug="' + p.slug + '"' +
-    (ext ? ' data-ext="1"' : '') + '>' +
+  '<article class="card" data-d="' + p.d + '" data-state="idle" data-slug="' + p.slug + '">' +
     '<div class="card__head">' +
       '<span class="card__num">' + p.id + '</span>' +
       '<span class="card__tag">' + p.tag + '</span>' +
@@ -1547,7 +1550,7 @@ function cardHTML(p){
       '<span class="card__cap">' + T('figOf') + p.id + ' · ' +
         (lang === 'zh' ? p.labelZh : p.labelEn) + '</span>' +
     '</div>' +
-    '<a class="card__link" href="' + url + '"' + attrs + '>' +
+    '<a class="card__link" href="' + url + '">' +
       '<h3 class="card__title">' + p.title + '</h3>' +
     '</a>' +
     '<div class="card__body">' +
@@ -1557,10 +1560,8 @@ function cardHTML(p){
       '<div class="card__split"><p class="card__desc">' + p[i18nKey] + '</p></div>' +
     '</div>' +
     '<div class="card__foot">' +
-      '<a class="card__cta" href="' + url + '"' + attrs + '>' +
-        (ext ? T('github') : T('enter')) +
-        ' <span class="arw" aria-hidden="true">→</span>' +
-        (ext ? '<span class="vh">' + T('newTab') + '</span>' : '') + '</a>' +
+      '<a class="card__cta" href="' + url + '">' + T('enter') +
+        ' <span class="arw" aria-hidden="true">→</span></a>' +
       '<span class="card__sp"></span>' +
       '<button class="card__run" type="button" aria-pressed="false">' + T('run') + '</button>' +
     '</div>' +

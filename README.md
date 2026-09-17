@@ -29,7 +29,7 @@ hunluanzhizhu.github.io/
 |----|----------------|----------------------------|----------------------|
 | 01 | Minecraft Web  | `/projects/minecraft-web/` | rust · bevy · wasm   |
 | 02 | 霓虹脉冲        | `/projects/neon-pulse/`    | canvas · arcade      |
-| 03 | 组会 PPT 合集 (Group Meeting PPTs) | `github.com/HunLuanZhiZhu/zuhui-ppt` | slides · katex · svg · webgl |
+| 03 | 组会 PPT 合集 (Group Meeting PPTs) | `/projects/group-meeting-ppts/` | slides · katex · svg · webgl |
 | 04 | GUON Optimizer | `/projects/guon-paper/`     | llm · optimizer · satire |
 | 05 | 心韵深辨 (ECG AI Local) | `/projects/ecg-ai-local/` | tfjs · snn · local-ai |
 | 06 | AI 连续版 · 滑动变祖器 (Liang Calibrator) | `/projects/liang-intensity-calibrator/` | image2 · h3-ai · video · canvas |
@@ -47,11 +47,12 @@ hunluanzhizhu.github.io/
 > `fund-manager` 在首页归入「客户项目」，但**访问路径保持 `projects/fund-manager/` 不变** ——
 > 移动的是它在这张页面上的位置，不是它的 URL。它的图形也不写任何金额。
 
-> 首页的 `03` 是原 `group-meeting-eml` 与 `group-meeting-ct` **合并后的一个条目**，
-> 指向组会 PPT 合集仓库 `github.com/HunLuanZhiZhu/zuhui-ppt`。
-> 两个原始场次页面**仍部署在各自路径上**（`/projects/group-meeting-eml/`、
-> `/projects/group-meeting-ct/`），但首页已不再链接它们 —— 只占一张卡片是合并的目的。
-> 要恢复入口，在 03 的 `descZh`/`descEn` 里补两个内联链接即可。
+> 首页的 `03` 是原 `group-meeting-eml` 与 `group-meeting-ct` **合并后的一个条目**。
+> 它指向 `/projects/group-meeting-ppts/` —— 一个**聚合页**，从那里再进各场讲稿。
+> 两场讲稿仍部署在各自路径上（`/projects/group-meeting-eml/` 32 页、
+> `/projects/group-meeting-ct/` 43 页），源码仓库在
+> [HunLuanZhiZhu/zuhui-ppt](https://github.com/HunLuanZhiZhu/zuhui-ppt)。
+> 首页卡片本身不跳站外。
 
 > 说明：首页注册的是 **第二届** 的 `game-studio-eval-s2`；第一届结果在
 > `/projects/game-studio-eval/`，两个页面互相链接。另外
@@ -65,9 +66,18 @@ hunluanzhizhu.github.io/
 | 段 | 内容 |
 |----|------|
 | Hero | 终端提示符式的巨型标题 + 读数面板：只报**项目数、客户数与项目类型**，全部由数据数组推导，没有手写的数字 |
-| 个人索引 | 3 列马赛克，9 个项目。卡片的跨列数按顺序取 `3, 2, 1, 2, 1, 3, 2, 1, 3`，**桌面 3 列与 768px 的 2 列都恰好铺满每一行且不留空洞**，因此无需 `dense` 排布，DOM 顺序与阅读顺序、Tab 顺序一致。增删项目后必须重算这个序列（`3` 独占一行、`2`+`1` 成对、`1`+`1`+`1` 成组） |
+| 个人索引 | 3 列马赛克，9 个项目。每张卡片**整张可点**（拉伸链接覆盖全卡，不是只有标题和底部按钮），边框常显、悬停变色。卡片的跨列数按顺序取 `3, 2, 1, 2, 1, 3, 2, 1, 3`，**桌面 3 列与 768px 的 2 列都恰好铺满每一行且不留空洞**，因此无需 `dense` 排布，DOM 顺序与阅读顺序、Tab 顺序一致。增删项目后必须重算这个序列（`3` 独占一行、`2`+`1` 成对、`1`+`1`+`1` 成组） |
 | 客户项目 | 全幅出血带，独立底色，每单一段「委托 → 内容 → 交付」；两条之间有分隔线。C01 标注费用，C02 不写金额 |
 | 页脚 | 两列小页脚 + 构建说明 |
+
+### 子项目聚合页：`/projects/group-meeting-ppts/`
+
+与首页同一套设计语言的场次索引：标题、两场的页数（32 + 43 = 75，由数据推导）、
+每场一张**页码条**图形 —— 一个刻度代表一页，每 5 页加高，读过的点上酸绿、
+未读的保持灰暗，一根连续阅读头扫过，右上角是「第 N / 总页数」实时读数。
+
+每张卡片整体可点（拉伸链接覆盖全卡），边框常显、悬停变强调色。
+两场的链接指向本站的演示页，源码仓库在页面底部的「源码」一段里。
 
 ### 11 张图形（零位图）
 
@@ -140,6 +150,21 @@ hunluanzhizhu.github.io/
 3. 同步更新 `sitemap.xml`
 4. 子项目内引用根目录 favicon 用绝对路径 `/favicon.ico`
 5. 提交即可，无需构建
+
+## 验证说明
+
+首页、`404.html`、`projects/group-meeting-ppts/` 三页都跑过 motion-web 的验收底线
+（无 console 错误、320/375/414/768/1440 无横向溢出、恰好一个 `<h1>`、`lang`、
+landmarks、≥3 种 section 形状、字号比 ≥4、无「引用却未定义」的自定义属性、
+body 自绘底色、真实滚轮与 hover 有反应）。
+
+**一个已知例外**：`404.html` 不通过「真实滚轮要改变页面」这一条 —— 它在 1440×900 下
+`scrollHeight == innerHeight`，本来就没有可滚动的内容，这条断言对它不成立，不是缺陷。
+
+字号比这一条抓出过一个真实的静默故障：`clamp()` 里的 `+` **两侧必须有空格**，
+否则整条声明被丢弃、元素回落到浏览器默认字号。本项目在 `404.html` 与
+`.commission__title` 上各中过一次（分别回落到 32px 与 15px）。改动 `clamp()` 后
+务必再跑一次验收底线。
 
 ## 本地预览
 
