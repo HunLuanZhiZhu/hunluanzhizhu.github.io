@@ -3,491 +3,2084 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="/favicon.ico" type="image/x-icon">
-<title>hunluanzhizhu — 个人静态项目合集</title>
-<meta name="description" content="个人静态网页项目合集：浏览器实验与游戏。">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<title>hunluanzhizhu — 浏览器实验合集 · 零构建步骤</title>
+<meta name="description" content="个人静态网页项目合集：12 个浏览器实验、游戏、讲稿与工具，每个子项目一个文件夹，全部纯前端，无框架、无构建步骤。">
+<link rel="canonical" href="https://zyh.sryze.cc/">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zyh.sryze.cc/">
+<meta property="og:title" content="hunluanzhizhu — 浏览器实验合集">
+<meta property="og:description" content="12 个浏览器实验、游戏、讲稿与工具，每个子项目一个文件夹，全部纯前端，无框架、无构建步骤。">
+<meta property="og:image" content="https://zyh.sryze.cc/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="索引终端：12 个项目，零构建步骤">
+<meta name="twitter:card" content="summary_large_image">
+<style id="font">/* Cascadia Mono, SIL OFL 1.1 -- subset to 177 glyphs, 20380 bytes.
+   Regenerate with: python tools/subset-font.py --inject index.html */
+@font-face{font-family:'Cascadia Mono Subset';font-style:normal;font-weight:400;font-display:swap;src:url(data:font/woff2;base64,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) format('woff2')}</style>
 <style>
-  /* ============ 设计令牌 ============ */
-  :root{
-    --bg:#0a0a0a;
-    --bg-2:#0f0f0f;
-    --ink:#e8e8e8;
-    --ink-dim:#7a7a7a;
-    --ink-faint:#3a3a3a;
-    --line:#1f1f1f;
-    --line-2:#2a2a2a;
-    --acid:#c6ff00;
-    --acid-dim:rgba(198,255,0,.16);
-    --mono:'JetBrains Mono','SFMono-Regular',ui-monospace,'Cascadia Code','Liberation Mono',Menlo,Consolas,monospace;
-    --pad:clamp(20px,5vw,72px);
-  }
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOKENS — three levels. Primitives name raw values; semantic names say what
+   they are for; components are built only out of semantic names.
 
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{background:var(--bg)}
-  body{
-    font-family:var(--mono);
-    color:var(--ink);
-    background:var(--bg);
-    min-height:100vh;
-    line-height:1.5;
-    overflow-x:hidden;
-    -webkit-font-smoothing:antialiased;
-  }
+   Palette is one committed archetype: near-black ground, translucent-white
+   surfaces and hairlines, ONE signal accent. Two hues is a palette; a spectrum
+   is a demo. No second accent, no violet, no gradient ground.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root{
+  --acid:#c6ff00;
+  --acid-08:rgba(198,255,0,.08);
+  --acid-16:rgba(198,255,0,.16);
+  --acid-34:rgba(198,255,0,.34);
+  --acid-60:rgba(198,255,0,.60);
+  --void:#000000;
+  --void-2:#070707;
+  --void-3:#0e0e0e;
+  --paper:#fffef4;
+  --grey:#8f8f8f;
+  --grey-2:#4e4e4e;
 
-  /* ============ 背景：点阵 + 网格 + 噪点 ============ */
-  body::before{
-    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-    background-image:
-      radial-gradient(circle at center, rgba(255,255,255,.045) 1px, transparent 1.4px);
-    background-size:26px 26px;
-    background-position:0 0;
-    animation:drift 32s linear infinite;
-  }
-  body::after{
-    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-    background-image:
-      linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
-    background-size:80px 80px;
-    mask-image:radial-gradient(ellipse at 50% 30%, #000 0%, transparent 75%);
-    -webkit-mask-image:radial-gradient(ellipse at 50% 30%, #000 0%, transparent 75%);
-  }
-  @keyframes drift{to{background-position:26px 26px}}
+  --ground:var(--void);
+  --ground-2:var(--void-2);
+  --surface:rgba(255,255,255,.045);
+  --hairline:rgba(255,255,255,.13);
+  --hairline-2:rgba(255,255,255,.065);
+  --ink:var(--paper);
+  --ink-2:var(--grey);
+  --ink-3:var(--grey-2);
+  --accent:var(--acid);
+  --accent-34:var(--acid-34);
+  --accent-60:var(--acid-60);
+  --accent-soft:var(--acid-16);
+  --focus:var(--acid);
+  --sel-bg:var(--acid);
+  --sel-ink:var(--void);
 
-  /* 顶部一道 acid 光带 */
-  .topbeam{
-    position:fixed;top:0;left:0;right:0;height:2px;z-index:50;
-    background:linear-gradient(90deg, transparent 0%, var(--acid) 12%, var(--acid) 88%, transparent 100%);
-    opacity:.55;
-    box-shadow:0 0 14px var(--acid-dim);
-  }
+  --face-mono:'Cascadia Mono Subset','JetBrains Mono','SFMono-Regular',ui-monospace,'Cascadia Code','Liberation Mono',Menlo,Consolas,monospace;
+  --face-cjk:'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC',var(--face-mono),sans-serif;
+  --face:var(--face-mono),var(--face-cjk);
 
-  /* ============ 布局容器 ============ */
-  .shell{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 var(--pad)}
+  --fs-display:clamp(2.5rem, 1.05rem + 6.4vw, 7rem);
+  --fs-title:clamp(1.0625rem, .95rem + .55vw, 1.375rem);
+  --fs-h2:clamp(.8125rem, .78rem + .2vw, .9375rem);
+  --fs-body:.8125rem;
+  --fs-meta:.6875rem;
+  --fs-micro:.625rem;
 
-  /* ============ 顶栏 ============ */
-  header.bar{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:22px 0 18px;
-    border-bottom:1px solid var(--line);
-    opacity:0;transform:translateY(-8px);
-    animation:rise .6s .05s cubic-bezier(.2,.7,.2,1) forwards;
-  }
-  .brand{display:flex;align-items:center;gap:12px;font-size:13px;letter-spacing:.04em}
-  .brand .mark{color:var(--acid);font-weight:700;letter-spacing:.1em}
-  .brand .slash{color:var(--ink-faint)}
-  .brand .name{color:var(--ink-dim)}
+  --lh-display:.98;
+  --lh-body:1.62;
+  --track-display:-.035em;
 
-  .badge{
-    display:inline-flex;align-items:center;gap:8px;
-    font-size:11px;letter-spacing:.16em;color:var(--acid);
-    border:1px solid var(--acid);padding:5px 11px;
-    text-transform:uppercase;
-    animation:pulse 2.4s ease-in-out infinite;
-  }
-  .badge .dot{width:6px;height:6px;background:var(--acid);box-shadow:0 0 8px var(--acid)}
-  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--acid-dim)}50%{box-shadow:0 0 0 5px transparent}}
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px;
+  --s6:32px; --s7:48px; --s8:64px; --s9:96px; --s10:128px;
 
-  /* ============ Hero ============ */
-  .hero{padding:clamp(48px,9vw,96px) 0 clamp(40px,6vw,64px)}
-  .hero h1{
-    font-size:clamp(30px,6.4vw,76px);
-    font-weight:800;line-height:1.02;letter-spacing:-.02em;
-    color:var(--ink);
-    opacity:0;transform:translateY(14px);
-    animation:rise .7s .18s cubic-bezier(.2,.7,.2,1) forwards;
-  }
-  .hero h1 .prompt{color:var(--acid);font-weight:700}
-  .hero h1 .cursor{
-    display:inline-block;width:.5ch;background:var(--acid);color:transparent;
-    animation:blink 1.1s steps(1) infinite;margin-left:2px;
-  }
-  @keyframes blink{50%{opacity:0}}
-  .hero p{
-    margin-top:18px;max-width:52ch;font-size:clamp(13px,1.4vw,16px);
-    color:var(--ink-dim);letter-spacing:.02em;
-    opacity:0;transform:translateY(10px);
-    animation:rise .7s .3s cubic-bezier(.2,.7,.2,1) forwards;
-  }
-  .hero p .hl{color:var(--ink)}
+  --gutter:clamp(18px,4.4vw,56px);
+  --measure:1240px;
+  --read:64ch;
+  --bar-h:60px;
+  --stage-h:236px;
 
-  /* ============ 区块标题 ============ */
-  .sec-head{
-    display:flex;align-items:center;gap:14px;
-    margin:8px 0 28px;
-    opacity:0;transform:translateY(10px);
-    animation:rise .6s .42s cubic-bezier(.2,.7,.2,1) forwards;
+  --t-instant:90ms;
+  --t-fast:170ms;
+  --t-std:320ms;
+  --t-med:460ms;
+  --t-slow:700ms;
+  --e-out-expo:cubic-bezier(.16,1,.3,1);
+  --e-out-back:cubic-bezier(.34,1.56,.64,1);
+  --e-sharp:cubic-bezier(.65,0,.45,1);
+  --e-in-expo:cubic-bezier(.7,0,.84,0);
+  --e-lin:linear;
+
+  --mx:0px;
+  --my:0px;
+  --p:0;
+  --i:0;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{
+  background:var(--ground);
+  color-scheme:dark;
+  scrollbar-gutter:stable;
+  scroll-behavior:smooth;
+  -webkit-text-size-adjust:100%;
+}
+body{
+  font-family:var(--face);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  color:var(--ink);
+  background:var(--ground);
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-underline-offset:.18em;
+  text-decoration-thickness:from-font;
+}
+::selection{background:var(--sel-bg);color:var(--sel-ink)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+canvas{display:block;width:100%;height:100%}
+h1,h2,h3{font-weight:700;text-align:left;letter-spacing:0}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+.skip{
+  position:fixed;left:var(--s3);top:var(--s3);z-index:200;
+  width:1px;height:1px;overflow:hidden;clip-path:inset(50%);
+  padding:0;background:var(--accent);color:var(--void);
+  font-size:var(--fs-meta);letter-spacing:.1em;text-transform:uppercase;
+}
+.skip:focus-visible{width:auto;height:auto;clip-path:none;padding:var(--s3) var(--s4)}
+
+/* ── ground: one static dot lattice + one drifting signal blob ─────────────
+   Two decorative layers became one. The blob is a compositor-only transform,
+   so "the page is never a still image" costs no layout and no repaint. */
+.ground{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.ground__lattice{
+  position:absolute;inset:-2px;
+  background-image:radial-gradient(circle at center, rgba(255,255,255,.05) 1px, transparent 1.4px);
+  background-size:28px 28px;
+}
+.ground__blob{
+  position:absolute;left:50%;top:50%;width:150vmax;height:150vmax;margin:-75vmax 0 0 -75vmax;
+  background:radial-gradient(circle at center, rgba(198,255,0,.055) 0%, rgba(198,255,0,.02) 34%, transparent 62%);
+  transform:translate3d(var(--mx),var(--my),0);
+  will-change:transform;
+}
+.ground__blob--b{
+  width:90vmax;height:90vmax;margin:-45vmax 0 0 -45vmax;
+  background:radial-gradient(circle at center, rgba(255,255,255,.035) 0%, transparent 58%);
+  animation:drift 41s var(--e-lin) infinite;
+}
+@keyframes drift{
+  0%{translate:0 0}
+  25%{translate:9vmax -6vmax}
+  50%{translate:-7vmax 7vmax}
+  75%{translate:-9vmax -5vmax}
+  100%{translate:0 0}
+}
+
+/* ── shell ───────────────────────────────────────────────────────────────── */
+.shell{position:relative;z-index:1}
+.inner{max-width:var(--measure);margin-inline:auto;padding-inline:var(--gutter)}
+.beam{
+  position:fixed;top:0;left:0;right:0;height:2px;z-index:60;
+  background:var(--accent);
+  transform:scaleX(var(--p,0));transform-origin:0 50%;
+  opacity:.8;
+}
+
+/* ── top bar — creative dialect: fixed, ~60px, no CTA ────────────────────── */
+.bar{
+  position:fixed;top:2px;left:0;right:0;z-index:50;
+  height:var(--bar-h);
+  background:var(--ground-2);
+  border-bottom:1px solid var(--hairline-2);
+}
+.bar__in{
+  max-width:var(--measure);margin-inline:auto;padding-inline:var(--gutter);
+  height:100%;display:flex;align-items:center;gap:var(--s4);
+}
+.brand{display:flex;align-items:center;gap:var(--s3);flex-shrink:0;
+  font-size:var(--fs-meta);letter-spacing:.05em}
+.brand__mark{color:var(--accent);letter-spacing:.08em;
+  transition:transform var(--t-fast) var(--e-sharp)}
+.brand:hover .brand__mark,.brand:focus-visible .brand__mark{transform:translateX(3px)}
+.brand__name{color:var(--ink-2);transition:color var(--t-fast) var(--e-lin)}
+.brand:hover .brand__name{color:var(--ink)}
+.brand__slash{color:var(--ink-3)}
+.bar__spacer{flex:1}
+.bar__badge{
+  display:inline-flex;align-items:center;gap:var(--s2);
+  font-size:var(--fs-micro);letter-spacing:.16em;color:var(--accent);
+  border:1px solid var(--accent-34);padding:4px 9px;text-transform:uppercase;
+  white-space:nowrap;
+}
+.bar__badge i{width:5px;height:5px;background:var(--accent);flex-shrink:0;
+  animation:pulse 2.6s var(--e-lin) infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* the palette trigger is ALWAYS visible — an interaction nobody finds is not done */
+.trigger{
+  display:inline-flex;align-items:center;gap:var(--s2);
+  min-height:32px;padding:0 var(--s3);
+  border:1px solid var(--hairline);color:var(--ink-2);
+  font-size:var(--fs-micro);letter-spacing:.14em;text-transform:uppercase;
+  transition:border-color var(--t-fast) var(--e-lin),color var(--t-fast) var(--e-lin),
+             background-color var(--t-fast) var(--e-lin);
+}
+.trigger:hover,.trigger[aria-expanded="true"]{border-color:var(--accent);color:var(--accent);background:var(--acid-08)}
+.trigger kbd{
+  font:inherit;font-size:var(--fs-micro);letter-spacing:.06em;
+  border:1px solid var(--hairline-2);padding:1px 5px;color:var(--ink-3);
+}
+.lang{display:inline-flex;align-items:center;border:1px solid var(--hairline);flex-shrink:0}
+.lang button{
+  min-width:34px;min-height:30px;padding:0 var(--s2);color:var(--ink-3);
+  font-size:var(--fs-micro);letter-spacing:.12em;
+  transition:color var(--t-fast) var(--e-lin),background-color var(--t-fast) var(--e-lin);
+}
+.lang button:hover{color:var(--ink)}
+.lang button[aria-pressed="true"]{color:var(--accent);background:var(--acid-08)}
+.lang__sep{color:var(--ink-3);font-size:var(--fs-micro)}
+
+/* ── section head, shared ────────────────────────────────────────────────── */
+.sec-head{display:flex;align-items:center;gap:var(--s3);margin-bottom:var(--s5)}
+.sec-head__bar{width:4px;height:15px;background:var(--accent);flex-shrink:0}
+.sec-head h2{
+  font-size:var(--fs-h2);letter-spacing:.24em;text-transform:uppercase;
+  color:var(--ink);white-space:nowrap;
+}
+.sec-head__rule{flex:1;height:1px;background:var(--hairline-2)}
+.sec-head__n{font-size:var(--fs-micro);color:var(--ink-3);letter-spacing:.14em;white-space:nowrap}
+
+/* ═══ 1 · HERO — type at the full measure, readout beside the lede ═════════ */
+.hero{
+  display:block;
+  padding:calc(var(--bar-h) + var(--s8)) 0 var(--s9);
+}
+.hero__kick{
+  font-size:var(--fs-micro);letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:var(--s5);
+  display:flex;align-items:center;gap:var(--s2);
+}
+.hero__kick i{width:16px;height:1px;background:var(--accent);display:inline-block}
+h1.disp{
+  font-size:var(--fs-display);
+  line-height:var(--lh-display);
+  letter-spacing:var(--track-display);
+  font-weight:700;
+  color:var(--ink);
+  text-wrap:balance;
+}
+h1.disp em{font-style:normal;color:var(--accent)}
+h1.disp .caret{
+  display:inline-block;width:.46em;height:.78em;vertical-align:-.06em;
+  background:var(--accent);margin-left:.06em;
+  animation:blink 1.15s steps(1) infinite;
+}
+@keyframes blink{50%{opacity:0}}
+/* The headline types itself, because the page's whole identity is a terminal
+   printing its own output. Characters are grouped into per-word inline-blocks
+   so a word can never break mid-way; the spaces between words stay ordinary
+   text, so wrapping is unchanged at 320px. Built by JS, so if the script never
+   runs the original text nodes are simply there and fully readable. */
+.tw-word{display:inline-block}
+.tw-ch{
+  opacity:0;
+  animation:twIn var(--t-instant) var(--e-lin) forwards;
+  animation-delay:calc(140ms + var(--i) * 26ms);
+}
+@keyframes twIn{to{opacity:1}}
+.hero__foot{
+  display:flex;align-items:flex-start;gap:clamp(var(--s5),5vw,var(--s9));
+  margin-top:var(--s7);
+}
+.hero__lede{
+  flex:1 1 52%;max-width:var(--read);
+  color:var(--ink-2);font-size:var(--fs-body);line-height:var(--lh-body);
+}
+.hero__lede b{color:var(--ink);font-weight:700}
+.hero__lede .u{color:var(--accent)}
+.hero__readout{flex:0 1 40%;min-width:0;border-top:1px solid var(--hairline);padding-top:var(--s3)}
+.readout{list-style:none;font-size:var(--fs-meta)}
+.readout li{display:flex;align-items:baseline;gap:var(--s2);padding:3px 0}
+.readout dt{color:var(--ink-2);white-space:nowrap}
+.readout .lead{flex:1;border-bottom:1px dotted var(--hairline);transform:translateY(-3px);min-width:var(--s5)}
+.readout dd{color:var(--ink);font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.readout dd.a{color:var(--accent)}
+.readout li.k{
+  display:block;border-top:1px solid var(--hairline-2);
+  margin-top:var(--s2);padding-top:var(--s2);
+}
+.readout li.k dt{color:var(--ink-3);font-size:var(--fs-micro);letter-spacing:.16em}
+.readout li.k dd{
+  white-space:normal;font-weight:400;color:var(--ink-2);
+  letter-spacing:0;font-size:var(--fs-meta);line-height:1.5;
+}
+.readout li.k dd i{font-style:normal;color:var(--ink-3)}
+
+/* ═══ 2 · INDEX — a 3-column mosaic whose spans are chosen so that the DOM
+   order fills every row exactly: 3,2+1,2+1,3,2+1,2+1,3. No dense packing, so
+   tab order and reading order stay the same thing. ═══════════════════════ */
+/* the section IS the mosaic — so "three different section shapes" describes the
+   real column counts rather than a wrapper nothing reads */
+.index{
+  display:grid;grid-template-columns:1fr;gap:var(--s3);
+  padding-bottom:var(--s9);
+}
+.index>.sec-head,.index>.filterbar,.index>.empty{grid-column:1/-1}
+.card{grid-column:span 1;min-width:0}
+.card[hidden]{display:none}
+
+.card{
+  position:relative;display:flex;flex-direction:column;
+  border:1px solid var(--hairline);
+  background:none;
+  transition:border-color var(--t-std) var(--e-out-expo);
+}
+.card:hover,.card:focus-within{border-color:var(--accent-60)}
+.card[data-state="run"]{border-color:var(--accent)}
+
+.card__head{
+  display:flex;align-items:baseline;gap:var(--s3);
+  padding:var(--s3) var(--s4) var(--s2);
+}
+.card__num{font-size:var(--fs-meta);font-weight:700;color:var(--accent);letter-spacing:.1em}
+.card__tag{
+  font-size:var(--fs-micro);color:var(--ink-3);letter-spacing:.16em;
+  text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.card__head .sp{flex:1}
+.card__fig{font-size:var(--fs-micro);color:var(--ink-3);letter-spacing:.12em;white-space:nowrap}
+.card__fig--kick{display:block;margin-bottom:var(--s2);color:var(--accent)}
+
+/* the stage keeps a reserved box at every width — nothing here can reflow */
+.card__stage{
+  position:relative;height:var(--stage-h);margin:0 var(--s4);
+  border-top:1px solid var(--hairline-2);border-bottom:1px solid var(--hairline-2);
+  overflow:hidden;
+}
+.card__cap{
+  position:absolute;left:0;bottom:0;
+  font-size:var(--fs-micro);letter-spacing:.1em;color:var(--ink-3);
+  padding:3px 0;background:var(--ground);padding-right:var(--s2);
+  max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+}
+.card[data-state="run"] .card__cap{color:var(--accent)}
+.card__link{position:relative;display:block;padding:0 var(--s4)}
+.card__link::after{content:"";position:absolute;inset:0;z-index:0}
+.card__title{
+  font-size:var(--fs-title);line-height:1.18;letter-spacing:-.01em;
+  color:var(--ink);padding-top:var(--s3);
+  transition:color var(--t-fast) var(--e-lin);
+}
+.card:hover .card__title,.card:focus-within .card__title{color:var(--accent)}
+.card__body{position:relative;z-index:1;padding:var(--s3) var(--s4) 0;flex:1}
+.card__stack{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:var(--s3)}
+.chip{
+  font-size:var(--fs-micro);letter-spacing:.1em;color:var(--ink-2);
+  border:1px solid var(--hairline-2);padding:2px 7px;
+}
+.chip::before{content:"//";color:var(--ink-3);margin-right:4px}
+.card__desc{
+  font-size:var(--fs-body);color:var(--ink-2);line-height:var(--lh-body);
+  max-width:var(--read);
+}
+.card__desc a{color:var(--accent);border-bottom:1px solid var(--acid-34);position:relative;z-index:2}
+.card__desc a:hover{border-bottom-color:var(--accent)}
+.card__foot{
+  position:relative;z-index:1;
+  display:flex;align-items:center;gap:var(--s3);
+  padding:var(--s4);margin-top:var(--s4);
+  border-top:1px solid var(--hairline-2);
+}
+.card__cta{
+  display:inline-flex;align-items:center;gap:var(--s2);
+  font-size:var(--fs-meta);letter-spacing:.16em;text-transform:uppercase;
+  font-weight:700;color:var(--ink-2);min-height:44px;
+  transition:color var(--t-fast) var(--e-out-expo);
+}
+.card__cta .arw{transition:transform var(--t-std) var(--e-out-expo)}
+.card:hover .card__cta,.card:focus-within .card__cta{color:var(--accent)}
+.card:hover .card__cta .arw{transform:translateX(6px)}
+.card__sp{flex:1}
+/* hover does not exist on touch, so the instrument gets a real control there.
+   On a pointer-fine device hover already runs it and the control would be
+   chrome; on a coarse pointer it is the only way in, so it is always shown. */
+.card__run{
+  display:none;align-items:center;gap:var(--s2);
+  min-height:44px;padding:0 var(--s4);
+  border:1px solid var(--hairline);color:var(--ink-2);
+  font-size:var(--fs-meta);letter-spacing:.16em;text-transform:uppercase;
+  transition:border-color var(--t-fast) var(--e-lin),color var(--t-fast) var(--e-lin);
+}
+.card__run:active{transform:scale(.98)}
+.card[data-state="run"] .card__run{border-color:var(--accent);color:var(--accent)}
+
+/* promoted cards get the measure broken per element, not a wider text column */
+.card[data-d="2"] .card__split,.card[data-d="3"] .card__split{display:block}
+
+.empty{
+  border:1px dashed var(--hairline);padding:var(--s8) var(--s5);
+  text-align:center;color:var(--ink-2);font-size:var(--fs-body);
+}
+.empty b{color:var(--ink);font-weight:700}
+.empty button{
+  display:block;margin:var(--s4) auto 0;min-height:44px;padding:0 var(--s5);
+  border:1px solid var(--hairline);color:var(--ink);
+  font-size:var(--fs-meta);letter-spacing:.14em;text-transform:uppercase;
+}
+.empty button:hover{border-color:var(--accent);color:var(--accent)}
+
+/* filter bar, shown only while a query is live */
+.filterbar{
+  display:flex;align-items:center;gap:var(--s3);flex-wrap:wrap;
+  border:1px solid var(--acid-34);background:var(--acid-08);
+  padding:var(--s2) var(--s3);margin-bottom:var(--s4);
+  font-size:var(--fs-meta);letter-spacing:.06em;
+}
+.filterbar[hidden]{display:none}
+.filterbar b{color:var(--accent)}
+.filterbar button{
+  min-height:34px;padding:0 var(--s3);margin-left:auto;
+  border:1px solid var(--acid-34);color:var(--accent);
+  font-size:var(--fs-micro);letter-spacing:.14em;text-transform:uppercase;
+}
+.filterbar button:hover{background:var(--accent);color:var(--void)}
+
+/* ═══ 3 · CLIENT WORKS — a full-bleed band on its own ground ══════════════ */
+.clients{
+  display:block;
+  background:var(--ground-2);
+  border-top:1px solid var(--hairline-2);
+  border-bottom:1px solid var(--hairline-2);
+  padding:var(--s9) 0;
+}
+.commission{display:block}
+.commission+.commission{
+  margin-top:var(--s9);padding-top:var(--s9);
+  border-top:1px solid var(--hairline-2);
+}
+.commission__stage{
+  height:var(--stage-h);border-top:1px solid var(--hairline-2);
+  border-bottom:1px solid var(--hairline-2);margin-bottom:var(--s7);
+  position:relative;overflow:hidden;
+}
+.commission .card__cap{background:var(--ground-2)}
+.commission__grid{display:flex;flex-direction:column;gap:var(--s5)}
+.commission__title{
+  font-size:clamp(1.5rem,1.1rem+1.8vw,2.5rem);line-height:1.05;
+  letter-spacing:-.02em;color:var(--ink);margin-bottom:var(--s3);
+}
+.commission__desc{color:var(--ink-2);max-width:var(--read);font-size:var(--fs-body)}
+.commission__desc b{color:var(--ink);font-weight:700}
+.commission__desc a{color:var(--accent);border-bottom:1px solid var(--acid-34)}
+.commission__meta{display:flex;flex-wrap:wrap;gap:var(--s5);align-items:flex-start}
+.commission__meta>div{min-width:0}
+.commission__k{
+  font-size:var(--fs-micro);letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:var(--s2);
+}
+.commission__v{font-size:var(--fs-meta);color:var(--ink-2);max-width:34ch}
+.commission__v--fee{color:var(--accent);font-weight:700;font-size:var(--fs-title);letter-spacing:0}
+.card__fig--kick b{color:var(--accent);font-weight:700}
+.commission__cta{
+  display:inline-flex;align-items:center;gap:var(--s2);min-height:44px;
+  font-size:var(--fs-meta);letter-spacing:.16em;text-transform:uppercase;
+  font-weight:700;color:var(--accent);
+}
+.commission__cta .arw{transition:transform var(--t-std) var(--e-out-expo)}
+.commission__cta:hover .arw{transform:translateX(6px)}
+
+.sec-head--band{margin-bottom:var(--s6)}
+
+/* ═══ 4 · FOOTER — two columns, small ════════════════════════════════════ */
+.foot{display:block;padding:var(--s7) 0 var(--s8)}
+.foot__grid{display:flex;flex-wrap:wrap;gap:var(--s7) clamp(var(--s5),6vw,var(--s9))}
+.foot__col{min-width:150px}
+.foot__k{
+  font-size:var(--fs-micro);letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:var(--s3);
+}
+.foot__list{list-style:none;display:flex;flex-direction:column;gap:var(--s2)}
+.foot__list a{
+  font-size:var(--fs-meta);color:var(--ink-2);min-height:32px;
+  display:inline-flex;align-items:center;
+  border-bottom:1px solid transparent;
+  transition:color var(--t-fast) var(--e-lin),border-color var(--t-fast) var(--e-lin);
+}
+.foot__list a:hover{color:var(--accent);border-bottom-color:var(--accent-34)}
+.foot__note{font-size:var(--fs-micro);color:var(--ink-3);letter-spacing:.06em;line-height:1.8;max-width:46ch}
+.foot__grad{flex:1 1 100%;height:1px;background:var(--hairline-2);margin-top:var(--s6)}
+.foot__base{
+  display:flex;flex-wrap:wrap;gap:var(--s3) var(--s5);align-items:center;
+  font-size:var(--fs-micro);color:var(--ink-3);letter-spacing:.1em;
+}
+
+/* ═══ COMMAND PALETTE — a dialog, so it owes the whole state matrix ═══════ */
+.cmdk[hidden]{display:none}
+.cmdk{position:fixed;inset:0;z-index:120;display:flex;align-items:flex-start;justify-content:center}
+.cmdk__scrim{position:absolute;inset:0;background:rgba(0,0,0,.86)}
+.cmdk__panel{
+  position:relative;width:min(100% - 2 * var(--gutter),720px);
+  margin-top:clamp(var(--s5),9vh,var(--s9));
+  background:var(--ground-2);
+  border:1px solid var(--hairline);
+  /* a dialog arriving is the one place on this page that should feel
+     physical — the slight overshoot is the whole difference */
+  animation:pop var(--t-std) var(--e-out-back) both;
+}
+@keyframes pop{from{opacity:0;transform:translateY(-14px) scale(.985)}to{opacity:1;transform:none}}
+.cmdk__field{
+  display:flex;align-items:center;gap:var(--s3);
+  padding:0 var(--s4);height:56px;
+  border-bottom:1px solid var(--hairline);
+}
+.cmdk__p{color:var(--accent);font-weight:700}
+.cmdk__input{
+  flex:1;min-width:0;background:none;border:none;outline:none;
+  font:inherit;font-size:var(--fs-body);color:var(--ink);
+  caret-color:var(--accent);
+}
+.cmdk__input::placeholder{color:var(--ink-3)}
+.cmdk__state{font-size:var(--fs-micro);color:var(--ink-3);letter-spacing:.1em;white-space:nowrap}
+.cmdk__list{list-style:none;max-height:min(52vh,420px);overflow-y:auto;overscroll-behavior:contain}
+.cmdk__row{
+  display:flex;align-items:center;gap:var(--s3);
+  min-height:48px;padding:var(--s2) var(--s4);cursor:pointer;
+  border-left:2px solid transparent;
+}
+.cmdk__row+.cmdk__row{border-top:1px solid var(--hairline-2)}
+.cmdk__row[aria-selected="true"]{
+  background:var(--acid-08);border-left-color:var(--accent);
+}
+.cmdk__n{font-size:var(--fs-micro);color:var(--ink-3);letter-spacing:.1em;width:2.4em;flex-shrink:0}
+.cmdk__row[aria-selected="true"] .cmdk__n{color:var(--accent)}
+.cmdk__t{flex:1;min-width:0;font-size:var(--fs-body);color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmdk__row[aria-selected="true"] .cmdk__t{color:var(--accent)}
+.cmdk__m{font-size:var(--fs-micro);color:var(--ink-3);letter-spacing:.1em;
+  white-space:nowrap;flex-shrink:0}
+.cmdk__go{font-size:var(--fs-micro);color:var(--ink-3);letter-spacing:.1em;flex-shrink:0}
+.cmdk__row[aria-selected="true"] .cmdk__go{color:var(--accent)}
+.cmdk__none{
+  padding:var(--s7) var(--s4);text-align:center;color:var(--ink-2);
+  font-size:var(--fs-body);
+}
+.cmdk__none b{color:var(--ink);font-weight:700}
+.cmdk__keys{
+  display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);
+  padding:var(--s3) var(--s4);border-top:1px solid var(--hairline);
+  font-size:var(--fs-micro);color:var(--ink-3);letter-spacing:.1em;
+}
+.cmdk__keys b{color:var(--ink-2);font-weight:700}
+
+/* ═══ motion: entrance is an editing decision, not a default ═════════════
+   Only the hero types itself and only the first three cards deal in. Every
+   other card is simply there, and reveals itself when its instrument boots. */
+.rise{opacity:0;transform:translateY(10px);animation:rise var(--t-slow) var(--e-out-expo) both}
+@keyframes rise{to{opacity:1;transform:none}}
+.d1{animation-delay:60ms}.d2{animation-delay:130ms}.d3{animation-delay:200ms}
+
+@media (min-width:768px){
+  :root{--stage-h:250px}
+  .index{grid-template-columns:repeat(2,1fr)}
+  .card[data-d="3"]{grid-column:span 2}
+  .hero{padding-top:calc(var(--bar-h) + var(--s9))}
+  .commission__grid{flex-direction:row;gap:var(--s7);align-items:flex-start}
+}
+@media (min-width:1024px){
+  :root{--stage-h:264px;--gutter:clamp(24px,4vw,56px)}
+  .index{grid-template-columns:repeat(3,1fr)}
+  .card[data-d="2"]{grid-column:span 2}
+  .card[data-d="3"]{grid-column:span 3}
+  /* promoted cards break the measure per element instead of widening the copy */
+  .card[data-d="2"] .card__desc,.card[data-d="3"] .card__desc{max-width:70ch}
+  .commission__grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:var(--s8)}
+}
+@media (max-width:767px){
+  :root{--stage-h:186px;--bar-h:auto}
+  .bar{position:sticky}
+  .bar__in{flex-wrap:wrap;padding-block:var(--s2);gap:var(--s2)}
+  .bar__badge{display:none}
+  .hero{padding-top:var(--s7)}
+  .hero__foot{flex-direction:column;gap:var(--s5)}
+  .hero__readout{flex-basis:auto;width:100%}
+  .trigger kbd{display:none}
+  .commission__stage{height:184px}
+  .cmdk{align-items:stretch}
+  .cmdk__panel{
+    width:100%;margin-top:0;border-left:none;border-right:none;border-top:none;
+    display:flex;flex-direction:column;max-height:100dvh;
   }
-  .sec-head .bar-v{width:4px;height:18px;background:var(--acid);box-shadow:0 0 10px var(--acid-dim)}
-  .sec-head h2{font-size:13px;letter-spacing:.28em;color:var(--ink);font-weight:700;text-transform:uppercase}
-  .sec-head .rule{flex:1;height:1px;background:var(--line)}
-  .sec-head .count{font-size:11px;color:var(--ink-faint);letter-spacing:.1em}
+  .cmdk__list{max-height:none;flex:1}
+  .cmdk__row{min-height:56px}
+  .cmdk__keys{padding-bottom:max(var(--s3),env(safe-area-inset-bottom))}
+}
 
-  /* ============ 项目网格 ============ */
-  .grid{
-    display:grid;grid-template-columns:repeat(2,1fr);gap:18px;
-    margin-bottom:72px;
+/* Whether an explicit RUN control appears is a question about the INPUT, not
+   about the viewport width: hover is the only way in on a pointer-fine device,
+   and on anything without hover the control is the only way in. A touch tablet
+   at 1024px has no hover, so this cannot be a width breakpoint. */
+@media (hover:none){
+  .card__run{display:inline-flex}
+  /* 44px is the touch minimum, and it only applies where touch is the input —
+     on a mouse the same control is comfortable at 30-32px */
+  .trigger,.lang button,.foot__list a,.brand{min-height:44px}
+}
+html[data-touch] .card__run{display:inline-flex}
+html[data-touch] .trigger,
+html[data-touch] .lang button,
+html[data-touch] .foot__list a,
+html[data-touch] .brand{min-height:44px}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{
+    animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
   }
-  @media(max-width:640px){.grid{grid-template-columns:1fr}}
-
-  /* ---- 卡片 ---- */
-  .card{
-    position:relative;display:block;text-decoration:none;color:inherit;
-    background:var(--bg-2);
-    border:1px solid var(--line-2);
-    padding:26px 26px 22px;
-    min-height:300px;
-    display:flex;flex-direction:column;
-    transition:transform .28s cubic-bezier(.2,.7,.2,1), border-color .28s, box-shadow .28s;
-    opacity:0;transform:translateY(20px);
-    animation:rise .65s cubic-bezier(.2,.7,.2,1) forwards;
-  }
-  .card:nth-child(1){animation-delay:.52s}
-  .card:nth-child(2){animation-delay:.64s}
-  .card:nth-child(3){animation-delay:.76s}
-  .card:nth-child(4){animation-delay:.88s}
-
-  /* 左侧色条：默认短，hover 延伸 */
-  .card::before{
-    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
-    background:var(--acid);
-    transform:scaleY(.18);transform-origin:top;
-    transition:transform .32s cubic-bezier(.2,.7,.2,1);
-  }
-  .card:hover{
-    border-color:var(--acid);
-    transform:translate(-3px,-3px);
-    box-shadow:3px 3px 0 0 var(--acid-dim), 6px 6px 24px rgba(0,0,0,.5);
-  }
-  .card:hover::before{transform:scaleY(1)}
-  .card:focus-visible{outline:2px solid var(--acid);outline-offset:3px}
-
-  .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}
-  .card-num{font-size:13px;color:var(--acid);letter-spacing:.12em;font-weight:700}
-  .card-tag{font-size:10px;color:var(--ink-faint);letter-spacing:.18em;text-transform:uppercase;border:1px solid var(--line-2);padding:3px 7px}
-
-  .card-title{
-    font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.01em;
-    color:var(--ink);line-height:1.1;margin-bottom:10px;
-    transition:color .28s;
-  }
-  .card:hover .card-title{color:var(--acid)}
-  .card-rule{width:42px;height:2px;background:var(--line-2);margin-bottom:16px;transition:width .32s,background .28s}
-  .card:hover .card-rule{width:72px;background:var(--acid)}
-
-  .card-stack{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
-  .chip{font-size:10px;letter-spacing:.1em;color:var(--ink-dim);border:1px solid var(--line-2);padding:3px 8px;text-transform:lowercase}
-  .chip::before{content:"//";color:var(--ink-faint);margin-right:4px}
-
-  .card-desc{font-size:13px;color:var(--ink-dim);line-height:1.65;flex:1;letter-spacing:.01em}
-  .card-desc a{color:var(--acid);text-decoration:none;border-bottom:1px solid var(--acid-dim);word-break:break-all}
-
-  .card-cta{
-    margin-top:22px;display:inline-flex;align-items:center;gap:10px;
-    font-size:12px;letter-spacing:.18em;color:var(--ink);text-transform:uppercase;font-weight:700;
-    border-top:1px solid var(--line-2);padding-top:16px;
-    transition:color .28s;
-  }
-  .card-cta .arrow{display:inline-block;transition:transform .28s,color .28s}
-  .card:hover .card-cta{color:var(--acid)}
-  .card:hover .card-cta .arrow{transform:translateX(6px);color:var(--acid)}
-
-  /* ============ 页脚 ============ */
-  footer{
-    border-top:1px solid var(--line);
-    padding:24px 0 36px;
-    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
-    font-size:11px;color:var(--ink-faint);letter-spacing:.1em;
-    opacity:0;transform:translateY(8px);
-    animation:rise .6s 1s cubic-bezier(.2,.7,.2,1) forwards;
-  }
-  footer .git{color:var(--ink-dim);text-decoration:none;border-bottom:1px solid var(--line-2);transition:color .2s,border-color .2s}
-  footer .git:hover{color:var(--acid);border-color:var(--acid)}
-
-  /* ============ 语言切换 ============ */
-  .lang{
-    display:inline-flex;align-items:center;border:1px solid var(--line-2);
-    font-size:11px;letter-spacing:.1em;
-  }
-  .lang button{
-    background:none;border:none;color:var(--ink-faint);font:inherit;
-    padding:5px 10px;cursor:pointer;letter-spacing:.08em;
-    transition:color .2s,background .2s;
-  }
-  .lang button:hover{color:var(--ink)}
-  .lang button[aria-pressed="true"]{color:var(--acid);background:var(--acid-dim)}
-  .lang .sep{color:var(--ink-faint);user-select:none}
-
-  /* ============ 入场关键帧 ============ */
-  @keyframes rise{to{opacity:1;transform:translateY(0)}}
-
-  /* 尊重 reduced-motion */
-  @media(prefers-reduced-motion:reduce){
-    *,*::before,*::after{animation:none !important;transition:none !important;opacity:1 !important;transform:none !important}
-  }
+  .rise{opacity:1;transform:none;animation:none}
+  .ground__blob{animation:none;transform:none}
+  h1.disp .caret{animation:none}
+  .bar__badge i{animation:none}
+}
 </style>
 </head>
 <body>
-<div class="topbeam"></div>
+<a class="skip" href="#main">跳到主要内容</a>
+<div class="beam" id="beam" aria-hidden="true"></div>
 
-<div class="shell">
+<div class="ground" aria-hidden="true">
+  <div class="ground__lattice"></div>
+  <div class="ground__blob" id="blob"></div>
+  <div class="ground__blob ground__blob--b"></div>
+</div>
 
-  <!-- 顶栏 -->
-  <header class="bar">
-    <div class="brand">
-      <span class="mark">███</span>
-      <span class="name">hunluanzhizhu<span class="slash">.github.io</span></span>
+<header class="bar">
+  <div class="bar__in">
+    <a class="brand" href="./">
+      <span class="brand__mark" aria-hidden="true">███</span>
+      <span class="brand__name">hunluanzhizhu<span class="brand__slash">.github.io</span></span>
+    </a>
+    <span class="bar__spacer"></span>
+    <span class="bar__badge"><i aria-hidden="true"></i><span id="n-badge">12</span>&nbsp;<span data-i18n="badge">项目</span></span>
+    <button class="trigger" id="trigger" type="button" aria-expanded="false" aria-controls="cmdk">
+      <span data-i18n="search">搜索</span>
+      <kbd id="kbd">Ctrl K</kbd>
+    </button>
+    <span class="lang" role="group" aria-label="语言 / language">
+      <button id="lang-zh" type="button" aria-pressed="true">ZH</button>
+      <span class="lang__sep" aria-hidden="true">/</span>
+      <button id="lang-en" type="button" aria-pressed="false">EN</button>
+    </span>
+  </div>
+</header>
+
+<main id="main" class="shell">
+
+  <!-- 1 · HERO -->
+  <section class="hero inner" aria-labelledby="h-hero">
+    <p class="hero__kick rise"><i aria-hidden="true"></i><span data-i18n="kick">~/projects — 索引</span></p>
+    <h1 class="disp" id="h-hero">
+      <span aria-hidden="true">&gt;&nbsp;</span><em id="n-hero">12</em> <span data-i18n="h1a">PROJECTS.</span><br>
+      <span data-i18n="h1b">ZERO BUILD STEP</span><span class="caret" aria-hidden="true"></span>
+      <span class="vh" data-i18n="h1vh">零构建步骤的浏览器实验合集</span>
+    </h1>
+    <div class="hero__foot">
+      <p class="hero__lede rise d2" data-i18n="lede"></p>
+      <div class="hero__readout rise d3">
+        <ul class="readout" id="readout"></ul>
+      </div>
     </div>
-    <div style="display:flex;align-items:center;gap:14px">
-      <span class="badge"><span class="dot"></span><span id="count">2</span> <span data-i18n="projects_label">PROJECTS</span></span>
-      <span class="lang" role="group" aria-label="language">
-        <button id="lang-zh" aria-pressed="true" type="button">ZH</button>
-        <span class="sep">/</span>
-        <button id="lang-en" aria-pressed="false" type="button">EN</button>
-      </span>
-    </div>
-  </header>
-
-  <!-- Hero -->
-  <section class="hero">
-    <h1><span class="prompt">&gt;</span> PERSONAL.STATIC<br>COLLECTION<span class="cursor">_</span></h1>
-    <p data-i18n="hero_desc"></p>
   </section>
 
-  <!-- 项目区块 -->
-  <div class="sec-head">
-    <span class="bar-v"></span>
-    <h2 data-i18n="projects">Projects</h2>
-    <span class="rule"></span>
-    <span class="count" id="count2">/ 02</span>
-  </div>
+  <!-- 2 · INDEX — the section element is the mosaic itself -->
+  <section class="index inner" id="index" aria-labelledby="h-index">
+    <div class="sec-head">
+      <span class="sec-head__bar" aria-hidden="true"></span>
+      <h2 id="h-index" data-i18n="projects">项目</h2>
+      <span class="sec-head__rule" aria-hidden="true"></span>
+      <span class="sec-head__n" id="n-index">/ 11</span>
+    </div>
+    <div class="filterbar" id="filterbar" hidden>
+      <span><span data-i18n="filtering">筛选</span> <b id="filter-q"></b></span>
+      <span id="filter-n"></span>
+      <button type="button" id="filter-clear" data-i18n="clear">清除</button>
+    </div>
+    <p class="empty" id="empty" hidden></p>
+  </section>
 
-  <main class="grid" id="grid"></main>
+  <!-- 3 · CLIENT WORKS -->
+  <section class="clients" aria-labelledby="h-clients">
+    <div class="inner">
+      <div class="sec-head sec-head--band">
+        <span class="sec-head__bar" aria-hidden="true"></span>
+        <h2 id="h-clients" data-i18n="clients">客户项目</h2>
+        <span class="sec-head__rule" aria-hidden="true"></span>
+        <span class="sec-head__n" id="n-clients">/ 01</span>
+      </div>
+      <div id="client-band"></div>
+    </div>
+  </section>
 
-  <!-- 客户项目区块 -->
-  <div class="sec-head">
-    <span class="bar-v"></span>
-    <h2 data-i18n="clients">Client Works</h2>
-    <span class="rule"></span>
-    <span class="count" id="count3">/ 01</span>
-  </div>
-
-  <main class="grid" id="client-grid"></main>
-
-  <!-- 页脚 -->
-  <footer>
-    <span data-i18n="footer"></span>
-    <a class="git" href="https://github.com/hunluanzhizhu" target="_blank" rel="noopener">github.com/hunluanzhizhu →</a>
+  <!-- 4 · FOOTER -->
+  <footer class="foot inner">
+    <div class="foot__grid">
+      <div class="foot__col">
+        <p class="foot__k" data-i18n="fnav">本页</p>
+        <ul class="foot__list">
+          <li><a href="#h-hero" data-i18n="f1">简介</a></li>
+          <li><a href="#h-index" data-i18n="f2">项目索引</a></li>
+          <li><a href="#h-clients" data-i18n="f3">客户项目</a></li>
+        </ul>
+      </div>
+      <div class="foot__col">
+        <p class="foot__k" data-i18n="fout">外部</p>
+        <ul class="foot__list">
+          <li><a href="https://github.com/hunluanzhizhu" target="_blank" rel="noopener">github.com/hunluanzhizhu</a></li>
+          <li><a href="https://github.com/HunLuanZhiZhu/ZCode-Game-Studios" target="_blank" rel="noopener">ZCode Game Studios</a></li>
+          <li><a href="https://github.com/hunluanzhizhu/hunluanzhizhu.github.io" target="_blank" rel="noopener" data-i18n="frepo">本站源码</a></li>
+        </ul>
+      </div>
+      <div class="foot__col">
+        <p class="foot__k" data-i18n="fbuild">构建</p>
+        <p class="foot__note" data-i18n="fnote"></p>
+      </div>
+    </div>
+    <div class="foot__grad" aria-hidden="true"></div>
+    <div class="foot__base">
+      <span id="year">© 2026</span>
+      <span data-i18n="fstack">html / css / js · 无框架 · 无构建</span>
+      <span data-i18n="fcredit">正文字体 Cascadia Mono（SIL OFL 1.1，子集内联）</span>
+    </div>
   </footer>
+</main>
 
+<!-- COMMAND PALETTE -->
+<div class="cmdk" id="cmdk" hidden>
+  <div class="cmdk__scrim" data-close></div>
+  <div class="cmdk__panel" role="dialog" aria-modal="true" aria-labelledby="cmdk-title">
+    <h2 class="vh" id="cmdk-title" data-i18n="search">搜索</h2>
+    <div class="cmdk__field">
+      <span class="cmdk__p" aria-hidden="true">&gt;</span>
+      <input class="cmdk__input" id="cmdk-input" type="text" role="combobox"
+             aria-expanded="true" aria-controls="cmdk-list" aria-autocomplete="list"
+             aria-describedby="cmdk-state" autocomplete="off" spellcheck="false"
+             placeholder="按标题、标签或技术栈筛选…">
+      <span class="cmdk__state" id="cmdk-state"></span>
+    </div>
+    <ul class="cmdk__list" id="cmdk-list" role="listbox" aria-labelledby="cmdk-title"></ul>
+    <p class="cmdk__none" id="cmdk-none" hidden></p>
+    <div class="cmdk__keys">
+      <span><b>↑↓</b> <span data-i18n="kMove">移动</span></span>
+      <span><b>ENTER</b> <span data-i18n="kOpen">打开</span></span>
+      <span><b>TAB</b> <span data-i18n="kTag">补全标签</span></span>
+      <span><b>ESC</b> <span data-i18n="kClose">关闭</span></span>
+    </div>
+  </div>
 </div>
 
 <script>
-  // ============ 项目数据（新增子项目只需在此追加一条） ============
-  // descZh / descEn 为卡片描述的双语文案；标题、tag、stack 保持英文标识符
-  const projects = [
-    {
-      id:'01',
-      slug:'minecraft-web',
-      title:'MINECRAFT WEB',
-      tag:'3D · SANDBOX',
-      stack:['rust','bevy','wasm'],
-      descZh:'一个在浏览器中运行的体素沙盒世界，由 Rust + Bevy 编译为 WebAssembly 驱动。',
-      descEn:'A voxel sandbox running in-browser via WebAssembly, powered by Rust + Bevy.'
-    },
-    {
-      id:'02',
-      slug:'neon-pulse',
-      title:'NEON PULSE',
-      tag:'ARCADE',
-      stack:['canvas','arcade'],
-      descZh:'实验性质的小游戏，也是最初用来测试 GitHub Pages 的项目。闪避光墙、累积连击，在不断加速的霓虹航道中冲击最高分。',
-      descEn:'An experimental mini-game — also the very first project used to test GitHub Pages. Dodge light walls, build combos in an accelerating neon corridor.'
-    },
-    {
-      id:'03',
-      slug:'group-meeting-eml',
-      title:'EML ELEMENTARY TALK',
-      tag:'SLIDES · TALK',
-      stack:['slides','katex','webgl'],
-      descZh:'EML 单算子重构全部初等函数 —— 组会汇报，横向翻页网页 PPT。',
-      descEn:'Reconstructing all elementary functions with a single EML operator — group meeting talk, horizontal swipe web deck.'
-    },
-    {
-      id:'04',
-      slug:'guon-paper',
-      title:'GUON OPTIMIZER',
-      tag:'PAPER · HUMOR',
-      stack:['llm','optimizer','satire'],
-      descZh:'VRAM 太贵所以用研究生训练 LLM —— GUON 无状态二阶优化器，发表于 JokerofAcademics。',
-      descEn:'VRAM is too expensive so we use graduate students to train LLMs — GUON, a stateless second-order optimizer. Published in JokerofAcademics.'
-    },
-    {
-      id:'05',
-      slug:'ecg-ai-local',
-      title:'ECG AI LOCAL',
-      tag:'AI · HEALTH',
-      stack:['tfjs','snn','local-ai'],
-      descZh:'心韵深辨 —— 由微信小程序完整转化的本地AI心电检测应用，浏览器内 TensorFlow.js 推理，9 个页面完整复刻。',
-      descEn:'Xin Yun Shen Bian — a WeChat mini-program fully converted to web. Local ECG detection with TensorFlow.js in-browser inference, all 9 pages replicated.'
-    },
-    {
-      id:'06',
-      slug:'liang-intensity-calibrator',
-      title:'LIANG CALIBRATOR',
-      tag:'AIGC · SCRUBBER',
-      stack:['image2','h3-ai','video','canvas'],
-      descZh:'AI 连续版滑动变祖器 —— 技术路线：OpenAI Image2 生成首尾帧 + MiniMax H3 FL2VA 连续插帧。滑杆 0-30 级逐帧连续进化，从「小难梁」一路到「梁祖」，241 帧全利用、零跳帧。',
-      descEn:'AI continuous evolution scrubber — OpenAI Image2 anchor frames interpolated by MiniMax H3 FL2VA. A 0-30 level, frame-by-frame evolution from a beaten laoliang all the way to an emperor (241 frames, zero skip).'
-    },
-    {
-      id:'07',
-      slug:'fund-manager',
-      title:'FUND MANAGER',
-      tag:'FINANCE · TOOL',
-      stack:['indexeddb','sheetjs','single-page'],
-      descZh:'活动经费记账助手 —— 浏览器本地运行的单人经费管理工具，支持预算表导入、报销追踪、催办提醒与 Excel 导出。',
-      descEn:'Activity fund accounting assistant — a single-user expense management tool running locally in the browser, with budget import, reimbursement tracking, reminder alerts, and Excel export.'
-    },
-    {
-      id:'08',
-      slug:'game-studio-eval-s2',
-      title:'GAME STUDIO EVAL',
-      tag:'AI · BENCHMARK',
-      stack:['benchmark','godot','wasm'],
-      descZh:'AI 游戏生成评测 —— 同一套 ZCode Game Studios 框架，仅给一个 /goal、零额外人工提示词，让模型自主把游戏做到可玩。当前为第二届（框架 1.0.0）；第一届 5 位选手的完整结果见站内榜单。 原项目：<a class="src" href="https://github.com/HunLuanZhiZhu/ZCode-Game-Studios" target="_blank" rel="noopener">ZCode Game Studios</a>（源自 Claude Code Game Studios）。',
-      descEn:'AI game-generation benchmark — one ZCode Game Studios framework, a single /goal and zero extra human prompts, models build playable games on their own. Now on season 2 (framework 1.0.0); season 1\'s five-contestant results remain available. Source: <a class="src" href="https://github.com/HunLuanZhiZhu/ZCode-Game-Studios" target="_blank" rel="noopener">ZCode Game Studios</a> (derived from Claude Code Game Studios).'
-    },
-    {
-      id:'09',
-      slug:'svg-pelican',
-      title:'DYNAMIC SVG PELICAN',
-      tag:'SVG · ITERATION',
-      stack:['svg','smil','deepseek-v4-pro'],
-      descZh:'用 AI 反复尝试生成动态 SVG 动画的实验画廊。每次尝试单独成版本：既可在首页直接预览动画，也可点开独立页面全屏观看。',
-      descEn:'A gallery of AI-generated dynamic SVG animation, iterated attempt by attempt. Each attempt is its own version — preview the animation in place, or open it as a standalone full-screen page.'
-    },
-    {
-      id:'10',
-      slug:'group-meeting-ct',
-      title:'CT TRIO TALK',
-      tag:'SLIDES · TALK',
-      stack:['slides','katex','svg'],
-      descZh:'把 CT 读懂：合成 · 检测 · 分割 —— 组会文献汇报，43 页横版网页 PPT。逐篇拆解三篇 CT 深度学习论文的「问题—方法—证据—边界」，术语就地注解，含公式与逐页演讲者备注（按 N）。',
-      descEn:'Reading CT properly: synthesis, detection, segmentation — a 43-page group-meeting literature talk as a horizontal web deck. Three CT deep-learning papers, each dissected problem → method → evidence → limits, with inline glossary, formulas, and per-page speaker notes (press N).'
-    },
-    {
-      id:'11',
-      slug:'blender-3d',
-      title:'BLENDER 3D',
-      tag:'3D · MODELING',
-      stack:['blender','gltf','webgl','deepseek-v4.1-flash'],
-      descZh:'用 Blender Python 程序化建模的两个 3D 模型：《执烛》的提灯（三种初始灯型）与皮卡丘。形体全部由脚本从球体、锥体、立方体生成，经布尔运算与体素融合成型，导出为 glTF 后由页面自带的零依赖 WebGL 查看器直接渲染，可拖动旋转。',
-      descEn:'Two 3D models built procedurally with Blender Python — the Candlewake lamp (three starting lamp types) and Pikachu. Every form is generated by script from spheres, cones and cubes, shaped with booleans and voxel remeshing, then exported to glTF and rendered in-browser by a zero-dependency WebGL viewer shipped with the page.'
-    }
-  ];
+(function(){
+'use strict';
 
-  // ============ 客户项目（客户委托 / 外包）数据 ============
-  // 与个人项目分开渲染：首页单独一个「客户项目」区块
-  const clientProjects = [
-    {
-      id:'C01',
-      slug:'clients/breakout',
-      title:'BREAKOUT',
-      tag:'CLIENT · RESTYLE',
-      stack:['godot','svg','wasm'],
-      descZh:'客户委托：把原项目 <a class="src" href="https://github.com/240700/Breakout" target="_blank" rel="noopener">240700/Breakout</a>（Godot 打砖块）从代码色块重制为霓虹矢量风 —— 7 组手绘 SVG 贴图替换全部视觉，物理与碰撞逻辑原样保留。含可玩网页构建。',
-      descEn:'Client commission: a neon-vector restyle of <a class="src" href="https://github.com/240700/Breakout" target="_blank" rel="noopener">240700/Breakout</a> (Godot brick-breaker) — seven hand-drawn SVG asset sets replace every code-drawn visual, physics and collision left untouched. Playable web build included.'
-    }
-  ];
+/* ═══════════════════════════════════════════════════════════════════════════
+   DATA — the only place a project is registered.
 
-  // ============ i18n 文案字典 ============
-  const I18N = {
-    zh:{
-      projects_label:'项目',
-      hero_desc:'一个个人静态网页项目合集。<span class="hl">浏览器实验与游戏</span>，每个子项目独立文件夹，首页负责导航。全部纯前端，无框架、无构建。',
-      projects:'项目',
-      clients:'客户项目',
-      footer:'© 2026 · 由 html / css / js 构建 · 无框架',
-      enter:'进入'
-    },
-    en:{
-      projects_label:'PROJECTS',
-      hero_desc:'A personal collection of static web projects. <span class="hl">Browser experiments & games</span>, each in its own folder, navigated from this home. Pure frontend, no frameworks, no build step.',
-      projects:'Projects',
-      clients:'CLIENT WORKS',
-      footer:'© 2026 · built with html / css / js · no frameworks',
-      enter:'ENTER'
+   `d` is the card's span on a 3-column desktop grid. The sequence of spans is
+   chosen so the natural DOM order fills every row exactly — 3, 2+1, 3, 2+1, 3,
+   2+1, 3 — across all nine entries. That buys a real mosaic with no holes and
+   no `dense` packing, so reading order and tab order stay identical. At
+   768–1023px a 3 becomes a 2 and a 2 a 1, which also fills exactly; below
+   768px everything is one column. Re-check both tilings after adding or
+   removing an entry, or the mosaic grows a hole.
+
+   `fig` names a renderer in MARKS below. Each one draws that project's own
+   physics; there is no shared clip-art and no bitmap anywhere on this page.
+   A figure's live readout is prefixed with `id`, passed in by the harness, so
+   renumbering entries cannot leave a stale number in a drawing.
+
+   `href` sends the card somewhere other than /projects/<slug>/ — used by the
+   merged deck collection, whose own home is its repository.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var projects = [
+  { id:'01', slug:'minecraft-web', title:'MINECRAFT WEB', tag:'3D · SANDBOX',
+    kind:'3D', stack:['rust','bevy','wasm'], fig:'voxel', d:3,
+    labelZh:'体素晶格', labelEn:'VOXEL LATTICE',
+    descZh:'一个在浏览器中运行的体素沙盒世界，由 Rust + Bevy 编译为 WebAssembly 驱动。',
+    descEn:'A voxel sandbox running in-browser via WebAssembly, powered by Rust + Bevy.' },
+
+  { id:'02', slug:'neon-pulse', title:'NEON PULSE', tag:'ARCADE',
+    kind:'game', stack:['canvas','arcade'], fig:'corridor', d:2,
+    labelZh:'透视航道', labelEn:'PERSPECTIVE LANE',
+    descZh:'实验性质的小游戏，也是最初用来测试 GitHub Pages 的项目。闪避光墙、累积连击，在不断加速的霓虹航道中冲击最高分。',
+    descEn:'An experimental mini-game — also the very first project used to test GitHub Pages. Dodge light walls and build combos in an accelerating neon corridor.' },
+
+  /* Two group-meeting decks collapsed into one entry. The two decks are still
+     served at their own paths; this card's own link is the collection's repo. */
+  { id:'03', slug:'group-meeting-ppts', title:'GROUP MEETING PPTS', tag:'SLIDES · TALK',
+    kind:'talk', stack:['slides','katex','svg','webgl'], fig:'deck', d:1,
+    href:'https://github.com/HunLuanZhiZhu/zuhui-ppt', cta:'github',
+    labelZh:'论文胶片', labelEn:'PAPER DECK',
+    descZh:'组会汇报用的网页 PPT 合集 —— 横向翻页，公式与术语就地注解，逐页演讲者备注（按 N）。已含 EML 单算子重构初等函数、CT 三篇文献精读（合成 · 检测 · 分割，43 页）等场次。源码与后续场次：<a class="src" href="https://github.com/HunLuanZhiZhu/zuhui-ppt" target="_blank" rel="noopener">HunLuanZhiZhu/zuhui-ppt</a>。',
+    descEn:'A collection of group-meeting talks as horizontal web decks — formulas and terms annotated in place, per-page speaker notes (press N). So far: EML reconstructing elementary functions from one operator, and a close reading of three CT papers (synthesis · detection · segmentation, 43 pages). Source and new talks: <a class="src" href="https://github.com/HunLuanZhiZhu/zuhui-ppt" target="_blank" rel="noopener">HunLuanZhiZhu/zuhui-ppt</a>.' },
+
+  { id:'04', slug:'guon-paper', title:'GUON OPTIMIZER', tag:'PAPER · HUMOR',
+    kind:'paper', stack:['llm','optimizer','satire'], fig:'descent', d:2,
+    labelZh:'无状态下降', labelEn:'STATELESS DESCENT',
+    descZh:'VRAM 太贵所以用研究生训练 LLM —— GUON 无状态二阶优化器，发表于 JokerofAcademics。',
+    descEn:'VRAM is too expensive so we use graduate students to train LLMs — GUON, a stateless second-order optimizer. Published in JokerofAcademics.' },
+
+  { id:'05', slug:'ecg-ai-local', title:'ECG AI LOCAL', tag:'AI · HEALTH',
+    kind:'app', stack:['tfjs','snn','local-ai'], fig:'ecg', d:1,
+    labelZh:'心电节律', labelEn:'CARDIAC TRACE',
+    descZh:'心韵深辨 —— 由微信小程序完整转化的本地AI心电检测应用，浏览器内 TensorFlow.js 推理，9 个页面完整复刻。',
+    descEn:'Xin Yun Shen Bian — a WeChat mini-program fully converted to web. Local ECG detection with TensorFlow.js in-browser inference, all 9 pages replicated.' },
+
+  { id:'06', slug:'liang-intensity-calibrator', title:'LIANG CALIBRATOR', tag:'AIGC · SCRUBBER',
+    kind:'app', stack:['image2','h3-ai','video','canvas'], fig:'scrub', d:3,
+    labelZh:'逐帧滑杆', labelEn:'FRAME SCRUBBER',
+    descZh:'AI 连续版滑动变祖器 —— 技术路线：OpenAI Image2 生成首尾帧 + MiniMax H3 FL2VA 连续插帧。滑杆 0-30 级逐帧连续进化，从「小难梁」一路到「梁祖」，241 帧全利用、零跳帧。',
+    descEn:'AI continuous evolution scrubber — OpenAI Image2 anchor frames interpolated by MiniMax H3 FL2VA. A 0-30 level, frame-by-frame evolution from a beaten laoliang all the way to an emperor (241 frames, zero skip).' },
+
+  { id:'07', slug:'game-studio-eval-s2', title:'GAME STUDIO EVAL', tag:'AI · BENCHMARK',
+    kind:'paper', stack:['benchmark','godot','wasm'], fig:'bracket', d:2,
+    labelZh:'评测记分', labelEn:'BENCH SCORE',
+    descZh:'AI 游戏生成评测 —— 同一套 ZCode Game Studios 框架，仅给一个 /goal、零额外人工提示词，让模型自主把游戏做到可玩。当前为第二届（框架 1.0.0）；第一届 5 位选手的完整结果见站内榜单。 原项目：<a class="src" href="https://github.com/HunLuanZhiZhu/ZCode-Game-Studios" target="_blank" rel="noopener">ZCode Game Studios</a>（源自 Claude Code Game Studios）。',
+    descEn:'AI game-generation benchmark — one ZCode Game Studios framework, a single /goal and zero extra human prompts, models build playable games on their own. Now on season 2 (framework 1.0.0); season 1\'s five-contestant results remain available. Source: <a class="src" href="https://github.com/HunLuanZhiZhu/ZCode-Game-Studios" target="_blank" rel="noopener">ZCode Game Studios</a> (derived from Claude Code Game Studios).' },
+
+  { id:'08', slug:'svg-pelican', title:'DYNAMIC SVG PELICAN', tag:'SVG · ITERATION',
+    kind:'3D', stack:['svg','smil','deepseek-v4-pro'], fig:'redraw', d:1,
+    labelZh:'逐笔重绘', labelEn:'STROKE REDRAW',
+    descZh:'用 AI 反复尝试生成动态 SVG 动画的实验画廊。每次尝试单独成版本：既可在首页直接预览动画，也可点开独立页面全屏观看。',
+    descEn:'A gallery of AI-generated dynamic SVG animation, iterated attempt by attempt. Each attempt is its own version — preview the animation in place, or open it as a standalone full-screen page.' },
+
+  { id:'09', slug:'blender-3d', title:'BLENDER 3D', tag:'3D · MODELING',
+    kind:'3D', stack:['blender','gltf','webgl','deepseek-v4.1-flash'], fig:'lathe', d:3,
+    labelZh:'旋转成形', labelEn:'LATHE FORM',
+    descZh:'用 Blender Python 程序化建模的两个 3D 模型：《执烛》的提灯（三种初始灯型）与皮卡丘。形体全部由脚本从球体、锥体、立方体生成，经布尔运算与体素融合成型，导出为 glTF 后由页面自带的零依赖 WebGL 查看器直接渲染，可拖动旋转。',
+    descEn:'Two 3D models built procedurally with Blender Python — the Candlewake lamp (three starting lamp types) and Pikachu. Every form is generated by script from spheres, cones and cubes, shaped with booleans and voxel remeshing, exported to glTF and rendered in-browser by a zero-dependency WebGL viewer.' }
+];
+
+var clientWorks = [
+  { id:'C01', slug:'clients/breakout', title:'BREAKOUT', tag:'CLIENT · RESTYLE',
+    kind:'game', stack:['godot','svg','wasm'], fig:'paddle', d:1,
+    labelZh:'霓虹砖墙', labelEn:'NEON BRICKS',
+    kickZh:'客户委托', kickEn:'CLIENT COMMISSION',
+    descZh:'把原项目 <a class="src" href="https://github.com/240700/Breakout" target="_blank" rel="noopener">240700/Breakout</a>（Godot 打砖块）从代码色块重制为霓虹矢量风 —— 7 组手绘 SVG 贴图替换全部视觉，物理与碰撞逻辑原样保留。含可玩网页构建。',
+    descEn:'A neon-vector restyle of <a class="src" href="https://github.com/240700/Breakout" target="_blank" rel="noopener">240700/Breakout</a> (Godot brick-breaker) — seven hand-drawn SVG asset sets replace every code-drawn visual, physics and collision left untouched. Playable web build included.',
+    metaZh:[['委托内容','视觉重制：7 组 SVG 贴图替换代码色块绘制'],['保持不动','物理、碰撞与关卡逻辑原样保留'],['交付','可玩网页构建（Godot → WebAssembly）']],
+    metaEn:[['BRIEF','Visual restyle: 7 SVG asset sets replace code-drawn shapes'],['UNTOUCHED','Physics, collision and level logic left as they were'],['DELIVERED','Playable web build (Godot → WebAssembly)']],
+    fee:'¥10' },
+
+  /* slug keeps the project's original path — only its placement on this page
+     changed, so links to /projects/fund-manager/ still resolve. No fee is
+     shown for this one. */
+  { id:'C02', slug:'fund-manager', title:'FUND MANAGER', tag:'CLIENT · TOOL',
+    kind:'tool', stack:['indexeddb','sheetjs','single-page'], fig:'ledger', d:2,
+    labelZh:'经费流水', labelEn:'EXPENSE LEDGER',
+    kickZh:'客户委托', kickEn:'CLIENT COMMISSION',
+    descZh:'活动经费记账助手 —— 浏览器本地运行的单人经费管理工具，支持预算表导入、报销追踪、催办提醒与 Excel 导出。',
+    descEn:'Activity fund accounting assistant — a single-user expense tool running locally in the browser, with budget import, reimbursement tracking, reminders and Excel export.',
+    metaZh:[['委托内容','单人经费管理工具，单页应用'],['功能','预算表导入 · 报销追踪 · 催办提醒 · Excel 导出'],['数据','全部存在浏览器本地（IndexedDB），不经过服务端']],
+    metaEn:[['BRIEF','A single-user expense tool as a single-page app'],['FEATURES','Budget import · reimbursement tracking · reminders · Excel export'],['DATA','All of it stays in the browser (IndexedDB); no server involved']] }
+];
+
+var ALL = projects.concat(clientWorks);
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   I18N
+   ═══════════════════════════════════════════════════════════════════════════ */
+var I18N = {
+  zh:{
+    badge:'项目', search:'搜索', kick:'~/projects — 索引',
+    h1a:'PROJECTS.', h1b:'ZERO BUILD STEP', h1vh:'零构建步骤的浏览器实验合集',
+    lede:'一个个人静态网页项目合集：<b>浏览器实验、游戏、讲稿与工具</b>，每个子项目一个独立文件夹，首页负责导航。全部纯前端 —— <span class="u">无框架，无构建步骤</span>，克隆下来直接打开就能跑。',
+    projects:'项目', clients:'客户项目', filtering:'筛选', clear:'清除',
+    fnav:'本页', f1:'简介', f2:'项目索引', f3:'客户项目',
+    fout:'外部', frepo:'本站源码', fbuild:'构建',
+    fnote:'单文件 HTML，内联 CSS 与 JS。零外部依赖 —— 没有 CDN、没有字体请求、没有构建产物，克隆即可运行。',
+    fstack:'html / css / js · 无框架 · 无构建',
+    fcredit:'正文字体 Cascadia Mono（SIL OFL 1.1，子集内联）',
+    kMove:'移动', kOpen:'打开', kTag:'补全标签', kClose:'关闭',
+    enter:'进入', run:'运行', running:'运行中', figOf:'图', frame:'帧', blk:'格', fee:'费用',
+    rProjects:'项目', rClients:'客户', rKinds:'类型',
+    github:'GITHUB', newTab:'（在新标签页打开仓库）',
+    count:'共', results:'条结果', noResult:'没有匹配的项目',
+    noResultHint:'换个关键词，或者直接浏览下面的索引。',
+    noMatch:'没有匹配', clearNow:'清除筛选', placeholder:'按标题、标签或技术栈筛选…',
+    toggle:'双击切换主题'
+  },
+  en:{
+    badge:'PROJECTS', search:'SEARCH', kick:'~/projects — index',
+    h1a:'PROJECTS.', h1b:'ZERO BUILD STEP', h1vh:'A collection of browser experiments with no build step',
+    lede:'A personal collection of static web projects: <b>browser experiments, games, talks and tools</b>, each in its own folder, navigated from this page. Pure frontend — <span class="u">no framework, no build step</span>. Clone it and open the file.',
+    projects:'Projects', clients:'Client Works', filtering:'Filter', clear:'CLEAR',
+    fnav:'This page', f1:'Intro', f2:'Project index', f3:'Client works',
+    fout:'Elsewhere', frepo:'Source of this site', fbuild:'Build',
+    fnote:'One HTML file with inline CSS and JS. Zero external dependencies — no CDN, no font request, no build output. Clone and run.',
+    fstack:'html / css / js · no frameworks · no build',
+    fcredit:'Body face Cascadia Mono (SIL OFL 1.1, subset inlined)',
+    kMove:'move', kOpen:'open', kTag:'complete tag', kClose:'close',
+    enter:'ENTER', run:'RUN', running:'RUNNING', figOf:'FIG', frame:'f', blk:'blk', fee:'FEE',
+    rProjects:'projects', rClients:'client', rKinds:'kinds',
+    github:'GITHUB', newTab:'(opens the repository in a new tab)',
+    count:'', results:'results', noResult:'No project matches',
+    noResultHint:'Try another term, or just browse the index below.',
+    noMatch:'No match for', clearNow:'CLEAR FILTER', placeholder:'Filter by title, tag or stack…',
+    toggle:'double-tap to switch theme'
+  }
+};
+var lang = 'zh';
+try{ var s = localStorage.getItem('lang'); if(s === 'zh' || s === 'en') lang = s; }catch(e){}
+var T = function(k){ return I18N[lang][k]; };
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FIGURES — twelve renderers, one per project, no bitmaps.
+
+   Signature: fn(g, w, h, u) where g is a 2D context already scaled so that
+   w/h are CSS pixels, and u carries the palette plus the animation state:
+     u.p  boot progress 0..1  (1 = composed; reduced-motion always gets 1)
+     u.t  seconds since boot  (0 when reduced-motion)
+     u.k  a 0..1 cycling phase, so idle motion stays cheap and slow
+   A renderer may return a short live readout string; the card prints it while
+   the instrument is running, which is what makes hover mean something.
+   Every figure is drawn to read as a finished diagram at p=1 and t=0.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var ACID = '#c6ff00';
+var FIG = {
+  ink:'rgba(255,255,255,.30)',
+  ink2:'rgba(255,255,255,.14)',
+  ink3:'rgba(255,255,255,.07)',
+  acid:ACID,
+  a12:'rgba(198,255,0,.12)',
+  a22:'rgba(198,255,0,.22)',
+  a38:'rgba(198,255,0,.38)',
+  a70:'rgba(198,255,0,.70)'
+};
+var clamp01 = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; };
+/* canvas font strings cannot resolve var(), so the family is spelled out */
+var CANVAS_FACE = "'Cascadia Mono Subset',ui-monospace,Menlo,Consolas,monospace";
+function mono(g, s, x, y, color, size, align){
+  g.fillStyle = color; g.font = size + 'px ' + CANVAS_FACE;
+  g.textAlign = align || 'left'; g.textBaseline = 'alphabetic';
+  g.fillText(s, x, y);
+}
+function seg(g, a, b){ g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); g.stroke(); }
+function poly(g, pts, fill, stroke){
+  g.beginPath();
+  for(var i = 0; i < pts.length; i++) i ? g.lineTo(pts[i][0], pts[i][1]) : g.moveTo(pts[i][0], pts[i][1]);
+  g.closePath();
+  if(fill){ g.fillStyle = fill; g.fill(); }
+  if(stroke){ g.strokeStyle = stroke; g.stroke(); }
+}
+function box(g, x, y, w, h, fill, stroke){
+  g.beginPath(); g.rect(x, y, w, h);
+  if(fill){ g.fillStyle = fill; g.fill(); }
+  if(stroke){ g.strokeStyle = stroke; g.stroke(); }
+}
+/* the shared axis: every figure sits on a scale, so a full-width band never
+   reads as empty and a narrow one never reads as cropped */
+function axis(g, w, h, step, label, u){
+  var y = h - 16;
+  g.strokeStyle = FIG.ink2; g.lineWidth = 1;
+  seg(g, [0, y + .5], [w, y + .5]);
+  g.strokeStyle = FIG.ink3;
+  for(var x = 0; x <= w; x += step){
+    var long = Math.round(x / step) % 5 === 0;
+    seg(g, [x + .5, y + .5], [x + .5, y + .5 + (long ? 7 : 4)]);
+  }
+  if(label) mono(g, label, w, y + 26, FIG.ink2, 9, 'right');
+  return y;
+}
+
+var MARKS = {
+  /* 01 · voxel lattice — cells accrete in a slow diagonal wave */
+  voxel:function(g, w, h, u){
+    var usable = h - 42;
+    var s = Math.min(usable / 8.3, w / 13), N = 4, H = 4;
+    var cx = w / 2, cy = 16 + usable * .5;
+    var iso = function(x, y, z){ return [cx + (x - z) * .866 * s, cy + ((x + z) * .5 - y) * s]; };
+    g.lineWidth = 1; g.strokeStyle = FIG.ink3;
+    var i;
+    for(i = 0; i <= N; i++){ seg(g, iso(i,0,0), iso(i,0,N)); seg(g, iso(0,0,i), iso(N,0,i)); }
+    g.strokeStyle = FIG.ink2;
+    for(i = 0; i <= N; i++){
+      seg(g, iso(i,H,0), iso(i,H,N)); seg(g, iso(0,H,i), iso(N,H,i));
     }
+    for(i = 0; i < 4; i++){
+      var c = [[0,0],[N,0],[0,N],[N,N]][i];
+      seg(g, iso(c[0],0,c[1]), iso(c[0],H,c[1]));
+    }
+    var cells = [[1,1,3],[2,1,2],[1,2,3],[2,2,1],[3,2,2],[2,3,1]];
+    var peak = 0;
+    cells.forEach(function(c, i){
+      /* each column breathes on its own phase, so the lattice is never a
+         still image once it has finished booting */
+      var breath = .74 + .26 * Math.sin(u.t * .62 - i * .95);
+      var top = Math.min(c[2], H) * clamp01(u.p * 1.5 - i * .08) * breath;
+      if(top > peak) peak = top;
+      if(top < .04) return;
+      var x = c[0], z = c[1];
+      poly(g, [iso(x,0,z+1), iso(x+1,0,z+1), iso(x+1,top,z+1), iso(x,top,z+1)], FIG.a22, FIG.a70);
+      poly(g, [iso(x+1,0,z), iso(x+1,0,z+1), iso(x+1,top,z+1), iso(x+1,top,z)], FIG.a12, FIG.a70);
+      poly(g, [iso(x,top,z), iso(x+1,top,z), iso(x+1,top,z+1), iso(x,top,z+1)], FIG.a38, FIG.a70);
+    });
+    axis(g, w, h, 28, null, u);
+    return T('figOf') + u.id + ' · ' + peak.toFixed(1) + '/' + H + ' ' + T('blk');
+  },
+
+  /* 02 · neon corridor — walls rush the camera, a dot weaves the gap */
+  corridor:function(g, w, h, u){
+    var vx = w * .5, vy = h * .47;
+    /* separate axes: a corridor is a wide thing, and a letterbox band should
+       be filled by widening the tunnel rather than by shrinking it */
+    var RY = Math.min(h * .40, w * .16), RX = Math.min(w * .46, RY * 1.90);
+    var n = 7, z0 = (u.t * .34) % 1, i;
+    g.lineWidth = 1;
+    for(i = n - 1; i >= 0; i--){
+      var z = ((i / n) + z0) % 1;
+      var k = Math.pow(z, 1.55);
+      var hw = RX * k, hh = RY * k;
+      if(hw < 1) continue;
+      g.strokeStyle = z < .30 ? FIG.a70 : FIG.ink;
+      box(g, vx - hw, vy - hh, hw * 2, hh * 2, null, g.strokeStyle);
+    }
+    var dt = (u.t * .5) % 2;
+    var lane = (dt < 1 ? dt : 2 - dt) - .5;
+    var dx = vx + lane * RX * 1.30, dy = vy + Math.sin(u.t * 1.25) * RY * .78;
+    g.fillStyle = FIG.acid;
+    g.beginPath(); g.arc(dx, dy, 3, 0, 6.2832); g.fill();
+    g.strokeStyle = FIG.a38;
+    seg(g, [dx - 16, dy], [dx - 6, dy]); seg(g, [dx + 6, dy], [dx + 16, dy]);
+    axis(g, w, h, 28, null, u);
+    return T('figOf') + u.id + ' · z ' + (Math.round((1 - z0) * 100)) + '%';
+  },
+
+  /* 04 · a stateless stepper on a loss landscape, re-initialised every step */
+  descent:function(g, w, h, u){
+    var cx = w * .5, cy = h * .40;
+    /* the contour field stretches to the band instead of sitting in it */
+    var AR = Math.max(1, Math.min(2.9, (w * .44) / (h * .54)));
+    var R = Math.min((w * .44) / (AR * 1.15), h * .54);
+    g.lineWidth = 1;
+    var lv, i;
+    for(lv = 5; lv >= 1; lv--){
+      g.strokeStyle = lv === 1 ? FIG.a38 : FIG.ink2;
+      g.beginPath();
+      for(i = 0; i <= 40; i++){
+        var a = i / 40 * 6.2832;
+        var rr = R * (lv / 5) * (1 + .18 * Math.sin(a * 2 + lv));
+        var X = cx + Math.cos(a) * rr * 1.15 * AR, Y = cy + Math.sin(a) * rr * .70;
+        i ? g.lineTo(X, Y) : g.moveTo(X, Y);
+      }
+      g.closePath(); g.stroke();
+    }
+    /* the step counter only ever goes forward and then resets — stateless */
+    var cyc = (u.t * .40) % 1;
+    var k = Math.floor(cyc * 8) / 8;      /* the trail stays BEHIND the head */
+    var at = function(f){
+      return [cx + Math.cos(f * 2.2) * R * 1.05 * AR * (1 - f * .72),
+              cy + Math.sin(f * 2.2) * R * .62 * (1 - f * .72) - f * R * .30];
+    };
+    var pts = [], i2;
+    for(i2 = 0; i2 <= 8; i2++) pts.push(at((i2 / 8) * k));
+    g.strokeStyle = FIG.a38;
+    g.beginPath();
+    pts.forEach(function(p, j){ j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]); });
+    g.stroke();
+    /* the head keeps moving between the discrete steps, so the descent is a
+       process rather than a flipbook */
+    var last = at(cyc);
+    g.fillStyle = FIG.acid;
+    g.beginPath(); g.arc(last[0], last[1], 3.6, 0, 6.2832); g.fill();
+    g.strokeStyle = FIG.ink2;
+    seg(g, [last[0], last[1]], [last[0] + 26, last[1] - 20]);
+    mono(g, 'step ' + Math.floor(cyc * 8), last[0] + 30, last[1] - 20, FIG.ink, 9, 'left');
+    axis(g, w, h, 28, null, u);
+    return T('figOf') + u.id + ' · ' + Math.floor(cyc * 8) + '/8';
+  },
+
+  /* 05 · an ECG strip scrolling right to left, beats bracketed as detected */
+  ecg:function(g, w, h, u){
+    var y0 = h * .48, A = h * .30;
+    var beat = function(x){
+      var s = 0;
+      s += .10 * Math.exp(-Math.pow((x - .18) / .028, 2));
+      s -= .16 * Math.exp(-Math.pow((x - .235) / .010, 2));
+      s += 1.00 * Math.exp(-Math.pow((x - .262) / .011, 2));
+      s -= .30 * Math.exp(-Math.pow((x - .290) / .014, 2));
+      s += .26 * Math.exp(-Math.pow((x - .52) / .058, 2));
+      return s;
+    };
+    var period = Math.max(w * .21, 148);
+    var shift = (u.t * .30 + u.k) * period;
+    g.strokeStyle = FIG.ink3; g.lineWidth = 1;
+    for(var gy = -2; gy <= 2; gy++){
+      if(gy === 0) continue;
+      seg(g, [0, y0 + gy * A * .5], [w, y0 + gy * A * .5]);
+    }
+    g.strokeStyle = FIG.acid; g.lineWidth = 1.5;
+    g.beginPath();
+    var w2 = w + 2, x, first = true;
+    for(x = 0; x <= w2; x += 1.5){
+      var ph = ((x + shift) / period) % 1;
+      var Y = y0 - beat(Math.abs(ph)) * A;
+      first ? (g.moveTo(x, Y), first = false) : g.lineTo(x, Y);
+    }
+    g.stroke();
+    /* the detector only marks beats the sweep has already passed */
+    g.strokeStyle = FIG.a38; g.lineWidth = 1;
+    var nMark = Math.floor(w / period) + 1;
+    for(var m = 0; m < nMark; m++){
+      var bx = w - ((m * period + shift) % (period * nMark)) + period * .262;
+      if(bx < 6 || bx > w - 6) continue;
+      seg(g, [bx, y0 - A * 1.18], [bx, y0 + A * .74]);
+      mono(g, 'R', bx + 3, y0 - A * 1.18, FIG.ink, 9, 'left');
+    }
+    var bpm = 60 + Math.round(Math.abs(Math.sin(u.t * .18)) * 12);
+    axis(g, w, h, 18, '25 mm/s', u);
+    return T('figOf') + u.id + ' · ' + bpm + ' bpm';
+  },
+
+  /* 06 · the 0-30 scrubber: ticks fill as the playhead advances */
+  scrub:function(g, w, h, u){
+    var pad = 26, y = h * .44, tw = Math.max(3, (w - pad * 2) / 31 - 2);
+    var ph = (u.t * .22) % 1;
+    var at = Math.round(ph * 30);
+    var i;
+    for(i = 0; i <= 30; i++){
+      var X = pad + i * (w - pad * 2) / 30;
+      var done = i <= at;
+      var hgt = done ? h * .30 * (.55 + .45 * Math.abs(Math.sin(i * 1.7))) : h * .07;
+      box(g, X - tw / 2, y - hgt / 2, tw, hgt,
+          done ? FIG.a38 : FIG.ink3, done ? FIG.a70 : null);
+      if(i % 10 === 0) mono(g, String(i), X, y + h * .27, FIG.ink2, 9, 'center');
+    }
+    g.strokeStyle = FIG.acid; g.lineWidth = 1.5;
+    var px = pad + at * (w - pad * 2) / 30;
+    seg(g, [px, y - h * .34], [px, y + h * .32]);
+    g.fillStyle = FIG.acid;
+    g.beginPath(); g.arc(px, y - h * .34, 3, 0, 6.2832); g.fill();
+    mono(g, '241f', w - pad, y - h * .34, FIG.ink2, 9, 'right');
+    axis(g, w, h, 28, null, u);
+    return T('figOf') + u.id + ' · ' + T('frame') + ' ' + at + '/30';
+  },
+
+  /* 07 · the ledger. Status only — no amounts. A made-up figure inside someone
+     else's money tool is invented data wearing a screenshot's clothes, so the
+     rows report what the tool does and how far it has got instead. */
+  ledger:function(g, w, h, u){
+    var rows = ['预算表导入', '报销追踪', '催办提醒', 'Excel 导出'];
+    var cols = (w / h) > 2.4 ? 2 : 1;
+    var per = Math.ceil(rows.length / cols);
+    var pad = 22;
+    /* the row block is centred in the space left by the completion rule, so a
+       full-bleed band does not read as four lines floating at the top */
+    var usable = h - 62;
+    var rowH = Math.min(48, (usable / per) * .62);
+    var blockH = per * rowH;
+    var top = Math.max(14, (usable - blockH) / 2 + 4);
+    var colW = (w - pad * 2 - (cols - 1) * 36) / cols;
+    var shown = Math.round(clamp01(u.p * 1.3) * rows.length);
+    /* the cursor walks the sheet on its own clock; a ledger that has stopped
+       counting is a screenshot */
+    var live = Math.floor(u.t * .85) % rows.length;
+    var done = 0;
+    rows.forEach(function(label, i){
+      if(i >= shown) return;
+      var c = Math.floor(i / per), r = i % per;
+      var x = pad + c * (colW + 36), y = top + r * rowH;
+      var on = i === live;
+      if(!on) done++;
+      g.strokeStyle = on ? FIG.a38 : FIG.ink3; g.lineWidth = 1;
+      seg(g, [x, y + rowH - 10], [x + colW, y + rowH - 10]);
+      mono(g, label, x, y + rowH - 16, on ? FIG.acid : FIG.ink, 10, 'left');
+      g.strokeStyle = on ? FIG.a38 : FIG.ink2; g.setLineDash(on ? [2, 2] : [1, 3]);
+      var lx0 = x + 92, lx1 = x + colW - 34;
+      seg(g, [lx0, y + rowH - 19], [lx1, y + rowH - 19]);
+      g.setLineDash([]);
+      /* the live row carries a head travelling along its leader. Without it
+         this figure only changes when the cursor row advances — about once
+         every three seconds — and it reads as a still image. */
+      if(on){
+        var hw = (lx1 - lx0) * .22;
+        var h0 = lx0 + (lx1 - lx0 - hw) * ((u.t * .7) % 1);
+        g.strokeStyle = FIG.acid; g.lineWidth = 2;
+        seg(g, [h0, y + rowH - 19], [h0 + hw, y + rowH - 19]);
+        g.fillStyle = FIG.acid;
+        g.beginPath(); g.arc(h0 + hw, y + rowH - 19, 2.4, 0, 6.2832); g.fill();
+        g.lineWidth = 1;
+      }
+      mono(g, on ? '···' : '✓', x + colW, y + rowH - 16,
+           on ? FIG.acid : FIG.ink2, 10, 'right');
+    });
+    /* a completion rule uses the full width without inventing a number */
+    var barY = top + blockH + 18;
+    var doneW = rows.length ? done / rows.length : 0;
+    g.strokeStyle = FIG.ink3; g.lineWidth = 1;
+    seg(g, [pad, barY + .5], [w - pad, barY + .5]);
+    g.strokeStyle = FIG.acid; g.lineWidth = 2;
+    seg(g, [pad, barY + .5], [pad + (w - pad * 2) * doneW, barY + .5]);
+    mono(g, done + ' / ' + rows.length, w - pad, barY + 20, FIG.a70, 10, 'right');
+    return T('figOf') + u.id + ' · ' + done + '/' + rows.length;
+  },
+
+  /* 08 · the benchmark: five contestants on a scale, leader flagged */
+  bracket:function(g, w, h, u){
+    var pad = 26, n = 5;
+    var base = h * .760, top = h * .14;
+    var targets = [.92, .74, .66, .41, .28];
+    var bw = Math.max(8, (w - pad * 2) / n - 10);
+    var reveal = clamp01((u.t * .30) * 1.6);
+    var i, lead = 0, best = -1;
+    for(i = 0; i < n; i++){
+      var v = targets[i] * clamp01(reveal * 1.3 - i * .06);
+      if(v > best){ best = v; lead = i; }
+      var X = pad + i * ((w - pad * 2) / n) + 4;
+      box(g, X, top, bw, base - top, FIG.ink3, null);
+      box(g, X, base - (base - top) * v, bw, (base - top) * v,
+          i === lead ? FIG.a38 : FIG.ink2, i === lead ? FIG.a70 : null);
+      g.strokeStyle = FIG.ink2; g.lineWidth = 1;
+      seg(g, [X, base + .5], [X + bw, base + .5]);
+    }
+    g.strokeStyle = FIG.a38; g.setLineDash([4, 4]);
+    seg(g, [pad, top + 8], [w - pad, top + 8]);
+    g.setLineDash([]);
+    mono(g, 'PLAYABLE', w - pad, top - 2, FIG.ink2, 9, 'right');
+    var names = ['S1·A', 'S1·B', 'S1·C', 'S1·D', 'S2'];
+    mono(g, names[lead], pad + lead * ((w - pad * 2) / n) + 4 + bw / 2,
+         base + 16, FIG.acid, 9, 'center');
+    return T('figOf') + u.id + ' · lead ' + names[lead];
+  },
+
+  /* 09 · the pelican, redrawn once per version with the strokes re-traced */
+  redraw:function(g, w, h, u){
+    var s = Math.min(w / 15, h / 9.4), cx = w * .46, cy = h * .46;
+    var v = Math.floor((u.t * .34) % 4);
+    var jit = [0, .5, -1, .8][v];
+    var P = function(p){ return [cx + p[0] * s, cy + p[1] * s + jit * .5]; };
+    /* stroke 5 is the bill — the one that changes most between attempts */
+    var strokes = [
+      [[-4.6,-1.2],[-3.4,-2.0],[-2.0,-2.2],[-1.2,-1.9]],
+      [[-1.2,-1.9],[-0.2,-2.4],[1.0,-2.2],[1.4,-1.6]],
+      [[1.4,-1.6],[2.6,-1.5],[4.2,-1.0],[5.0,-.5]],
+      [[5.0,-.5],[5.6,-.3],[5.9,-.7],[5.4,-1.1]],
+      [[5.4,-1.1],[4.0,-1.5],[2.4,-1.9],[1.4,-1.6]],
+      [[-1.2,-1.9],[-1.0,-.4],[-1.8,.7],[-3.2,1.3]],
+      [[-3.2,1.3],[-4.0,1.5],[-4.3,1.1],[-3.9,.6]],
+      [[-3.2,1.3],[-2.2,.4],[-2.0,-.9],[-2.4,-1.6]]
+    ];
+    var prog = clamp01(u.p * 1.15);
+    g.lineWidth = 1.4; g.lineJoin = 'round'; g.lineCap = 'round';
+    strokes.forEach(function(pts, si){
+      var local = clamp01(prog * strokes.length - si);
+      if(local <= 0) return;
+      g.strokeStyle = si === 5 ? FIG.acid : FIG.ink;
+      g.beginPath();
+      var a = P(pts[0]);
+      g.moveTo(a[0], a[1]);
+      var n = pts.length - 1;
+      for(var i = 1; i <= n; i++){
+        if((i / n) > local) break;
+        var b = P(pts[i]);
+        g.lineTo(b[0], b[1]);
+      }
+      g.stroke();
+    });
+    /* a pen head re-traces the outline continuously — the project is a series
+       of re-draw attempts, so the pen is the figure's own subject */
+    var pen = (u.t * .55) % 1, sp = pen * strokes.length;
+    var si2 = Math.floor(sp) % strokes.length, li = sp - Math.floor(sp);
+    var spts = strokes[si2], fi = li * (spts.length - 1);
+    var i0 = Math.floor(fi), fr = fi - i0;
+    var q0 = spts[Math.min(i0, spts.length - 1)];
+    var q1 = spts[Math.min(i0 + 1, spts.length - 1)];
+    var qp = P([q0[0] + (q1[0] - q0[0]) * fr, q0[1] + (q1[1] - q0[1]) * fr]);
+    g.fillStyle = FIG.acid;
+    g.beginPath(); g.arc(qp[0], qp[1], 2.6, 0, 6.2832); g.fill();
+    g.strokeStyle = FIG.ink3;
+    seg(g, [8, h - 18], [w - 8, h - 18]);
+    for(var d = 0; d < 4; d++){
+      box(g, 10 + d * 16, h - 14, 9, 3, d === v ? FIG.acid : FIG.ink3, null);
+    }
+    mono(g, 'v' + (v + 1), 78, h - 9, FIG.ink2, 9, 'left');
+    return T('figOf') + u.id + ' · v' + (v + 1) + '/4';
+  },
+
+  /* 03 · the group-meeting deck collection: talks fanned out, read across by a
+     continuous playhead. The segments are the two talks the collection
+     actually holds — a generic three would be a claim about content. */
+  deck:function(g, w, h, u){
+    var talks = ['EML', 'CT'];
+    var segs = talks.length;
+    var s = Math.min(w / 14, h / 8.6), cx = w / 2, cy = h * .44;
+    var i;
+    var ph = (u.t * .20) % 1;
+    var act = Math.floor(ph * segs);
+    for(i = 4; i >= 0; i--){
+      var dz = i * .55 - 1.1, dx = i * .34;
+      var X = cx + dx * s - 1.25 * s, Y = cy - .95 * s + dz * s * .22;
+      var on = i === Math.floor((1 - Math.abs(ph - .5) * 2) * 4);
+      g.strokeStyle = on ? FIG.a70 : FIG.ink2; g.lineWidth = 1;
+      g.fillStyle = on ? FIG.a12 : 'rgba(255,255,255,.02)';
+      box(g, X, Y, 2.5 * s, 1.7 * s, g.fillStyle, g.strokeStyle);
+      g.strokeStyle = FIG.ink3;
+      for(var l = 0; l < 3; l++) seg(g, [X + .25 * s, Y + .38 * s + l * .34 * s],
+                                         [X + (l === 2 ? 1.1 : 2.1) * s, Y + .38 * s + l * .34 * s]);
+    }
+    var by = cy + 1.5 * s, bw = w * .70, bx = (w - bw) / 2;
+    g.strokeStyle = FIG.ink2;
+    seg(g, [bx, by], [bx + bw, by]);
+    for(i = 0; i < segs; i++){
+      var sx = bx + i * bw / segs;
+      g.strokeStyle = i === act ? FIG.acid : FIG.ink2;
+      g.lineWidth = i === act ? 2 : 1;
+      seg(g, [sx + 2, by], [sx + bw / segs - 2, by]);
+      seg(g, [sx + 2, by], [sx + 2, by + 6]);
+      seg(g, [sx + bw / segs - 2, by], [sx + bw / segs - 2, by + 6]);
+    }
+    mono(g, talks[act], bx, by + 22, FIG.acid, 9, 'left');
+    mono(g, (act ? '43' : '18') + ' p.', bx + bw, by + 22, FIG.ink2, 9, 'right');
+    /* a continuous playhead, so the collection is being read rather than
+       merely having a highlighted bracket */
+    var hx = bx + bw * ph;
+    g.strokeStyle = FIG.acid; g.lineWidth = 1.5;
+    seg(g, [hx, cy - 1.42 * s], [hx, by + 1]);
+    g.fillStyle = FIG.acid;
+    g.beginPath(); g.arc(hx, cy - 1.42 * s, 2.6, 0, 6.2832); g.fill();
+    return T('figOf') + u.id + ' · ' + talks[act];
+  },
+
+  /* 11 · a lathe profile morphed between the three lamp shapes. A wide band
+     gets all three, side by side, which is what "three starting lamp types"
+     actually is — the figure uses the width instead of floating in it. */
+  lathe:function(g, w, h, u){
+    var count = (w / h) > 2.2 ? 3 : 1;
+    var top = h * .12, bot = h * .84, H = bot - top;
+    var Rmax = Math.min(H / 3.4, (w / count) / 3.6);
+    var ph = (u.t * .22) % 3;
+    /* three named starting types, not three copies of one morph: a ball, a
+       cone and a spindle. The active one breathes toward the next type. */
+    var shapes = [
+      function(t){ return Math.sqrt(Math.max(0, 1 - Math.pow(t * 2 - 1, 2))); },
+      function(t){ return Math.max(.04, 1 - t * .95); },
+      function(t){ return Math.pow(Math.max(0, Math.sin(Math.PI * t)), .55); }
+    ];
+    var act = Math.round(ph) % 3;
+    var meridians = 12, steps = 20, i, j, ci;
+    for(ci = 0; ci < count; ci++){
+      var cx = count === 1 ? w * .5 : (ci + .5) * (w / count);
+      var live = count === 1 || ci === act;
+      var breath = live ? .22 * (.5 - .5 * Math.cos(u.t * 1.1)) : 0;
+      var fA = shapes[ci], fB = shapes[(ci + 1) % 3];
+      var prof = live ? function(t){ return fA(t) * (1 - breath) + fB(t) * breath; } : fA;
+      for(i = 0; i < meridians; i++){
+        var th = i / meridians * Math.PI * 2;
+        g.strokeStyle = live ? (i % 3 === 0 ? FIG.ink : FIG.ink2) : FIG.ink3;
+        g.lineWidth = 1;
+        g.beginPath();
+        for(j = 0; j <= steps; j++){
+          var t = j / steps, r = prof(t) * Rmax * clamp01(u.p * 1.4 - t * .25);
+          var X = cx + Math.cos(th) * r, Y = top + t * H;
+          j ? g.lineTo(X, Y) : g.moveTo(X, Y);
+        }
+        g.stroke();
+      }
+      for(j = 0; j <= 4; j++){
+        var ty = top + H * (j / 4), rr = prof(j / 4) * Rmax;
+        g.strokeStyle = live ? FIG.ink2 : FIG.ink3;
+        g.beginPath(); g.ellipse(cx, ty, Math.max(.5, rr), Math.max(.5, rr * .26), 0, 0, 6.2832); g.stroke();
+      }
+      g.strokeStyle = live && count > 1 ? FIG.acid : (count === 1 ? FIG.acid : FIG.ink3);
+      g.lineWidth = 1.5;
+      g.beginPath();
+      for(j = 0; j <= steps; j++){
+        var t2 = j / steps, r2 = prof(t2) * Rmax * clamp01(u.p * 1.4 - t2 * .25);
+        var X2 = cx + r2, Y2 = top + t2 * H;
+        j ? g.lineTo(X2, Y2) : g.moveTo(X2, Y2);
+      }
+      g.stroke();
+      mono(g, ['LAMP A', 'LAMP B', 'LAMP C'][ci], cx, bot + 16,
+           live ? FIG.acid : FIG.ink2, 9, 'center');
+    }
+    return T('figOf') + u.id + ' · ' + ['灯型 A', '灯型 B', '灯型 C'][act];
+  },
+
+  /* C01 · neon breakout — the wall dissolves as the ball works through it */
+  paddle:function(g, w, h, u){
+    var rows = 4, cols = Math.max(5, Math.min(11, Math.floor(w / 74)));
+    var pad = 20, top = h * .26, bh = 9, gap = 5;
+    var cw = (w - pad * 2 - (cols - 1) * gap) / cols;
+    var cyc = (u.t * .30 + u.k) % 1;
+    var hit = Math.floor(cyc * rows * cols);
+    var i, j, alive = 0;
+    for(i = 0; i < rows; i++){
+      for(j = 0; j < cols; j++){
+        var idx = i * cols + j;
+        if(idx <= hit && (idx % 3 !== 2)) continue;
+        alive++;
+        var X = pad + j * (cw + gap), Y = top + i * (bh + gap);
+        var edge = idx <= hit + 1;
+        box(g, X, Y, cw, bh, edge ? FIG.a22 : FIG.ink3, edge ? FIG.a70 : FIG.ink2);
+      }
+    }
+    var py = h * .78;
+    g.strokeStyle = FIG.acid; g.lineWidth = 2;
+    var pw = Math.min(w * .22, 88), px = w * .5 - pw / 2 + Math.sin(u.t * .8) * (w * .16);
+    seg(g, [px, py], [px + pw, py]);
+    var bx = px + pw * .5 + Math.sin(u.t * 1.9) * w * .22;
+    var by = py - 22 - Math.abs(Math.sin(u.t * 1.4)) * h * .18;
+    g.fillStyle = FIG.acid;
+    g.beginPath(); g.arc(bx, by, 3, 0, 6.2832); g.fill();
+    g.strokeStyle = FIG.a38; g.setLineDash([2, 4]);
+    seg(g, [bx, by], [bx, py]); g.setLineDash([]);
+    axis(g, w, h, 28, null, u);
+    return T('figOf') + u.id + ' · ' + alive + ' ' + (lang === 'zh' ? '砖' : 'left');
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE MARK HARNESS
+
+   One rAF drives every figure. Rate is budgeted rather than uniform: a figure
+   that is being pointed at or has just booted runs at display rate, a figure
+   merely on screen decays to an idle rate, and everything off screen costs
+   nothing. Reduced-motion draws the composed frame once and never loops, so
+   the still page is the page.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var REDUCED = false;
+try{ REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+
+var marks = [];
+
+function makeMark(canvas, kind){
+  var m = {
+    canvas:canvas, kind:kind, ctx:canvas.getContext('2d'), id:canvas.getAttribute('data-id') || '',
+    w:0, h:0, visible:false, hot:false, booted:REDUCED, boot:REDUCED ? 1 : 0,
+    t:0, accum:0, dirty:true, readout:''
   };
-
-  // ============ 语言状态 ============
-  let lang = localStorage.getItem('lang') || 'zh';
-  if(lang !== 'zh' && lang !== 'en') lang = 'zh';
-
-  function applyLang(){
-    const dict = I18N[lang];
-    // 静态文案
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      if(dict[key] !== undefined) el.innerHTML = dict[key];
-    });
-    // 卡片描述（按区块分别配对，避免个人/客户两个区块错位）
-    document.querySelectorAll('#grid .card-desc').forEach((el,i) => {
-      if(projects[i]) el.innerHTML = projects[i]['desc' + lang.charAt(0).toUpperCase() + lang.slice(1)];
-    });
-    document.querySelectorAll('#client-grid .card-desc').forEach((el,i) => {
-      if(clientProjects[i]) el.innerHTML = clientProjects[i]['desc' + lang.charAt(0).toUpperCase() + lang.slice(1)];
-    });
-    // 卡片 CTA
-    document.querySelectorAll('.card-cta').forEach(el => {
-      el.innerHTML = dict.enter + ' <span class="arrow">→</span>';
-    });
-    // 按钮状态
-    document.getElementById('lang-zh').setAttribute('aria-pressed', lang === 'zh');
-    document.getElementById('lang-en').setAttribute('aria-pressed', lang === 'en');
-    // html lang 属性
-    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
-    localStorage.setItem('lang', lang);
+  canvas.setAttribute('aria-hidden', 'true');
+  marks.push(m);
+  return m;
+}
+function sizeMark(m, force){
+  var r = m.canvas.getBoundingClientRect();
+  if(!r.width || !r.height) return false;
+  var dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+  var W = Math.round(r.width), H = Math.round(r.height);
+  if(!force && m.w === W && m.h === H) return true;
+  m.w = W; m.h = H;
+  m.canvas.width = Math.round(W * dpr);      /* this clears the canvas */
+  m.canvas.height = Math.round(H * dpr);
+  m.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  m.dirty = true;                            /* so the next frame must repaint */
+  return true;
+}
+/* measuring every figure on every frame is a layout read per figure per frame.
+   Resizing a canvas wipes it, so offscreen figures are only invalidated here
+   and remeasured lazily — an offscreen canvas is never blanked. */
+function invalidateAll(){
+  for(var i = 0; i < marks.length; i++){ marks[i].w = 0; marks[i].dirty = true; }
+}
+/* The composed still frame is a CHOSEN moment, not t=0. Four figures are
+   mid-gesture by construction and would read as an empty plate at zero. */
+var STILL = { corridor:.9, descent:1.4, scrub:2.4, bracket:2.2, lathe:1.1 };
+function drawMark(m){
+  var g = m.ctx, k = '';
+  g.clearRect(0, 0, m.w, m.h);
+  var u = { p:REDUCED ? 1 : m.boot,
+            t:REDUCED ? (STILL[m.kind] || 0) : m.t, k:0, id:m.id };
+  var fn = MARKS[m.kind];
+  if(!fn){ m.dirty = false; return; }
+  try{ k = fn(g, m.w, m.h, u) || ''; }catch(e){ k = ''; }
+  m.dirty = false;
+  if(k && k !== m.readout){
+    m.readout = k;
+    if(m.onReadout) m.onReadout(k);
   }
+}
 
-  document.getElementById('lang-zh').addEventListener('click', () => { lang='zh'; applyLang(); });
-  document.getElementById('lang-en').addEventListener('click', () => { lang='en'; applyLang(); });
-
-  // ============ 渲染卡片 ============
-  function renderCards(list, container){
-    const frag = document.createDocumentFragment();
-    list.forEach(p => {
-      const a = document.createElement('a');
-      a.className = 'card';
-      a.href = 'projects/' + p.slug + '/';
-      a.innerHTML =
-        '<div class="card-top">' +
-          '<span class="card-num">' + p.id + '</span>' +
-          '<span class="card-tag">' + p.tag + '</span>' +
-        '</div>' +
-        '<h3 class="card-title">' + p.title + '</h3>' +
-        '<div class="card-rule"></div>' +
-        '<div class="card-stack">' +
-          p.stack.map(s => '<span class="chip">' + s + '</span>').join('') +
-        '</div>' +
-        '<p class="card-desc">' + p['desc' + lang.charAt(0).toUpperCase() + lang.slice(1)] + '</p>' +
-        '<span class="card-cta">' + I18N[lang].enter + ' <span class="arrow">→</span></span>';
-      frag.appendChild(a);
-    });
-    container.appendChild(frag);
+function frame(now){
+  var dt = Math.min((now - (frame.last || now)) / 1000, .05);
+  frame.last = now;
+  for(var i = 0; i < marks.length; i++){
+    var m = marks[i];
+    if(!m.visible || !m.ctx) continue;
+    if(!m.w && !sizeMark(m)) continue;
+    if(!m.booted){
+      m.boot = Math.min(1, m.boot + dt / .70);
+      if(m.boot >= 1) m.booted = true;
+      drawMark(m);
+      continue;
+    }
+    var rate = m.hot ? 60 : 12;
+    m.accum += dt;
+    if(!m.dirty && m.accum < 1 / rate) continue;
+    /* Advance by the time that elapsed since the LAST DRAW, not by this
+       frame's delta. Adding the 16ms frame delta on only the 1 frame in 5 that
+       passes the gate advances the clock at a twenty-second of real time, and
+       every idle figure stands still — which is exactly how this page shipped
+       its first draft. */
+    var elapsed = m.accum;
+    m.accum = 0;
+    m.t += elapsed * (m.hot ? 1 : .40);
+    drawMark(m);
   }
-  renderCards(projects, document.getElementById('grid'));
-  renderCards(clientProjects, document.getElementById('client-grid'));
+  requestAnimationFrame(frame);
+}
 
-  // 计数徽章同步
-  const n = String(projects.length).padStart(2,'0');
-  document.getElementById('count').textContent = n;
-  document.getElementById('count2').textContent = '/ ' + n;
-  document.getElementById('count3').textContent = '/ ' + String(clientProjects.length).padStart(2,'0');
+/* ═══════════════════════════════════════════════════════════════════════════
+   RENDER
+   ═══════════════════════════════════════════════════════════════════════════ */
+var INDEX = document.getElementById('index');
+var EMPTY = document.getElementById('empty');
+var band = document.getElementById('client-band');
 
-  // 应用初始语言
-  applyLang();
+function cardHTML(p){
+  var i18nKey = lang === 'zh' ? 'descZh' : 'descEn';
+  /* a card normally points at its own folder; a project that lives elsewhere
+     says so in words as well as in where it goes */
+  var ext = !!p.href;
+  var url = p.href || ('projects/' + p.slug + '/');
+  var attrs = ext ? ' target="_blank" rel="noopener"' : '';
+  return '' +
+  '<article class="card" data-d="' + p.d + '" data-state="idle" data-slug="' + p.slug + '"' +
+    (ext ? ' data-ext="1"' : '') + '>' +
+    '<div class="card__head">' +
+      '<span class="card__num">' + p.id + '</span>' +
+      '<span class="card__tag">' + p.tag + '</span>' +
+      '<span class="sp"></span>' +
+      '<span class="card__fig">FIG.' + p.id + '</span>' +
+    '</div>' +
+    '<div class="card__stage">' +
+      '<canvas data-fig="' + p.fig + '" data-id="' + p.id + '"></canvas>' +
+      '<span class="card__cap">' + T('figOf') + p.id + ' · ' +
+        (lang === 'zh' ? p.labelZh : p.labelEn) + '</span>' +
+    '</div>' +
+    '<a class="card__link" href="' + url + '"' + attrs + '>' +
+      '<h3 class="card__title">' + p.title + '</h3>' +
+    '</a>' +
+    '<div class="card__body">' +
+      '<div class="card__stack">' +
+        p.stack.map(function(s){ return '<span class="chip">' + s + '</span>'; }).join('') +
+      '</div>' +
+      '<div class="card__split"><p class="card__desc">' + p[i18nKey] + '</p></div>' +
+    '</div>' +
+    '<div class="card__foot">' +
+      '<a class="card__cta" href="' + url + '"' + attrs + '>' +
+        (ext ? T('github') : T('enter')) +
+        ' <span class="arw" aria-hidden="true">→</span>' +
+        (ext ? '<span class="vh">' + T('newTab') + '</span>' : '') + '</a>' +
+      '<span class="card__sp"></span>' +
+      '<button class="card__run" type="button" aria-pressed="false">' + T('run') + '</button>' +
+    '</div>' +
+  '</article>';
+}
+
+function commissionHTML(p){
+  var i18nKey = lang === 'zh' ? 'descZh' : 'descEn';
+  var meta = (lang === 'zh' ? p.metaZh : p.metaEn).slice();
+  /* a fee is only shown for the commissions that have one */
+  if(p.fee) meta.unshift([T('fee'), p.fee]);
+  return '' +
+  '<article class="commission" data-d="1" data-state="idle" data-slug="' + p.slug + '">' +
+    '<div class="commission__stage">' +
+      '<canvas data-fig="' + p.fig + '" data-id="' + p.id + '"></canvas>' +
+      '<span class="card__cap">' + T('figOf') + p.id + ' · ' +
+        (lang === 'zh' ? p.labelZh : p.labelEn) + '</span>' +
+    '</div>' +
+    '<div class="commission__grid">' +
+      '<div>' +
+        '<p class="card__fig card__fig--kick"><b>' + p.id + '</b> · ' +
+          (lang === 'zh' ? p.kickZh : p.kickEn) + '</p>' +
+        '<h3 class="commission__title">' + p.title + '</h3>' +
+        '<p class="commission__desc">' + p[i18nKey] + '</p>' +
+      '</div>' +
+      '<div class="commission__meta">' +
+        meta.map(function(row){
+          var isFee = row[0] === T('fee');
+          return '<div><p class="commission__k">' + row[0] + '</p>' +
+                 '<p class="commission__v' + (isFee ? ' commission__v--fee' : '') + '">' +
+                 row[1] + '</p></div>';
+        }).join('') +
+        '<a class="commission__cta" href="projects/' + p.slug + '/">' + T('enter') +
+          ' <span class="arw" aria-hidden="true">→</span></a>' +
+      '</div>' +
+    '</div>' +
+  '</article>';
+}
+
+/* ── figure wiring ──────────────────────────────────────────────────────── */
+var io = null;
+if('IntersectionObserver' in window){
+  io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      var m = e.target.__mark;
+      if(!m) return;
+      m.visible = e.isIntersecting;
+      /* a canvas wiped while the card was offscreen must repaint on arrival,
+         not wait out the idle rate gate */
+      if(e.isIntersecting){ m.w = 0; m.dirty = true; }
+    });
+  }, { rootMargin:'160px 0px' });
+}
+
+function dropFigures(){
+  if(io) io.disconnect();
+  marks.length = 0;          /* a re-render must not leave dead canvases behind */
+}
+
+function bindFigures(root){
+  var canHover = true;
+  try{ canHover = matchMedia('(hover:hover) and (pointer:fine)').matches; }catch(e){}
+  Array.prototype.forEach.call(
+    root.querySelectorAll('.card__stage canvas, .commission__stage canvas'),
+    function(cv){
+      var m = makeMark(cv, cv.getAttribute('data-fig'));
+      var host = cv.closest('.card, .commission');
+      var cap = host.querySelector('.card__cap');
+      /* The caption carries the figure's live value in the DOM, not only in
+         canvas pixels — so the page reports its own state to a screen reader,
+         to a text search and to anyone not looking at the canvas. Throttled
+         while idle: a number that changes four times a second reads as an
+         instrument, sixty times a second reads as noise. */
+      m.onReadout = function(v){
+        if(REDUCED) return;
+        var now = performance.now();
+        if(!m.hot && now - (m.lastCap || 0) < 250) return;
+        m.lastCap = now;
+        cap.textContent = v;
+      };
+      cv.__mark = m;
+      if(io) io.observe(cv);
+      else { m.visible = true; m.booted = true; m.boot = 1; }
+
+      /* pointer-fine: pointing at or focusing a card runs its instrument, and
+         the instrument reports its own live value while it runs — so the hover
+         says something specific about *this* card instead of lifting it */
+      var btn = host.querySelector('.card__run');
+      var setRun = function(on){
+        m.hot = on;
+        host.setAttribute('data-state', on ? 'run' : 'idle');
+        if(on && m.readout) cap.textContent = m.readout;
+        if(btn){
+          btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+          btn.textContent = on ? T('running') : T('run');
+        }
+      };
+      /* Only wire hover where hover exists. A tap fires pointerenter BEFORE
+         click, so on a touch device a hover binding turns the RUN button into a
+         toggle that immediately undoes itself. */
+      if(canHover){
+        host.addEventListener('pointerenter', function(){ setRun(true); });
+        host.addEventListener('pointerleave', function(){ setRun(false); });
+      }
+      /* Tabbing into a card runs its instrument. Except onto the button: that
+         IS the control and it owns its own state. Without this guard a tap on
+         the button fires focusin (run) and then click (toggle off), so the
+         button appears dead on touch. */
+      host.addEventListener('focusin', function(e){
+        if(btn && e.target === btn) return;
+        setRun(true);
+      });
+      host.addEventListener('focusout', function(e){
+        if(!host.contains(e.relatedTarget)) setRun(false);
+      });
+      /* the touch path: a coarse pointer has no hover, so the instrument gets
+         a real control instead of a gesture nobody can perform */
+      if(btn) btn.addEventListener('click', function(){
+        setRun(host.getAttribute('data-state') !== 'run');
+      });
+    });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FILTER — one predicate, shared by the grid and the palette, and always
+   reflected in the URL so a filtered view can be linked and gone back to.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var query = '';
+var tags = (function(){
+  var seen = {}, out = [];
+  ALL.forEach(function(p){ p.stack.forEach(function(s){ if(!seen[s]){ seen[s] = 1; out.push(s); } }); });
+  return out;
+})();
+
+function haystack(p){
+  return (p.id + ' ' + p.title + ' ' + p.tag + ' ' + p.stack.join(' ') + ' ' +
+          p.descZh + ' ' + p.descEn + ' ' + (p.labelZh || '') + ' ' + (p.labelEn || '')).toLowerCase();
+}
+function matches(p, q){
+  if(!q) return true;
+  var hay = haystack(p);
+  /* words, so the fuzzy fallback cannot walk across the whole card: without
+     this, "zzzz" matches anything that happens to contain four z's in order
+     (ZCode … ZCode … zero) and the palette looks broken. */
+  var words = hay.split(/[^a-z0-9.+#_-]+/);
+  return q.toLowerCase().split(/\s+/).filter(Boolean).every(function(term){
+    if(hay.indexOf(term) !== -1) return true;
+    /* abbreviating a Latin word is a real affordance ("mcrft" -> minecraft).
+       CJK has no such convention, so it stays substring-only. */
+    if(!/^[a-z0-9.+#_-]+$/.test(term)) return false;
+    for(var w = 0; w < words.length; w++){
+      var s = words[w], i = 0, j = 0;
+      while(i < s.length && j < term.length){
+        if(s[i] === term[j]) j++;
+        i++;
+      }
+      if(j === term.length) return true;
+    }
+    return false;
+  });
+}
+
+function paintFilter(){
+  var shown = 0;
+  Array.prototype.forEach.call(INDEX.querySelectorAll('.card'), function(c){
+    var slug = c.getAttribute('data-slug'), p = null;
+    for(var i = 0; i < projects.length; i++) if(projects[i].slug === slug) p = projects[i];
+    var on = p ? matches(p, query) : true;
+    c.hidden = !on;
+    if(on) shown++;
+  });
+  var bar = document.getElementById('filterbar');
+  bar.hidden = !query;
+  if(query){
+    document.getElementById('filter-q').textContent = '「' + query + '」';
+    document.getElementById('filter-n').textContent = T('count') + ' ' + shown + ' ' + T('results');
+  }
+  EMPTY.hidden = shown !== 0;
+  if(shown === 0){
+    EMPTY.innerHTML = '<b>' + T('noMatch') + ' 「' + query + '」</b><br>' + T('noResultHint') +
+      '<button type="button" id="empty-clear">' + T('clearNow') + '</button>';
+    document.getElementById('empty-clear').addEventListener('click', function(){ setQuery('', false); });
+  }
+  document.getElementById('n-index').textContent = '/ ' +
+    String(query ? shown : projects.length).padStart(2, '0');
+}
+function setQuery(q, push){
+  query = q;
+  var url = location.pathname + (q ? '?q=' + encodeURIComponent(q) : '') + location.hash;
+  try{
+    if(push === false) history.replaceState({ q:q }, '', url);
+    else history.pushState({ q:q }, '', url);
+  }catch(e){}
+  paintFilter();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   COMMAND PALETTE
+   ═══════════════════════════════════════════════════════════════════════════ */
+var cmdk = document.getElementById('cmdk');
+var input = document.getElementById('cmdk-input');
+var listEl = document.getElementById('cmdk-list');
+var noneEl = document.getElementById('cmdk-none');
+var stateEl = document.getElementById('cmdk-state');
+var trigger = document.getElementById('trigger');
+var cursor = 0, results = [], lastFocus = null;
+
+function renderResults(){
+  listEl.innerHTML = results.map(function(p, i){
+    return '<li class="cmdk__row" role="option" id="opt-' + i + '" data-i="' + i + '" ' +
+      'aria-selected="' + (i === cursor) + '">' +
+      '<span class="cmdk__n">' + p.id + '</span>' +
+      '<span class="cmdk__t">' + p.title + '</span>' +
+      '<span class="cmdk__m">' + p.tag + '</span>' +
+      '<span class="cmdk__go">' + T('enter') + ' →</span>' +
+    '</li>';
+  }).join('');
+  noneEl.hidden = results.length > 0;
+  if(!results.length){
+    noneEl.innerHTML = '<b>' + T('noMatch') + ' 「' + input.value + '」</b>';
+  }
+  stateEl.textContent = results.length + ' / ' + ALL.length;
+  input.setAttribute('aria-activedescendant', results.length ? 'opt-' + cursor : '');
+  var sel = listEl.querySelector('[aria-selected="true"]');
+  if(sel && sel.scrollIntoView) sel.scrollIntoView({ block:'nearest' });
+}
+function search(q){
+  results = ALL.filter(function(p){ return matches(p, q); });
+  cursor = 0;
+  renderResults();
+}
+function openPalette(){
+  if(!cmdk.hidden) return;
+  lastFocus = document.activeElement;
+  cmdk.hidden = false;
+  trigger.setAttribute('aria-expanded', 'true');
+  document.body.style.overflow = 'hidden';
+  input.value = query;
+  search(query);
+  input.focus();
+  input.setSelectionRange(input.value.length, input.value.length);
+}
+function closePalette(){
+  if(cmdk.hidden) return;
+  cmdk.hidden = true;
+  trigger.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+  /* return focus where it came from. Opening by keyboard shortcut leaves
+     activeElement on <body>, which is not focusable — falling back to the
+     trigger is the honest target in that case. */
+  var back = (lastFocus && lastFocus !== document.body && lastFocus.focus)
+    ? lastFocus : trigger;
+  back.focus();
+}
+function choose(i){
+  var p = results[i];
+  if(!p) return;
+  location.href = 'projects/' + p.slug + '/';
+}
+
+trigger.addEventListener('click', openPalette);
+cmdk.addEventListener('click', function(e){
+  if(e.target.hasAttribute && e.target.hasAttribute('data-close')) closePalette();
+});
+listEl.addEventListener('click', function(e){
+  var row = e.target.closest ? e.target.closest('.cmdk__row') : null;
+  if(row) choose(+row.getAttribute('data-i'));
+});
+listEl.addEventListener('pointermove', function(e){
+  var row = e.target.closest ? e.target.closest('.cmdk__row') : null;
+  if(!row) return;
+  var i = +row.getAttribute('data-i');
+  if(i === cursor) return;
+  cursor = i;
+  renderResults();
+});
+input.addEventListener('input', function(){
+  var v = input.value;
+  search(v);
+  if(v !== query) setQuery(v, false);   /* typing replaces; a tag commit pushes */
+});
+input.addEventListener('keydown', function(e){
+  if(e.key === 'ArrowDown' || (e.key === 'n' && e.ctrlKey)){
+    e.preventDefault();
+    if(results.length){ cursor = (cursor + 1) % results.length; renderResults(); }
+  } else if(e.key === 'ArrowUp' || (e.key === 'p' && e.ctrlKey)){
+    e.preventDefault();
+    if(results.length){ cursor = (cursor - 1 + results.length) % results.length; renderResults(); }
+  } else if(e.key === 'Home'){
+    e.preventDefault(); cursor = 0; renderResults();
+  } else if(e.key === 'End'){
+    e.preventDefault(); cursor = results.length - 1; renderResults();
+  } else if(e.key === 'Enter'){
+    e.preventDefault(); choose(cursor);
+  } else if(e.key === 'Tab'){
+    var v = input.value.trim().toLowerCase();
+    var hit = null;
+    if(v){
+      for(var i = 0; i < tags.length; i++){ if(tags[i].indexOf(v) === 0){ hit = tags[i]; break; } }
+    }
+    if(hit){
+      e.preventDefault();
+      input.value = hit;
+      search(hit);
+      setQuery(hit, true);      /* a committed tag is worth a history entry */
+    }
+  }
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape' && (!cmdk.hidden || query)){
+    e.preventDefault();
+    if(!cmdk.hidden) closePalette();
+    else setQuery('');
+    return;
+  }
+  var typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+  if((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)){
+    e.preventDefault();
+    cmdk.hidden ? openPalette() : closePalette();
+  } else if(e.key === '/' && !typing && cmdk.hidden){
+    e.preventDefault(); openPalette();
+  }
+});
+addEventListener('popstate', function(){
+  var q = new URLSearchParams(location.search).get('q') || '';
+  query = q;
+  paintFilter();
+  if(!cmdk.hidden){ input.value = q; search(q); }
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TYPE-ON — the hero prints itself, one character at a time.
+   ═══════════════════════════════════════════════════════════════════════════ */
+function typeOn(el){
+  if(REDUCED) return;
+  var texts = [];
+  (function walk(n){
+    for(var i = 0; i < n.childNodes.length; i++){
+      var c = n.childNodes[i];
+      if(c.nodeType === 3 && /\S/.test(c.nodeValue)) texts.push(c);
+      else if(c.nodeType === 1 && c.className !== 'vh' && c.className !== 'caret') walk(c);
+    }
+  })(el);
+  var k = 0;
+  texts.forEach(function(tn){
+    var frag = document.createDocumentFragment();
+    tn.nodeValue.split(/(\s+)/).forEach(function(part){
+      if(!part) return;
+      if(/^\s+$/.test(part)){ frag.appendChild(document.createTextNode(part)); return; }
+      var word = document.createElement('span');
+      word.className = 'tw-word';
+      for(var i = 0; i < part.length; i++){
+        var ch = document.createElement('span');
+        ch.className = 'tw-ch';
+        ch.style.setProperty('--i', k++);
+        ch.textContent = part.charAt(i);
+        word.appendChild(ch);
+      }
+      frag.appendChild(word);
+    });
+    tn.parentNode.replaceChild(frag, tn);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   READOUT — counts, and what kinds of thing is in here. Every value is derived
+   from the two arrays above; nothing on this panel is typed in by hand.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var KIND_ORDER = ['3D', 'game', 'talk', 'paper', 'app', 'tool'];
+/* no label carries the list's own separator, or "3D · 图形 · 游戏" reads as
+   four kinds instead of two */
+var KIND_LABEL = {
+  '3D':    { zh:'3D 图形',   en:'3D & graphics' },
+  'game':  { zh:'游戏',      en:'games' },
+  'talk':  { zh:'讲稿',      en:'talks' },
+  'paper': { zh:'论文与评测', en:'papers & benchmarks' },
+  'app':   { zh:'应用',      en:'apps' },
+  'tool':  { zh:'工具',      en:'tools' }
+};
+function paintReadout(){
+  var seen = {};
+  ALL.forEach(function(p){ if(p.kind) seen[p.kind] = (seen[p.kind] || 0) + 1; });
+  var kinds = KIND_ORDER.filter(function(k){ return seen[k]; });
+  var rows = [
+    [T('rProjects'), String(projects.length).padStart(2, '0'), true],
+    [T('rClients'), String(clientWorks.length).padStart(2, '0'), false]
+  ];
+  document.getElementById('readout').innerHTML = rows.map(function(r){
+    return '<li><dt>' + r[0] + '</dt><span class="lead"></span>' +
+           '<dd class="' + (r[2] ? 'a' : '') + '">' + r[1] + '</dd></li>';
+  }).join('') +
+  /* the kind list wraps rather than being right-aligned into a leader: it is
+     prose about the collection, not a measurement */
+  '<li class="k"><dt>' + T('rKinds') + '</dt><dd>' +
+    kinds.map(function(k){ return KIND_LABEL[k][lang === 'zh' ? 'zh' : 'en']; }).join('<i> / </i>') +
+  '</dd></li>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GROUND POINTER COUPLING — the one place the page reads the pointer, and it
+   only writes a transform on a leaf, so it costs a composite and nothing else.
+   ═══════════════════════════════════════════════════════════════════════════ */
+function bindPointer(){
+  if(REDUCED) return;
+  var fine = true;
+  try{ fine = matchMedia('(hover:hover) and (pointer:fine)').matches; }catch(e){}
+  if(!fine) return;
+  var tx = 0, ty = 0, cx = 0, cy = 0, queued = false;
+  addEventListener('pointermove', function(e){
+    tx = (e.clientX / innerWidth - .5) * -60;
+    ty = (e.clientY / innerHeight - .5) * -60;
+    if(queued) return;
+    queued = true;
+    requestAnimationFrame(step);
+  }, { passive:true });
+  /* exponential, frame-rate independent — a steady-state lag cannot be tuned
+     away, so it is integrated with 1-exp(-k dt) rather than a fixed lerp */
+  var last = 0;
+  function step(now){
+    var dt = last ? Math.min((now - last) / 1000, .05) : .016;
+    last = now;
+    var k = 3.2, f = 1 - Math.exp(-k * dt);
+    cx += (tx - cx) * f;
+    cy += (ty - cy) * f;
+    document.documentElement.style.setProperty('--mx', cx.toFixed(2) + 'px');
+    document.documentElement.style.setProperty('--my', cy.toFixed(2) + 'px');
+    if(Math.abs(tx - cx) > .3 || Math.abs(ty - cy) > .3){ requestAnimationFrame(step); }
+    else { queued = false; last = 0; }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROGRESS BEAM + BOOT
+   ═══════════════════════════════════════════════════════════════════════════ */
+function bindBeam(){
+  var beam = document.getElementById('beam');
+  var q = false;
+  function paint(){
+    var max = document.documentElement.scrollHeight - innerHeight;
+    var p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+    beam.style.setProperty('--p', p.toFixed(4));
+    q = false;
+  }
+  addEventListener('scroll', function(){ if(!q){ q = true; requestAnimationFrame(paint); } }, { passive:true });
+  addEventListener('resize', paint); paint();
+}
+
+function renderAll(){
+  dropFigures();
+  Array.prototype.forEach.call(INDEX.querySelectorAll('.card'), function(n){ n.remove(); });
+  EMPTY.insertAdjacentHTML('beforebegin', projects.map(cardHTML).join(''));
+  band.innerHTML = clientWorks.map(commissionHTML).join('');
+  bindFigures(INDEX);
+  bindFigures(band);
+  invalidateAll();
+  if(REDUCED) marks.forEach(function(m){ if(sizeMark(m, true)) drawMark(m); });
+}
+
+function applyLang(){
+  var dict = I18N[lang];
+  Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function(el){
+    var k = el.getAttribute('data-i18n');
+    if(dict[k] !== undefined) el.innerHTML = dict[k];
+  });
+  document.getElementById('lang-zh').setAttribute('aria-pressed', String(lang === 'zh'));
+  document.getElementById('lang-en').setAttribute('aria-pressed', String(lang === 'en'));
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  input.setAttribute('placeholder', dict.placeholder);
+  try{ localStorage.setItem('lang', lang); }catch(e){}
+  paintReadout();
+  renderAll();
+  paintFilter();
+}
+
+document.getElementById('lang-zh').addEventListener('click', function(){ lang = 'zh'; applyLang(); });
+document.getElementById('lang-en').addEventListener('click', function(){ lang = 'en'; applyLang(); });
+document.getElementById('filter-clear').addEventListener('click', function(){ setQuery('', false); closePalette(); });
+
+(function boot(){
+  var y = new Date().getFullYear();
+  document.getElementById('year').textContent = '© ' + y;
+  var n = String(ALL.length).padStart(2, '0');
+  document.getElementById('n-badge').textContent = n;
+  document.getElementById('n-hero').textContent = n;
+  document.getElementById('n-clients').textContent = '/ ' + String(clientWorks.length).padStart(2, '0');
+  var apple = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent || '');
+  document.getElementById('kbd').textContent = apple ? 'Cmd K' : 'Ctrl K';
+  /* matchMedia is the honest signal, but a couple of browsers report a fine
+     pointer on touch hardware; the attribute makes the control's visibility
+     deterministic and testable either way */
+  var noHover = false;
+  try{ noHover = matchMedia('(hover:none), (pointer:coarse)').matches; }catch(e){}
+  if(noHover) document.documentElement.setAttribute('data-touch', '');
+
+  var initial = '';
+  try{ initial = new URLSearchParams(location.search).get('q') || ''; }catch(e){}
+  query = initial;
+
+  applyLang();            /* renders both grids, then paints the filter */
+  bindBeam();
+  bindPointer();
+  typeOn(document.getElementById('h-hero'));
+  if(!cmdk.hidden) search(query);
+
+  if(REDUCED){
+    /* composed frames only: nothing boots, nothing loops, nothing is hidden */
+    marks.forEach(function(m){ m.boot = 1; m.booted = true; m.visible = true; });
+    var repaint = function(){ marks.forEach(function(m){ if(sizeMark(m, true)) drawMark(m); }); };
+    repaint();
+    addEventListener('resize', repaint);
+    addEventListener('load', repaint);
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(repaint);
+  } else {
+    requestAnimationFrame(frame);
+    addEventListener('resize', invalidateAll);
+    /* a webfont swap changes metrics, so the first measurement can be wrong */
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(invalidateAll);
+  }
+})();
+})();
 </script>
 </body>
 </html>

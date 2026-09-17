@@ -1,0 +1,14 @@
+{
+  "name": "hunluanzhizhu — 浏览器实验合集",
+  "short_name": "hunluanzhizhu",
+  "description": "12 个浏览器实验、游戏、讲稿与工具，每个子项目一个文件夹，全部纯前端，无构建步骤。",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
