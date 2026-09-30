@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
-<title>hunluanzhizhu — 浏览器实验合集 · 零构建步骤</title>
-<meta name="description" content="个人静态网页项目合集：12 个浏览器实验、游戏、讲稿与工具，每个子项目一个文件夹，全部纯前端，无框架、无构建步骤。">
+<title>hunluanzhizhu — 浏览器实验室</title>
+<meta name="description" content="个人浏览器实验室：实验、游戏、讲稿与工具，每个子项目一个独立文件夹，全部纯前端运行。">
 <link rel="canonical" href="https://zyh.sryze.cc/">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -14,12 +14,12 @@
 <link rel="manifest" href="/site.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://zyh.sryze.cc/">
-<meta property="og:title" content="hunluanzhizhu — 浏览器实验合集">
-<meta property="og:description" content="12 个浏览器实验、游戏、讲稿与工具，每个子项目一个文件夹，全部纯前端，无框架、无构建步骤。">
+<meta property="og:title" content="hunluanzhizhu — 浏览器实验室">
+<meta property="og:description" content="个人浏览器实验室：实验、游戏、讲稿与工具，每个子项目一个独立文件夹，全部纯前端运行。">
 <meta property="og:image" content="https://zyh.sryze.cc/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="索引终端：浏览器实验与游戏合集，零构建步骤">
+<meta property="og:image:alt" content="索引终端：浏览器实验、游戏、讲稿与工具合集">
 <meta name="twitter:card" content="summary_large_image">
 <style id="font">/* Cascadia Mono, SIL OFL 1.1 -- subset to 177 glyphs, 20380 bytes.
    Regenerate with: python tools/subset-font.py --inject index.html */
@@ -43,8 +43,8 @@
   --void-2:#070707;
   --void-3:#0e0e0e;
   --paper:#fffef4;
-  --grey:#8f8f8f;
-  --grey-2:#4e4e4e;
+  --grey:#a4a49d;
+  --grey-2:#767670;
 
   --ground:var(--void);
   --ground-2:var(--void-2);
@@ -599,9 +599,15 @@ h1.disp .caret{
 @media (max-width:767px){
   :root{--stage-h:186px;--bar-h:auto}
   .bar{position:sticky}
-  .bar__in{flex-wrap:wrap;padding-block:var(--s2);gap:var(--s2)}
+  .bar__in{flex-wrap:nowrap;padding-block:6px;gap:6px}
+  .brand{flex-shrink:1;min-width:0;gap:var(--s2)}
+  .brand__name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brand__slash{display:none}
+  .bar__spacer{min-width:0}
   .bar__badge{display:none}
-  .hero{padding-top:var(--s7)}
+  .trigger{padding-inline:10px;justify-content:center}
+  .lang button{min-width:30px;padding-inline:6px}
+  .hero{padding-top:var(--s6)}
   .hero__foot{flex-direction:column;gap:var(--s5)}
   .hero__readout{flex-basis:auto;width:100%}
   .trigger kbd{display:none}
@@ -681,8 +687,8 @@ html[data-touch] .brand{min-height:44px}
     <p class="hero__kick rise"><i aria-hidden="true"></i><span data-i18n="kick">~/projects — 索引</span></p>
     <h1 class="disp" id="h-hero">
       <span aria-hidden="true">&gt;&nbsp;</span><em id="n-hero">--</em> <span data-i18n="h1a">PROJECTS.</span><br>
-      <span data-i18n="h1b">ZERO BUILD STEP</span><span class="caret" aria-hidden="true"></span>
-      <span class="vh" data-i18n="h1vh">零构建步骤的浏览器实验合集</span>
+      <span data-i18n="h1b">BROWSER LAB</span><span class="caret" aria-hidden="true"></span>
+      <span class="vh" data-i18n="h1vh">浏览器实验室：实验、游戏、讲稿与工具合集</span>
     </h1>
     <div class="hero__foot">
       <p class="hero__lede rise d2" data-i18n="lede"></p>
@@ -891,7 +897,7 @@ var ALL = projects.concat(clientWorks);
 var I18N = {
   zh:{
     badge:'项目', search:'搜索', kick:'~/projects — 索引',
-    h1a:'PROJECTS.', h1b:'ZERO BUILD STEP', h1vh:'零构建步骤的浏览器实验合集',
+    h1a:'PROJECTS.', h1b:'BROWSER LAB', h1vh:'浏览器实验室：实验、游戏、讲稿与工具合集',
     lede:'一个个人静态网页项目合集：<b>浏览器实验、游戏、讲稿与工具</b>，每个子项目一个独立文件夹，首页负责导航。全部纯前端 —— <span class="u">无框架，无构建步骤</span>，克隆下来直接打开就能跑。',
     projects:'项目', clients:'客户项目', filtering:'筛选', clear:'清除',
     fnav:'本页', f1:'简介', f2:'项目索引', f3:'客户项目',
@@ -910,7 +916,7 @@ var I18N = {
   },
   en:{
     badge:'PROJECTS', search:'SEARCH', kick:'~/projects — index',
-    h1a:'PROJECTS.', h1b:'ZERO BUILD STEP', h1vh:'A collection of browser experiments with no build step',
+    h1a:'PROJECTS.', h1b:'BROWSER LAB', h1vh:'Browser lab: experiments, games, talks and tools',
     lede:'A personal collection of static web projects: <b>browser experiments, games, talks and tools</b>, each in its own folder, navigated from this page. Pure frontend — <span class="u">no framework, no build step</span>. Clone it and open the file.',
     projects:'Projects', clients:'Client Works', filtering:'Filter', clear:'CLEAR',
     fnav:'This page', f1:'Intro', f2:'Project index', f3:'Client works',
