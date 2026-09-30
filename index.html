@@ -310,17 +310,12 @@ h1.disp .caret{
 }
 .readout li.k dd i{font-style:normal;color:var(--ink-3)}
 
-/* ═══ 2 · INDEX — a 3-column mosaic whose spans are chosen so that the DOM
-   order fills every row exactly: 3,2+1,2+1,3,2+1,2+1,3. No dense packing, so
-   tab order and reading order stay the same thing. ═══════════════════════ */
-/* the section IS the mosaic — so "three different section shapes" describes the
-   real column counts rather than a wrapper nothing reads */
-.index{
-  display:grid;grid-template-columns:1fr;gap:var(--s3);
-  padding-bottom:var(--s9);
+/* ═══ 2 · INDEX — regular cards; content differentiates projects, not span ═ */
+.index{padding-bottom:var(--s9)}
+.index__grid{
+  display:grid;grid-template-columns:1fr;grid-auto-rows:1fr;gap:var(--s3);
 }
-.index>.sec-head,.index>.filterbar,.index>.empty{grid-column:1/-1}
-.card{grid-column:span 1;min-width:0}
+.card{min-width:0}
 .card[hidden]{display:none}
 
 .card{
@@ -414,9 +409,6 @@ h1.disp .caret{
 }
 .card__run:active{transform:scale(.98)}
 .card[data-state="run"] .card__run{border-color:var(--accent);color:var(--accent)}
-
-/* promoted cards get the measure broken per element, not a wider text column */
-.card[data-d="2"] .card__split,.card[data-d="3"] .card__split{display:block}
 
 .empty{
   border:1px dashed var(--hairline);padding:var(--s8) var(--s5);
@@ -582,18 +574,13 @@ h1.disp .caret{
 
 @media (min-width:768px){
   :root{--stage-h:250px}
-  .index{grid-template-columns:repeat(2,1fr)}
-  .card[data-d="3"]{grid-column:span 2}
+  .index__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .hero{padding-top:calc(var(--bar-h) + var(--s9))}
   .commission__grid{flex-direction:row;gap:var(--s7);align-items:flex-start}
 }
 @media (min-width:1024px){
   :root{--stage-h:264px;--gutter:clamp(24px,4vw,56px)}
-  .index{grid-template-columns:repeat(3,1fr)}
-  .card[data-d="2"]{grid-column:span 2}
-  .card[data-d="3"]{grid-column:span 3}
-  /* promoted cards break the measure per element instead of widening the copy */
-  .card[data-d="2"] .card__desc,.card[data-d="3"] .card__desc{max-width:70ch}
+  .index__grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .commission__grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:var(--s8)}
 }
 @media (max-width:767px){
@@ -698,19 +685,20 @@ html[data-touch] .brand{min-height:44px}
     </div>
   </section>
 
-  <!-- 2 · INDEX — the section element is the mosaic itself -->
+  <!-- 2 · INDEX — equal-size project cards -->
   <section class="index inner" id="index" aria-labelledby="h-index">
     <div class="sec-head">
       <span class="sec-head__bar" aria-hidden="true"></span>
       <h2 id="h-index" data-i18n="projects">项目</h2>
       <span class="sec-head__rule" aria-hidden="true"></span>
-      <span class="sec-head__n" id="n-index">/ 11</span>
+      <span class="sec-head__n" id="n-index">/ --</span>
     </div>
     <div class="filterbar" id="filterbar" hidden>
       <span><span data-i18n="filtering">筛选</span> <b id="filter-q"></b></span>
       <span id="filter-n"></span>
       <button type="button" id="filter-clear" data-i18n="clear">清除</button>
     </div>
+    <div class="index__grid" id="index-grid"></div>
     <p class="empty" id="empty" hidden></p>
   </section>
 
@@ -791,13 +779,9 @@ html[data-touch] .brand{min-height:44px}
 /* ═══════════════════════════════════════════════════════════════════════════
    DATA — the only place a project is registered.
 
-   `d` is the card's span on a 3-column desktop grid. The sequence of spans is
-   chosen so the natural DOM order fills every row exactly — 3, 2+1, 3, 2+1, 3,
-   2+1, 3 — across all nine entries. That buys a real mosaic with no holes and
-   no `dense` packing, so reading order and tab order stay identical. At
-   768–1023px a 3 becomes a 2 and a 2 a 1, which also fills exactly; below
-   768px everything is one column. Re-check both tilings after adding or
-   removing an entry, or the mosaic grows a hole.
+   Project cards use a regular responsive grid: three equal columns on desktop,
+   two on tablet and one on mobile. Adding or removing a project never requires
+   layout metadata or span recalculation; DOM, reading and tab order stay aligned.
 
    `fig` names a renderer in MARKS below. Each one draws that project's own
    physics; there is no shared clip-art and no bitmap anywhere on this page.
@@ -809,13 +793,13 @@ html[data-touch] .brand{min-height:44px}
    ═══════════════════════════════════════════════════════════════════════════ */
 var projects = [
   { id:'01', slug:'minecraft-web', title:'MINECRAFT WEB', tag:'3D · SANDBOX',
-    kind:'3D', stack:['rust','bevy','wasm'], fig:'voxel', d:3,
+    kind:'3D', stack:['rust','bevy','wasm'], fig:'voxel',
     labelZh:'体素晶格', labelEn:'VOXEL LATTICE',
     descZh:'一个在浏览器中运行的体素沙盒世界，由 Rust + Bevy 编译为 WebAssembly 驱动。',
     descEn:'A voxel sandbox running in-browser via WebAssembly, powered by Rust + Bevy.' },
 
   { id:'02', slug:'neon-pulse', title:'NEON PULSE', tag:'ARCADE',
-    kind:'game', stack:['canvas','arcade'], fig:'corridor', d:2,
+    kind:'game', stack:['canvas','arcade'], fig:'corridor',
     labelZh:'透视航道', labelEn:'PERSPECTIVE LANE',
     descZh:'实验性质的小游戏，也是最初用来测试 GitHub Pages 的项目。闪避光墙、累积连击，在不断加速的霓虹航道中冲击最高分。',
     descEn:'An experimental mini-game — also the very first project used to test GitHub Pages. Dodge light walls and build combos in an accelerating neon corridor.' },
@@ -823,43 +807,43 @@ var projects = [
   /* Two group-meeting decks collapsed into one entry. The two decks are still
      served at their own paths; this card's own link is the collection's repo. */
   { id:'03', slug:'group-meeting-ppts', title:'GROUP MEETING PPTS', tag:'SLIDES · TALK',
-    kind:'talk', stack:['slides','katex','svg','webgl'], fig:'deck', d:1,
+    kind:'talk', stack:['slides','katex','svg','webgl'], fig:'deck',
     labelZh:'论文胶片', labelEn:'PAPER DECK',
     descZh:'组会汇报用的网页 PPT 合集 —— 横向翻页，公式与术语就地注解，逐页演讲者备注（按 N）。已含 EML 单算子重构初等函数、CT 三篇文献精读（合成 · 检测 · 分割，43 页）等场次。源码与后续场次：<a class="src" href="https://github.com/HunLuanZhiZhu/zuhui-ppt" target="_blank" rel="noopener">HunLuanZhiZhu/zuhui-ppt</a>。',
     descEn:'A collection of group-meeting talks as horizontal web decks — formulas and terms annotated in place, per-page speaker notes (press N). So far: EML reconstructing elementary functions from one operator, and a close reading of three CT papers (synthesis · detection · segmentation, 43 pages). Source and new talks: <a class="src" href="https://github.com/HunLuanZhiZhu/zuhui-ppt" target="_blank" rel="noopener">HunLuanZhiZhu/zuhui-ppt</a>.' },
 
   { id:'04', slug:'guon-paper', title:'GUON OPTIMIZER', tag:'PAPER · HUMOR',
-    kind:'paper', stack:['llm','optimizer','satire'], fig:'descent', d:2,
+    kind:'paper', stack:['llm','optimizer','satire'], fig:'descent',
     labelZh:'无状态下降', labelEn:'STATELESS DESCENT',
     descZh:'VRAM 太贵所以用研究生训练 LLM —— GUON 无状态二阶优化器，发表于 JokerofAcademics。',
     descEn:'VRAM is too expensive so we use graduate students to train LLMs — GUON, a stateless second-order optimizer. Published in JokerofAcademics.' },
 
   { id:'05', slug:'ecg-ai-local', title:'ECG AI LOCAL', tag:'AI · HEALTH',
-    kind:'app', stack:['tfjs','snn','local-ai'], fig:'ecg', d:1,
+    kind:'app', stack:['tfjs','snn','local-ai'], fig:'ecg',
     labelZh:'心电节律', labelEn:'CARDIAC TRACE',
     descZh:'心韵深辨 —— 由微信小程序完整转化的本地AI心电检测应用，浏览器内 TensorFlow.js 推理，9 个页面完整复刻。',
     descEn:'Xin Yun Shen Bian — a WeChat mini-program fully converted to web. Local ECG detection with TensorFlow.js in-browser inference, all 9 pages replicated.' },
 
   { id:'06', slug:'liang-intensity-calibrator', title:'LIANG CALIBRATOR', tag:'AIGC · SCRUBBER',
-    kind:'app', stack:['image2','h3-ai','video','canvas'], fig:'scrub', d:3,
+    kind:'app', stack:['image2','h3-ai','video','canvas'], fig:'scrub',
     labelZh:'逐帧滑杆', labelEn:'FRAME SCRUBBER',
     descZh:'AI 连续版滑动变祖器 —— 技术路线：OpenAI Image2 生成首尾帧 + MiniMax H3 FL2VA 连续插帧。滑杆 0-30 级逐帧连续进化，从「小难梁」一路到「梁祖」，241 帧全利用、零跳帧。',
     descEn:'AI continuous evolution scrubber — OpenAI Image2 anchor frames interpolated by MiniMax H3 FL2VA. A 0-30 level, frame-by-frame evolution from a beaten laoliang all the way to an emperor (241 frames, zero skip).' },
 
   { id:'07', slug:'game-studio-eval-s2', title:'GAME STUDIO EVAL', tag:'AI · BENCHMARK',
-    kind:'paper', stack:['benchmark','godot','wasm'], fig:'bracket', d:2,
+    kind:'paper', stack:['benchmark','godot','wasm'], fig:'bracket',
     labelZh:'评测记分', labelEn:'BENCH SCORE',
     descZh:'AI 游戏生成评测 —— 同一套 ZCode Game Studios 框架，仅给一个 /goal、零额外人工提示词，让模型自主把游戏做到可玩。当前为第二届（框架 1.0.0）；第一届 5 位选手的完整结果见站内榜单。 原项目：<a class="src" href="https://github.com/HunLuanZhiZhu/ZCode-Game-Studios" target="_blank" rel="noopener">ZCode Game Studios</a>（源自 Claude Code Game Studios）。',
     descEn:'AI game-generation benchmark — one ZCode Game Studios framework, a single /goal and zero extra human prompts, models build playable games on their own. Now on season 2 (framework 1.0.0); season 1\'s five-contestant results remain available. Source: <a class="src" href="https://github.com/HunLuanZhiZhu/ZCode-Game-Studios" target="_blank" rel="noopener">ZCode Game Studios</a> (derived from Claude Code Game Studios).' },
 
   { id:'08', slug:'svg-pelican', title:'DYNAMIC SVG PELICAN', tag:'SVG · ITERATION',
-    kind:'3D', stack:['svg','smil','deepseek-v4-pro'], fig:'redraw', d:1,
+    kind:'3D', stack:['svg','smil','deepseek-v4-pro'], fig:'redraw',
     labelZh:'逐笔重绘', labelEn:'STROKE REDRAW',
     descZh:'用 AI 反复尝试生成动态 SVG 动画的实验画廊。每次尝试单独成版本：既可在首页直接预览动画，也可点开独立页面全屏观看。',
     descEn:'A gallery of AI-generated dynamic SVG animation, iterated attempt by attempt. Each attempt is its own version — preview the animation in place, or open it as a standalone full-screen page.' },
 
   { id:'09', slug:'blender-3d', title:'BLENDER 3D', tag:'3D · MODELING',
-    kind:'3D', stack:['blender','gltf','webgl','deepseek-v4.1-flash'], fig:'lathe', d:3,
+    kind:'3D', stack:['blender','gltf','webgl','deepseek-v4.1-flash'], fig:'lathe',
     labelZh:'旋转成形', labelEn:'LATHE FORM',
     descZh:'用 Blender Python 程序化建模的两个 3D 模型：《执烛》的提灯（三种初始灯型）与皮卡丘。形体全部由脚本从球体、锥体、立方体生成，经布尔运算与体素融合成型，导出为 glTF 后由页面自带的零依赖 WebGL 查看器直接渲染，可拖动旋转。',
     descEn:'Two 3D models built procedurally with Blender Python — the Candlewake lamp (three starting lamp types) and Pikachu. Every form is generated by script from spheres, cones and cubes, shaped with booleans and voxel remeshing, exported to glTF and rendered in-browser by a zero-dependency WebGL viewer.' }
@@ -867,7 +851,7 @@ var projects = [
 
 var clientWorks = [
   { id:'C01', slug:'clients/breakout', title:'BREAKOUT', tag:'CLIENT · RESTYLE',
-    kind:'game', stack:['godot','svg','wasm'], fig:'paddle', d:1,
+    kind:'game', stack:['godot','svg','wasm'], fig:'paddle',
     labelZh:'霓虹砖墙', labelEn:'NEON BRICKS',
     kickZh:'客户委托', kickEn:'CLIENT COMMISSION',
     descZh:'把原项目 <a class="src" href="https://github.com/240700/Breakout" target="_blank" rel="noopener">240700/Breakout</a>（Godot 打砖块）从代码色块重制为霓虹矢量风 —— 7 组手绘 SVG 贴图替换全部视觉，物理与碰撞逻辑原样保留。含可玩网页构建。',
@@ -880,7 +864,7 @@ var clientWorks = [
      changed, so links to /projects/fund-manager/ still resolve. No fee is
      shown for this one. */
   { id:'C02', slug:'fund-manager', title:'FUND MANAGER', tag:'CLIENT · TOOL',
-    kind:'tool', stack:['indexeddb','sheetjs','single-page'], fig:'ledger', d:2,
+    kind:'tool', stack:['indexeddb','sheetjs','single-page'], fig:'ledger',
     labelZh:'经费流水', labelEn:'EXPENSE LEDGER',
     kickZh:'客户委托', kickEn:'CLIENT COMMISSION',
     descZh:'活动经费记账助手 —— 浏览器本地运行的单人经费管理工具，支持预算表导入、报销追踪、催办提醒与 Excel 导出。',
@@ -1537,6 +1521,7 @@ function frame(now){
    RENDER
    ═══════════════════════════════════════════════════════════════════════════ */
 var INDEX = document.getElementById('index');
+var GRID = document.getElementById('index-grid');
 var EMPTY = document.getElementById('empty');
 var band = document.getElementById('client-band');
 
@@ -1544,7 +1529,7 @@ function cardHTML(p){
   var i18nKey = lang === 'zh' ? 'descZh' : 'descEn';
   var url = 'projects/' + p.slug + '/';
   return '' +
-  '<article class="card" data-d="' + p.d + '" data-state="idle" data-slug="' + p.slug + '">' +
+  '<article class="card" data-state="idle" data-slug="' + p.slug + '">' +
     '<div class="card__head">' +
       '<span class="card__num">' + p.id + '</span>' +
       '<span class="card__tag">' + p.tag + '</span>' +
@@ -1580,7 +1565,7 @@ function commissionHTML(p){
   /* a fee is only shown for the commissions that have one */
   if(p.fee) meta.unshift([T('fee'), p.fee]);
   return '' +
-  '<article class="commission" data-d="1" data-state="idle" data-slug="' + p.slug + '">' +
+  '<article class="commission" data-state="idle" data-slug="' + p.slug + '">' +
     '<div class="commission__stage">' +
       '<canvas data-fig="' + p.fig + '" data-id="' + p.id + '"></canvas>' +
       '<span class="card__cap">' + T('figOf') + p.id + ' · ' +
@@ -2017,8 +2002,7 @@ function bindBeam(){
 
 function renderAll(){
   dropFigures();
-  Array.prototype.forEach.call(INDEX.querySelectorAll('.card'), function(n){ n.remove(); });
-  EMPTY.insertAdjacentHTML('beforebegin', projects.map(cardHTML).join(''));
+  GRID.innerHTML = projects.map(cardHTML).join('');
   band.innerHTML = clientWorks.map(commissionHTML).join('');
   bindFigures(INDEX);
   bindFigures(band);
