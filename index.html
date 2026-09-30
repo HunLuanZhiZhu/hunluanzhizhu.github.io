@@ -438,7 +438,7 @@ h1.disp .caret{
 }
 .filterbar button:hover{background:var(--accent);color:var(--void)}
 
-/* ═══ 3 · CLIENT WORKS — a full-bleed band on its own ground ══════════════ */
+/* ═══ 3 · CLIENT WORKS — same card scale, separate section ground ═════════ */
 .clients{
   display:block;
   background:var(--ground-2);
@@ -446,42 +446,27 @@ h1.disp .caret{
   border-bottom:1px solid var(--hairline-2);
   padding:var(--s9) 0;
 }
-.commission{display:block}
-.commission+.commission{
-  margin-top:var(--s9);padding-top:var(--s9);
+#client-band{
+  display:grid;grid-template-columns:1fr;grid-auto-rows:1fr;gap:var(--s3);
+}
+.commission{background:transparent}
+.commission .card__cap{background:var(--ground-2)}
+.commission__meta{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:var(--s3) var(--s4);margin-top:var(--s4);padding-top:var(--s3);
   border-top:1px solid var(--hairline-2);
 }
-.commission__stage{
-  height:var(--stage-h);border-top:1px solid var(--hairline-2);
-  border-bottom:1px solid var(--hairline-2);margin-bottom:var(--s7);
-  position:relative;overflow:hidden;
-}
-.commission .card__cap{background:var(--ground-2)}
-.commission__grid{display:flex;flex-direction:column;gap:var(--s5)}
-.commission__title{
-  font-size:clamp(1.5rem, 1.1rem + 1.8vw, 2.5rem);line-height:1.05;
-  letter-spacing:-.02em;color:var(--ink);margin-bottom:var(--s3);
-}
-.commission__desc{color:var(--ink-2);max-width:var(--read);font-size:var(--fs-body)}
-.commission__desc b{color:var(--ink);font-weight:700}
-.commission__desc a{color:var(--accent);border-bottom:1px solid var(--acid-34)}
-.commission__meta{display:flex;flex-wrap:wrap;gap:var(--s5);align-items:flex-start}
 .commission__meta>div{min-width:0}
 .commission__k{
-  font-size:var(--fs-micro);letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ink-3);margin-bottom:var(--s2);
+  font-size:var(--fs-micro);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:4px;
 }
-.commission__v{font-size:var(--fs-meta);color:var(--ink-2);max-width:34ch}
-.commission__v--fee{color:var(--accent);font-weight:700;font-size:var(--fs-title);letter-spacing:0}
+.commission__v{
+  font-size:var(--fs-meta);line-height:1.5;color:var(--ink-2);
+  overflow-wrap:anywhere;
+}
+.commission__v--fee{color:var(--accent);font-weight:700}
 .card__fig--kick b{color:var(--accent);font-weight:700}
-.commission__cta{
-  display:inline-flex;align-items:center;gap:var(--s2);min-height:44px;
-  font-size:var(--fs-meta);letter-spacing:.16em;text-transform:uppercase;
-  font-weight:700;color:var(--accent);
-}
-.commission__cta .arw{transition:transform var(--t-std) var(--e-out-expo)}
-.commission__cta:hover .arw{transform:translateX(6px)}
-
 .sec-head--band{margin-bottom:var(--s6)}
 
 /* ═══ 4 · FOOTER — two columns, small ════════════════════════════════════ */
@@ -574,14 +559,17 @@ h1.disp .caret{
 
 @media (min-width:768px){
   :root{--stage-h:250px}
-  .index__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .index__grid,#client-band{grid-template-columns:repeat(2,minmax(0,1fr))}
   .hero{padding-top:calc(var(--bar-h) + var(--s9))}
-  .commission__grid{flex-direction:row;gap:var(--s7);align-items:flex-start}
 }
 @media (min-width:1024px){
   :root{--stage-h:264px;--gutter:clamp(24px,4vw,56px)}
   .index__grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .commission__grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:var(--s8)}
+  /* two client cards keep the same column width as the 3-column project grid */
+  #client-band{
+    grid-template-columns:repeat(2,minmax(0,calc(33.333333% - 8px)));
+    justify-content:center;
+  }
 }
 @media (max-width:767px){
   :root{--stage-h:186px;--bar-h:auto}
@@ -598,7 +586,7 @@ h1.disp .caret{
   .hero__foot{flex-direction:column;gap:var(--s5)}
   .hero__readout{flex-basis:auto;width:100%}
   .trigger kbd{display:none}
-  .commission__stage{height:184px}
+  .commission__meta{grid-template-columns:1fr}
   .cmdk{align-items:stretch}
   .cmdk__panel{
     width:100%;margin-top:0;border-left:none;border-right:none;border-top:none;
@@ -1564,20 +1552,30 @@ function commissionHTML(p){
   var meta = (lang === 'zh' ? p.metaZh : p.metaEn).slice();
   /* a fee is only shown for the commissions that have one */
   if(p.fee) meta.unshift([T('fee'), p.fee]);
+  var url = 'projects/' + p.slug + '/';
   return '' +
-  '<article class="commission" data-state="idle" data-slug="' + p.slug + '">' +
-    '<div class="commission__stage">' +
+  '<article class="card commission" data-state="idle" data-slug="' + p.slug + '">' +
+    '<div class="card__head">' +
+      '<span class="card__num">' + p.id + '</span>' +
+      '<span class="card__tag">' + p.tag + '</span>' +
+      '<span class="sp"></span>' +
+      '<span class="card__fig">FIG.' + p.id + '</span>' +
+    '</div>' +
+    '<div class="card__stage">' +
       '<canvas data-fig="' + p.fig + '" data-id="' + p.id + '"></canvas>' +
       '<span class="card__cap">' + T('figOf') + p.id + ' · ' +
         (lang === 'zh' ? p.labelZh : p.labelEn) + '</span>' +
     '</div>' +
-    '<div class="commission__grid">' +
-      '<div>' +
-        '<p class="card__fig card__fig--kick"><b>' + p.id + '</b> · ' +
-          (lang === 'zh' ? p.kickZh : p.kickEn) + '</p>' +
-        '<h3 class="commission__title">' + p.title + '</h3>' +
-        '<p class="commission__desc">' + p[i18nKey] + '</p>' +
+    '<a class="card__link" href="' + url + '">' +
+      '<h3 class="card__title">' + p.title + '</h3>' +
+    '</a>' +
+    '<div class="card__body">' +
+      '<div class="card__stack">' +
+        p.stack.map(function(s){ return '<span class="chip">' + s + '</span>'; }).join('') +
       '</div>' +
+      '<p class="card__fig card__fig--kick"><b>' + p.id + '</b> · ' +
+        (lang === 'zh' ? p.kickZh : p.kickEn) + '</p>' +
+      '<p class="card__desc">' + p[i18nKey] + '</p>' +
       '<div class="commission__meta">' +
         meta.map(function(row){
           var isFee = row[0] === T('fee');
@@ -1585,9 +1583,13 @@ function commissionHTML(p){
                  '<p class="commission__v' + (isFee ? ' commission__v--fee' : '') + '">' +
                  row[1] + '</p></div>';
         }).join('') +
-        '<a class="commission__cta" href="projects/' + p.slug + '/">' + T('enter') +
-          ' <span class="arw" aria-hidden="true">→</span></a>' +
       '</div>' +
+    '</div>' +
+    '<div class="card__foot">' +
+      '<a class="card__cta" href="' + url + '">' + T('enter') +
+        ' <span class="arw" aria-hidden="true">→</span></a>' +
+      '<span class="card__sp"></span>' +
+      '<button class="card__run" type="button" aria-pressed="false">' + T('run') + '</button>' +
     '</div>' +
   '</article>';
 }
@@ -1616,7 +1618,7 @@ function bindFigures(root){
   var canHover = true;
   try{ canHover = matchMedia('(hover:hover) and (pointer:fine)').matches; }catch(e){}
   Array.prototype.forEach.call(
-    root.querySelectorAll('.card__stage canvas, .commission__stage canvas'),
+    root.querySelectorAll('.card__stage canvas'),
     function(cv){
       var m = makeMark(cv, cv.getAttribute('data-fig'));
       var host = cv.closest('.card, .commission');
