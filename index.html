@@ -579,7 +579,15 @@ var projects = [
     kind:'3D', stack:['blender','gltf','webgl','deepseek-v4.1-flash'], fig:'lathe',
     labelZh:'旋转成形', labelEn:'LATHE FORM',
     descZh:'由几何体生长出的提灯与皮卡丘。程序化建模，实时 3D 预览，拖动即可探索每个角度。',
-    descEn:'A lantern and Pikachu, built from simple geometry. Procedural Blender models you can turn and explore in real time.' }
+    descEn:'A lantern and Pikachu, built from simple geometry. Procedural Blender models you can turn and explore in real time.' },
+
+  /* Built in Open Design (model: deepseek-v4.1-flash); a single self-contained
+     file, no grid, no textures — click the water to drop a ripple. */
+  { id:'10', slug:'open-design-test', title:'Open Design Test', tag:'WEBGL · EXPERIMENT',
+    kind:'exp', stack:['webgl2','shader','open-design','deepseek-v4.1-flash'], fig:'caustic',
+    labelZh:'涟漪焦散', labelEn:'RIPPLE CAUSTICS',
+    descZh:'Open Design 生成的自包含 WebGL2 主视觉 —— 多层域扭曲涟漪织成动态水面焦散，点击水面即可落下涟漪。无网格、无贴图、单文件。',
+    descEn:'A self-contained WebGL2 visual generated with Open Design — domain-warped ripples weave into animated water caustics. Click the water to drop a ripple. No mesh, no textures, one file.' }
 ];
 
 var clientWorks = [
@@ -1227,6 +1235,35 @@ var MARKS = {
     seg(g, [bx, by], [bx, py]); g.setLineDash([]);
     axis(g, w, h, 28, null, u);
     return T('figOf') + u.id + ' · ' + alive + ' ' + (lang === 'zh' ? '砖' : 'left');
+  },
+
+  /* 10 · ripple caustics — clicks on the water breathe expanding fronts;
+     fronts from different drops cross and read as an interference network */
+  caustic:function(g, w, h, u){
+    var base = axis(g, w, h, 28, null, u);
+    var gap = 24, maxR = Math.min(w * .42, h * .72);
+    var drops = [[.26, .56, 0], [.55, .40, 2.1], [.74, .60, 4.2]];
+    var fronts = 0, lam = gap;
+    g.lineWidth = 1;
+    drops.forEach(function(d){
+      var cx = d[0] * w, cy = 18 + d[1] * (base - 34), ph = d[2];
+      /* the drop marker is the click that made this family of fronts */
+      g.strokeStyle = FIG.a70;
+      seg(g, [cx - 4, cy], [cx + 4, cy]); seg(g, [cx, cy - 4], [cx, cy + 4]);
+      for(var r = (u.t * 22 + ph * gap) % gap; r < maxR; r += gap){
+        var fade = 1 - r / maxR;
+        if(fade < .05) continue;
+        fronts++;
+        g.strokeStyle = 'rgba(212,255,107,' + (fade * .5).toFixed(3) + ')';
+        /* squashed into an ellipse so the field reads as a water plane */
+        g.beginPath(); g.ellipse(cx, cy, r, r * .48, 0, 0, 6.2832); g.stroke();
+      }
+    });
+    /* one probe line sampling the surface, so the band never reads as empty */
+    g.strokeStyle = FIG.ink2; g.setLineDash([2, 5]);
+    seg(g, [w * .08, base - 26], [w * .92, base - 26]); g.setLineDash([]);
+    mono(g, 'λ ' + lam, w * .92, base - 32, FIG.ink2, 9, 'right');
+    return T('figOf') + u.id + ' · ' + fronts + ' ' + (lang === 'zh' ? '道波前' : 'fronts');
   }
 };
 
@@ -1277,7 +1314,7 @@ function invalidateAll(){
 }
 /* The composed still frame is a CHOSEN moment, not t=0. Four figures are
    mid-gesture by construction and would read as an empty plate at zero. */
-var STILL = { corridor:.9, descent:1.4, scrub:2.4, bracket:2.2, lathe:1.1 };
+var STILL = { corridor:.9, descent:1.4, scrub:2.4, bracket:2.2, lathe:1.1, caustic:1.6 };
 function drawMark(m){
   var g = m.ctx, k = '';
   g.clearRect(0, 0, m.w, m.h);
@@ -1503,7 +1540,7 @@ function bindFigures(root){
    reflected in the URL so a filtered view can be linked and gone back to.
    ═══════════════════════════════════════════════════════════════════════════ */
 var query = '', category = 'all';
-var CATEGORY_KINDS={play:['3D','game'],research:['talk','paper'],tools:['app','tool']};
+var CATEGORY_KINDS={play:['3D','game','exp'],research:['talk','paper'],tools:['app','tool']};
 function inCategory(p){return category==='all'||CATEGORY_KINDS[category].indexOf(p.kind)!==-1;}
 function escapeHTML(value){return String(value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 var tags = (function(){

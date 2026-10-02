@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="自包含 WebGL2 主视觉：由域扭曲涟漪织成的动态水面焦散，点击水面掉落涟漪。" />
+<title>焦散池 · WebGL2 水面焦散</title>
+<!-- 完全自包含：不加载任何外部字体或资源，字形全部回退到系统字体栈。 -->
+<!--
+  自包含 WebGL2 主视觉（无网格、无贴图、无构建步骤）。
+  多层域扭曲涟漪叠加成折射网络，收敛为流动的焦散光纹；
+  指针在水面落下涟漪，涟漪位移直接扰动采样坐标。
+  环境时钟 u_time 可暂停，涟漪时钟 u_rclock 独立推进。
+-->
+<style>
+  :root{
+    color-scheme: dark;
+    --bg:        oklch(0.175 0.045 218);
+    --surface:   oklch(0.235 0.035 214 / 0.42);
+    --fg:        oklch(0.975 0.018 190);
+    --muted:     oklch(0.80 0.028 195);
+    --border:    oklch(0.97 0.02 190 / 0.22);
+    --border-hi: oklch(0.97 0.02 190 / 0.44);
+    --accent:    oklch(0.86 0.155 172);
+    --scrim:     oklch(0.135 0.04 220 / 0.80);
+    --font-display: "Space Grotesk","Segoe UI Variable Display","Segoe UI",system-ui,"PingFang SC","Microsoft YaHei UI",sans-serif;
+    --font-body:    "Inter","Segoe UI Variable Text","Segoe UI",system-ui,"PingFang SC","Microsoft YaHei UI","Microsoft YaHei",sans-serif;
+    --font-mono:    ui-monospace,"Cascadia Mono","SFMono-Regular",Consolas,"Noto Sans Mono",monospace;
+    --pad: clamp(20px, 4vw, 56px);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; height:100%; overflow:hidden; background:var(--bg); }
+  body{
+    font-family:var(--font-body); color:var(--fg);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  #gl{
+    position:fixed; inset:0; width:100%; height:100%; display:block;
+    cursor:crosshair; touch-action:none;
+  }
+  .scrim{
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:
+      linear-gradient(to top,    oklch(0.135 0.04 220 / 0.82), oklch(0.135 0.04 220 / 0) 42%),
+      linear-gradient(to bottom, oklch(0.135 0.04 220 / 0.60), oklch(0.135 0.04 220 / 0) 26%);
+  }
+  .overlay{
+    position:fixed; inset:0; z-index:2; pointer-events:none;
+    display:grid; grid-template-rows:auto 1fr auto;
+    gap:clamp(16px,3vw,40px);
+    padding:var(--pad);
+    padding-bottom:max(var(--pad), env(safe-area-inset-bottom));
+  }
+
+  /* ── 顶栏 ─────────────────────────────────────── */
+  .topbar{
+    display:flex; justify-content:space-between; align-items:center; gap:16px;
+    font-family:var(--font-mono); font-size:clamp(10.5px,0.85vw,12px);
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--muted);
+  }
+  .brand{ display:inline-flex; align-items:center; gap:10px; color:var(--fg); }
+  .live{
+    width:7px; height:7px; border-radius:50%; background:var(--accent);
+    box-shadow:0 0 12px var(--accent); flex:none;
+    animation:pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:.55; transform:scale(.85); }
+    50%    { opacity:1;   transform:scale(1);   }
+  }
+  .status{ text-align:right; white-space:nowrap; }
+
+  /* ── 主视觉文案 ───────────────────────────────── */
+  .hero{
+    display:grid; grid-template-columns:minmax(0,1.35fr) minmax(240px,0.8fr);
+    align-items:end; gap:clamp(20px,4vw,72px); align-self:end;
+  }
+  .kicker{
+    margin:0 0 clamp(10px,1.4vw,18px);
+    font-family:var(--font-mono); font-size:clamp(10.5px,0.85vw,12px);
+    letter-spacing:0.24em; text-transform:uppercase; color:var(--muted);
+  }
+  h1{
+    margin:0; font-family:var(--font-display);
+    font-size:clamp(56px, 12.2vw, 172px); line-height:0.9;
+    letter-spacing:-0.02em; font-weight:700;
+    text-shadow:0 4px 60px oklch(0.10 0.03 220 / 0.55);
+  }
+  h1 .thin{ font-weight:500; color:oklch(0.93 0.05 178); }
+  .sub{
+    margin:0; max-width:38ch; align-self:end;
+    font-size:clamp(14px,1.1vw,16.5px); line-height:1.65; color:var(--muted);
+  }
+  .sub b{ color:var(--fg); font-weight:500; }
+
+  /* ── 操作行 ───────────────────────────────────── */
+  .controls{
+    display:flex; justify-content:space-between; align-items:center;
+    gap:18px; flex-wrap:wrap;
+  }
+  .hint{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:var(--font-mono); font-size:clamp(10.5px,0.85vw,12px);
+    letter-spacing:0.18em; text-transform:uppercase; color:var(--muted);
+  }
+  .hint::before{
+    content:""; width:26px; height:1px; background:var(--border-hi); flex:none;
+  }
+  .btns{ display:flex; align-items:center; gap:10px; }
+  .btn{
+    pointer-events:auto; font-family:var(--font-body); font-size:12.5px;
+    letter-spacing:0.08em; color:var(--fg); cursor:pointer;
+    height:44px; padding:0 18px; border-radius:999px;
+    border:1px solid var(--border); background:var(--surface);
+    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .btn:hover{ background:oklch(0.30 0.035 212 / 0.55); border-color:var(--border-hi); }
+  .btn:active{ background:oklch(0.34 0.04 210 / 0.62); }
+  .btn:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+  .btn.icon{
+    width:44px; padding:0; display:grid; place-items:center;
+  }
+  .btn svg{ width:15px; height:15px; display:block; fill:currentColor; }
+  .btn[aria-pressed="true"] .i-play,
+  .btn[aria-pressed="false"] .i-pause{ display:none; }
+
+  .fallback{
+    position:fixed; inset:0; z-index:5; display:none; place-items:center;
+    padding:32px; text-align:center; background:var(--bg); font-size:15px; line-height:1.7;
+  }
+
+  @media (max-width: 880px){
+    .hero{ grid-template-columns:1fr; gap:18px; align-self:end; }
+    .sub{ max-width:52ch; }
+  }
+  @media (max-width: 560px){
+    .overlay{ gap:14px; }
+    .status{ display:none; }
+    h1{ font-size:clamp(50px,17vw,96px); }
+    .hint{ order:2; width:100%; }
+    .btns{ order:1; }
+    .controls{ align-items:flex-end; justify-content:flex-end; }
+  }
+  @media (max-height: 640px){
+    h1{ font-size:clamp(38px, 7.2vw, 92px); }
+    .sub{ font-size:13.5px; max-width:46ch; }
+    .kicker{ margin-bottom:8px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .live{ animation:none; opacity:.9; }
+    .btn{ transition:none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="gl" data-od-id="caustic-canvas" aria-label="实时水面焦散动画，点击水面可掉落涟漪"></canvas>
+<div class="scrim" aria-hidden="true"></div>
+
+<div class="overlay">
+  <header class="topbar" data-od-id="topbar">
+    <span class="brand"><span class="live" aria-hidden="true"></span>焦散池 · CAUSTIC POOL</span>
+    <span class="status" data-od-id="status">WebGL2 · 实时 GPU</span>
+  </header>
+
+  <div aria-hidden="true"></div>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="kicker">域扭曲涟漪 · 无网格 无贴图</p>
+      <h1 data-od-id="hero-title">焦散<span class="thin">池</span></h1>
+    </div>
+    <p class="sub" data-od-id="hero-sub">
+      多层<b>域扭曲涟漪</b>在 GPU 上叠成折射网络，收敛为流动的焦散光纹。
+      点击水面，掉下一圈涟漪。
+    </p>
+  </section>
+
+  <footer class="controls" data-od-id="controls">
+    <span class="hint" data-od-id="ripple-hint">点击水面 · 掉落涟漪</span>
+    <div class="btns">
+      <button id="drop" class="btn" data-od-id="drop-ripple" type="button">随机涟漪</button>
+      <button id="motion" class="btn icon" data-od-id="motion-toggle" type="button"
+              aria-pressed="false" aria-label="暂停水面动画" title="暂停 / 播放">
+        <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="3.2" y="2.6" width="3.2" height="10.8" rx="1"/><rect x="9.6" y="2.6" width="3.2" height="10.8" rx="1"/></svg>
+        <svg class="i-play"  viewBox="0 0 16 16" aria-hidden="true"><path d="M4.4 2.6 12.9 8 4.4 13.4Z"/></svg>
+      </button>
+    </div>
+  </footer>
+</div>
+
+<div class="fallback" id="fallback">当前环境不支持 WebGL2，无法渲染实时焦散水面。</div>
+
+<script>
+(() => {
+  "use strict";
+  const canvas = document.getElementById("gl");
+  const statusEl = document.querySelector("[data-od-id=status]");
+  const motionBtn = document.getElementById("motion");
+  const dropBtn = document.getElementById("drop");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let gl, prog, uRes, uTime, uRClock, uRip;
+  let ctxLost = false;
+
+  /* ── 着色器 ───────────────────────────────────── */
+  const VERT = `#version 300 es
+void main(){
+  vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2));
+  gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
+}`;
+
+  const FRAG = `#version 300 es
+precision highp float;
+out vec4 o;
+
+uniform vec2  u_res;
+uniform float u_time;     // 环境时钟（可暂停）
+uniform float u_rclock;   // 涟漪时钟（始终推进）
+uniform vec4  u_ripples[8]; // xy=位置(0..1, y 向上)  z=诞生时刻  w=强度
+
+#define TAU 6.28318530718
+
+float hash(vec2 p){
+  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+}
+float vnoise(vec2 p){
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i),               hash(i + vec2(1.0, 0.0)), u.x),
+             mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+float fbm(vec2 p){
+  float v = 0.0, a = 0.5;
+  for (int i = 0; i < 3; i++){
+    v += a * vnoise(p);
+    p = p * 1.9 + vec2(3.1, 7.7);
+    a *= 0.5;
+  }
+  return v;
+}
+
+// 折叠坐标累积出的折射网络（经典 caustic 迭代）
+float caustic(vec2 uv, float t){
+  const float inten = 0.005;
+  vec2 p = mod(uv * TAU, TAU) - 250.0;
+  vec2 i = p;
+  float c = 1.0;
+  for (int n = 0; n < 5; n++){
+    float tt = t * (1.0 - (3.5 / float(n + 1)));
+    i = p + vec2(cos(tt - i.x) + sin(tt + i.y),
+                 sin(tt - i.y) + cos(tt + i.x));
+    c += 1.0 / length(vec2(p.x / (sin(i.x + tt) / inten),
+                           p.y / (cos(i.y + tt) / inten)));
+  }
+  c /= 5.0;
+  c = 1.17 - pow(c, 1.4);
+  return pow(abs(c), 8.0);
+}
+
+void main(){
+  float aspect = u_res.x / u_res.y;
+  vec2  p = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;
+
+  /* 涟漪：位移 + 辉光 */
+  vec2  disp = vec2(0.0);
+  float glow = 0.0;
+  float spark = 0.0;
+  for (int k = 0; k < 8; k++){
+    vec4 R = u_ripples[k];
+    if (R.w <= 0.0) continue;
+    float age = u_rclock - R.z;
+    if (age < 0.0 || age > 7.0) continue;
+    vec2  rp = (R.xy - 0.5) * vec2(aspect, 1.0);
+    vec2  dv = p - rp;
+    float d  = length(dv) + 1e-5;
+    float env = smoothstep(0.0, 0.05, age) * (1.0 - smoothstep(5.0, 7.0, age));
+    float wave = sin(d * 27.0 - age * 8.5) * exp(-d * 2.6) * exp(-age * 1.05) * env * R.w;
+    disp  += (dv / d) * wave * 0.09;
+    glow  += exp(-d * 5.5) * exp(-age * 1.5) * env * R.w;
+    spark += exp(-abs(d - age * 0.55) * 14.0) * env * R.w * 0.5;
+  }
+
+  /* 域扭曲：让折射网络缓慢游动 */
+  vec2  q    = p + disp;
+  float flow = u_time * 0.055;
+  vec2  warp = 0.16 * vec2(fbm(q * 1.3 + vec2(0.0, flow)),
+                           fbm(q * 1.3 + vec2(4.7, -flow)));
+  vec2  wuv  = q + warp;
+
+  float tA = u_time * 0.34 + 23.0;
+  float c1 = caustic(wuv * 1.7, tA);
+  float c2 = caustic(wuv * 3.1 + vec2(11.0, 5.0), tA * 1.18 + 9.0);
+  float c  = mix(c1, c2, 0.38);
+  c = pow(c, 0.92);
+
+  /* 水体色阶：浅架 → 深水 → 深渊 */
+  float r = length(p);
+  vec3 shelf = vec3(0.035, 0.300, 0.360);
+  vec3 deep  = vec3(0.017, 0.115, 0.175);
+  vec3 abyss = vec3(0.008, 0.055, 0.095);
+  vec3 col = mix(shelf, deep,  smoothstep(0.05, 0.75, r));
+  col = mix(col,    abyss, smoothstep(0.55, 1.15, r));
+
+  /* 焦散丝 + 炽核 */
+  col += vec3(0.32, 0.86, 0.82) * c * 0.95;
+  col += vec3(0.80, 1.00, 0.96) * pow(c, 1.9) * 0.45;
+
+  /* 涟漪辉光与水面掠光 */
+  col += vec3(0.45, 0.95, 0.92) * glow  * 0.50;
+  col += vec3(0.85, 1.00, 1.00) * spark * 0.35;
+  float g = exp(-pow((p.y - (-p.x * 0.35 + 0.12)) * 4.2, 2.0));
+  col += vec3(0.55, 0.85, 0.90) * g * 0.06 * smoothstep(0.0, 0.6, length(warp));
+
+  /* 收边、色调映射、抖动 */
+  col *= 0.62 + 0.55 * smoothstep(1.25, 0.05, r);
+  col  = col / (col + 0.82);
+  col  = pow(max(col, 0.0), vec3(0.88));
+  col += (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.022;
+  o = vec4(col, 1.0);
+}`;
+
+  /* ── WebGL 初始化 ─────────────────────────────── */
+  function compile(type, src){
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      throw new Error(gl.getShaderInfoLog(s) || "shader compile failed");
+    }
+    return s;
+  }
+
+  function initGL(){
+    gl = canvas.getContext("webgl2", { antialias: true, alpha: false, powerPreference: "high-performance" });
+    if (!gl) return false;
+    prog = gl.createProgram();
+    gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
+    gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      throw new Error(gl.getProgramInfoLog(prog) || "program link failed");
+    }
+    gl.useProgram(prog);
+    uRes    = gl.getUniformLocation(prog, "u_res");
+    uTime   = gl.getUniformLocation(prog, "u_time");
+    uRClock = gl.getUniformLocation(prog, "u_rclock");
+    uRip    = gl.getUniformLocation(prog, "u_ripples");
+    return true;
+  }
+
+  if (!initGL()) {
+    document.getElementById("fallback").style.display = "grid";
+    canvas.style.display = "none";
+    return;
+  }
+
+  /* ── 涟漪池（环形，最多 8 个） ────────────────── */
+  const RIPPLE_MAX = 8;
+  const ripples = [];
+  const rippleBuf = new Float32Array(RIPPLE_MAX * 4);
+
+  function dropRipple(px, py, strength){
+    if (ripples.length >= RIPPLE_MAX) ripples.shift();
+    ripples.push({
+      x: px / window.innerWidth,
+      y: 1 - py / window.innerHeight,
+      birth: rclock,
+      strength: strength || 1
+    });
+  }
+
+  function packRipples(){
+    for (let i = 0; i < RIPPLE_MAX; i++) {
+      const o = i * 4, r = ripples[i];
+      if (r) { rippleBuf[o] = r.x; rippleBuf[o+1] = r.y; rippleBuf[o+2] = r.birth; rippleBuf[o+3] = r.strength; }
+      else   { rippleBuf[o] = 0;   rippleBuf[o+1] = 0;   rippleBuf[o+2] = 0;       rippleBuf[o+3] = 0; }
+    }
+    return rippleBuf;
+  }
+
+  /* ── 指针交互：点击落下强涟漪，拖拽留下涟漪迹 ── */
+  let pressing = false, lastDropAt = 0;
+  window.addEventListener("pointerdown", (e) => {
+    if (e.target && e.target.closest && e.target.closest("button")) return;
+    pressing = true; lastDropAt = 0;
+    dropRipple(e.clientX, e.clientY, 1.0);
+  }, { passive: true });
+  window.addEventListener("pointermove", (e) => {
+    if (!pressing) return;
+    const now = performance.now();
+    if (now - lastDropAt > 110) { lastDropAt = now; dropRipple(e.clientX, e.clientY, 0.55); }
+  }, { passive: true });
+  const release = () => { pressing = false; };
+  window.addEventListener("pointerup", release, { passive: true });
+  window.addEventListener("pointercancel", release, { passive: true });
+
+  dropBtn.addEventListener("click", () => {
+    const w = window.innerWidth, h = window.innerHeight;
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => dropRipple(w * (0.3 + Math.random() * 0.4), h * (0.3 + Math.random() * 0.4), 0.9), i * 140);
+    }
+  });
+
+  /* ── 时钟与自适应分辨率 ───────────────────────── */
+  let paused = reduced;
+  let ambient = 0, rclock = 0, last = performance.now();
+  let ema = 0.016, resScale = 1, tick = 0;
+  const dprCap = Math.min(window.devicePixelRatio || 1, 2);
+
+  function syncMotionBtn(){
+    motionBtn.setAttribute("aria-pressed", paused ? "true" : "false");
+    motionBtn.setAttribute("aria-label", paused ? "播放水面动画" : "暂停水面动画");
+    if (statusEl) statusEl.textContent = paused ? "已暂停 · WebGL2" : "WebGL2 · 实时 GPU";
+  }
+  motionBtn.addEventListener("click", () => { paused = !paused; syncMotionBtn(); });
+  syncMotionBtn();
+
+  function resize(){
+    const w = Math.max(1, Math.round(window.innerWidth  * dprCap * resScale));
+    const h = Math.max(1, Math.round(window.innerHeight * dprCap * resScale));
+    if (w === canvas.width && h === canvas.height) return;
+    canvas.width = w; canvas.height = h;
+    gl.viewport(0, 0, w, h);
+  }
+  window.addEventListener("resize", resize);
+  window.addEventListener("orientationchange", () => setTimeout(resize, 120));
+  resize();
+
+  canvas.addEventListener("webglcontextlost", (e) => { e.preventDefault(); ctxLost = true; });
+  canvas.addEventListener("webglcontextrestored", () => {
+    try { if (initGL()) { ctxLost = false; resize(); } } catch (_) { /* 保持静态帧 */ }
+  });
+
+  function frame(now){
+    requestAnimationFrame(frame);
+    const raw = (now - last) / 1000;
+    last = now;
+    if (ctxLost) return;
+
+    const dt = Math.min(raw, 0.05);
+    if (!paused) ambient += dt;
+    rclock += dt;
+
+    ema = ema * 0.92 + Math.min(raw, 0.06) * 0.08;
+    if (++tick % 45 === 0) {
+      if (ema > 0.024)      resScale = Math.max(0.55, resScale * 0.85);
+      else if (ema < 0.014) resScale = Math.min(1.0,  resScale * 1.08);
+    }
+
+    resize();
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.uniform1f(uTime, ambient);
+    gl.uniform1f(uRClock, rclock);
+    gl.uniform4fv(uRip, packRipples());
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

@@ -36,6 +36,7 @@ hunluanzhizhu.github.io/
 | 07 | AI 游戏生成评测 第二届 (Game Studio Eval) | `/projects/game-studio-eval-s2/` | benchmark · godot · wasm |
 | 08 | 动态 SVG 鹈鹕 (Dynamic SVG Pelican) | `/projects/svg-pelican/` | svg · smil · deepseek-v4-pro |
 | 09 | Blender 3D 建模 (Blender 3D) | `/projects/blender-3d/` | blender · gltf · webgl · deepseek-v4.1-flash |
+| 10 | Open Design Test | `/projects/open-design-test/` | webgl2 · shader · open-design · deepseek-v4.1-flash |
 
 ### 客户项目
 
@@ -89,9 +90,9 @@ hunluanzhizhu.github.io/
 每张卡片整体可点（拉伸链接覆盖全卡），边框常显、悬停变强调色。
 两场的链接指向本站的演示页，源码仓库在页面底部的「源码」一段里。
 
-### 主视觉与 11 张项目图形（零位图）
+### 主视觉与 12 张项目图形（零位图）
 
-首页主视觉为 Canvas 2D 实时投影的三叶结线框，有两种可切换形态；项目卡片保留 11 个独立绘制器，首页不使用预览位图。
+首页主视觉为 Canvas 2D 实时投影的三叶结线框，有两种可切换形态；项目卡片保留 12 个独立绘制器，首页不使用预览位图。
 每张的实时读数前缀由数据里的 `id` 注入，所以改动编号不会在图形里留下过期数字。
 
 | 图 | 项目 | 画的是 |
@@ -105,6 +106,7 @@ hunluanzhizhu.github.io/
 | 07 | Game Studio Eval | 五位选手的评测记分板，达标线之上的领先者被标出 |
 | 08 | Dynamic SVG Pelican | 鹈鹕轮廓按版本逐笔重绘，一支笔头沿轮廓巡回，底部是版本刻度 |
 | 09 | Blender 3D | 旋转体的三种初始灯型（球 / 锥 / 梭）线框，激活的一种缓慢形变 |
+| 10 | Open Design Test | 水面涟漪波前：三个落点各自呼出椭圆波前并相互交叠成干涉网，落点即点击 |
 | C01 | Breakout | 霓虹砖墙逐块消解，挡板与球带轨迹 |
 | C02 | Fund Manager | 账本流水：四行功能条目 + 完成度规则，当前行带一个行进的处理头。**不写任何金额**，只报状态 |
 
