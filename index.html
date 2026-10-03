@@ -7,11 +7,11 @@
 <meta name="color-scheme" content="dark">
 <title>hunluanzhizhu — 浏览器实验室</title>
 <meta name="description" content="个人浏览器实验室：实验、游戏、讲稿与工具，每个子项目一个独立文件夹，全部纯前端运行。">
-<link rel="canonical" href="https://zyh.sryze.cc/">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
+<link rel="canonical" href="https://zyh.sryze.cc/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://zyh.sryze.cc/">
 <meta property="og:title" content="hunluanzhizhu — 浏览器实验室">
@@ -370,8 +370,44 @@ html[data-motion=paused] *,html[data-motion=paused] *::before,html[data-motion=p
 html[data-motion=paused] .card__run{display:none!important}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.hero__type,.hero__art,.hero__foot,.hero__top{opacity:1;transform:none}}
 </style>
+<style id="space-styles">
+/* Background extension: original page styles above remain untouched. */
+:root{--bg:oklch(0.178727 0.006829 135.0201);--surface:oklch(0.232555 0.014410 131.8195);--fg:oklch(0.955674 0.011921 106.6230);--muted:oklch(0.769636 0.017321 121.8564);--border:oklch(0.351216 0.010961 128.8129);--accent:oklch(0.941145 0.179902 123.4786);
+  --space-ink:oklch(from var(--bg) calc(l - .03) c h);
+  --space-metal:oklch(from var(--muted) calc(l - .29) calc(c * .5) h);
+  --star-pearl:oklch(0.970 0.015 105);
+  --star-ice:oklch(0.910 0.070 245);
+  --star-gold:oklch(0.910 0.110 85);
+  --star-ember:oklch(0.850 0.120 35);
+}
+.space-field{position:fixed;inset:0;z-index:0;pointer-events:none;isolation:isolate;background:var(--space-ink)}
+.space-field canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#space-spider{position:fixed;inset:0;width:100%;height:100%;z-index:220;pointer-events:none}
+.spider-hit{position:fixed;z-index:221;border:0;padding:0;background:transparent;cursor:pointer;touch-action:manipulation;transform-origin:center}
+.spider-hit:focus-visible{outline:none}
+.space-field::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,oklch(from var(--bg) l c h / .16),transparent 65%);pointer-events:none}
+.shell{z-index:1}
+.hero__type{filter:drop-shadow(0 2px 12px var(--bg))}
+.hero__top,.hero__foot,.hero__rule{position:relative;z-index:2}
+.hero__top,.hero__lede,.hero__count,.readout,.hero__rule{ text-shadow:0 1px 9px var(--bg),0 1px 4px var(--bg)}
+.space-note{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.space-controls{display:flex;gap:20px;align-items:center;flex-shrink:0}
+.space-switch{font:10px var(--face-mono);min-height:44px;display:flex;align-items:center;gap:7px;color:var(--ink-2)}
+.space-switch::before{content:'';width:5px;height:5px;border-radius:50%;border:1px solid currentColor}
+.space-switch[aria-pressed=true]::before{background:currentColor}
+.space-switch:hover{color:var(--ink)}
+.space-controls .motion-toggle{min-height:44px;color:var(--ink-2)}
+.space-controls .motion-toggle:hover{color:var(--ink)}
+.space-fps{font:9px var(--face-mono);color:var(--ink-2);letter-spacing:0;white-space:nowrap}
+.space-fallback{position:fixed;right:var(--gutter);bottom:14px;z-index:3;background:var(--bg);color:var(--fg);padding:8px 12px;font-size:11px;border:1px solid var(--hairline);max-width:calc(100% - 36px)}
+@media(max-width:767px){.space-fps{display:none}.hero__rule{gap:10px;align-items:flex-start;flex-wrap:wrap}.space-note{flex-basis:100%;font-size:9px;letter-spacing:0}.space-controls{width:100%;justify-content:space-between;gap:10px}.hero__rule>span{max-width:none}.space-field::after{background:oklch(from var(--bg) l c h / .15)}}
+</style>
 </head>
 <body>
+<div class="space-field" data-od-id="interstellar-background" aria-hidden="true"><canvas id="space-gl"></canvas><canvas id="space-still" hidden></canvas></div>
+<canvas id="space-spider" data-od-id="foreground-spider" aria-hidden="true"></canvas>
+<button id="spider-hit" class="spider-hit" data-od-id="spider-interaction" type="button" aria-label="点击驱赶蜘蛛" title="点击驱赶蜘蛛"></button>
+<p id="space-fallback" class="space-fallback" role="status" hidden>当前设备使用静态星空，首页功能仍可正常使用。</p>
 <a class="skip" href="#main">跳到主要内容</a>
 <div class="beam" id="beam" aria-hidden="true"></div>
 
@@ -397,11 +433,11 @@ html[data-motion=paused] .card__run{display:none!important}
 
 <main id="main" class="shell">
 
-  <section class="hero inner" aria-labelledby="h-hero">
+  <section data-od-id="homepage-hero" class="hero inner" aria-labelledby="h-hero">
     <div class="hero__top"><p class="hero__kick"><i aria-hidden="true"></i><span>INDEPENDENT DIGITAL PLAYGROUND</span></p><span class="hero__edition">BY HUNLUANZHIZHU / VOL. 01</span></div>
     <div class="hero__composition">
       <div class="hero__type">
-        <h1 id="h-hero"><span class="hero__line">Browser</span><span class="hero__line hero__line--second"><em>Lab.</em><span class="hero__asterisk" aria-hidden="true">*</span></span></h1>
+        <h1 data-od-id="hero-title" id="h-hero"><span class="hero__line">Browser</span><span class="hero__line hero__line--second"><em>Lab.</em><span class="hero__asterisk" aria-hidden="true">*</span></span></h1>
         <p class="hero__subtitle" data-i18n="heroSubtitle">让好奇心，在浏览器里发生。</p>
       </div>
       <div class="hero__art">
@@ -411,14 +447,14 @@ html[data-motion=paused] .card__run{display:none!important}
       </div>
     </div>
     <div class="hero__foot">
-      <div><p class="hero__lede" data-i18n="lede"></p><div class="hero__actions"><a class="explore" href="#index"><span data-i18n="explore">探索作品</span><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v14m-6-6 6 6 6-6" stroke="currentColor" stroke-width="1.5"/></svg></a><span class="hero__count"><b id="n-hero">11</b> <span data-i18n="heroCount">个想法，持续生长</span></span></div></div>
+      <div><p class="hero__lede" data-i18n="lede"></p><div class="hero__actions"><a data-od-id="explore-projects" class="explore" href="#index"><span data-i18n="explore">探索作品</span><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v14m-6-6 6 6 6-6" stroke="currentColor" stroke-width="1.5"/></svg></a><span class="hero__count"><b id="n-hero">11</b> <span data-i18n="heroCount">个想法，持续生长</span></span></div></div>
       <div class="hero__readout"><dl class="readout" id="readout"></dl></div>
     </div>
-    <div class="hero__rule"><span>SCROLL TO EXPLORE / KEEP YOUR CURIOSITY</span><button class="motion-toggle" id="motion-toggle" type="button" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 3v10M11 3v10" stroke="currentColor" stroke-width="2"/></svg><span data-i18n="motionPause">暂停动效</span></button></div>
+    <div class="hero__rule" data-od-id="background-controls"><span class="space-note"><span id="space-hint">点击空白处召唤蜘蛛 · 点击蜘蛛驱赶</span><span class="space-fps" id="space-fps">星空就绪</span></span><div class="space-controls"><button id="space-toggle" data-od-id="spider-toggle" class="space-switch" type="button" aria-pressed="true">蜘蛛捕星</button><button class="motion-toggle" id="motion-toggle" data-od-id="motion-toggle" type="button" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 3v10M11 3v10" stroke="currentColor" stroke-width="2"/></svg><span data-i18n="motionPause">暂停动效</span></button></div></div>
   </section>
 
   <!-- 2 · INDEX — equal-size project cards -->
-  <section class="index inner" id="index" aria-labelledby="h-index">
+  <section data-od-id="project-index" class="index inner" id="index" aria-labelledby="h-index">
     <div class="sec-head">
       <div><p class="eyebrow"><span>01 /</span> THE COLLECTION</p><h2 class="sec-title" id="h-index"><span data-i18n="projects">作品索引</span><span class="sec-head__n" id="n-index">09</span></h2></div>
       <p class="section-note" data-i18n="indexNote">从一个念头，到一个可以打开的世界。</p>
@@ -439,7 +475,7 @@ html[data-motion=paused] .card__run{display:none!important}
   </section>
 
   <!-- 3 · CLIENT WORKS -->
-  <section class="clients" id="clients" aria-labelledby="h-clients">
+  <section data-od-id="client-projects" class="clients" id="clients" aria-labelledby="h-clients">
     <div class="inner clients__layout">
       <div class="sec-head">
         <div><p class="eyebrow"><span>02 /</span> COMMISSIONED WORK</p><h2 class="sec-title" id="h-clients"><span data-i18n="clients">客户作品</span><span class="sec-head__n" id="n-clients">02</span></h2></div>
@@ -450,7 +486,7 @@ html[data-motion=paused] .card__run{display:none!important}
   </section>
 
   <!-- 4 · FOOTER -->
-  <footer class="foot inner" role="contentinfo">
+  <footer data-od-id="site-footer" class="foot inner" role="contentinfo">
     <div class="foot__statement"><p>Always curious.<br><span>Never finished.</span></p><a class="back-top" href="#main" aria-label="回到顶部 / Back to top"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20V4m-6 6 6-6 6 6" stroke="currentColor" stroke-width="1.4"/></svg></a></div>
     <div class="foot__grid">
       <div class="foot__col">
@@ -1336,6 +1372,7 @@ function frame(now){
   var dt = Math.min((now - (frame.last || now)) / 1000, .05);
   frame.last = now;
   renderHero(dt, false);
+  if(spaceExperience) spaceExperience.draw(dt, now);
   for(var i = 0; i < marks.length; i++){
     var m = marks[i];
     if(!m.visible || !m.ctx) continue;
@@ -1374,7 +1411,7 @@ function cardHTML(p){
   var i18nKey = lang === 'zh' ? 'descZh' : 'descEn';
   var url = 'projects/' + p.slug + '/';
   return '' +
-  '<article class="card" data-state="idle" data-slug="' + p.slug + '">' +
+  '<article data-od-id="project-' + p.slug + '" class="card" data-state="idle" data-slug="' + p.slug + '">' +
     '<div class="card__head">' +
       '<span class="card__num">' + p.id + '</span>' +
       '<span class="card__tag">' + p.tag + '</span>' +
@@ -1411,7 +1448,7 @@ function commissionHTML(p){
   if(p.fee) meta.unshift([T('fee'), p.fee]);
   var url = 'projects/' + p.slug + '/';
   return '' +
-  '<article class="card commission" data-state="idle" data-slug="' + p.slug + '">' +
+  '<article data-od-id="client-' + p.slug.replace(/\//g,'-') + '" class="card commission" data-state="idle" data-slug="' + p.slug + '">' +
     '<div class="card__head">' +
       '<span class="card__num">' + p.id + '</span>' +
       '<span class="card__tag">' + p.tag + '</span>' +
@@ -1825,6 +1862,305 @@ document.getElementById('lang-zh').addEventListener('click', function(){ lang = 
 document.getElementById('lang-en').addEventListener('click', function(){ lang = 'en'; applyLang(); });
 document.getElementById('filter-clear').addEventListener('click', function(){ category='all'; setQuery('', false); closePalette(); });
 
+var spaceExperience = null;
+/* Instanced luminous sprites and a foreground, articulated hunter. */
+function initSpace(){
+  var canvas=document.getElementById('space-gl'), web=document.getElementById('space-spider');
+  var still=document.getElementById('space-still'), ctx=web.getContext('2d'), stillCtx=still.getContext('2d');
+  var fps=document.getElementById('space-fps'), toggle=document.getElementById('space-toggle');
+  var hint=document.getElementById('space-hint'), hit=document.getElementById('spider-hit');
+  var fallback=document.getElementById('space-fallback');
+  var gl=null,program=null,buffer=null,resolution=null,w=0,h=0,dpr=1,time=0,frames=0,fpsElapsed=0;
+  var hunting=true,lost=false,firstFrame=true,target=null,nextHunt=1.6,marker=null,lastExcursion=-20;
+  var seed=61427,visits=new Array(12).fill(0);
+  function random(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+  try{hunting=localStorage.getItem('lab-spider')!=='off';}catch(e){}
+  var count=innerWidth<768?480:960,stars=[],data=new Float32Array(count*12);
+  var hunter={x:0,y:0,a:-.8,phase:0,speed:0,eating:0,goal:null,mode:'roaming',wait:0,deadline:0};
+  function rgbFromToken(name){
+    var value=getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    var n=value.match(/oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)/);
+    if(!n)return [1,1,1];
+    var L=+n[1],C=+n[2],angle=+n[3]*Math.PI/180,a=C*Math.cos(angle),b=C*Math.sin(angle);
+    var l=Math.pow(L+.3963377774*a+.2158037573*b,3),m=Math.pow(L-.1055613458*a-.0638541728*b,3),s=Math.pow(L-.0894841775*a-1.291485548*b,3);
+    return [4.0767416621*l-3.3077115913*m+.2309699292*s,-1.2684380046*l+2.6097574011*m-.3413193965*s,-.0041960863*l-.7034186147*m+1.707614701*s].map(function(v){return clamp(v<=.0031308?12.92*v:1.055*Math.pow(v,1/2.4)-.055,0,1);});
+  }
+  var colors=['--star-pearl','--star-ice','--star-gold','--star-ember'].map(rgbFromToken);
+  var acid=rgbFromToken('--accent'),metal=rgbFromToken('--star-pearl');
+  function rgba(color,alpha){return 'rgba('+color.map(function(v){return Math.round(v*255);}).join(',')+','+alpha+')';}
+  for(var i=0;i<count;i++){
+    var size=2.4+Math.pow(random(),2)*9.8;
+    stars.push({x:(random()-.5)*4,y:(random()-.5)*4,z:.2+random()*2.8,size:size,
+      light:.72+random()*.28,shape:i%3,color:colors[i%colors.length],cool:0,sx:0,sy:0,active:false});
+  }
+  var vert=`#version 300 es
+  precision highp float;
+  in vec2 corner;in vec4 ends;in vec4 style;in vec4 tint;
+  uniform vec2 resolution;
+  out vec2 local;out float lengthRatio;out vec4 params;out vec4 pigment;
+  void main(){
+    vec2 direction=ends.xy-ends.zw;float len=length(direction);
+    vec2 along=len<.001?vec2(1.,0.):direction/len,normal=vec2(-along.y,along.x);
+    float halfTrail=len*.5/style.x;
+    vec2 p=(ends.xy+ends.zw)*.5+along*corner.x*style.x*(1.+halfTrail)+normal*corner.y*style.x;
+    gl_Position=vec4(p/resolution*vec2(2.,-2.)+vec2(-1.,1.),0.,1.);
+    local=vec2(corner.x*(1.+halfTrail),corner.y);lengthRatio=halfTrail;params=style;pigment=tint;
+  }`;
+  var frag=`#version 300 es
+  precision highp float;
+  in vec2 local;in float lengthRatio;in vec4 params;in vec4 pigment;out vec4 color;
+  void main(){
+    vec2 p=local-vec2(lengthRatio,0.);float r=length(p);
+    float halo=exp(-r*r*6.5)*.27;
+    float core=1.-smoothstep(.055,.25,r);
+    float form=0.;
+    if(params.z<.5){form=1.-smoothstep(.10,.30,r);}
+    else if(params.z<1.5){form=1.-smoothstep(.18,.34,abs(p.x)+abs(p.y));}
+    else{form=exp(-abs(p.x)*32.)*pow(max(0.,1.-abs(p.y)),3.)+exp(-abs(p.y)*32.)*pow(max(0.,1.-abs(p.x)),3.);}
+    float trail=exp(-p.y*p.y*60.)*smoothstep(-1.-lengthRatio*2.,-.1,p.x)*(1.-smoothstep(-.12,0.,p.x))*.14;
+    float alpha=clamp(core+form*.75+halo+trail,0.,1.)*params.y;
+    vec3 base=mix(pigment.rgb,vec3(1.),core*.72);
+    color=vec4(base,alpha);
+  }`;
+  function compile(type,text){
+    var shader=gl.createShader(type);gl.shaderSource(shader,text);gl.compileShader(shader);
+    if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){var error=gl.getShaderInfoLog(shader);gl.deleteShader(shader);console.error(error);throw Error(error);}
+    return shader;
+  }
+  function setupGPU(){
+    program=gl.createProgram();var vs=compile(gl.VERTEX_SHADER,vert),fs=compile(gl.FRAGMENT_SHADER,frag);
+    gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);
+    if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));
+    gl.deleteShader(vs);gl.deleteShader(fs);gl.useProgram(program);
+    var quad=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,quad);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+    var loc=gl.getAttribLocation(program,'corner');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+    buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,data.byteLength,gl.DYNAMIC_DRAW);
+    [['ends',0],['style',16],['tint',32]].forEach(function(attr){var p=gl.getAttribLocation(program,attr[0]);gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,4,gl.FLOAT,false,48,attr[1]);gl.vertexAttribDivisor(p,1);});
+    resolution=gl.getUniformLocation(program,'resolution');gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);firstFrame=true;
+  }
+  try{gl=canvas.getContext('webgl2',{alpha:false,antialias:false,powerPreference:'low-power'});if(gl)setupGPU();}catch(error){console.error('星空初始化失败',error);gl=null;}
+  function scale(){return w<768?.73:1.12;}
+  function radius(){return Math.min(131*scale(),w*.28,h*.28);}
+  function bound(x,y){var r=radius()+8;return {x:clamp(x,r,w-r),y:clamp(y,r,h-r)};}
+  function project(star,z){return {x:w*.59+star.x*w*.72/z,y:h*.46+star.y*h*.72/z};}
+  function chooseGoal(){
+    var best=null,score=-Infinity,r=radius()+14;
+    for(var j=0;j<12;j++){
+      var x=r+(w-r*2)*((j%4)/3),y=r+(h-r*2)*Math.floor(j/4)/2;
+      var dist=Math.hypot(x-hunter.x,y-hunter.y)/Math.hypot(w,h);
+      var value=dist*4-visits[j]*.7+random()*.35;
+      if(value>score){score=value;best={x:x,y:y,cell:j};}
+    }
+    visits[best.cell]++;hunter.goal=best;hunter.mode='roaming';hunter.wait=0;target=null;
+    hunter.exploring=time-lastExcursion>9;if(hunter.exploring)lastExcursion=time;
+  }
+  function resize(initial){
+    var oldW=w,oldH=h;w=innerWidth;h=innerHeight;dpr=Math.min(devicePixelRatio||1,2);
+    [canvas,web,still].forEach(function(c){c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);});
+    ctx.setTransform(dpr,0,0,dpr,0,0);stillCtx.setTransform(dpr,0,0,dpr,0,0);
+    if(gl&&!lost)gl.viewport(0,0,canvas.width,canvas.height);
+    var pos=initial?bound(w*.74,h*.27):bound(hunter.x,hunter.y);
+    if(!initial&&oldW&&oldH)pos=bound(hunter.x/oldW*w,hunter.y/oldH*h);
+    hunter.x=pos.x;hunter.y=pos.y;target=null;hunter.eating=0;chooseGoal();
+  }
+  function pickStar(){
+    var best=null,score=Infinity;
+    stars.forEach(function(star){
+      if(!star.active||star.cool>0||star.z<.65)return;
+      var p=bound(star.sx,star.sy);if(Math.hypot(p.x-star.sx,p.y-star.sy)>8)return;
+      var dist=Math.hypot(star.sx-hunter.x,star.sy-hunter.y);
+      if(dist<170*scale()&&dist<score){score=dist;best=star;}
+    });return best;
+  }
+  function navigate(x,y,mode){
+    target=null;hunter.eating=0;hunter.wait=0;hunter.goal=bound(x,y);hunter.mode=mode;hunter.deadline=time+10;
+    marker={x:hunter.goal.x,y:hunter.goal.y,age:0,kind:mode};
+    if(REDUCED||motionPaused){hunter.x=hunter.goal.x;hunter.y=hunter.goal.y;hunter.goal=null;hunter.mode='resting';draw(0,performance.now());}
+  }
+  function flee(px,py){
+    var dx=hunter.x-px,dy=hunter.y-py;
+    if(Math.hypot(dx,dy)<20){var a=random()*Math.PI*2;dx=Math.cos(a);dy=Math.sin(a);}
+    var options=[],distance=Math.hypot(w,h)*.68;
+    for(var j=0;j<8;j++){
+      var angle=Math.atan2(dy,dx)+(j-3.5)*.32;
+      var goal=bound(hunter.x+Math.cos(angle)*distance,hunter.y+Math.sin(angle)*distance);
+      options.push({x:goal.x,y:goal.y,score:Math.hypot(goal.x-hunter.x,goal.y-hunter.y)});
+    }
+    options.sort(function(a,b){return b.score-a.score;});navigate(options[0].x,options[0].y,'fleeing');
+    hit.setAttribute('aria-label','蜘蛛正在逃离，点击再次驱赶');
+  }
+  function updateHunter(dt){
+    if(!hunting)return;
+    if(hunter.eating>0){hunter.eating=Math.max(0,hunter.eating-dt);hunter.speed*=Math.exp(-dt*12);if(!hunter.eating){nextHunt=time+4;chooseGoal();}return;}
+    if(hunter.mode==='resting'){hunter.wait+=dt;hunter.speed=0;if(hunter.wait>1.2)chooseGoal();return;}
+    if(hunter.mode==='roaming'&&!hunter.exploring&&time>nextHunt){nextHunt=time+3;var food=pickStar();if(food){target=food;hunter.mode='hunting';hunter.deadline=time+4;}}
+    if(target){
+      var projected=bound(target.sx,target.sy);
+      if(!target.active||time>hunter.deadline||Math.hypot(projected.x-target.sx,projected.y-target.sy)>16){target=null;chooseGoal();}
+      else hunter.goal={x:target.sx,y:target.sy};
+    }
+    if(!hunter.goal)chooseGoal();
+    var dx=hunter.goal.x-hunter.x,dy=hunter.goal.y-hunter.y,dist=Math.hypot(dx,dy);
+    if(target&&dist<34*scale()){target.cool=1.3;hunter.eating=.9;hunter.mode='feeding';hunter.goal=null;return;}
+    if(dist<5){
+      if(marker)marker.age=1.35;
+      if(hunter.mode==='manual'||hunter.mode==='fleeing'){hunter.mode='resting';hunter.goal=null;hunter.wait=0;nextHunt=time+2;hit.setAttribute('aria-label','点击驱赶蜘蛛');}
+      else chooseGoal();return;
+    }
+    var angle=Math.atan2(dy,dx)+Math.PI*.5,da=Math.atan2(Math.sin(angle-hunter.a),Math.cos(angle-hunter.a));
+    hunter.a+=da*(1-Math.exp(-dt*(hunter.mode==='fleeing'?12:7)));
+    var desired=(hunter.mode==='fleeing'?340:hunter.mode==='manual'?205:hunter.mode==='hunting'?145:91)*scale();
+    hunter.speed+=(desired-hunter.speed)*(1-Math.exp(-dt*7));
+    var step=Math.min(dist,hunter.speed*dt);hunter.x+=dx/dist*step;hunter.y+=dy/dist*step;hunter.phase+=step*.036/scale();
+  }
+  function legPoints(side,leg){
+    var gait=Math.sin(hunter.phase+leg*Math.PI+(side===1?Math.PI:0)),move=hunter.speed>2?1:0;
+    return [[side*13,-23+leg*11],[side*28,-29+leg*13],
+      [side*[49,62,61,49][leg],[-62,-28,25,57][leg]-gait*5*move],
+      [side*([82,100,99,80][leg]+Math.max(0,Math.cos(hunter.phase+leg*Math.PI))*7*move),[-77,-30,37,79][leg]+gait*13*move]];
+  }
+  function pathLeg(points){ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);for(var j=1;j<points.length;j++)ctx.lineTo(points[j][0],points[j][1]);}
+  function drawHunter(){
+    if(!hunting){hit.hidden=true;return;}
+    var sc=scale(),lift=hunter.mode==='fleeing'?2:0;
+    ctx.save();ctx.translate(hunter.x,hunter.y);ctx.rotate(hunter.a);ctx.scale(sc,sc);
+    ctx.lineCap='round';ctx.lineJoin='round';
+    // Contact shadow grounds the elevated body and every articulated leg.
+    ctx.save();ctx.translate(6,11);ctx.shadowColor='rgba(0,0,0,.82)';ctx.shadowBlur=13;
+    for(var side=-1;side<=1;side+=2)for(var leg=0;leg<4;leg++){pathLeg(legPoints(side,leg));ctx.lineWidth=9;ctx.strokeStyle='rgba(0,0,0,.60)';ctx.stroke();}
+    ctx.beginPath();ctx.ellipse(0,13,31,56,0,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,.62)';ctx.fill();ctx.restore();
+    for(var side=-1;side<=1;side+=2)for(var leg=0;leg<4;leg++){
+      var p=legPoints(side,leg);
+      for(var j=0;j<3;j++){
+        var a=p[j],b=p[j+1],width=[10,8,5.8][j];
+        var light=ctx.createLinearGradient(a[0]-3,a[1]-3,a[0]+5,a[1]+5);
+        light.addColorStop(0,rgba(metal,.8));light.addColorStop(.22,'rgba(91,106,88,1)');light.addColorStop(.56,'rgba(32,42,32,1)');light.addColorStop(1,'rgba(9,14,11,1)');
+        ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.strokeStyle='rgba(4,8,5,.95)';ctx.lineWidth=width+2;ctx.stroke();
+        ctx.strokeStyle=light;ctx.lineWidth=width;ctx.stroke();
+        ctx.beginPath();ctx.moveTo(a[0]-1.5,a[1]-1.5);ctx.lineTo(b[0]-1.5,b[1]-1.5);ctx.strokeStyle=rgba(metal,.5);ctx.lineWidth=1;ctx.stroke();
+      }
+      [p[1],p[2]].forEach(function(joint){
+        var gradient=ctx.createRadialGradient(joint[0]-1.5,joint[1]-2,0,joint[0],joint[1],5);
+        gradient.addColorStop(0,rgba(metal,.92));gradient.addColorStop(.38,'rgba(66,80,63,1)');gradient.addColorStop(1,'rgba(9,14,10,1)');
+        ctx.fillStyle=gradient;ctx.beginPath();ctx.arc(joint[0],joint[1],4.5,0,Math.PI*2);ctx.fill();
+      });
+    }
+    function carapace(x,y,rx,ry){
+      ctx.save();ctx.translate(x,y-lift);ctx.scale(rx,ry);
+      var material=ctx.createRadialGradient(-.35,-.46,.015,.03,.05,1.25);
+      material.addColorStop(0,'rgba(161,178,142,1)');material.addColorStop(.17,'rgba(107,126,92,1)');material.addColorStop(.42,'rgba(45,63,43,1)');material.addColorStop(.78,'rgba(17,29,20,1)');material.addColorStop(1,'rgba(4,9,7,1)');
+      ctx.fillStyle=material;ctx.beginPath();ctx.arc(0,0,1,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle=rgba(metal,.42);ctx.lineWidth=.033;ctx.stroke();
+      ctx.save();ctx.clip();
+      var sheen=ctx.createRadialGradient(-.34,-.5,0,-.34,-.5,.56);
+      sheen.addColorStop(0,rgba(metal,.6));sheen.addColorStop(.3,rgba(metal,.18));sheen.addColorStop(1,rgba(metal,0));
+      ctx.fillStyle=sheen;ctx.fillRect(-1,-1,2,2);
+      ctx.strokeStyle=rgba(acid,.16);ctx.lineWidth=.022;
+      for(var j=0;j<5;j++){var yy=-.25+j*.24;ctx.beginPath();ctx.ellipse(0,yy,.70-j*.05,.22,0,.1,Math.PI-.1);ctx.stroke();}
+      ctx.restore();ctx.restore();
+    }
+    carapace(0,25,29,40);carapace(0,-20,20,25);
+    // Paired jaws, eight polished eyes and a restrained dorsal seam.
+    for(var side=-1;side<=1;side+=2){
+      ctx.strokeStyle='rgba(18,29,20,1)';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(side*7,-39);ctx.quadraticCurveTo(side*16,-53,side*7,-59);ctx.stroke();
+      ctx.strokeStyle=rgba(metal,.6);ctx.lineWidth=1.5;ctx.stroke();
+      for(var j=0;j<4;j++){var ex=side*(5+j*3.2),ey=-34+j*2.1,rr=j<2?2.8:1.8;
+        ctx.fillStyle='rgba(3,9,6,1)';ctx.beginPath();ctx.arc(ex,ey,rr+1,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle=rgba(acid,.85);ctx.beginPath();ctx.arc(ex,ey,rr,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle=rgba(metal,.9);ctx.beginPath();ctx.arc(ex-.6,ey-.7,rr*.35,0,Math.PI*2);ctx.fill();}
+    }
+    ctx.strokeStyle=rgba(acid,.24);ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,1);ctx.quadraticCurveTo(-2,28,0,51);ctx.stroke();
+    if(hunter.eating>0){ctx.fillStyle=rgba(acid,hunter.eating*.9);ctx.shadowColor=rgba(acid,.6);ctx.shadowBlur=14;ctx.beginPath();ctx.arc(0,-52,Math.max(1,hunter.eating*7),0,Math.PI*2);ctx.fill();}
+    ctx.restore();
+    if(document.activeElement===hit&&hit.matches(':focus-visible')){ctx.save();ctx.strokeStyle=rgba(acid,1);ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(hunter.x,hunter.y,55*sc,77*sc,hunter.a,0,Math.PI*2);ctx.stroke();ctx.restore();}
+    // The clickable mask follows the body and legs; holes pass through to page controls.
+    var center=132*sc,rx=32*sc,ry=67*sc;
+    var mask='M '+(center-rx)+' '+center+' a '+rx+' '+ry+' 0 1 0 '+(rx*2)+' 0 a '+rx+' '+ry+' 0 1 0 '+(-rx*2)+' 0 Z ';
+    for(var side=-1;side<=1;side+=2)for(var leg=0;leg<4;leg++){
+      var points=legPoints(side,leg);
+      for(var j=0;j<3;j++){
+        var p=points[j],q=points[j+1],dx=q[0]-p[0],dy=q[1]-p[1],length=Math.hypot(dx,dy),nx=-dy/length*8,ny=dx/length*8;
+        [[p[0]+nx,p[1]+ny],[q[0]+nx,q[1]+ny],[q[0]-nx,q[1]-ny],[p[0]-nx,p[1]-ny]].forEach(function(point,i){mask+=(i?'L ':'M ')+(center+point[0]*sc).toFixed(1)+' '+(center+point[1]*sc).toFixed(1)+' ';});mask+='Z ';
+      }
+    }
+    hit.hidden=false;hit.style.width=(264*sc)+'px';hit.style.height=(264*sc)+'px';hit.style.clipPath='path("'+mask+'")';
+    hit.style.left=hunter.x+'px';hit.style.top=hunter.y+'px';hit.style.transform='translate(-50%,-50%) rotate('+hunter.a+'rad)';
+    web.dataset.position=Math.round(hunter.x)+','+Math.round(hunter.y);web.dataset.behavior=hunter.mode;web.dataset.visible=String(hunting);
+  }
+  function spiderContains(x,y){
+    var dx=(x-hunter.x)/scale(),dy=(y-hunter.y)/scale(),a=-hunter.a;
+    var px=dx*Math.cos(a)-dy*Math.sin(a),py=dx*Math.sin(a)+dy*Math.cos(a);
+    if(px*px/(31*31)+py*py/(64*64)<1)return true;
+    for(var side=-1;side<=1;side+=2)for(var leg=0;leg<4;leg++){
+      var points=legPoints(side,leg);
+      for(var j=0;j<3;j++){var p=points[j],q=points[j+1],vx=q[0]-p[0],vy=q[1]-p[1];
+        var u=clamp(((px-p[0])*vx+(py-p[1])*vy)/(vx*vx+vy*vy),0,1);
+        if(Math.hypot(px-p[0]-u*vx,py-p[1]-u*vy)<9)return true;}
+    }return false;
+  }
+  function paintGPU(){
+    if(!gl||lost)return;
+    gl.clearColor(.038,.047,.034,1);gl.clear(gl.COLOR_BUFFER_BIT);gl.useProgram(program);gl.uniform2f(resolution,w,h);
+    gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferSubData(gl.ARRAY_BUFFER,0,data);gl.drawArraysInstanced(gl.TRIANGLES,0,6,count);
+    if(firstFrame){firstFrame=false;var error=gl.getError();canvas.dataset.glError=String(error);canvas.dataset.rendered='true';if(error!==gl.NO_ERROR){console.error('星空绘制错误',error);fallback.hidden=false;}}
+  }
+  function staticStar(star,size,opacity){
+    var g=stillCtx,c=star.color;g.save();g.translate(star.sx,star.sy);
+    var glow=g.createRadialGradient(0,0,0,0,0,size);glow.addColorStop(0,rgba(c,opacity));glow.addColorStop(.2,rgba(c,opacity*.7));glow.addColorStop(1,rgba(c,0));
+    g.fillStyle=glow;g.fillRect(-size,-size,size*2,size*2);g.fillStyle=rgba(c,opacity);
+    g.beginPath();if(star.shape===0)g.arc(0,0,size*.23,0,Math.PI*2);
+    else if(star.shape===1){g.moveTo(0,-size*.35);g.lineTo(size*.35,0);g.lineTo(0,size*.35);g.lineTo(-size*.35,0);g.closePath();}
+    else{for(var j=0;j<8;j++){var angle=j*Math.PI/4,r=j%2?size*.09:size*.7;j?g.lineTo(Math.cos(angle)*r,Math.sin(angle)*r):g.moveTo(Math.cos(angle)*r,Math.sin(angle)*r);}g.closePath();}
+    g.fill();g.restore();
+  }
+  function draw(dt,now){
+    if(!ctx||document.hidden)return;
+    if(REDUCED||motionPaused)dt=0;time+=dt;ctx.clearRect(0,0,w,h);
+    var gpu=gl&&!lost;if(!gpu)stillCtx.clearRect(0,0,w,h);
+    for(var j=0;j<count;j++){
+      var star=stars[j];
+      if(dt&&gpu){star.z-=dt*.09;if(star.z<.18){star.z+=2.8;star.cool=0;if(target===star)target=null;}}
+      if(dt&&star.cool>0){star.cool=Math.max(0,star.cool-dt);if(!star.cool){star.z=2.9;star.x=(random()-.5)*4;star.y=(random()-.5)*4;}}
+      var p=project(star,star.z),tail=project(star,star.z+(dt?.01:0));star.sx=p.x;star.sy=p.y;
+      star.active=p.x>0&&p.x<w&&p.y>0&&p.y<h;
+      var size=star.size*clamp(.7+.8/star.z,.9,2.1),opacity=star.cool>0?0:star.light;
+      var k=j*12;data[k]=p.x;data[k+1]=p.y;data[k+2]=tail.x;data[k+3]=tail.y;
+      data[k+4]=size;data[k+5]=opacity;data[k+6]=star.shape;data[k+7]=0;
+      var color=star===target?acid:star.color;data[k+8]=color[0];data[k+9]=color[1];data[k+10]=color[2];data[k+11]=1;
+      if(!gpu&&star.active&&opacity)staticStar(star,size,opacity);
+    }
+    if(dt)updateHunter(dt);
+    if(marker){marker.age+=dt;if(marker.age>1.65)marker=null;
+      else{ctx.strokeStyle=rgba(marker.kind==='fleeing'?metal:acid,.55*(1-marker.age/1.65));ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(marker.x,marker.y,8+marker.age*7,0,Math.PI*2);ctx.stroke();}}
+    if(target&&target.cool===0&&hunting){ctx.strokeStyle=rgba(acid,.5);ctx.lineWidth=1;ctx.beginPath();ctx.arc(target.sx,target.sy,9,0,Math.PI*2);ctx.stroke();}
+    drawHunter();paintGPU();
+    if(dt){frames++;fpsElapsed+=dt;if(fpsElapsed>=1){fps.textContent=Math.round(frames/fpsElapsed)+' 帧/秒';frames=0;fpsElapsed=0;}}
+    canvas.dataset.starCount=String(count);web.dataset.behavior=hunter.mode;web.dataset.visible=String(hunting);
+  }
+  function sync(){
+    toggle.setAttribute('aria-pressed',String(hunting));toggle.textContent=hunting?'蜘蛛捕星':'开启蜘蛛';hit.hidden=!hunting;
+    hint.textContent=REDUCED?'静态星空 · 点击空白处移动蜘蛛，点击蜘蛛驱赶':motionPaused?'动效已暂停 · 点击仍可移动或驱赶蜘蛛':hunting?'点击空白处召唤蜘蛛 · 点击蜘蛛驱赶':'星际穿行 · 大小、形状与色彩各异的星海';
+    fallback.hidden=!!gl&&!lost;still.hidden=!!gl&&!lost;canvas.hidden=!gl||lost;
+    if(REDUCED||motionPaused||!gl||lost){fps.textContent='静态星空';draw(0,performance.now());}
+  }
+  toggle.addEventListener('click',function(){hunting=!hunting;target=null;marker=null;hunter.eating=0;nextHunt=time+1;if(hunting)chooseGoal();try{localStorage.setItem('lab-spider',hunting?'on':'off');}catch(e){}sync();draw(0,performance.now());});
+  hit.addEventListener('click',function(e){e.stopPropagation();flee(e.detail?e.clientX:hunter.x,e.detail?e.clientY:hunter.y);});
+  hit.addEventListener('focus',function(){draw(0,performance.now());});
+  hit.addEventListener('blur',function(){draw(0,performance.now());});
+  document.addEventListener('pointerdown',function(e){
+    if(e.button!==0||!hunting||document.hidden||e.target.closest('#spider-hit,a,button,input,select,textarea,[role="button"],[contenteditable="true"],.cmdk'))return;
+    if(spiderContains(e.clientX,e.clientY))flee(e.clientX,e.clientY);else navigate(e.clientX,e.clientY,'manual');
+  },{passive:true});
+  addEventListener('resize',function(){resize(false);draw(0,performance.now());});
+  canvas.addEventListener('webglcontextlost',function(e){e.preventDefault();lost=true;sync();});
+  canvas.addEventListener('webglcontextrestored',function(){try{setupGPU();lost=false;resize(false);sync();draw(0,performance.now());}catch(e){console.error(e);}});
+  resize(true);draw(0,performance.now());sync();
+  return {draw:draw,sync:sync};
+}
+
+
 /* A trefoil instrument: geometry, not a pre-rendered image. One shared RAF. */
 var heroCanvas = document.getElementById('hero-canvas');
 var heroContext = heroCanvas.getContext('2d');
@@ -1907,6 +2243,8 @@ function paintMotion(){
   button.setAttribute('aria-label',T('motionPause'));
   button.querySelector('span').textContent=REDUCED?T('motionReduced'):(paused?T('motionResume'):T('motionPause'));
   button.disabled=REDUCED;
+  button.setAttribute('aria-label',button.querySelector('span').textContent);
+  if(spaceExperience) spaceExperience.sync();
 }
 function startAnimation(){
   if(REDUCED||motionPaused||document.hidden||animationRequest)return;
@@ -1947,6 +2285,7 @@ document.addEventListener('visibilitychange',function(){
   applyLang();            /* renders both grids, then paints the filter */
   bindBeam();
   initHero();
+  spaceExperience = initSpace();
   paintMotion();
   if(!cmdk.hidden) search(query);
 
