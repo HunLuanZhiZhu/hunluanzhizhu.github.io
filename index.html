@@ -368,7 +368,6 @@ html[lang=zh-CN] .sec-title{font-family:var(--face-cjk);font-size:clamp(28px,2.6
 html[data-touch] .card__run{display:inline-flex}
 html[data-motion=paused] *,html[data-motion=paused] *::before,html[data-motion=paused] *::after{animation:none!important}
 html[data-motion=paused] .card__run{display:none!important}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.hero__type,.hero__art,.hero__foot,.hero__top{opacity:1;transform:none}}
 </style>
 <style id="space-styles">
 /* Background extension: original page styles above remain untouched. */
@@ -707,8 +706,7 @@ var I18N = {
     "catTools": "应用与工具",
     "indexHint": "悬停预览 · 点击探索",
     "motionPause": "暂停动效",
-    "motionResume": "继续动效",
-    "motionReduced": "已减少动效"
+    "motionResume": "继续动效"
   },
   "en": {
     "search": "SEARCH",
@@ -761,8 +759,7 @@ var I18N = {
     "catTools": "Apps & tools",
     "indexHint": "HOVER TO PREVIEW · CLICK TO EXPLORE",
     "motionPause": "Pause motion",
-    "motionResume": "Resume motion",
-    "motionReduced": "Reduced motion"
+    "motionResume": "Resume motion"
   }
 };
 var lang = 'zh';
@@ -1312,8 +1309,9 @@ var MARKS = {
    nothing. Reduced-motion draws the composed frame once and never loops, so
    the still page is the page.
    ═══════════════════════════════════════════════════════════════════════════ */
-var REDUCED = false;
-try{ REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+/* 宽松派：动画默认对所有人开启，系统 prefers-reduced-motion 不再自动冻结页面。
+   「暂停动效」按钮是唯一的动效开关（持久化在 lab-motion）；系统偏好只在首次
+   访问时触发一次性提示，见 boot() 末尾。 */
 
 var motionPaused = false, animationRequest = 0;
 try{motionPaused=localStorage.getItem('lab-motion')==='paused';}catch(e){}
@@ -1322,7 +1320,7 @@ var marks = [];
 function makeMark(canvas, kind){
   var m = {
     canvas:canvas, kind:kind, ctx:canvas.getContext('2d'), id:canvas.getAttribute('data-id') || '',
-    w:0, h:0, visible:false, hot:false, booted:REDUCED || motionPaused, boot:REDUCED || motionPaused ? 1 : 0,
+    w:0, h:0, visible:false, hot:false, booted:motionPaused, boot:motionPaused ? 1 : 0,
     t:0, accum:0, dirty:true, readout:''
   };
   canvas.setAttribute('aria-hidden', 'true');
@@ -1354,8 +1352,8 @@ var STILL = { corridor:.9, descent:1.4, scrub:2.4, bracket:2.2, lathe:1.1, caust
 function drawMark(m){
   var g = m.ctx, k = '';
   g.clearRect(0, 0, m.w, m.h);
-  var u = { p:REDUCED ? 1 : m.boot,
-            t:REDUCED || (motionPaused && !m.t) ? (STILL[m.kind] || 0) : m.t, k:0, id:m.id };
+  var u = { p:m.boot,
+            t:(motionPaused && !m.t) ? (STILL[m.kind] || 0) : m.t, k:0, id:m.id };
   var fn = MARKS[m.kind];
   if(!fn){ m.dirty = false; return; }
   try{ k = fn(g, m.w, m.h, u) || ''; }catch(e){ k = ''; }
@@ -1368,7 +1366,7 @@ function drawMark(m){
 
 function frame(now){
   animationRequest=0;
-  if(REDUCED || motionPaused || document.hidden) return;
+  if(motionPaused || document.hidden) return;
   var dt = Math.min((now - (frame.last || now)) / 1000, .05);
   frame.last = now;
   renderHero(dt, false);
@@ -1523,7 +1521,6 @@ function bindFigures(root){
          while idle: a number that changes four times a second reads as an
          instrument, sixty times a second reads as noise. */
       m.onReadout = function(v){
-        if(REDUCED) return;
         var now = performance.now();
         if(!m.hot && now - (m.lastCap || 0) < 250) return;
         m.lastCap = now;
@@ -1641,7 +1638,7 @@ function paintFilter(){
   band.querySelectorAll('.card').forEach(function(c){var p=clientWorks.find(function(p){return p.slug===c.dataset.slug;});c.hidden=!matches(p,query);});
   document.getElementById('clients').hidden=!!query && !clientsShown;
   document.getElementById('n-clients').textContent=String(clientsShown).padStart(2,'0');
-  if(REDUCED || motionPaused) marks.forEach(function(m){if(sizeMark(m))drawMark(m);});
+  if(motionPaused) marks.forEach(function(m){if(sizeMark(m))drawMark(m);});
 }
 function setQuery(q, push){
   query = q;
@@ -1835,7 +1832,7 @@ function renderAll(){
   bindFigures(INDEX);
   bindFigures(band);
   invalidateAll();
-  if(REDUCED || motionPaused) marks.forEach(function(m){ if(sizeMark(m, true)) drawMark(m); });
+  if(motionPaused) marks.forEach(function(m){ if(sizeMark(m, true)) drawMark(m); });
 }
 
 function applyLang(){
@@ -1977,7 +1974,7 @@ function initSpace(){
   function navigate(x,y,mode){
     target=null;hunter.eating=0;hunter.wait=0;hunter.goal=bound(x,y);hunter.mode=mode;hunter.deadline=time+10;
     marker={x:hunter.goal.x,y:hunter.goal.y,age:0,kind:mode};
-    if(REDUCED||motionPaused){hunter.x=hunter.goal.x;hunter.y=hunter.goal.y;hunter.goal=null;hunter.mode='resting';draw(0,performance.now());}
+    if(motionPaused){hunter.x=hunter.goal.x;hunter.y=hunter.goal.y;hunter.goal=null;hunter.mode='resting';draw(0,performance.now());}
   }
   function flee(px,py){
     var dx=hunter.x-px,dy=hunter.y-py;
@@ -2117,7 +2114,7 @@ function initSpace(){
   }
   function draw(dt,now){
     if(!ctx||document.hidden)return;
-    if(REDUCED||motionPaused)dt=0;time+=dt;ctx.clearRect(0,0,w,h);
+    if(motionPaused)dt=0;time+=dt;ctx.clearRect(0,0,w,h);
     var gpu=gl&&!lost;if(!gpu)stillCtx.clearRect(0,0,w,h);
     for(var j=0;j<count;j++){
       var star=stars[j];
@@ -2141,9 +2138,9 @@ function initSpace(){
   }
   function sync(){
     toggle.setAttribute('aria-pressed',String(hunting));toggle.textContent=hunting?'蜘蛛捕星':'开启蜘蛛';hit.hidden=!hunting;
-    hint.textContent=REDUCED?'静态星空 · 点击空白处移动蜘蛛，点击蜘蛛驱赶':motionPaused?'动效已暂停 · 点击仍可移动或驱赶蜘蛛':hunting?'点击空白处召唤蜘蛛 · 点击蜘蛛驱赶':'星际穿行 · 大小、形状与色彩各异的星海';
+    hint.textContent=motionPaused?'动效已暂停 · 点击仍可移动或驱赶蜘蛛':hunting?'点击空白处召唤蜘蛛 · 点击蜘蛛驱赶':'星际穿行 · 大小、形状与色彩各异的星海';
     fallback.hidden=!!gl&&!lost;still.hidden=!!gl&&!lost;canvas.hidden=!gl||lost;
-    if(REDUCED||motionPaused||!gl||lost){fps.textContent='静态星空';draw(0,performance.now());}
+    if(motionPaused||!gl||lost){fps.textContent='静态星空';draw(0,performance.now());}
   }
   toggle.addEventListener('click',function(){hunting=!hunting;target=null;marker=null;hunter.eating=0;nextHunt=time+1;if(hunting)chooseGoal();try{localStorage.setItem('lab-spider',hunting?'on':'off');}catch(e){}sync();draw(0,performance.now());});
   hit.addEventListener('click',function(e){e.stopPropagation();flee(e.detail?e.clientX:hunter.x,e.detail?e.clientY:hunter.y);});
@@ -2183,7 +2180,7 @@ function renderHero(dt,force){
   s.accum+=dt;
   if(!force&&!s.dirty&&s.accum<1/30)return;
   var elapsed=s.accum;s.accum=0;s.dirty=false;
-  if(!REDUCED&&!motionPaused){
+  if(!motionPaused){
     s.t+=elapsed*.17;
     var ease=1-Math.exp(-5*elapsed);
     s.x+=(s.tx-s.x)*ease;s.y+=(s.ty-s.y)*ease;s.form+=(s.target-s.form)*ease;
@@ -2224,30 +2221,29 @@ function initHero(){
     new IntersectionObserver(function(entries){heroState.visible=entries[0].isIntersecting;},{rootMargin:'40px'}).observe(heroCanvas);
   }
   heroCanvas.addEventListener('pointermove',function(e){
-    if(REDUCED||motionPaused||e.pointerType==='touch')return;
+    if(motionPaused||e.pointerType==='touch')return;
     var r=heroCanvas.getBoundingClientRect();heroState.tx=(e.clientX-r.left)/r.width-.5;heroState.ty=(e.clientY-r.top)/r.height-.5;
   },{passive:true});
   heroCanvas.addEventListener('pointerleave',function(){heroState.tx=0;heroState.ty=0;});
   document.getElementById('art-transform').addEventListener('click',function(){
     heroState.target=heroState.target?0:1;heroState.dirty=true;
     document.getElementById('art-number').textContent=heroState.target?'002':'001';
-    if(REDUCED||motionPaused)renderHero(0,true);
+    if(motionPaused)renderHero(0,true);
   });
   addEventListener('resize',function(){sizeHero();renderHero(0,true);});
 }
 function paintMotion(){
-  var paused=motionPaused||REDUCED;
+  var paused=motionPaused;
   document.documentElement.setAttribute('data-motion',paused?'paused':'running');
   var button=document.getElementById('motion-toggle');
   button.setAttribute('aria-pressed',String(paused));
   button.setAttribute('aria-label',T('motionPause'));
-  button.querySelector('span').textContent=REDUCED?T('motionReduced'):(paused?T('motionResume'):T('motionPause'));
-  button.disabled=REDUCED;
+  button.querySelector('span').textContent=paused?T('motionResume'):T('motionPause');
   button.setAttribute('aria-label',button.querySelector('span').textContent);
   if(spaceExperience) spaceExperience.sync();
 }
 function startAnimation(){
-  if(REDUCED||motionPaused||document.hidden||animationRequest)return;
+  if(motionPaused||document.hidden||animationRequest)return;
   frame.last=0;animationRequest=requestAnimationFrame(frame);
 }
 document.getElementById('motion-toggle').addEventListener('click',function(){
@@ -2287,22 +2283,26 @@ document.addEventListener('visibilitychange',function(){
   initHero();
   spaceExperience = initSpace();
   paintMotion();
+  /* 首次访问且系统报告减少动效：只提示一次，不代用户选择 */
+  try{
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches
+       && !localStorage.getItem('lab-motion') && !localStorage.getItem('lab-reduce-hint')){
+      localStorage.setItem('lab-reduce-hint', '1');
+      var hintEl = document.getElementById('space-hint'), hintBase = hintEl.textContent;
+      hintEl.textContent = '系统已开启减少动效 · 可随时点右侧「暂停动效」';
+      setTimeout(function(){ if(hintEl.textContent.indexOf('系统已开启') === 0) hintEl.textContent = hintBase; }, 8000);
+    }
+  }catch(e){}
   if(!cmdk.hidden) search(query);
 
   function repaint(){
     invalidateAll();
-    if(REDUCED || motionPaused) marks.forEach(function(m){m.boot=1;m.booted=true;if(sizeMark(m,true))drawMark(m);});
+    if(motionPaused) marks.forEach(function(m){m.boot=1;m.booted=true;if(sizeMark(m,true))drawMark(m);});
   }
   repaint();
   startAnimation();
   addEventListener('resize',repaint);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(repaint);
-  var motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
-  motionPreference.addEventListener('change',function(e){
-    REDUCED=e.matches;
-    cancelAnimationFrame(animationRequest);animationRequest=0;
-    paintMotion();repaint();renderHero(0,true);startAnimation();
-  });
 })();
 })();
 </script>
