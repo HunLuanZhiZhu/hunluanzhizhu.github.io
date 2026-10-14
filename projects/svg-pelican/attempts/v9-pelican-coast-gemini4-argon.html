@@ -271,7 +271,6 @@
             <!-- 海面帆船 -->
             <g id="sailboatGroup" transform="translate(320, 392)">
                 <path d="M -28,0 L 28,0 L 18,12 L -18,12 Z" fill="#f8fafc" />
-                <path d="M -22,3 L 2,-48 L 28,-6 Z" fill="#ffffff" />
                 <path d="M -22,3 L 22,3" stroke="#ef4444" stroke-width="3" />
                 <path d="M 2,-2 L 2,-48 L 28,-6 Z" fill="#ffffff" />
                 <path d="M -2,-4 L -2,-42 L -22,-8 Z" fill="#fef08a" />
@@ -641,362 +640,682 @@
     </section>
 
     <script>
-<script>(function pageRuntime() {
-    const state = {
-        speedMultiplier: 1.0,
-        targetSpeed: 1.0,
-        pedalAngle: 0,
-        wheelAngle: 0,
-        chainOffset: 0,
-        wavePhase: 0,
-        fishCount: 2,
-        xrayPouch: false,
-        theme: 'day',
-        beakOpenAmount: 0,
-        pouchBounceVel: 0,
-        pouchBounceOffset: 0,
-        blinkTimer: 0
-    };
-    const RIG_CONFIG = {
-        crankCenter: { x:-10, y:20 },
-        crankRadius: 24,
-        thighLength: 62,
-        shinLength: 68,
-        baseHip: { x:-56, y:-98 }
-    };
-    let audioCtx = null;
-    function ensureAudio() {
-        if (!audioCtx) {
-            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-            if (AudioContextClass) audioCtx = new AudioContextClass();
+
+        const state = {
+            speedMultiplier: 1.0,
+            targetSpeed: 1.0,
+            pedalAngle: 0,          // 踏板旋转弧度
+            wheelAngle: 0,          // 车轮旋转角度(deg)
+            chainOffset: 0,         // 链条流动偏移
+            roadScroll: 0,          // 地面滚动距离
+            wavePhase: 0,           // 海浪相位
+            fishCount: 2,           // 喉囊内小鱼数量
+            xrayPouch: false,       // 是否开启喉囊高透视
+            theme: 'day',           // 'day' | 'sunset' | 'night'
+            beakOpenAmount: 0,      // 嘴巴张开程度 (0~1)
+            pouchBounceVel: 0,      // 喉囊额外弹跳速度
+            pouchBounceOffset: 0,   // 喉囊额外弹跳位移
+            blinkTimer: 0           // 眨眼计时器
+        };
+
+        // 骨骼几何常量（基于 pelicanBikeRig 局部坐标系）
+        const RIG_CONFIG = {
+            crankCenter: { x: -10, y: 20 },
+            crankRadius: 24,
+            thighLength: 62,
+            shinLength: 68,
+            baseHip: { x: -56, y: -98 }
+        };
+
+        let audioCtx = null;
+        function ensureAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
         }
-        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    }
-    function playBellSound() {
-        try {
-            ensureAudio();
-            if (!audioCtx) return;
-            const now = audioCtx.currentTime;
-            [1567.98, 2093].forEach((freq, idx) => {
+
+        // 清脆自行车车铃声 + 鹈鹕欢快鸣叫合成
+        function playBellSound() {
+            try {
+                ensureAudio();
+                if (!audioCtx) return;
+                const now = audioCtx.currentTime;
+                [1567.98, 2093.0].forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+                    gain.gain.setValueAtTime(0.22, now + idx * 0.09);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.65);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.09);
+                    osc.stop(now + idx * 0.09 + 0.68);
+                });
+            } catch (e) {
+                // 忽略音频上下文受限错误
+            }
+        }
+
+        // 投喂小鱼落入大喉囊的Q弹音效
+        function playGulpSound() {
+            try {
+                ensureAudio();
+                if (!audioCtx) return;
+                const now = audioCtx.currentTime;
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, now + idx*.09);
-                gain.gain.setValueAtTime(.22, now + idx*.09);
-                gain.gain.exponentialRampToValueAtTime(.001, now + idx*.09 + .65);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(now + idx*.09); osc.stop(now + idx*.09 + .68);
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(240, now);
+                osc.frequency.exponentialRampToValueAtTime(520, now + 0.14);
+                osc.frequency.exponentialRampToValueAtTime(190, now + 0.28);
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.32);
+            } catch (e) {
+                // 忽略音频上下文受限错误
+            }
+        }
+
+        const treesLayer = document.getElementById('sceneryTreesLayer');
+        const fenceLayer = document.getElementById('boardwalkFenceLayer');
+        const roadMarkingsLayer = document.getElementById('roadMarkingsLayer');
+
+        const palmTrees = [
+            { x: 150, scale: 0.95, lean: -12 },
+            { x: 540, scale: 0.8, lean: 8 },
+            { x: 960, scale: 1.05, lean: -6 }
+        ];
+
+        const fencePosts = [];
+        for (let i = 0; i < 16; i++) {
+            fencePosts.push({ x: i * 85 });
+        }
+
+        const roadStripes = [];
+        for (let i = 0; i < 12; i++) {
+            roadStripes.push({ x: i * 120 });
+        }
+
+        function initBackgroundElements() {
+            // 初始化棕榈树
+            treesLayer.innerHTML = palmTrees.map((t, idx) => `
+                <g id="palmTree_${idx}" transform="translate(${t.x}, 480) scale(${t.scale})">
+                    <!-- 树干 -->
+                    <path d="M -8,0 Q ${t.lean},-55 ${t.lean * 1.6},-118 L ${t.lean * 1.6 + 8},-118 Q ${t.lean + 10},-55 8,0 Z" fill="#92400e" />
+                    <!-- 椰子 -->
+                    <circle cx="${t.lean * 1.6}" cy="-114" r="6" fill="#451a03" />
+                    <circle cx="${t.lean * 1.6 + 8}" cy="-112" r="5.5" fill="#451a03" />
+                    <!-- 树叶 -->
+                    <g transform="translate(${t.lean * 1.6 + 4}, -118)" fill="#15803d">
+                        <path d="M 0,0 Q -45,-28 -78,6 Q -38,-6 0,0 Z" />
+                        <path d="M 0,0 Q -32,-48 -58,-32 Q -25,-22 0,0 Z" fill="#16a34a" />
+                        <path d="M 0,0 Q 45,-28 78,6 Q 38,-6 0,0 Z" />
+                        <path d="M 0,0 Q 32,-48 58,-32 Q 25,-22 0,0 Z" fill="#16a34a" />
+                        <path d="M 0,0 Q 0,-55 24,-52 Q 8,-25 0,0 Z" fill="#22c55e" />
+                    </g>
+                    <!-- 树根草丛 -->
+                    <path d="M -22,2 Q -10,-16 0,2 Q 12,-14 24,2 Z" fill="#15803d" />
+                </g>
+            `).join('');
+
+            // 初始化海滨护栏
+            fenceLayer.innerHTML = `
+                <rect x="0" y="472" width="1200" height="5" fill="#e2e8f0" />
+                <rect x="0" y="484" width="1200" height="5" fill="#cbd5e1" />
+                <g id="fencePostsGroup">
+                    ${fencePosts.map((p, idx) => `
+                        <rect id="fencePost_${idx}" x="${p.x}" y="464" width="10" height="32" rx="3" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" />
+                    `).join('')}
+                </g>
+            `;
+
+            // 初始化公路标线与小石子
+            roadMarkingsLayer.innerHTML = roadStripes.map((s, idx) => `
+                <g id="roadStripe_${idx}" transform="translate(${s.x}, 0)">
+                    <!-- 路沿红白块 -->
+                    <rect x="0" y="495" width="60" height="14" fill="#ef4444" opacity="0.85" />
+                    <!-- 车道中心白色虚线 -->
+                    <rect x="0" y="575" width="58" height="8" rx="4" fill="#f8fafc" opacity="0.75" />
+                    <!-- 地面细微颗粒 -->
+                    <circle cx="25" cy="625" r="2.5" fill="#64748b" opacity="0.5" />
+                    <circle cx="85" cy="542" r="2" fill="#64748b" opacity="0.5" />
+                </g>
+            `).join('');
+        }
+
+        /**
+         * 求解二连杆逆向运动学（髋关节 -> 膝关节 -> 脚踝/踏板）
+         * 确保鹈鹕骑行时膝盖始终自然向前弯曲
+         */
+        function solveTwoBoneIK(hipX, hipY, targetX, targetY, L1, L2) {
+            const dx = targetX - hipX;
+            const dy = targetY - hipY;
+            let dist = Math.hypot(dx, dy);
+
+            // 防止超出最大伸展距离
+            const maxReach = (L1 + L2) * 0.995;
+            const minReach = Math.abs(L1 - L2) + 2;
+            dist = Math.max(minReach, Math.min(maxReach, dist));
+
+            // 余弦定理求髋部夹角
+            const cosAngleHip = (L1 * L1 + dist * dist - L2 * L2) / (2 * L1 * dist);
+            const clampedCos = Math.max(-1, Math.min(1, cosAngleHip));
+            const angleHip = Math.acos(clampedCos);
+
+            // 基准角（从髋部指向踏板）
+            const baseAngle = Math.atan2(dy, dx);
+            // 鹈鹕朝右骑行，膝盖向右侧（角度减小方向）弯曲
+            const femurAngle = baseAngle - angleHip;
+
+            return {
+                kneeX: hipX + Math.cos(femurAngle) * L1,
+                kneeY: hipY + Math.sin(femurAngle) * L1
+            };
+        }
+
+        const flyingFishLayer = document.getElementById('flyingFishLayer');
+        const activeFlyingFish = [];
+
+        function spawnFlyingFish(startX = 1080, startY = 240) {
+            const fishEl = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            fishEl.innerHTML = `
+                <ellipse cx="0" cy="0" rx="20" ry="9" fill="#38bdf8" stroke="#0284c7" stroke-width="2" />
+                <polygon points="-18,0 -30,-10 -27,10" fill="#0284c7" />
+                <path d="M -4,-8 L 6,-15 L 10,-7 Z" fill="#0ea5e9" />
+                <circle cx="11" cy="-2" r="2.5" fill="#ffffff" />
+                <circle cx="12" cy="-2" r="1.2" fill="#0f172a" />
+            `;
+            flyingFishLayer.appendChild(fishEl);
+
+            activeFlyingFish.push({
+                el: fishEl,
+                progress: 0,
+                startX,
+                startY
             });
-        } catch(e) {}
-    }
-    function playGulpSound() {
-        try {
-            ensureAudio(); if(!audioCtx) return;
-            const now = audioCtx.currentTime;
-            const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-            osc.type='triangle';
-            osc.frequency.setValueAtTime(240,now);
-            osc.frequency.exponentialRampToValueAtTime(520,now+.14);
-            osc.frequency.exponentialRampToValueAtTime(190,now+.28);
-            gain.gain.setValueAtTime(.25,now);
-            gain.gain.exponentialRampToValueAtTime(.001,now+.3);
-            osc.connect(gain);gain.connect(audioCtx.destination);
-            osc.start(now);osc.stop(now+.32);
-        } catch(e){}
-    }
-    const $ = id => document.getElementById(id);
-    const treesLayer = $('sceneryTreesLayer');
-    const fenceLayer = $('boardwalkFenceLayer');
-    const roadMarkingsLayer = $('roadMarkingsLayer');
-    const palmTrees = [
-        {x:150,scale:.95,lean:-12},
-        {x:540,scale:.8,lean:8},
-        {x:960,scale:1.05,lean:-6}
-    ];
-    const fencePosts = Array.from({length:16}, (_,i)=>({x:i*85}));
-    const roadStripes = Array.from({length:12}, (_,i)=>({x:i*120}));
-    function initBackgroundElements() {
-        treesLayer.innerHTML = palmTrees.map((t,idx)=>`
-            <g id="palmTree_${idx}" transform="translate(${t.x},480) scale(${t.scale})">
-              <path d="M -8,0 Q ${t.lean},-55 ${t.lean*1.6},-118 L ${t.lean*1.6+8},-118 Q ${t.lean+10},-55 8,0 Z" fill="#92400e"/>
-              <circle cx="${t.lean*1.6}" cy="-114" r="6" fill="#451a03"/>
-              <circle cx="${t.lean*1.6+8}" cy="-112" r="5.5" fill="#451a03"/>
-              <g transform="translate(${t.lean*1.6+4},-118)" fill="#15803d">
-                <path d="M 0,0 Q -45,-28 -78,6 Q -38,-6 0,0 Z"/>
-                <path d="M 0,0 Q -32,-48 -58,-32 Q -25,-22 0,0 Z" fill="#16a34a"/>
-                <path d="M 0,0 Q 45,-28 78,6 Q 38,-6 0,0 Z"/>
-                <path d="M 0,0 Q 32,-48 58,-32 Q 25,-22 0,0 Z" fill="#16a34a"/>
-                <path d="M 0,0 Q 0,-55 24,-52 Q 8,-25 0,0 Z" fill="#22c55e"/>
-              </g>
-              <path d="M -22,2 Q -10,-16 0,2 Q 12,-14 24,2 Z" fill="#15803d"/>
-            </g>`).join('');
-        fenceLayer.innerHTML = `
-            <rect x="0" y="472" width="1200" height="5" fill="#e2e8f0"/>
-            <rect x="0" y="484" width="1200" height="5" fill="#cbd5e1"/>
-            <g id="fencePostsGroup">${fencePosts.map((p,idx)=>`
-              <rect id="fencePost_${idx}" x="${p.x}" y="464" width="10" height="32" rx="3" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>`).join('')}</g>`;
-        roadMarkingsLayer.innerHTML = roadStripes.map((s,idx)=>`
-            <g id="roadStripe_${idx}" transform="translate(${s.x},0)">
-              <rect y="495" width="60" height="14" fill="#ef4444" opacity=".85"/>
-              <rect y="575" width="58" height="8" rx="4" fill="#f8fafc" opacity=".75"/>
-              <circle cx="25" cy="625" r="2.5" fill="#64748b" opacity=".5"/>
-              <circle cx="85" cy="542" r="2" fill="#64748b" opacity=".5"/>
-            </g>`).join('');
-    }
-    function solveTwoBoneIK(hipX,hipY,targetX,targetY,L1,L2) {
-        const dx=targetX-hipX,dy=targetY-hipY;
-        let dist=Math.hypot(dx,dy);
-        dist=Math.max(Math.abs(L1-L2)+2,Math.min((L1+L2)*.995,dist));
-        const cosine=(L1*L1+dist*dist-L2*L2)/(2*L1*dist);
-        const femurAngle=Math.atan2(dy,dx)-Math.acos(Math.max(-1,Math.min(1,cosine)));
-        return {kneeX:hipX+Math.cos(femurAngle)*L1,kneeY:hipY+Math.sin(femurAngle)*L1};
-    }
-    const flyingFishLayer=$('flyingFishLayer'),activeFlyingFish=[];
-    function spawnFlyingFish(startX=1080,startY=240) {
-        const fishEl=document.createElementNS('http://www.w3.org/2000/svg','g');
-        fishEl.innerHTML=`
-          <ellipse rx="20" ry="9" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/>
-          <polygon points="-18,0 -30,-10 -27,10" fill="#0284c7"/>
-          <path d="M -4,-8 L 6,-15 L 10,-7 Z" fill="#0ea5e9"/>
-          <circle cx="11" cy="-2" r="2.5" fill="#fff"/>
-          <circle cx="12" cy="-2" r="1.2" fill="#0f172a"/>`;
-        flyingFishLayer.appendChild(fishEl);
-        activeFlyingFish.push({el:fishEl,progress:0,startX,startY});
-        state.beakOpenAmount=1;
-    }
-    const bellSoundWaves=$('bellSoundWaves');
-    function triggerBikeBell(){
-        playBellSound();
-        state.beakOpenAmount=Math.max(state.beakOpenAmount,.75);
-        state.pouchBounceVel+=9;
-        for(let i=0;i<2;i++){
-            setTimeout(()=>{
-                const circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
-                circle.setAttribute('cx','0');circle.setAttribute('cy','-6');
-                circle.setAttribute('r','14');circle.setAttribute('fill','none');
-                circle.setAttribute('stroke','#fef08a');circle.setAttribute('stroke-width','3');
-                circle.classList.add('bell-ring-anim');bellSoundWaves.appendChild(circle);
-                setTimeout(()=>circle.remove(),750);
-            },i*130);
+
+            // 鹈鹕提前张开大嘴准备接鱼
+            state.beakOpenAmount = 1.0;
         }
-    }
-    const THEMES={
-        day:{sky:['#0284c7','#7dd3fc','#fef9c3'],sea:['#0369a1','#0c4a6e'],sunColor:'#fde047',starsOpacity:0,moonOpacity:0,lightsOpacity:0},
-        sunset:{sky:['#4c1d95','#ea580c','#fde047'],sea:['#7c2d12','#31102f'],sunColor:'#fb923c',starsOpacity:.35,moonOpacity:0,lightsOpacity:.45},
-        night:{sky:['#020617','#0f172a','#1e293b'],sea:['#0f172a','#020617'],sunColor:'#f8fafc',starsOpacity:1,moonOpacity:1,lightsOpacity:.95}
-    };
-    function applyTheme(themeKey){
-        state.theme=themeKey;const cfg=THEMES[themeKey];
-        $('skyStop1').setAttribute('stop-color',cfg.sky[0]);
-        $('skyStop2').setAttribute('stop-color',cfg.sky[1]);
-        $('skyStop3').setAttribute('stop-color',cfg.sky[2]);
-        $('seaStop1').setAttribute('stop-color',cfg.sea[0]);
-        $('seaStop2').setAttribute('stop-color',cfg.sea[1]);
-        $('sunDisk').setAttribute('fill',cfg.sunColor);
-        $('starsGroup').setAttribute('opacity',cfg.starsOpacity);
-        $('moonCraters').setAttribute('opacity',cfg.moonOpacity);
-        $('bikeHeadlightBeam').setAttribute('opacity',cfg.lightsOpacity);
-        $('lighthouseBeam').setAttribute('opacity',cfg.lightsOpacity);
-        document.querySelectorAll('.theme-btn').forEach(btn=>{
-            const selected=btn.dataset.theme===themeKey;
-            btn.setAttribute('aria-pressed',String(selected));
-            btn.className=selected?
-                'theme-btn flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all bg-sky-500 text-slate-950 shadow':
-                'theme-btn flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:bg-slate-800';
-        });
-    }
-    const ids=[
-        'rearWheelSpin','frontWheelSpin','chainringSpin','bikeChainPath','bikeChassisGroup',
-        'pelicanBodyGroup','pelicanNeckAndHead','pelicanHeadGroup','pelicanTailGroup',
-        'upperBeakGroup','pouchMainPath','pouchClipPath','pouchCrease1','pouchFishInside',
-        'rightCrank','rightPedal','rightThigh','rightKneeJoint','rightShin','rightFoot',
-        'leftCrank','leftPedal','leftThigh','leftShin','leftFoot','rightWingUpper',
-        'rightWingFeathers','leftWingPath','scarfTail1','scarfTail2','crestFeathers',
-        'eyelid','groundShadow','windAndDustLayer','lighthouseGroup','sailboatGroup',
-        'wavePath1','wavePath2','speedReadout','rpmReadout','fishCountReadout','speedModeBadge'
-    ];
-    const dom=Object.fromEntries(ids.map(id=>[id,$(id)]));
-    let lastTime=performance.now(),lighthouseX=820,sailboatX=320;
-    const cloudElements=Array.from(document.querySelectorAll('.cloud-item'));
-    function animate(now){
-        const dt=Math.min((now-lastTime)/1000,.05);lastTime=now;
-        state.speedMultiplier+=(state.targetSpeed-state.speedMultiplier)*.08;
-        const spd=state.speedMultiplier;
-        const angularVel=spd*4.8;
-        state.pedalAngle=(state.pedalAngle+angularVel*dt)%(Math.PI*2);
-        state.wheelAngle=(state.wheelAngle+spd*290*dt)%360;
-        state.chainOffset=(state.chainOffset-spd*85*dt)%10;
-        state.wavePhase+=dt*2.5;
-        dom.rearWheelSpin.setAttribute('transform',`rotate(${state.wheelAngle})`);
-        dom.frontWheelSpin.setAttribute('transform',`rotate(${state.wheelAngle})`);
-        dom.chainringSpin.setAttribute('transform',`translate(-10,20) rotate(${state.pedalAngle*180/Math.PI})`);
-        dom.bikeChainPath.setAttribute('stroke-dashoffset',state.chainOffset);
-        const rhythm2x=state.pedalAngle*2;
-        const bodyBobY=Math.sin(rhythm2x)*6.5*Math.min(1.4,spd+.15);
-        const bodyPitch=Math.cos(rhythm2x)*2.2*Math.min(1.4,spd)+spd*2.8;
-        const chassisBounceY=Math.sin(rhythm2x-.5)*1.8*Math.min(1.5,spd);
-        dom.bikeChassisGroup.setAttribute('transform',`translate(0,${chassisBounceY}) rotate(${spd>1.8?1.2:0})`);
-        dom.groundShadow.setAttribute('rx',(185-bodyBobY*1.2).toFixed(1));
-        const currentHipX=RIG_CONFIG.baseHip.x,currentHipY=RIG_CONFIG.baseHip.y+bodyBobY;
-        dom.pelicanBodyGroup.setAttribute('transform',`translate(${currentHipX},${currentHipY-27}) rotate(${bodyPitch})`);
-        const headNod=-bodyPitch*.65+Math.sin(rhythm2x-.8)*3.2;
-        dom.pelicanHeadGroup.setAttribute('transform',`translate(20,-96) rotate(${headNod})`);
-        dom.pelicanTailGroup.setAttribute('transform',`translate(-44,10) rotate(${Math.sin(rhythm2x+.6)*8})`);
-        const windWave1=Math.sin(now*.012*Math.max(.5,spd))*(6+spd*5);
-        const windWave2=Math.cos(now*.015*Math.max(.5,spd))*(8+spd*6);
-        dom.scarfTail1.setAttribute('transform',`rotate(${windWave1})`);
-        dom.scarfTail2.setAttribute('transform',`rotate(${windWave2})`);
-        dom.crestFeathers.setAttribute('transform',`rotate(${windWave1*.6})`);
-        const springForce=-110*state.pouchBounceOffset;
-        const dampingForce=-8.5*state.pouchBounceVel;
-        const externalImpulse=Math.cos(rhythm2x)*45*spd;
-        state.pouchBounceVel+=(springForce+dampingForce+externalImpulse)*dt;
-        state.pouchBounceOffset+=state.pouchBounceVel*dt;
-        const fishBellyWeight=Math.min(state.fishCount*4.5,28);
-        const jiggleY=Math.max(-18,Math.min(35,state.pouchBounceOffset+fishBellyWeight));
-        const jiggleX=Math.sin(rhythm2x-.6)*5*spd;
-        const p1y=(90+jiggleY*1.15).toFixed(1),p2y=(100+jiggleY*1.35).toFixed(1);
-        const p1x=(28+jiggleX).toFixed(1),p2x=(142+jiggleX*.7).toFixed(1);
-        const dynamicPouchD=`M 0,0 C ${p1x},${p1y} ${p2x},${p2y} 168,5 C 110,12 50,8 0,0 Z`;
-        dom.pouchMainPath.setAttribute('d',dynamicPouchD);
-        dom.pouchClipPath.setAttribute('d',dynamicPouchD);
-        dom.pouchCrease1.setAttribute('d',`M 18,8 C ${(40+jiggleX*.6).toFixed(1)},${(58+jiggleY*.85).toFixed(1)} 115,${(64+jiggleY*.9).toFixed(1)} 148,7`);
-        if(state.beakOpenAmount>.01)state.beakOpenAmount=Math.max(0,state.beakOpenAmount-dt*2.2);
-        dom.upperBeakGroup.setAttribute('transform',`translate(8,-4) rotate(${-state.beakOpenAmount*22})`);
-        state.blinkTimer+=dt;
-        if(state.blinkTimer>3.6){
-            dom.eyelid.setAttribute('d','M -9,-9 L 9,-9 L 9,9 L -9,9 Z');
-            if(state.blinkTimer>3.76){
-                dom.eyelid.setAttribute('d','M -9,-9 L 9,-9 L 9,-9 L -9,-9 Z');
-                state.blinkTimer=0;
+
+        const bellSoundWaves = document.getElementById('bellSoundWaves');
+        function triggerBikeBell() {
+            playBellSound();
+            state.beakOpenAmount = Math.max(state.beakOpenAmount, 0.75);
+            state.pouchBounceVel += 9;
+
+            // 创建视觉音波扩散环
+            for (let i = 0; i < 2; i++) {
+                setTimeout(() => {
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', '0');
+                    circle.setAttribute('cy', '-6');
+                    circle.setAttribute('r', '14');
+                    circle.setAttribute('fill', 'none');
+                    circle.setAttribute('stroke', '#fef08a');
+                    circle.setAttribute('stroke-width', '3');
+                    circle.classList.add('bell-ring-anim');
+                    bellSoundWaves.appendChild(circle);
+                    setTimeout(() => circle.remove(), 750);
+                }, i * 130);
             }
         }
-        const {crankCenter,crankRadius,thighLength,shinLength}=RIG_CONFIG;
-        const rPedalX=crankCenter.x+Math.cos(state.pedalAngle)*crankRadius;
-        const rPedalY=crankCenter.y+Math.sin(state.pedalAngle)*crankRadius;
-        const rKnee=solveTwoBoneIK(currentHipX,currentHipY,rPedalX,rPedalY,thighLength,shinLength);
-        dom.rightCrank.setAttribute('x2',rPedalX);dom.rightCrank.setAttribute('y2',rPedalY);
-        dom.rightPedal.setAttribute('x',rPedalX-15);dom.rightPedal.setAttribute('y',rPedalY-5);
-        dom.rightThigh.setAttribute('x1',currentHipX);dom.rightThigh.setAttribute('y1',currentHipY);
-        dom.rightThigh.setAttribute('x2',rKnee.kneeX);dom.rightThigh.setAttribute('y2',rKnee.kneeY);
-        dom.rightKneeJoint.setAttribute('cx',rKnee.kneeX);dom.rightKneeJoint.setAttribute('cy',rKnee.kneeY);
-        dom.rightShin.setAttribute('x1',rKnee.kneeX);dom.rightShin.setAttribute('y1',rKnee.kneeY);
-        dom.rightShin.setAttribute('x2',rPedalX);dom.rightShin.setAttribute('y2',rPedalY);
-        const rFootRock=Math.sin(state.pedalAngle)*8;
-        dom.rightFoot.setAttribute('d',`M ${rPedalX-10},${rPedalY} L ${rPedalX+28},${rPedalY+4+rFootRock*.3} L ${rPedalX+18},${rPedalY-10} Z`);
-        const lAngle=state.pedalAngle+Math.PI;
-        const lPedalX=crankCenter.x+Math.cos(lAngle)*crankRadius;
-        const lPedalY=crankCenter.y+Math.sin(lAngle)*crankRadius;
-        const lKnee=solveTwoBoneIK(currentHipX+4,currentHipY-2,lPedalX,lPedalY,thighLength,shinLength);
-        dom.leftCrank.setAttribute('x2',lPedalX);dom.leftCrank.setAttribute('y2',lPedalY);
-        dom.leftPedal.setAttribute('x',lPedalX-14);dom.leftPedal.setAttribute('y',lPedalY-4);
-        dom.leftThigh.setAttribute('x1',currentHipX+4);dom.leftThigh.setAttribute('y1',currentHipY-2);
-        dom.leftThigh.setAttribute('x2',lKnee.kneeX);dom.leftThigh.setAttribute('y2',lKnee.kneeY);
-        dom.leftShin.setAttribute('x1',lKnee.kneeX);dom.leftShin.setAttribute('y1',lKnee.kneeY);
-        dom.leftShin.setAttribute('x2',lPedalX);dom.leftShin.setAttribute('y2',lPedalY);
-        dom.leftFoot.setAttribute('d',`M ${lPedalX-10},${lPedalY} L ${lPedalX+26},${lPedalY+3} L ${lPedalX+16},${lPedalY-9} Z`);
-        const shoulderX=-38,shoulderY=-142+bodyBobY*.9;
-        const elbowX=-2+bodyBobY*.4,elbowY=-108+bodyBobY*.6;
-        dom.rightWingUpper.setAttribute('d',`M ${shoulderX},${shoulderY} Q ${elbowX},${elbowY} 44,-159`);
-        dom.rightWingFeathers.setAttribute('d',`M ${shoulderX+6},${shoulderY+5} Q ${elbowX+4},${elbowY-4} 38,-153`);
-        dom.leftWingPath.setAttribute('d',`M ${shoulderX+8},${shoulderY-12} Q ${elbowX+18},${elbowY-22} 54,-164`);
-        cloudElements.forEach(cloud=>{
-            let cx=parseFloat(cloud.dataset.x);
-            const cy=parseFloat(cloud.dataset.y),sc=parseFloat(cloud.dataset.scale),cs=parseFloat(cloud.dataset.speed);
-            cx-=(12+spd*35)*cs*dt;if(cx<-220)cx=1280;
-            cloud.dataset.x=cx;cloud.setAttribute('transform',`translate(${cx},${cy}) scale(${sc})`);
-        });
-        lighthouseX-=spd*24*dt;if(lighthouseX<-160)lighthouseX=1320;
-        dom.lighthouseGroup.setAttribute('transform',`translate(${lighthouseX},365)`);
-        sailboatX-=spd*42*dt;if(sailboatX<-100)sailboatX=1280;
-        const boatBob=Math.sin(state.wavePhase*1.3)*3,boatTilt=Math.cos(state.wavePhase*1.3)*2.5;
-        dom.sailboatGroup.setAttribute('transform',`translate(${sailboatX},${392+boatBob}) rotate(${boatTilt})`);
-        const waveShift1=now*.04*Math.max(.4,spd)%60;
-        const waveShift2=now*.06*Math.max(.4,spd)%60;
-        dom.wavePath1.setAttribute('transform',`translate(${-waveShift1},0)`);
-        dom.wavePath2.setAttribute('transform',`translate(${-waveShift2},0)`);
-        palmTrees.forEach((tree,idx)=>{
-            tree.x-=spd*145*dt;if(tree.x<-140)tree.x=1320;
-            $(`palmTree_${idx}`).setAttribute('transform',`translate(${tree.x},480) scale(${tree.scale})`);
-        });
-        fencePosts.forEach((post,idx)=>{
-            post.x-=spd*220*dt;if(post.x<-40)post.x+=16*85;
-            $(`fencePost_${idx}`).setAttribute('x',post.x);
-        });
-        roadStripes.forEach((stripe,idx)=>{
-            stripe.x-=spd*390*dt;if(stripe.x<-120)stripe.x+=12*120;
-            $(`roadStripe_${idx}`).setAttribute('transform',`translate(${stripe.x},0)`);
-        });
-        const targetMouthX=560+58,targetMouthY=455-245+bodyBobY;
-        for(let i=activeFlyingFish.length-1;i>=0;i--){
-            const f=activeFlyingFish[i];f.progress+=dt*1.55;const t=Math.min(1,f.progress);
-            const ctrlX=(f.startX+targetMouthX)*.5,ctrlY=Math.min(f.startY,targetMouthY)-170;
-            const curX=(1-t)*(1-t)*f.startX+2*(1-t)*t*ctrlX+t*t*targetMouthX;
-            const curY=(1-t)*(1-t)*f.startY+2*(1-t)*t*ctrlY+t*t*targetMouthY;
-            const tx=2*(1-t)*(ctrlX-f.startX)+2*t*(targetMouthX-ctrlX);
-            const ty=2*(1-t)*(ctrlY-f.startY)+2*t*(targetMouthY-ctrlY);
-            f.el.setAttribute('transform',`translate(${curX},${curY}) rotate(${Math.atan2(ty,tx)*180/Math.PI})`);
-            if(t>=1){
-                f.el.remove();activeFlyingFish.splice(i,1);state.fishCount++;
-                state.pouchBounceVel+=180;state.beakOpenAmount=.25;
-                playGulpSound();dom.fishCountReadout.textContent=state.fishCount;
+
+        const THEMES = {
+            day: {
+                sky: ['#0284c7', '#7dd3fc', '#fef9c3'],
+                sea: ['#0369a1', '#0c4a6e'],
+                sunColor: '#fde047',
+                starsOpacity: 0,
+                moonOpacity: 0,
+                lightsOpacity: 0
+            },
+            sunset: {
+                sky: ['#4c1d95', '#ea580c', '#fde047'],
+                sea: ['#7c2d12', '#31102f'],
+                sunColor: '#fb923c',
+                starsOpacity: 0.35,
+                moonOpacity: 0,
+                lightsOpacity: 0.45
+            },
+            night: {
+                sky: ['#020617', '#0f172a', '#1e293b'],
+                sea: ['#0f172a', '#020617'],
+                sunColor: '#f8fafc',
+                starsOpacity: 1,
+                moonOpacity: 1,
+                lightsOpacity: 0.95
             }
+        };
+
+        function applyTheme(themeKey) {
+            state.theme = themeKey;
+            const cfg = THEMES[themeKey];
+
+            document.getElementById('skyStop1').setAttribute('stop-color', cfg.sky[0]);
+            document.getElementById('skyStop2').setAttribute('stop-color', cfg.sky[1]);
+            document.getElementById('skyStop3').setAttribute('stop-color', cfg.sky[2]);
+            document.getElementById('seaStop1').setAttribute('stop-color', cfg.sea[0]);
+            document.getElementById('seaStop2').setAttribute('stop-color', cfg.sea[1]);
+
+            document.getElementById('sunDisk').setAttribute('fill', cfg.sunColor);
+            document.getElementById('starsGroup').setAttribute('opacity', cfg.starsOpacity);
+            document.getElementById('moonCraters').setAttribute('opacity', cfg.moonOpacity);
+            document.getElementById('bikeHeadlightBeam').setAttribute('opacity', cfg.lightsOpacity);
+            document.getElementById('lighthouseBeam').setAttribute('opacity', cfg.lightsOpacity);
+
+            // 更新主题按钮高亮
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                if (btn.dataset.theme === themeKey) {
+                    btn.className = 'theme-btn flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all bg-sky-500 text-slate-950 shadow';
+                } else {
+                    btn.className = 'theme-btn flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:bg-slate-800';
+                }
+            });
         }
-        if(spd>1.55){
-            const alpha=Math.min(.85,(spd-1.5)*.7),offset=now*.8%90;
-            dom.windAndDustLayer.innerHTML=`
-                <line x1="${-240-offset}" y1="-190" x2="${-150-offset}" y2="-190" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round" opacity="${alpha}"/>
-                <line x1="${-280-offset*.7}" y1="-95" x2="${-180-offset*.7}" y2="-95" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round" opacity="${alpha}"/>
-                <line x1="${-260-offset*1.1}" y1="35" x2="${-190-offset*1.1}" y2="35" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round" opacity="${alpha}"/>`;
-        } else if(dom.windAndDustLayer.innerHTML!=='')dom.windAndDustLayer.innerHTML='';
-        dom.speedReadout.textContent=(spd*18.5).toFixed(1);
-        dom.rpmReadout.textContent=Math.round(spd*72);
-        requestAnimationFrame(animate);
-    }
-    function bindEventListeners(){
-        $('speedSlider').addEventListener('input',e=>{
-            const val=parseFloat(e.target.value);state.targetSpeed=val;
-            let label,classes;
-            if(val===0){
-                label='驻车休息';classes='bg-slate-600/40 text-slate-300 border-slate-500/30';
-            }else if(val<.8){
-                label='慢速看海';classes='bg-emerald-500/20 text-emerald-300 border-emerald-400/30';
-            }else if(val<=1.6){
-                label='悠闲巡航';classes='bg-sky-500/20 text-sky-300 border-sky-400/30';
-            }else{
-                label='破风冲刺 🔥';classes='bg-rose-500/20 text-rose-300 border-rose-400/30';
+
+        const dom = {
+            rearWheelSpin: document.getElementById('rearWheelSpin'),
+            frontWheelSpin: document.getElementById('frontWheelSpin'),
+            chainringSpin: document.getElementById('chainringSpin'),
+            bikeChainPath: document.getElementById('bikeChainPath'),
+            bikeChassisGroup: document.getElementById('bikeChassisGroup'),
+            pelicanBodyGroup: document.getElementById('pelicanBodyGroup'),
+            pelicanNeckAndHead: document.getElementById('pelicanNeckAndHead'),
+            pelicanHeadGroup: document.getElementById('pelicanHeadGroup'),
+            pelicanTailGroup: document.getElementById('pelicanTailGroup'),
+            upperBeakGroup: document.getElementById('upperBeakGroup'),
+            pouchMainPath: document.getElementById('pouchMainPath'),
+            pouchClipPath: document.getElementById('pouchClipPath'),
+            pouchCrease1: document.getElementById('pouchCrease1'),
+            pouchFishInside: document.getElementById('pouchFishInside'),
+            rightCrank: document.getElementById('rightCrank'),
+            rightPedal: document.getElementById('rightPedal'),
+            rightThigh: document.getElementById('rightThigh'),
+            rightKneeJoint: document.getElementById('rightKneeJoint'),
+            rightShin: document.getElementById('rightShin'),
+            rightFoot: document.getElementById('rightFoot'),
+            leftCrank: document.getElementById('leftCrank'),
+            leftPedal: document.getElementById('leftPedal'),
+            leftThigh: document.getElementById('leftThigh'),
+            leftShin: document.getElementById('leftShin'),
+            leftFoot: document.getElementById('leftFoot'),
+            rightWingUpper: document.getElementById('rightWingUpper'),
+            rightWingFeathers: document.getElementById('rightWingFeathers'),
+            leftWingPath: document.getElementById('leftWingPath'),
+            scarfTail1: document.getElementById('scarfTail1'),
+            scarfTail2: document.getElementById('scarfTail2'),
+            crestFeathers: document.getElementById('crestFeathers'),
+            eyelid: document.getElementById('eyelid'),
+            groundShadow: document.getElementById('groundShadow'),
+            windAndDustLayer: document.getElementById('windAndDustLayer'),
+            lighthouseGroup: document.getElementById('lighthouseGroup'),
+            sailboatGroup: document.getElementById('sailboatGroup'),
+            wavePath1: document.getElementById('wavePath1'),
+            wavePath2: document.getElementById('wavePath2'),
+            speedReadout: document.getElementById('speedReadout'),
+            rpmReadout: document.getElementById('rpmReadout'),
+            fishCountReadout: document.getElementById('fishCountReadout'),
+            speedModeBadge: document.getElementById('speedModeBadge')
+        };
+
+        let lastTime = performance.now();
+        let lighthouseX = 820;
+        let sailboatX = 320;
+        const cloudElements = Array.from(document.querySelectorAll('.cloud-item'));
+
+        function animate(now) {
+            const dt = Math.min((now - lastTime) / 1000, 0.05);
+            lastTime = now;
+
+            // 1. 平滑插值当前速度
+            state.speedMultiplier += (state.targetSpeed - state.speedMultiplier) * 0.08;
+            const spd = state.speedMultiplier;
+
+            // 2. 更新踏频角度、车轮转角与链条偏移
+            const angularVel = spd * 4.8; // rad/s
+            state.pedalAngle = (state.pedalAngle + angularVel * dt) % (Math.PI * 2);
+            state.wheelAngle = (state.wheelAngle + spd * 290 * dt) % 360;
+            state.chainOffset = (state.chainOffset - spd * 85 * dt) % 10;
+            state.wavePhase += dt * 2.5;
+
+            // 旋转前后轮与牙盘
+            dom.rearWheelSpin.setAttribute('transform', `rotate(${state.wheelAngle})`);
+            dom.frontWheelSpin.setAttribute('transform', `rotate(${state.wheelAngle})`);
+            dom.chainringSpin.setAttribute('transform', `translate(-10, 20) rotate(${(state.pedalAngle * 180) / Math.PI})`);
+            dom.bikeChainPath.setAttribute('stroke-dashoffset', state.chainOffset);
+
+            // 3. 计算鹈鹕身体双倍频律动（左脚与右脚各踩下一次，身体就起伏一次）
+            const rhythm2x = state.pedalAngle * 2;
+            const bodyBobY = Math.sin(rhythm2x) * 6.5 * Math.min(1.4, spd + 0.15);
+            const bodyPitch = Math.cos(rhythm2x) * 2.2 * Math.min(1.4, spd) + spd * 2.8;
+            const chassisBounceY = Math.sin(rhythm2x - 0.5) * 1.8 * Math.min(1.5, spd);
+
+            dom.bikeChassisGroup.setAttribute('transform', `translate(0, ${chassisBounceY}) rotate(${spd > 1.8 ? 1.2 : 0})`);
+            dom.groundShadow.setAttribute('rx', (185 - bodyBobY * 1.2).toFixed(1));
+
+            // 鹈鹕躯干位置与俯仰
+            const currentHipX = RIG_CONFIG.baseHip.x;
+            const currentHipY = RIG_CONFIG.baseHip.y + bodyBobY;
+            dom.pelicanBodyGroup.setAttribute(
+                'transform',
+                `translate(${currentHipX}, ${currentHipY - 27}) rotate(${bodyPitch})`
+            );
+
+            // 脖颈与头部的反向稳定补偿（鸟类头部防抖特性 + 随节奏轻点）
+            const headNod = -bodyPitch * 0.65 + Math.sin(rhythm2x - 0.8) * 3.2;
+            dom.pelicanHeadGroup.setAttribute('transform', `translate(20, -96) rotate(${headNod})`);
+
+            // 尾羽与围巾随风飘动
+            const tailWag = Math.sin(rhythm2x + 0.6) * 8;
+            dom.pelicanTailGroup.setAttribute('transform', `translate(-44, 10) rotate(${tailWag})`);
+
+            const windWave1 = Math.sin(now * 0.012 * Math.max(0.5, spd)) * (6 + spd * 5);
+            const windWave2 = Math.cos(now * 0.015 * Math.max(0.5, spd)) * (8 + spd * 6);
+            dom.scarfTail1.setAttribute('transform', `rotate(${windWave1})`);
+            dom.scarfTail2.setAttribute('transform', `rotate(${windWave2})`);
+            dom.crestFeathers.setAttribute('transform', `rotate(${windWave1 * 0.6})`);
+
+            // 4. 大喉囊弹簧阻尼物理计算（随身体起伏 + 吞鱼弹跳 + 存鱼重量下垂）
+            const springForce = -110 * state.pouchBounceOffset;
+            const dampingForce = -8.5 * state.pouchBounceVel;
+            const externalImpulse = Math.cos(rhythm2x) * 45 * spd;
+            state.pouchBounceVel += (springForce + dampingForce + externalImpulse) * dt;
+            state.pouchBounceOffset += state.pouchBounceVel * dt;
+
+            const fishBellyWeight = Math.min(state.fishCount * 4.5, 28);
+            const jiggleY = Math.max(-18, Math.min(35, state.pouchBounceOffset + fishBellyWeight));
+            const jiggleX = Math.sin(rhythm2x - 0.6) * 5 * spd;
+
+            const p1y = (90 + jiggleY * 1.15).toFixed(1);
+            const p2y = (100 + jiggleY * 1.35).toFixed(1);
+            const p1x = (28 + jiggleX).toFixed(1);
+            const p2x = (142 + jiggleX * 0.7).toFixed(1);
+
+            const dynamicPouchD = `M 0,0 C ${p1x},${p1y} ${p2x},${p2y} 168,5 C 110,12 50,8 0,0 Z`;
+            dom.pouchMainPath.setAttribute('d', dynamicPouchD);
+            dom.pouchClipPath.setAttribute('d', dynamicPouchD);
+            dom.pouchCrease1.setAttribute('d', `M 18,8 C ${(40 + jiggleX * 0.6).toFixed(1)},${(58 + jiggleY * 0.85).toFixed(1)} 115,${(64 + jiggleY * 0.9).toFixed(1)} 148,7`);
+
+            // 上喙张合过渡
+            if (state.beakOpenAmount > 0.01) {
+                state.beakOpenAmount = Math.max(0, state.beakOpenAmount - dt * 2.2);
             }
-            dom.speedModeBadge.textContent=label;
-            dom.speedModeBadge.className='px-2.5 py-0.5 rounded-full text-xs border '+classes;
-        });
-        $('feedFishBtn').addEventListener('click',()=>spawnFlyingFish(1120,160+Math.random()*140));
-        $('sceneSvg').addEventListener('click',e=>{
-            const sceneSvg=$('sceneSvg');
-            const pt=sceneSvg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;
-            const matrix=sceneSvg.getScreenCTM();
-            if(!matrix)return;
-            const p=pt.matrixTransform(matrix.inverse());
-            spawnFlyingFish(p.x,p.y);
-        });
-        $('ringBellBtn').addEventListener('click',triggerBikeBell);
-        const xrayBtn=$('xrayToggleBtn');
-        xrayBtn.addEventListener('click',()=>{
-            state.xrayPouch=!state.xrayPouch;
-            dom.pouchFishInside.setAttribute('opacity',state.xrayPouch?'.92':'.42');
-            xrayBtn.setAttribute('aria-pressed',String(state.xrayPouch));
-            xrayBtn.classList.toggle('bg-amber-500',state.xrayPouch);
-            xrayBtn.classList.toggle('text-slate-950',state.xrayPouch);
-            xrayBtn.classList.toggle('bg-slate-700',!state.xrayPouch);
-            xrayBtn.classList.toggle('text-slate-200',!state.xrayPouch);
-        });
-        document.querySelectorAll('.theme-btn').forEach(btn=>
-            btn.addEventListener('click',()=>applyTheme(btn.dataset.theme)));
-        setTimeout(()=>{
-            const banner=$('toastBanner');if(banner)banner.style.opacity='0';
-        },5500);
-    }
-    initBackgroundElements();
-    bindEventListeners();
-    requestAnimationFrame(animate);
-})();</script>
-</body></html>
+            const beakAngle = -state.beakOpenAmount * 22;
+            dom.upperBeakGroup.setAttribute('transform', `translate(8, -4) rotate(${beakAngle})`);
+
+            // 自然眨眼控制
+            state.blinkTimer += dt;
+            if (state.blinkTimer > 3.6) {
+                dom.eyelid.setAttribute('d', 'M -9,-9 L 9,-9 L 9,9 L -9,9 Z');
+                if (state.blinkTimer > 3.76) {
+                    dom.eyelid.setAttribute('d', 'M -9,-9 L 9,-9 L 9,-9 L -9,-9 Z');
+                    state.blinkTimer = 0;
+                }
+            }
+
+            // 5. 计算右腿与左腿的精确 2D 逆向运动学（IK）
+            const { crankCenter, crankRadius, thighLength, shinLength } = RIG_CONFIG;
+
+            // --- 右腿 (近端，角度 state.pedalAngle) ---
+            const rPedalX = crankCenter.x + Math.cos(state.pedalAngle) * crankRadius;
+            const rPedalY = crankCenter.y + Math.sin(state.pedalAngle) * crankRadius;
+            const rKnee = solveTwoBoneIK(currentHipX, currentHipY, rPedalX, rPedalY, thighLength, shinLength);
+
+            dom.rightCrank.setAttribute('x2', rPedalX);
+            dom.rightCrank.setAttribute('y2', rPedalY);
+            dom.rightPedal.setAttribute('x', rPedalX - 15);
+            dom.rightPedal.setAttribute('y', rPedalY - 5);
+
+            dom.rightThigh.setAttribute('x1', currentHipX);
+            dom.rightThigh.setAttribute('y1', currentHipY);
+            dom.rightThigh.setAttribute('x2', rKnee.kneeX);
+            dom.rightThigh.setAttribute('y2', rKnee.kneeY);
+
+            dom.rightKneeJoint.setAttribute('cx', rKnee.kneeX);
+            dom.rightKneeJoint.setAttribute('cy', rKnee.kneeY);
+
+            dom.rightShin.setAttribute('x1', rKnee.kneeX);
+            dom.rightShin.setAttribute('y1', rKnee.kneeY);
+            dom.rightShin.setAttribute('x2', rPedalX);
+            dom.rightShin.setAttribute('y2', rPedalY);
+
+            const rFootRock = Math.sin(state.pedalAngle) * 8;
+            dom.rightFoot.setAttribute(
+                'd',
+                `M ${rPedalX - 10},${rPedalY} L ${rPedalX + 28},${rPedalY + 4 + rFootRock * 0.3} L ${rPedalX + 18},${rPedalY - 10} Z`
+            );
+
+            // --- 左腿 (远端，相位差 PI) ---
+            const lAngle = state.pedalAngle + Math.PI;
+            const lPedalX = crankCenter.x + Math.cos(lAngle) * crankRadius;
+            const lPedalY = crankCenter.y + Math.sin(lAngle) * crankRadius;
+            const lKnee = solveTwoBoneIK(currentHipX + 4, currentHipY - 2, lPedalX, lPedalY, thighLength, shinLength);
+
+            dom.leftCrank.setAttribute('x2', lPedalX);
+            dom.leftCrank.setAttribute('y2', lPedalY);
+            dom.leftPedal.setAttribute('x', lPedalX - 14);
+            dom.leftPedal.setAttribute('y', lPedalY - 4);
+
+            dom.leftThigh.setAttribute('x1', currentHipX + 4);
+            dom.leftThigh.setAttribute('y1', currentHipY - 2);
+            dom.leftThigh.setAttribute('x2', lKnee.kneeX);
+            dom.leftThigh.setAttribute('y2', lKnee.kneeY);
+
+            dom.leftShin.setAttribute('x1', lKnee.kneeX);
+            dom.leftShin.setAttribute('y1', lKnee.kneeY);
+            dom.leftShin.setAttribute('x2', lPedalX);
+            dom.leftShin.setAttribute('y2', lPedalY);
+
+            dom.leftFoot.setAttribute(
+                'd',
+                `M ${lPedalX - 10},${lPedalY} L ${lPedalX + 26},${lPedalY + 3} L ${lPedalX + 16},${lPedalY - 9} Z`
+            );
+
+            // --- 左右翅膀握车把自适应弯曲 ---
+            const shoulderX = -38;
+            const shoulderY = -142 + bodyBobY * 0.9;
+            const elbowX = -2 + bodyBobY * 0.4;
+            const elbowY = -108 + bodyBobY * 0.6;
+            dom.rightWingUpper.setAttribute('d', `M ${shoulderX},${shoulderY} Q ${elbowX},${elbowY} 44,-159`);
+            dom.rightWingFeathers.setAttribute('d', `M ${shoulderX + 6},${shoulderY + 5} Q ${elbowX + 4},${elbowY - 4} 38,-153`);
+            dom.leftWingPath.setAttribute('d', `M ${shoulderX + 8},${shoulderY - 12} Q ${elbowX + 18},${elbowY - 22} 54,-164`);
+
+            // 6. 视差背景多层移动更新
+            // (a) 云朵极慢漂移
+            cloudElements.forEach(cloud => {
+                let cx = parseFloat(cloud.dataset.x);
+                const cy = parseFloat(cloud.dataset.y);
+                const cScale = parseFloat(cloud.dataset.scale);
+                const cSpeed = parseFloat(cloud.dataset.speed);
+                cx -= (12 + spd * 35) * cSpeed * dt;
+                if (cx < -220) cx = 1280;
+                cloud.dataset.x = cx;
+                cloud.setAttribute('transform', `translate(${cx}, ${cy}) scale(${cScale})`);
+            });
+
+            // (b) 远景灯塔与帆船缓慢后移
+            lighthouseX -= spd * 24 * dt;
+            if (lighthouseX < -160) lighthouseX = 1320;
+            dom.lighthouseGroup.setAttribute('transform', `translate(${lighthouseX}, 365)`);
+
+            sailboatX -= spd * 42 * dt;
+            if (sailboatX < -100) sailboatX = 1280;
+            const boatBob = Math.sin(state.wavePhase * 1.3) * 3;
+            const boatTilt = Math.cos(state.wavePhase * 1.3) * 2.5;
+            dom.sailboatGroup.setAttribute('transform', `translate(${sailboatX}, ${392 + boatBob}) rotate(${boatTilt})`);
+
+            // (c) 海浪动态摇曳
+            const waveShift1 = (now * 0.04 * Math.max(0.4, spd)) % 60;
+            const waveShift2 = (now * 0.06 * Math.max(0.4, spd)) % 60;
+            dom.wavePath1.setAttribute('transform', `translate(${-waveShift1}, 0)`);
+            dom.wavePath2.setAttribute('transform', `translate(${-waveShift2}, 0)`);
+
+            // (d) 中景棕榈树与护栏移动
+            palmTrees.forEach((tree, idx) => {
+                tree.x -= spd * 145 * dt;
+                if (tree.x < -140) tree.x = 1320;
+                const el = document.getElementById(`palmTree_${idx}`);
+                if (el) {
+                    el.setAttribute('transform', `translate(${tree.x}, 480) scale(${tree.scale})`);
+                }
+            });
+
+            fencePosts.forEach((post, idx) => {
+                post.x -= spd * 220 * dt;
+                if (post.x < -40) post.x += 16 * 85;
+                const el = document.getElementById(`fencePost_${idx}`);
+                if (el) {
+                    el.setAttribute('x', post.x);
+                }
+            });
+
+            // (e) 前景公路标线高速后掠
+            roadStripes.forEach((stripe, idx) => {
+                stripe.x -= spd * 390 * dt;
+                if (stripe.x < -120) stripe.x += 12 * 120;
+                const el = document.getElementById(`roadStripe_${idx}`);
+                if (el) {
+                    el.setAttribute('transform', `translate(${stripe.x}, 0)`);
+                }
+            });
+
+            // 7. 更新空中投喂小鱼的抛物线轨迹（精确飞入鹈鹕张开的大喉囊）
+            const targetMouthX = 560 + 58;
+            const targetMouthY = 455 - 245 + bodyBobY;
+
+            for (let i = activeFlyingFish.length - 1; i >= 0; i--) {
+                const f = activeFlyingFish[i];
+                f.progress += dt * 1.55;
+                const t = Math.min(1, f.progress);
+
+                // 二次贝塞尔抛物线插值
+                const ctrlX = (f.startX + targetMouthX) * 0.5;
+                const ctrlY = Math.min(f.startY, targetMouthY) - 170;
+
+                const curX = (1 - t) * (1 - t) * f.startX + 2 * (1 - t) * t * ctrlX + t * t * targetMouthX;
+                const curY = (1 - t) * (1 - t) * f.startY + 2 * (1 - t) * t * ctrlY + t * t * targetMouthY;
+
+                // 计算切线角度让小鱼头朝飞行方向
+                const tx = 2 * (1 - t) * (ctrlX - f.startX) + 2 * t * (targetMouthX - ctrlX);
+                const ty = 2 * (1 - t) * (ctrlY - f.startY) + 2 * t * (targetMouthY - ctrlY);
+                const angleDeg = (Math.atan2(ty, tx) * 180) / Math.PI;
+
+                f.el.setAttribute('transform', `translate(${curX}, ${curY}) rotate(${angleDeg})`);
+
+                if (t >= 1) {
+                    // 小鱼落入喉囊！触发喉囊Q弹下沉与音效
+                    f.el.remove();
+                    activeFlyingFish.splice(i, 1);
+                    state.fishCount++;
+                    state.pouchBounceVel += 180;
+                    state.beakOpenAmount = 0.25;
+                    playGulpSound();
+                    dom.fishCountReadout.textContent = state.fishCount;
+                }
+            }
+
+            // 8. 高速骑行时的风线特效
+            if (spd > 1.55) {
+                const windAlpha = Math.min(0.85, (spd - 1.5) * 0.7);
+                const offsetW = (now * 0.8) % 90;
+                dom.windAndDustLayer.innerHTML = `
+                    <line x1="${-240 - offsetW}" y1="-190" x2="${-150 - offsetW}" y2="-190" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round" opacity="${windAlpha}" />
+                    <line x1="${-280 - offsetW * 0.7}" y1="-95" x2="${-180 - offsetW * 0.7}" y2="-95" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round" opacity="${windAlpha}" />
+                    <line x1="${-260 - offsetW * 1.1}" y1="35" x2="${-190 - offsetW * 1.1}" y2="35" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round" opacity="${windAlpha}" />
+                `;
+            } else if (dom.windAndDustLayer.innerHTML !== '') {
+                dom.windAndDustLayer.innerHTML = '';
+            }
+
+            // 9. 更新顶部仪表盘数据
+            dom.speedReadout.textContent = (spd * 18.5).toFixed(1);
+            dom.rpmReadout.textContent = Math.round(spd * 72);
+
+            requestAnimationFrame(animate);
+        }
+
+        function bindEventListeners() {
+            const speedSlider = document.getElementById('speedSlider');
+            speedSlider.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                state.targetSpeed = val;
+
+                if (val === 0) {
+                    dom.speedModeBadge.textContent = '驻车休息';
+                    dom.speedModeBadge.className = 'px-2.5 py-0.5 rounded-full text-xs bg-slate-600/40 text-slate-300 border border-slate-500/30';
+                } else if (val < 0.8) {
+                    dom.speedModeBadge.textContent = '慢速看海';
+                    dom.speedModeBadge.className = 'px-2.5 py-0.5 rounded-full text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-400/30';
+                } else if (val <= 1.6) {
+                    dom.speedModeBadge.textContent = '悠闲巡航';
+                    dom.speedModeBadge.className = 'px-2.5 py-0.5 rounded-full text-xs bg-sky-500/20 text-sky-300 border border-sky-400/30';
+                } else {
+                    dom.speedModeBadge.textContent = '破风冲刺 🔥';
+                    dom.speedModeBadge.className = 'px-2.5 py-0.5 rounded-full text-xs bg-rose-500/20 text-rose-300 border border-rose-400/30';
+                }
+            });
+
+            // 投喂小鱼按钮
+            document.getElementById('feedFishBtn').addEventListener('click', () => {
+                spawnFlyingFish(1120, 160 + Math.random() * 140);
+            });
+
+            // 点击SVG画布任意位置也可从点击处抛投小鱼
+            const sceneSvg = document.getElementById('sceneSvg');
+            sceneSvg.addEventListener('click', (e) => {
+                const pt = sceneSvg.createSVGPoint();
+                pt.x = e.clientX;
+                pt.y = e.clientY;
+                const svgP = pt.matrixTransform(sceneSvg.getScreenCTM().inverse());
+                spawnFlyingFish(svgP.x, svgP.y);
+            });
+
+            // 按响车铃按钮
+            document.getElementById('ringBellBtn').addEventListener('click', () => {
+                triggerBikeBell();
+            });
+
+            // 喉囊透视开关
+            const xrayBtn = document.getElementById('xrayToggleBtn');
+            xrayBtn.addEventListener('click', () => {
+                state.xrayPouch = !state.xrayPouch;
+                dom.pouchFishInside.setAttribute('opacity', state.xrayPouch ? '0.92' : '0.42');
+                xrayBtn.classList.toggle('bg-amber-500', state.xrayPouch);
+                xrayBtn.classList.toggle('text-slate-950', state.xrayPouch);
+                xrayBtn.classList.toggle('bg-slate-700', !state.xrayPouch);
+                xrayBtn.classList.toggle('text-slate-200', !state.xrayPouch);
+            });
+
+            // 昼夜主题切换按钮
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    applyTheme(btn.dataset.theme);
+                });
+            });
+
+            // 5秒后淡化顶部操作提示条
+            setTimeout(() => {
+                const banner = document.getElementById('toastBanner');
+                if (banner) banner.style.opacity = '0';
+            }, 5500);
+        }
+
+        window.onload = function () {
+            initBackgroundElements();
+            bindEventListeners();
+            requestAnimationFrame(animate);
+        };
+    </script>
+</body>
+</html>
