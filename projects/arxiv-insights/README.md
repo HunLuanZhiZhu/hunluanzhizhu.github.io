@@ -4,12 +4,13 @@
 
 ## 页面
 
-- 入口：`index.html`
+- 首页论文流：`index.html`（直接展示近 24 小时新增的完整讲解；同页切换历史论文与本地收藏）
+- 独立项目介绍与方法页：`about.html`（原首页的大幅介绍、研究工作流交互图和方法来源移至此处）
 - 内容清单：`data/papers.json`（目前为空）
 - 后续单篇论文页面：`papers/<arxiv-id>/index.html`
 - 三份 Skill：`skills/arxiv-hot-papers/SKILL.md`（论文发现）、`skills/paper-html-explainer/SKILL.md`（中文交互讲解）、`skills/hourly-paper-pipeline/SKILL.md`（单次总控）
 
-保持原生 HTML / CSS / JavaScript、无打包流程、无需外部内容分发网络。项目下的相对路径应在 `https://zyh.sryze.cc/projects/arxiv-insights/` 下正常工作。
+**页面逻辑：读者打开首页即进入论文列表，不以项目自我介绍占据首屏。** 导航中的「关于本站」单独介绍项目理念、方法来源及隐私原则；首页只负责浏览、搜索、筛选及收藏。保持原生 HTML / CSS / JavaScript、无打包流程、无需外部内容分发网络。项目下的相对路径应在 `https://zyh.sryze.cc/projects/arxiv-insights/` 下正常工作。
 
 ## Skill 来源及改造范围
 
@@ -19,7 +20,7 @@
 
 这些是存储在仓库中的 **Agent Skill 指令文件**，不是由浏览器执行的脚本。ChatGPT 定时任务不会因为文件存在而自动安装或加载它们；若未来接入任务，需要在每次运行中明确读取总控及两份子 Skill 的 `SKILL.md`，并按权限调用论文检索及 GitHub 工具。此步骤尚未进行。
 
-总控只会在全部内容和浏览器验收通过、具备写入授权时，先新增单篇文章，再**最后**更新 `data/papers.json`；首页应以数据驱动，而非每小时重写 `index.html`。为未来「近 24 小时」展示，记录可增加 `added_at`（本站登记完成的 UTC 时间）；「历史」读取全部历史记录；「我的收藏」由浏览器本地存储管理，不写入 GitHub。这三个首页视图现已实现，首页通过 JavaScript 自动加载并定期刷新 `data/papers.json`，每小时内容任务无需修改首页代码。
+总控只会在全部内容和浏览器验收通过、具备写入授权时，先新增单篇文章，再**最后**更新 `data/papers.json`；首页应以数据驱动，而非每小时重写 `index.html`。为未来「近 24 小时」展示，记录可增加 `added_at`（本站登记完成的 UTC 时间）；「历史」读取全部历史记录；「我的收藏」由浏览器本地存储管理，不写入 GitHub。这三个首页视图现已实现，首页通过 JavaScript 自动加载并定期刷新 `data/papers.json`，每小时内容任务无需修改首页代码。首页第一屏默认显示「近 24 小时」，「历史论文」与「我的收藏」使用同页标签切换；项目介绍已移至独立的 `about.html`。
 
 ## 本地收藏与 JSON 备份
 
