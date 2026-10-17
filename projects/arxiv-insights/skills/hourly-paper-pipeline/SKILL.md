@@ -71,9 +71,22 @@ projects/arxiv-insights/papers/<稳定-arxiv-id>/index.html
 
 **如缺乏必要浏览器能力或数学公式无法实测，必须标记为“未验收/阻塞”，不能发布成已通过完整质量门槛的文章。** 用户或未来调度流程可另行授权补验，不能默认放宽标准。
 
-## 5. GitHub 增量发布：只写文章，再写索引
+## 5. DevSpace 本地 Git 优先发布与 GitHub 回退：文章和索引一致性
 
-只有当前调用已明确允许 GitHub 写入且所有关键验收通过时，才执行：
+**优先工作区**：通过 DevSpace 打开 `D:\\aiworkspace\\hunluanzhizhu.github.io`（Windows 路径，实际大小写以工作区返回为准），在该仓库的 `projects/arxiv-insights/` 内制作、测试并发布。普通对话已验证可打开此工作区；**不得据此推断定时任务也能访问**。每次运行必须实际检查连接、工作区路径、`git status --short`、当前分支及 `origin`，并读取最新仓库指令与两份子 Skill。若 DevSpace 不可用，才考虑经授权的 GitHub 文件接口。
+
+**DevSpace 与 GitHub 插件的区别（执行者必读）**：DevSpace 连接的是本机 Windows 仓库工作区，提供终端命令执行能力，**包括 `git fetch`、`git pull`、`git add`、`git commit`、`git push` 等 Git 命令**；不要把它误认为只能读取文件或只能运行检查命令，也不要因为看到工具用途描述就未经实际验证断言「DevSpace 不支持 Git 提交/推送」。GitHub 插件则是另一套远程 API，不等于本机 Git。用户要求「通过 DevSpace」时，**必须在 DevSpace 工作区执行本地 Git 流程**，不得擅自换成 GitHub 插件代替；若当前会话工具策略确实禁止某个动作，应明确区分「本次接口策略限制」与「DevSpace 产品能力」，报告阻塞并征询用户，不得暗中切换渠道。拉取远程更新使用 DevSpace 终端中的 `git fetch` / `git pull --ff-only`，先保护本地未提交修改；提交和推送也优先通过同一工作区的 Git 命令完成，并以实际输出为准。
+
+**本地 Git 路径（优先）**：只有调用者已明确授权提交/推送、所有论文及浏览器验收通过，并且工作区状态安全时，才执行：
+
+1. 先检查本地未提交修改及远程 `origin/main`。保留用户工作；存在可能冲突的脏工作区、未同步提交、分支不符或远程变化时停止并报告，绝不强制清理、重置、覆盖或强推。读取远程最新 `papers.json` 与目标论文路径，稳定 arXiv ID 去重；若发现上轮文章已在远程而索引缺失，优先恢复该篇，不再选第二篇。
+2. 先在本地生成 `papers/<稳定-arxiv-id>/index.html` 并完成全文、公式、SVG、交互和多视口验收；**验收未通过不得提交或推送**。
+3. 在同一工作区增量更新 `data/papers.json`，完整保留历史记录，`schema_version=1`，无重复 ID；字段遵守 README：`arxiv_id`、`title`、`title_zh`、`date`、`published`、`summary`、`topics`、`href`、`heat_note`，并记录准确 UTC `added_at` 和顶层 `updated_at`。本站首页显示按 `added_at` 倒序的最近收录 24 篇，**不是过去 24 小时**。
+4. 推送前再次核验远程 `main` 未变化，检查 `git diff --check`、差异范围、JSON 解析与链接；只暂存本篇 HTML 与索引，**优先在一个 Git 提交中包含两文件**，避免半成品索引。远程前进或冲突时重新核对，不强推。
+5. 按实际可用且获授权的 DevSpace/Git 能力推送 `origin/main`；推送后通过 GitHub 重新读取文章及索引，核对 SHA、ID 和元数据。**本地提交不等于远程发布，远程提交不等于线上 Pages 部署**；线上链接仅在实际访问验证后标为已核实。
+6. 如本地工具不支持 Git 提交或推送、需要额外审批、或安全检查拒绝，保留草稿/本地变更并报告具体阻塞。**安全检查明确拒绝的同一写入动作不得改用另一接口规避拒绝**；正常的备选渠道必须有独立明确授权且不违反当前执行环境限制。
+
+**GitHub 文件接口备选路径（仅在允许时）**：
 
 1. 写入前重新读取 main 上的 papers.json 和目标论文路径；再次确认 ID 未登记、目标页面没有旧内容，保留既有文件。
 2. **先创建本篇论文 HTML**（以及确有必要的站内静态资源），只创建一篇。对 GitHub 连接的授权和审批按实际结果处理。
