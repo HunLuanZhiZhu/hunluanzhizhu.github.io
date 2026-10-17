@@ -1,13 +1,13 @@
 # arXiv 洞察 · 交互式论文讲解
 
-这是个人 Browser Lab 的一个独立静态子项目，目标是把有研究价值的 arXiv 新论文变成**通俗但严谨的中文交互讲解**。当前阶段只建立网页骨架与两份可继续改造的 Agent Skill；**尚未启用任何定时任务、自动抓取、自动生成或自动部署流程**。
+这是个人 Browser Lab 的一个独立静态子项目，目标是把有研究价值的 arXiv 新论文变成**通俗但严谨的中文交互讲解**。当前阶段已建立网页骨架、两份专项 Skill 和一份单次执行总控 Skill；**尚未启用任何定时任务、自动抓取、自动生成或自动部署流程**。
 
 ## 页面
 
 - 入口：`index.html`
 - 内容清单：`data/papers.json`（目前为空）
 - 后续单篇论文页面：`papers/<arxiv-id>/index.html`
-- 两份 Skill：`skills/arxiv-hot-papers/SKILL.md` 和 `skills/paper-html-explainer/SKILL.md`
+- 三份 Skill：`skills/arxiv-hot-papers/SKILL.md`（论文发现）、`skills/paper-html-explainer/SKILL.md`（中文交互讲解）、`skills/hourly-paper-pipeline/SKILL.md`（单次总控）
 
 保持原生 HTML / CSS / JavaScript、无打包流程、无需外部内容分发网络。项目下的相对路径应在 `https://zyh.sryze.cc/projects/arxiv-insights/` 下正常工作。
 
@@ -15,8 +15,11 @@
 
 1. **发现热点论文**：参考 [Yilgrimage/arxiv-digest](https://github.com/Yilgrimage/arxiv-digest) 的三源检索、社区热度信号、筛选和推荐历史设计，并以 [Hugging Face 官方论文 Skill](https://github.com/huggingface/skills/blob/main/skills/huggingface-papers/SKILL.md) 的公开 API 信息为接口参考。本仓库的 `arxiv-hot-papers` 是**重新编写的站点适配说明**，没有复制原仓库脚本、模型评分结果或 QQ/OpenClaw 调度设置。
 2. **生成 HTML 讲解**：参考 [sukanthoriginal/interactive-paper-explainers](https://github.com/sukanthoriginal/interactive-paper-explainers)（MIT License）双层讲解、论文专属交互和静态网页发布的思路。本仓库的 `paper-html-explainer` 是**重新编写的站点适配说明**，没有复制其反馈服务器和运行时代码。
+3. **单次总控**：`hourly-paper-pipeline` 读取并调用上述两份 Skill 的规范，目标一次选择、精读、生成、验证并在授权后登记**一篇**完整讲解。用于未来每小时一次、每天目标 24 篇的调度，但**目前没有启用任务**。
 
-这些是存储在仓库中的 **Agent Skill 指令文件**，不是由浏览器执行的脚本。ChatGPT 定时任务不会因为文件存在而自动安装或加载它们；若未来接入任务，需要在任务中明确读取这两个 `SKILL.md` 并按权限调用检索及 GitHub 工具。此步骤尚未进行。
+这些是存储在仓库中的 **Agent Skill 指令文件**，不是由浏览器执行的脚本。ChatGPT 定时任务不会因为文件存在而自动安装或加载它们；若未来接入任务，需要在每次运行中明确读取总控及两份子 Skill 的 `SKILL.md`，并按权限调用论文检索及 GitHub 工具。此步骤尚未进行。
+
+总控只会在全部内容和浏览器验收通过、具备写入授权时，先新增单篇文章，再**最后**更新 `data/papers.json`；首页应以数据驱动，而非每小时重写 `index.html`。为未来「近 24 小时」展示，记录可增加 `added_at`（本站登记完成的 UTC 时间）；「历史」读取全部历史记录；「我的收藏」由浏览器本地存储管理，不写入 GitHub。这三个完整的首页视图尚未开发。
 
 ## 内容数据约定
 
@@ -31,7 +34,7 @@
 ```
 
 添加论文时，每个条目至少应包含：
-`arxiv_id`、`title`、`title_zh`、`date`（归档日期 YYYY-MM-DD）、`published`（原论文首发日期）、`summary`（中文摘要）、`topics`（字符串数组）、`href`（`papers/<arxiv-id>/`）、`heat_note`（注明来源与统计口径）；可增加 `method_note` 和 `read_time`。
+`arxiv_id`、`title`、`title_zh`、`date`（归档日期 YYYY-MM-DD）、`published`（原论文首发日期）、`summary`（中文摘要）、`topics`（字符串数组）、`href`（`papers/<arxiv-id>/`）、`heat_note`（注明来源与统计口径）；可增加 `added_at`（网站实际新增时间，ISO 8601 UTC）、`arxiv_version`、`method_note` 和 `read_time`。
 
 论文 ID 去重时剥离 `v1`、`v2` 等版本后缀，但应记录版本。**热门是有可核验关注信号的属性，不等于最新，也不等于学术结论可靠。**
 
