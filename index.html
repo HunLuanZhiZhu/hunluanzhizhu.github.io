@@ -1090,9 +1090,14 @@ var MARKS = {
     var s = Math.min(w / 360, (h - 20) / 205);
     var left = (w - 360 * s) / 2, top = (h - 20 - 205 * s) / 2;
     var t = u.t, appear = clamp01(u.p * 1.35);
-    var bob = Math.sin(t * .85) * 1.7;
-    var breathe = Math.sin(t * 1.25) * 2.4;
-    var blink = Math.pow(Math.max(0, Math.sin(t * 1.38 - 1.2)), 36);
+    /* The idle cards run at 40% animation speed: use a larger, frequent
+       jaw cycle so movement stays readable without a hover. */
+    var cycle = t * 3.0;
+    var jaw = .5 - .5 * Math.cos(cycle + .65);
+    var opening = Math.pow(jaw, 1.15);
+    var bob = Math.sin(t * 1.9) * 4.4;
+    var breathe = 3 + opening * 10;
+    var blink = Math.pow(Math.max(0, Math.sin(t * 2.2 - 1.1)), 28);
 
     g.save();
     g.translate(left, top);
@@ -1109,13 +1114,16 @@ var MARKS = {
     g.strokeStyle = FIG.ink2;
     g.beginPath(); g.arc(159, 100, 84, -1.6, -.05); g.stroke();
 
-    var angle = t * .28 - 1.6;
+    var angle = t * 1.15 - 1.6;
     var dotX = 159 + 84 * Math.cos(angle), dotY = 100 + 84 * Math.sin(angle);
     g.fillStyle = FIG.acid;
     g.beginPath(); g.arc(dotX, dotY, 2.4, 0, Math.PI * 2); g.fill();
 
     g.globalAlpha = appear;
     g.translate(0, bob);
+    g.translate(164, 108);
+    g.rotate(Math.sin(t * 1.9) * .027);
+    g.translate(-164, -108);
     g.lineJoin = 'round';
     g.lineCap = 'round';
 
@@ -1147,7 +1155,12 @@ var MARKS = {
     g.moveTo(162, 36); g.quadraticCurveTo(166, 20, 176, 26);
     g.stroke();
 
-    /* The oversized suspended pouch makes the profile unambiguously a pelican. */
+    /* The entire lower mandible pivots from the bill root. Opening the
+       mouth is far more legible than subpixel pouch breathing alone. */
+    g.save();
+    g.translate(207, 108);
+    g.rotate(opening * .29);
+    g.translate(-207, -108);
     g.fillStyle = FIG.a12;
     g.strokeStyle = FIG.a70;
     g.lineWidth = 1.5;
@@ -1157,12 +1170,19 @@ var MARKS = {
     g.bezierCurveTo(314, 143 + breathe, 287, 175 + breathe, 264, 171 + breathe);
     g.bezierCurveTo(235, 169, 217, 139, 207, 108);
     g.closePath(); g.fill(); g.stroke();
-
+    g.strokeStyle = FIG.a70;
+    g.lineWidth = 1.4;
+    g.beginPath();
+    g.moveTo(212, 112);
+    g.quadraticCurveTo(276, 117, 327, 111);
+    g.stroke();
     g.strokeStyle = FIG.ink2;
+    g.lineWidth = 1;
     g.beginPath();
     g.moveTo(225, 132);
     g.quadraticCurveTo(263, 157 + breathe, 301, 139);
     g.stroke();
+    g.restore();
 
     /* Long hooked bill: the only solid accent is the thin upper edge. */
     g.fillStyle = FIG.a22;
@@ -1179,7 +1199,17 @@ var MARKS = {
     g.lineWidth = 1.1;
     seg(g, [220, 105], [317, 109]);
 
-    /* Blink is subtle and driven by the shared card animation clock. */
+    /* Small opening indicator, in the same technical annotation language. */
+    g.save();
+    g.globalAlpha = appear * (.18 + .70 * opening);
+    g.strokeStyle = FIG.acid;
+    g.lineWidth = 1.15;
+    g.beginPath();
+    g.arc(331, 121, 9 + opening * 5, -.65, .65);
+    g.stroke();
+    g.restore();
+
+    /* Blink uses the shared animation clock, like all other cards. */
     g.strokeStyle = FIG.ink;
     g.lineWidth = 1.1;
     g.beginPath(); g.ellipse(185, 82, 9.2, 8.8, 0, 0, Math.PI * 2); g.stroke();
