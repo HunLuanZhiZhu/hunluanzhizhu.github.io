@@ -71,10 +71,15 @@
   .featured-block .sec-head{margin-bottom:16px}
   .featured-note{margin:0 0 14px;color:var(--ink-dim);font-size:13px}
   #featured .attempt{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);border:2px solid var(--accent);box-shadow:0 14px 32px rgba(60,40,20,.1)}
-  #featured .preview{aspect-ratio:16/9;min-height:300px;height:100%}
-  #featured .attempt-body{padding:24px 26px}
+  /* 双列布局中必须显式约束预览宽度，避免 height:100% 与宽高比反推宽度，覆盖右侧说明。 */
+  #featured .preview{width:100%;min-width:0;min-height:300px;height:100%;aspect-ratio:auto}
+  #featured .attempt-body{min-width:0;padding:24px 26px;overflow-wrap:anywhere}
   #featured .attempt-title{font-size:24px}
-  @media(max-width:760px){#featured .attempt{display:flex;flex-direction:column}#featured .preview{min-height:0;height:auto;aspect-ratio:16/9}#featured .attempt-body{padding:18px 20px 20px}}
+  @media(max-width:900px){
+    #featured .attempt{display:flex;flex-direction:column}
+    #featured .preview{width:100%;min-height:0;height:auto;aspect-ratio:16/9}
+    #featured .attempt-body{padding:18px 20px 20px}
+  }
 
   /* 尝试列表 */
   .attempts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px}
