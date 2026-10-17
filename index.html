@@ -606,7 +606,7 @@ var projects = [
 
   { id:'08', slug:'svg-pelican', title:'Dynamic SVG Pelican', tag:'SVG · ITERATION',
     kind:'3D', stack:['svg','smil','deepseek-v4-pro'], fig:'redraw',
-    labelZh:'鹈鹕大头', labelEn:'PELICAN PORTRAIT',
+    labelZh:'鹈鹕轮廓', labelEn:'PELICAN STUDY',
     descZh:'用 AI 反复尝试生成动态 SVG 动画的实验画廊。每次尝试单独成版本：既可在首页直接预览动画，也可点开独立页面全屏观看。',
     descEn:'A gallery of AI-generated dynamic SVG animation, iterated attempt by attempt. Each attempt is its own version — preview the animation in place, or open it as a standalone full-screen page.' },
 
@@ -1085,107 +1085,111 @@ var MARKS = {
     return T('figOf') + u.id + ' · lead ' + names[lead];
   },
 
-  /* 08 · a readable pelican portrait, rather than a generic stroke diagram */
+  /* 08 · pelican head study — shared instrumentation palette and motion budget */
   redraw:function(g, w, h, u){
-    var scale = Math.min(w / 360, h / 218);
-    var ox = (w - 360 * scale) / 2, oy = (h - 218 * scale) / 2;
-    var t = u.t || 0;
-    var bob = Math.sin(t * 1.35) * 2;
-    var blink = Math.pow(Math.max(0, Math.sin(t * 1.15 - 1.1)), 24);
+    var s = Math.min(w / 360, (h - 20) / 205);
+    var left = (w - 360 * s) / 2, top = (h - 20 - 205 * s) / 2;
+    var t = u.t, appear = clamp01(u.p * 1.35);
+    var bob = Math.sin(t * .85) * 1.7;
+    var breathe = Math.sin(t * 1.25) * 2.4;
+    var blink = Math.pow(Math.max(0, Math.sin(t * 1.38 - 1.2)), 36);
+
     g.save();
-    g.translate(ox, oy);
-    g.scale(scale, scale);
+    g.translate(left, top);
+    g.scale(s, s);
 
-    /* A quiet halo keeps the head legible on the site's dark card background. */
-    g.fillStyle = 'rgba(212,255,107,.045)';
-    g.beginPath(); g.ellipse(160, 106, 105, 93, 0, 0, Math.PI * 2); g.fill();
-    g.strokeStyle = 'rgba(212,255,107,.18)';
-    g.lineWidth = 1.2;
-    g.beginPath(); g.arc(160, 106, 96, .65, 4.90); g.stroke();
+    /* The same fine measuring lines, circle guides and type as the other figures. */
+    g.lineWidth = 1;
+    g.strokeStyle = FIG.ink3;
+    seg(g, [28, 97], [332, 97]);
+    seg(g, [164, 8], [164, 194]);
+    g.setLineDash([3, 7]);
+    g.beginPath(); g.arc(159, 100, 84, 0, Math.PI * 2); g.stroke();
+    g.setLineDash([]);
+    g.strokeStyle = FIG.ink2;
+    g.beginPath(); g.arc(159, 100, 84, -1.6, -.05); g.stroke();
 
+    var angle = t * .28 - 1.6;
+    var dotX = 159 + 84 * Math.cos(angle), dotY = 100 + 84 * Math.sin(angle);
+    g.fillStyle = FIG.acid;
+    g.beginPath(); g.arc(dotX, dotY, 2.4, 0, Math.PI * 2); g.fill();
+
+    g.globalAlpha = appear;
     g.translate(0, bob);
     g.lineJoin = 'round';
     g.lineCap = 'round';
 
-    /* White neck, continuing past the lower edge of the portrait. */
-    g.fillStyle = '#e9efe7';
-    g.strokeStyle = '#9fb2aa';
-    g.lineWidth = 2.8;
+    /* Neck and head are outlines, with only the subtle translucent panel fill. */
+    g.fillStyle = FIG.a12;
+    g.strokeStyle = FIG.ink2;
+    g.lineWidth = 1.3;
     g.beginPath();
-    g.moveTo(136, 112);
-    g.bezierCurveTo(113, 129, 117, 160, 96, 216);
-    g.lineTo(205, 216);
-    g.bezierCurveTo(181, 177, 181, 145, 187, 116);
+    g.moveTo(133, 126);
+    g.bezierCurveTo(116, 143, 115, 166, 101, 197);
+    g.lineTo(194, 197);
+    g.bezierCurveTo(179, 172, 175, 147, 186, 123);
     g.closePath(); g.fill(); g.stroke();
 
-    /* Large, simple head silhouette. */
-    g.fillStyle = '#f7f7ef';
-    g.strokeStyle = '#a9b9ac';
-    g.lineWidth = 3;
+    g.strokeStyle = FIG.ink;
+    g.lineWidth = 1.6;
     g.beginPath();
-    g.moveTo(117, 51);
-    g.bezierCurveTo(147, 23, 203, 35, 218, 77);
-    g.bezierCurveTo(233, 116, 204, 151, 163, 154);
-    g.bezierCurveTo(117, 156, 94, 124, 99, 91);
-    g.bezierCurveTo(100, 73, 106, 61, 117, 51);
+    g.moveTo(112, 67);
+    g.bezierCurveTo(130, 30, 185, 29, 210, 61);
+    g.bezierCurveTo(226, 81, 220, 120, 199, 136);
+    g.bezierCurveTo(175, 154, 139, 149, 119, 132);
+    g.bezierCurveTo(100, 116, 97, 88, 112, 67);
     g.closePath(); g.fill(); g.stroke();
 
-    /* Two short crown feathers identify the bird without adding clutter. */
-    g.strokeStyle = '#dce5d9';
-    g.lineWidth = 5;
+    /* Pelican crest, kept as two light technical strokes. */
+    g.strokeStyle = FIG.ink2;
     g.beginPath();
-    g.moveTo(144, 43); g.quadraticCurveTo(133, 27, 147, 25);
-    g.moveTo(156, 40); g.quadraticCurveTo(154, 22, 169, 25);
+    g.moveTo(146, 39); g.quadraticCurveTo(140, 22, 150, 25);
+    g.moveTo(162, 36); g.quadraticCurveTo(166, 20, 176, 26);
     g.stroke();
 
-    /* Distinctive hanging pelican pouch sits behind the upper bill. */
-    g.fillStyle = '#f3cb82';
-    g.strokeStyle = '#cd8f4a';
-    g.lineWidth = 2.5;
+    /* The oversized suspended pouch makes the profile unambiguously a pelican. */
+    g.fillStyle = FIG.a12;
+    g.strokeStyle = FIG.a70;
+    g.lineWidth = 1.5;
     g.beginPath();
-    g.moveTo(207, 112);
-    g.bezierCurveTo(237, 123, 282, 127, 326, 119);
-    g.bezierCurveTo(320, 143, 291, 177, 264, 179);
-    g.bezierCurveTo(234, 181, 214, 156, 207, 112);
+    g.moveTo(207, 108);
+    g.bezierCurveTo(247, 117, 291, 121, 327, 111);
+    g.bezierCurveTo(314, 143 + breathe, 287, 175 + breathe, 264, 171 + breathe);
+    g.bezierCurveTo(235, 169, 217, 139, 207, 108);
     g.closePath(); g.fill(); g.stroke();
 
-    g.strokeStyle = 'rgba(200,129,60,.42)';
-    g.lineWidth = 2;
+    g.strokeStyle = FIG.ink2;
     g.beginPath();
-    g.moveTo(228, 139); g.quadraticCurveTo(255, 167, 297, 144);
+    g.moveTo(225, 132);
+    g.quadraticCurveTo(263, 157 + breathe, 301, 139);
     g.stroke();
 
-    /* Long orange beak with a rounded, slightly hooked tip. */
-    g.fillStyle = '#ffae45';
-    g.strokeStyle = '#d78137';
-    g.lineWidth = 2.8;
+    /* Long hooked bill: the only solid accent is the thin upper edge. */
+    g.fillStyle = FIG.a22;
+    g.strokeStyle = FIG.acid;
+    g.lineWidth = 1.8;
     g.beginPath();
-    g.moveTo(206, 103);
-    g.bezierCurveTo(248, 98, 296, 101, 325, 109);
-    g.quadraticCurveTo(335, 113, 328, 122);
-    g.bezierCurveTo(289, 130, 242, 118, 208, 116);
+    g.moveTo(203, 97);
+    g.bezierCurveTo(242, 91, 293, 96, 327, 103);
+    g.quadraticCurveTo(335, 107, 325, 113);
+    g.bezierCurveTo(285, 117, 241, 109, 208, 110);
     g.closePath(); g.fill(); g.stroke();
 
-    g.strokeStyle = 'rgba(255,239,181,.8)';
-    g.lineWidth = 2.2;
-    g.beginPath(); g.moveTo(229, 106); g.quadraticCurveTo(284, 105, 317, 113); g.stroke();
+    g.strokeStyle = FIG.ink2;
+    g.lineWidth = 1.1;
+    seg(g, [220, 105], [317, 109]);
 
-    /* Single blinking eye; no other movement beyond a slight head bob. */
-    g.fillStyle = '#edd7b6';
-    g.beginPath(); g.ellipse(184, 85, 12, 11, 0, 0, Math.PI * 2); g.fill();
-    g.fillStyle = '#202923';
-    g.beginPath(); g.ellipse(187, 85, 5.3, Math.max(.8, 5.3 * (1 - blink)), 0, 0, Math.PI * 2); g.fill();
-    if(blink < .8){
-      g.fillStyle = '#ffffff';
-      g.beginPath(); g.arc(188.5, 83, 1.9, 0, Math.PI * 2); g.fill();
-    }else{
-      g.strokeStyle = '#66736b';
-      g.lineWidth = 1.4;
-      g.beginPath(); g.moveTo(179, 86); g.quadraticCurveTo(187, 89, 194, 85); g.stroke();
-    }
-
+    /* Blink is subtle and driven by the shared card animation clock. */
+    g.strokeStyle = FIG.ink;
+    g.lineWidth = 1.1;
+    g.beginPath(); g.ellipse(185, 82, 9.2, 8.8, 0, 0, Math.PI * 2); g.stroke();
+    g.fillStyle = FIG.acid;
+    g.beginPath(); g.ellipse(187, 82, 3.1, Math.max(.45, 3.1 * (1 - blink)), 0, 0, Math.PI * 2); g.fill();
     g.restore();
-    return T('figOf') + u.id + ' · ' + (lang === 'zh' ? '鹈鹕大头' : 'pelican portrait');
+
+    mono(g, '08 / PELICAN', 14, 19, FIG.ink2, 9, 'left');
+    axis(g, w, h, 28, null, u);
+    return T('figOf') + u.id + ' · ' + (lang === 'zh' ? '鹈鹕轮廓' : 'PELICAN STUDY');
   },
 
   /* 03 · the group-meeting deck collection: talks fanned out, read across by a
