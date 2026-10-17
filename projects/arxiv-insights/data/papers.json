@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-17T13:09:52.927Z",
+  "updated_at": "2026-10-17T14:39:50.843Z",
   "papers": [
     {
       "arxiv_id": "2610.21601",
@@ -65,6 +65,28 @@
       ],
       "evidence_note": "基于 arXiv v1 全文第 3–5 节、表 2–4 与附录 A–E 的中文精读；此前草稿进行了多视口浏览器验证。",
       "read_time": "约 18 分钟"
+    },
+    {
+      "arxiv_id": "2610.22200",
+      "title": "OpenGCUA: Towards Open-Source General Computer-Use Agents",
+      "title_zh": "OpenGCUA：迈向开放的通用计算机操作智能体",
+      "date": "2026-10-17",
+      "published": "2026-10-15",
+      "summary": "围绕通用计算机操作智能体的开放技术栈，解读任务构建、训练与评测。论文报告在 OSWorld-v2 的 82 项离线任务上，八款模型平均部分得分提升 19.6 分，平均交互步数减少 53.0%。页面包含中文分层讲解、数学公式、机制 SVG 与交互。",
+      "topics": [
+        "智能体",
+        "强化学习",
+        "计算机操作",
+        "多模态"
+      ],
+      "href": "papers/2610.22200/",
+      "heat_note": "Hugging Face 论文日榜此前检索显示约 315 次赞同；历史观察值，非实时热度。",
+      "added_at": "2026-10-17T14:39:50.843Z",
+      "arxiv_version": "v1",
+      "arxiv_url": "https://arxiv.org/abs/2610.22200",
+      "html_url": "https://arxiv.org/html/2610.22200v1",
+      "read_time": "约 18 分钟",
+      "evidence_note": "页面草稿曾进行多视口浏览器检查；此次普通对话主要验证 GitHub 写入，未重新完成线上部署和 HTTP 路径检查。"
     }
   ]
 }
