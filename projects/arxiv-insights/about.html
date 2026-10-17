@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="arXiv 洞察的研究方向、论文筛选与中文交互式讲解规范、个人收藏隐私说明。">
+<title>关于本站 · arXiv 洞察</title>
+<style>
+:root{color-scheme:dark;--bg:#090e18;--surface:#111b2b;--surface-2:#172335;--line:#304054;--ink:#eaf0f5;--muted:#9cadbf;--mint:#94ebc6;--violet:#aaafff;--amber:#f4c985;--radius:16px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse 90% 45% at 85% -8%,#243251 0%,transparent 70%),var(--bg);color:var(--ink);font:16px/1.7 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}a{color:inherit}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
+.wrap{max-width:1152px;margin:auto;padding:0 30px}.top{border-bottom:1px solid #26394d}.topin{display:flex;justify-content:space-between;align-items:center;min-height:76px;gap:22px}.brand{font-size:18px;font-weight:800;letter-spacing:-.04em;text-decoration:none}.brand b{color:var(--mint)}.top nav{display:flex;gap:23px;color:var(--muted);font-size:13px}.top nav a{text-decoration:none}.top nav a:hover{color:var(--ink)}
+.hero{padding:92px 0 45px;display:grid;grid-template-columns:1fr .88fr;gap:54px;align-items:center}.eyebrow,.mono{font:600 11px/1.6 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.14em;text-transform:uppercase}.eyebrow{color:var(--mint)}h1,h2,h3,p{margin-top:0}.hero h1{font-size:clamp(45px,6vw,80px);line-height:1.13;letter-spacing:-.065em;margin:19px 0 22px}.hero h1 em{font-style:normal;color:var(--mint)}.lead{font-size:17px;color:#bacada;max-width:565px}.hero .sublead{font-size:13px;color:var(--muted);margin-top:24px}.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}.btn{display:inline-flex;gap:8px;align-items:center;justify-content:center;text-decoration:none;border-radius:8px;padding:11px 16px;font-size:14px;font-weight:650;border:1px solid var(--line);color:var(--ink);background:var(--surface)}.btn.primary{background:var(--mint);color:#0c1e1a;border-color:var(--mint)}.btn:hover{filter:brightness(1.12)}
+.diagram{position:relative;background:linear-gradient(153deg,rgba(35,54,76,.72),rgba(12,18,32,.75));padding:23px;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 25px 70px #0003}.diagram-head{display:flex;justify-content:space-between;color:var(--muted);gap:15px}.diagram-head .mono:first-child{color:var(--mint)}.diagram svg{width:100%;height:auto;margin:18px 0 2px;overflow:visible}.diagram text{font:600 19px system-ui,sans-serif;fill:#eaf0f5}.diagram .minor{font:500 12px system-ui,sans-serif;fill:#aabbd0}.diagram .node rect{fill:#1b293a;stroke:#50637a;stroke-width:1.5}.diagram .node[aria-current="step"] rect{fill:#1c3a3e;stroke:#94ebc6;stroke-width:2}.diagram .arrows{stroke:#647a91;stroke-width:2;fill:none;stroke-dasharray:4 7}
+.diagram-steps{display:flex;gap:7px;flex-wrap:wrap}.step{background:#1c2b40;color:#b5c5d5;border:1px solid #304054;border-radius:7px;padding:7px 10px;font-size:12px}.step[aria-pressed=true]{background:#21403e;border-color:var(--mint);color:#d9ffeb}.step-info{min-height:75px;margin:13px 0 0;color:#c0cfdd;font-size:13px}.step-info strong{display:block;color:#eaf0f5;font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;padding-top:15px}.stat{padding:17px 21px;border:1px solid var(--line);border-radius:10px;background:#111b2999}.stat strong{display:block;font-size:15px}.stat span{font-size:12px;color:var(--muted)}
+section.archive{padding:74px 0 90px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:24px}.section-head h2{font-size:clamp(30px,4vw,44px);letter-spacing:-.045em;line-height:1.2;margin:9px 0 6px}.section-head p{color:var(--muted);font-size:14px;margin:0;max-width:475px}
+.toolbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:27px 0 22px}.filters{display:flex;gap:8px;flex-wrap:wrap}.filter{font-size:13px;border:1px solid #304054;background:#131d2c;border-radius:8px;padding:8px 13px;color:#b8c6d5}.filter[aria-pressed=true]{background:#263d3c;border-color:var(--mint);color:#d6ffe9}.search{flex:1;min-width:220px;max-width:320px;padding:9px 13px;border:1px solid var(--line);border-radius:8px;background:#141f2e;color:var(--ink);outline-color:var(--mint)}.search::placeholder{color:#8a9bae}.count{color:var(--muted);font-size:12px;margin-left:auto}.paper-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.paper{border:1px solid #35465a;background:#111c2c;border-radius:12px;padding:25px;display:flex;flex-direction:column;gap:12px}.paper .meta{color:var(--mint);font-size:12px}.paper h3{margin:0;font-size:21px;line-height:1.45;letter-spacing:-.018em}.paper .original{font-size:13px;color:var(--muted);margin:0}.paper .summary{font-size:14px;color:#c1cfdd;margin:0}.paper .tags{display:flex;flex-wrap:wrap;gap:6px}.paper .tags span{border:1px solid #40516a;border-radius:5px;padding:2px 7px;font-size:11px;color:#aebfd1}.paper .heat{color:var(--amber);font-size:12px}.paper .open{margin-top:auto;align-self:start;color:var(--mint);text-decoration:none;font-size:14px}.paper .open:hover{text-decoration:underline}
+.empty{border:1px dashed #4c6078;border-radius:14px;background:linear-gradient(132deg,#142437aa,#111b2b);padding:51px 29px;text-align:center}.empty svg{width:60px;height:60px;stroke:var(--mint);fill:none;stroke-width:1.5;margin-bottom:8px}.empty h3{margin:0 0 7px;font-size:21px}.empty p{font-size:14px;color:var(--muted);max-width:490px;margin:auto}
+.method{padding:54px 0 83px;border-top:1px solid #2a3a4c}.method h2{font-size:30px;letter-spacing:-.03em;margin:10px 0 26px}.method-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.method article{border-top:2px solid #678f94;padding:21px 2px 0}.method .num{font:600 12px ui-monospace,monospace;color:var(--mint)}.method h3{font-size:18px;margin:13px 0 8px}.method p{font-size:13px;color:var(--muted)}.method a{font-size:12px;color:var(--mint)}
+footer{border-top:1px solid #2e3f51;padding:26px 0 35px;color:var(--muted);font-size:12px}footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}footer a{text-decoration:none;color:#c2d9d0}
+
+/* 浏览器本地收藏：独立于公开论文索引，不向服务器提交用户选择 */
+.view-tabs{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px}
+.view-tab{background:#111d2e;color:#b9cadd;border:1px solid var(--line);border-radius:9px;padding:10px 16px;font-size:14px;min-height:44px}
+.view-tab[aria-pressed=true]{border-color:var(--mint);background:#1c3939;color:var(--mint)}
+.bookmark-tools{margin:18px 0 2px;padding:19px;border:1px solid #3b5664;background:#152536;border-radius:12px}
+.bookmark-tools__top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.bookmark-tools h3{font-size:16px;margin:0}.bookmark-tools p{font-size:13px;color:var(--muted);margin:8px 0 0}
+.bookmark-actions{display:flex;flex-wrap:wrap;gap:9px}
+.bookmark-actions .btn{min-height:44px}
+.bookmark-status{font-size:13px;margin-top:11px!important;color:var(--mint)!important}
+.bookmark-status.is-error{color:#ffbaa9!important}
+.paper-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:auto}
+.paper-actions .open{margin-top:0}
+.favorite{background:#1c2a3c;color:#c5d5e4;border:1px solid #496078;border-radius:8px;min-height:44px;padding:9px 13px;font-size:13px}
+.favorite[aria-pressed=true]{background:#273d37;color:#b4f2cd;border-color:#77bf9f}
+.favorite:hover{border-color:var(--mint)}
+.library-update{font-size:12px;color:var(--muted);margin-top:7px}
+@media(max-width:640px){.view-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.view-tab{padding:9px 6px;font-size:12px}.bookmark-tools{padding:15px}.bookmark-actions{width:100%}.bookmark-actions .btn{flex:1}.paper-actions{align-items:stretch}.paper-actions>*{max-width:100%}}
+
+[hidden]{display:none!important}
+@media(max-width:900px){.hero{grid-template-columns:1fr;padding-top:60px;gap:32px}.diagram{max-width:730px}.stats,.method-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:640px){.wrap{padding:0 18px}.topin{min-height:68px}.top nav{gap:10px;font-size:11px}.hero{padding-top:48px}.lead{font-size:15px}.diagram{padding:14px}.diagram svg{margin:8px 0}.stats,.method-grid,.paper-grid{grid-template-columns:1fr}.section-head{display:block}section.archive{padding:64px 0}.toolbar{display:block}.filters{margin-bottom:12px}.search{max-width:none;width:100%}.count{display:block;margin:12px 0 0}.empty{padding:35px 17px}.method{padding-bottom:60px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+
+.about-notes{padding:20px 0 75px}.about-notes h2{font-size:27px}.about-notes p{max-width:850px;color:#b7c8d8}.about-notes a{color:var(--mint)}
+@media(max-width:640px){.about-notes{padding-bottom:48px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap topin">
+<a class="brand" href="./" aria-label="返回 arXiv 洞察首页">arXiv<b> / </b>洞察</a>
+<nav aria-label="页面导航"><a href="./">← 返回论文</a><a href="#method">方法与来源</a><a href="../../">返回主站 ↗</a></nav>
+</div></header>
+<main>
+<section class="wrap hero" aria-labelledby="title">
+  <div>
+    <p class="eyebrow">关于本站 · 阅读理念</p>
+    <h1 id="title">把前沿论文，<br><em>讲到明白。</em></h1>
+    <p class="lead">关注新发表、受到社区关注的 AI 研究。以可核验的论文原文为基础，用两层中文讲解、交互式图示和实验剖析，回答“它到底做了什么”。</p>
+    <p class="sublead">当前阶段：已建立网站和三份研究 Skill，尚未启动定时论文生产。</p>
+    <div class="cta"><a class="btn primary" href="./">查看近 24 小时论文 →</a><a class="btn" href="#method">了解研究规范 ↓</a></div>
+  </div>
+  <aside class="diagram" aria-label="论文处理流程交互图">
+    <div class="diagram-head"><span class="mono">研究工作流 · 方案预览</span><span class="mono">01—03</span></div>
+    <svg viewBox="0 0 720 212" role="img" aria-labelledby="diagramTitle diagramDesc">
+      <title id="diagramTitle">从发现论文到技术讲解的三步流程</title>
+      <desc id="diagramDesc">左侧发现新论文，中间核查原文和热度证据，右侧用交互式图示进行中文讲解。</desc>
+      <path class="arrows" d="M217 101H261M458 101H501"/>
+      <path d="M250 95l10 6-10 6M489 95l10 6-10 6" stroke="#96e9c3" stroke-width="2" fill="none"/>
+      <g class="node" id="node-find" aria-current="step"><rect x="10" y="40" width="208" height="120" rx="12"/><text x="114" y="93" text-anchor="middle">发现</text><text class="minor" x="114" y="122" text-anchor="middle">arXiv · 社区关注</text></g>
+      <g class="node" id="node-check"><rect x="261" y="40" width="197" height="120" rx="12"/><text x="359" y="93" text-anchor="middle">核验</text><text class="minor" x="359" y="122" text-anchor="middle">原文 · 实验 · 局限</text></g>
+      <g class="node" id="node-explain"><rect x="501" y="40" width="209" height="120" rx="12"/><text x="605" y="93" text-anchor="middle">讲解</text><text class="minor" x="605" y="122" text-anchor="middle">HTML · SVG · 交互</text></g>
+    </svg>
+    <div class="diagram-steps" role="group" aria-label="查看流程步骤">
+      <button type="button" class="step" data-step="find" aria-pressed="true">01 寻找候选</button>
+      <button type="button" class="step" data-step="check" aria-pressed="false">02 查阅证据</button>
+      <button type="button" class="step" data-step="explain" aria-pressed="false">03 可视化讲解</button>
+    </div>
+    <p class="step-info" id="step-info" aria-live="polite"><strong>寻找候选</strong>区分“最新”与“热门”，收集论文首发时间与真实的社区关注信号。</p>
+  </aside>
+</section>
+<div class="wrap stats" aria-label="项目原则">
+  <div class="stat"><strong>原文优先</strong><span>结论对应论文证据</span></div>
+  <div class="stat"><strong>双层讲解</strong><span>直觉理解与技术细节并重</span></div>
+  <div class="stat"><strong>可操作图示</strong><span>交互须解释真实机制</span></div>
+</div>
+<section class="method" id="method" aria-labelledby="method-title"><div class="wrap">
+  <p class="eyebrow">METHOD & SOURCE</p><h2 id="method-title">怎么找，怎么讲，怎么核对</h2>
+  <div class="method-grid">
+    <article><span class="num">01 / DISCOVERY</span><h3>找新论文，也找真实热度</h3><p>交叉参考 arXiv 的首次发布记录与社区榜单。热度必须标明来源、采样时刻和局限，不把日期排序当作热度。</p><a href="https://github.com/HunLuanZhiZhu/hunluanzhizhu.github.io/blob/main/projects/arxiv-insights/skills/arxiv-hot-papers/SKILL.md">查看热点发现 Skill ↗</a></article>
+    <article><span class="num">02 / READING</span><h3>以原文事实为准</h3><p>关键指标和技术判断返回到论文的图表、实验和方法描述。把作者声明与解读推论清楚分开。</p><a href="https://arxiv.org/" target="_blank" rel="noopener noreferrer">arXiv 原始文献 ↗</a></article>
+    <article><span class="num">03 / EXPLAINING</span><h3>先直觉，后严谨</h3><p>先解释为什么重要，再拆开方法、公式、对照实验与局限。动手操作 SVG 小实验，而不是只看装饰图。</p><a href="https://github.com/HunLuanZhiZhu/hunluanzhizhu.github.io/blob/main/projects/arxiv-insights/skills/paper-html-explainer/SKILL.md">查看 HTML 讲解 Skill ↗</a></article>
+  </div>
+</div></section>
+<section class="wrap about-notes" aria-labelledby="about-notes-title">
+<h2 id="about-notes-title">阅读、历史与个人收藏</h2>
+<p>首页直接显示近 24 小时新增的论文讲解；历史论文、我的收藏通过页面标签切换，无须先阅读项目介绍。每小时一次、每次成功产出一篇完整解读是未来定时流程的目标；当前尚未启动。</p>
+<p>个人收藏只保存在当前浏览器中，不会上传 GitHub。收藏库支持导入和导出 JSON 备份文件，导入时合并去重。不同设备不会自动同步；清理浏览器数据可能丢失未备份的收藏。</p>
+<p>本站另设<a href="https://github.com/HunLuanZhiZhu/hunluanzhizhu.github.io/blob/main/projects/arxiv-insights/skills/hourly-paper-pipeline/SKILL.md">单次论文总控 Skill</a>，编排发现、全文精读、公式与变量检查、交互式讲解、移动端验收，以及经授权后的 GitHub 增量登记。</p>
+</section>
+</main>
+<footer><div class="wrap"><span>arXiv 洞察 · 关于本站</span><span><a href="./">返回论文首页</a> · <a href="../../">返回主站</a></span></div></footer>
+<script>
+(function(){
+'use strict';
+var steps={
+ find:['寻找候选','区分“最新”与“热门”，收集论文首发时间与真实的社区关注信号。'],
+ check:['查阅证据','回到论文全文，核查方法、实验设置和局限；无全文时明确降低结论强度。'],
+ explain:['可视化讲解','把抽象算法画成可操作的 SVG/HTML，并给每个关键数字保留原文依据。']
+};
+document.querySelectorAll('[data-step]').forEach(function(btn){
+ btn.addEventListener('click',function(){
+  var key=btn.getAttribute('data-step');
+  document.querySelectorAll('[data-step]').forEach(function(b){b.setAttribute('aria-pressed',String(b===btn));});
+  ['find','check','explain'].forEach(function(id){document.getElementById('node-'+id).setAttribute('aria-current',id===key?'step':'false');});
+  document.getElementById('step-info').replaceChildren();
+  var strong=document.createElement('strong');strong.textContent=steps[key][0];
+  document.getElementById('step-info').append(strong,document.createTextNode(steps[key][1]));
+ });
+});
+
+})();
+</script>
+</body>
+</html>
