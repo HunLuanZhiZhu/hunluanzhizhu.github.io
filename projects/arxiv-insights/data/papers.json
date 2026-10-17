@@ -1,5 +1,38 @@
 {
   "schema_version": 1,
-  "updated_at": null,
-  "papers": []
+  "updated_at": "2026-10-17T11:31:41.632Z",
+  "papers": [
+    {
+      "arxiv_id": "2610.21601",
+      "title": "Waypoint-OPD: Transferring RL-Induced Policy Shifts via Gated On-Policy Distillation",
+      "title_zh": "通过一致性门控的在线蒸馏传递强化学习诱导的策略变化",
+      "date": "2026-10-17",
+      "published": "2026-10-15",
+      "summary": "仅看教师强化学习前后的概率变化，无法知道训练早期与晚期的相对词元偏好是否一致。Waypoint-OPD 引入中途教师检查点，用候选词元的加权余弦一致性门控终点策略变化，再用于学生在线蒸馏。在三种 Qwen3 学生规模的数学和代码评估中，论文报告其六组领域平均分均为所比较方法中最高；页面包含全部公式变量释义与可操作的教学模拟。",
+      "topics": [
+        "语言模型",
+        "强化学习",
+        "知识蒸馏",
+        "优化"
+      ],
+      "href": "papers/2610.21601/",
+      "heat_note": "第三方 Paper Pulse 对 Hugging Face 2026-10-16 论文日榜的存档列为第 1（存档记录 654 个赞；非官网实时核验数据，热度不代表实验结论正确）。",
+      "added_at": "2026-10-17T11:31:41.632Z",
+      "arxiv_version": "v1",
+      "arxiv_url": "https://arxiv.org/abs/2610.21601",
+      "html_url": "https://arxiv.org/html/2610.21601v1",
+      "code_url": "https://github.com/hhhbxloveai/WaypointOPD",
+      "heat_sources": [
+        {
+          "source": "Paper Pulse 对 Hugging Face Daily Papers 2026-10-16 的历史存档",
+          "url": "https://paperpulse.ifsp.dev/",
+          "value": 654,
+          "unit": "历史存档赞数",
+          "observed_at": "2026-10-17T11:31:41.632Z"
+        }
+      ],
+      "evidence_note": "已读取 arXiv v1 完整 HTML；方法第 2–3 节、实验第 4–5 节表 1–3 和附录 A–G。浏览器实测 320/375/430/768/1280 CSS 像素及横屏，8 处 MathML 公式，滑块/重置与脚本异常检测通过。",
+      "read_time": "约 16 分钟"
+    }
+  ]
 }
