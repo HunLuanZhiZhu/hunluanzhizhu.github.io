@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-17T11:31:41.632Z",
+  "updated_at": "2026-10-17T13:09:52.927Z",
   "papers": [
     {
       "arxiv_id": "2610.21601",
@@ -33,6 +33,38 @@
       ],
       "evidence_note": "已读取 arXiv v1 完整 HTML；方法第 2–3 节、实验第 4–5 节表 1–3 和附录 A–G。浏览器实测 320/375/430/768/1280 CSS 像素及横屏，8 处 MathML 公式，滑块/重置与脚本异常检测通过。",
       "read_time": "约 16 分钟"
+    },
+    {
+      "arxiv_id": "2610.20584",
+      "title": "Player-1: Learning to Play from Synthetic Experience",
+      "title_zh": "Player-1：从合成经验学习游戏控制",
+      "date": "2026-10-17",
+      "published": "2026-10-14",
+      "summary": "利用 6044 条游戏演示进行监督初始化，再通过 16 个合成环境中的强化学习改善游戏控制；论文报告 9B 模型在 300 项《我的世界》任务上的成功率为 38.33%。页面提供中文分层精读、数学公式、SVG 机制图及交互演示。",
+      "topics": [
+        "强化学习",
+        "智能体",
+        "游戏控制",
+        "多模态"
+      ],
+      "href": "papers/2610.20584/",
+      "heat_note": "Hugging Face 2026-10-15 论文日榜第 2 位，2026-10-17 查询时观察到 333 次赞同；热度为观察快照，非学术质量证明。",
+      "added_at": "2026-10-17T13:09:52.927Z",
+      "arxiv_version": "v1",
+      "arxiv_url": "https://arxiv.org/abs/2610.20584",
+      "html_url": "https://arxiv.org/html/2610.20584v1",
+      "code_url": "https://github.com/TencentARC/Player-1",
+      "heat_sources": [
+        {
+          "source": "Hugging Face Daily Papers 2026-10-15",
+          "url": "https://huggingface.co/papers/date/2026-10-15",
+          "value": 333,
+          "unit": "查询时赞同数",
+          "observed_at": "2026-10-17T13:09:52.927Z"
+        }
+      ],
+      "evidence_note": "基于 arXiv v1 全文第 3–5 节、表 2–4 与附录 A–E 的中文精读；此前草稿进行了多视口浏览器验证。",
+      "read_time": "约 18 分钟"
     }
   ]
 }
