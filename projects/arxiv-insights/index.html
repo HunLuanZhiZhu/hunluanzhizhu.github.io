@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark light">
-<meta name="description" content="arXiv 洞察：直接阅读近 24 小时新增的机器学习与深度学习论文，支持历史归档、中文交互式讲解及本地收藏。">
-<title>近 24 小时论文 · arXiv 洞察</title>
+<meta name="description" content="arXiv 洞察：直接阅读最近收录的 24 篇机器学习与深度学习论文，支持历史归档、中文交互式讲解及本地收藏。">
+<title>最新 24 篇论文 · arXiv 洞察</title>
 <style>
 :root{color-scheme:dark;--bg:#090e18;--surface:#111b2b;--surface-2:#172335;--line:#304054;--ink:#eaf0f5;--muted:#9cadbf;--mint:#94ebc6;--violet:#aaafff;--amber:#f4c985;--radius:16px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse 90% 45% at 85% -8%,#243251 0%,transparent 70%),var(--bg);color:var(--ink);font:16px/1.7 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}a{color:inherit}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
@@ -47,16 +47,16 @@ footer{border-top:1px solid #2e3f51;padding:26px 0 35px;color:var(--muted);font-
 <body>
 <header class="top"><div class="wrap topin">
   <a class="brand" href="./" aria-label="arXiv 洞察首页">arXiv<b> / </b>洞察</a>
-  <nav aria-label="页面导航"><a href="./">近 24 小时</a><a href="./about.html">关于本站</a><a href="../../">返回主站 ↗</a></nav>
+  <nav aria-label="页面导航"><a href="./">最新 24 篇</a><a href="./about.html">关于本站</a><a href="../../">返回主站 ↗</a></nav>
 </div></header>
 <main>
 <section class="wrap archive" id="archive" aria-labelledby="archive-title">
   <div class="section-head">
-    <div><p class="eyebrow">机器学习与深度学习 · 中文交互讲解</p><h1 id="archive-title">近 24 小时论文</h1></div>
-    <p id="archive-desc">这里直接展示过去 24 小时新增的完整论文讲解。每篇可打开技术精读，也可保存到浏览器本地收藏库。</p>
+    <div><p class="eyebrow">机器学习与深度学习 · 中文交互讲解</p><h1 id="archive-title">最新 24 篇论文</h1></div>
+    <p id="archive-desc">直接展示最近收录的 24 篇完整论文讲解，按本站新增时间由新到旧排列；超过 24 篇的旧文章仍可在「历史论文」中查看。</p>
   </div>
   <div class="view-tabs" role="group" aria-label="论文库视图">
-    <button class="view-tab" type="button" data-view="latest" aria-pressed="true">近 24 小时</button>
+    <button class="view-tab" type="button" data-view="latest" aria-pressed="true">最新 24 篇</button>
     <button class="view-tab" type="button" data-view="history" aria-pressed="false">历史论文</button>
     <button class="view-tab" type="button" data-view="favorites" aria-pressed="false">我的收藏 <span id="favorite-count">0</span></button>
   </div>
@@ -88,7 +88,7 @@ footer{border-top:1px solid #2e3f51;padding:26px 0 35px;color:var(--muted);font-
   <div class="empty" id="empty">
     <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="13" y="9" width="38" height="46" rx="4"/><path d="M21 22h22M21 31h16M21 40h20"/><path d="M6 21v28a7 7 0 0 0 7 7h31"/></svg>
     <h3 id="empty-title">正在读取论文目录</h3>
-    <p id="empty-detail">正在加载近 24 小时的论文讲解。</p>
+    <p id="empty-detail">正在加载最近收录的论文讲解。</p>
   </div>
 </section>
 </main>
@@ -112,7 +112,7 @@ var lastUpdate=document.getElementById('library-update');
 var viewHeading=document.getElementById('archive-title');
 var viewDescription=document.getElementById('archive-desc');
 var viewCopy={
- latest:['近 24 小时论文','这里直接展示过去 24 小时新增的完整论文讲解。每篇可打开技术精读，也可保存到浏览器本地收藏库。'],
+ latest:['最新 24 篇论文','直接展示最近收录的 24 篇完整论文讲解，按本站新增时间由新到旧排列；超过 24 篇的旧文章仍可在「历史论文」中查看。'],
  history:['历史论文','回顾所有已收录的论文讲解。按研究方向或关键词筛选，随时重温旧文章。'],
  favorites:['我的收藏','只属于当前浏览器的私人论文库。支持 JSON 导入、导出，不会上传到 GitHub。']
 };
@@ -194,14 +194,10 @@ function papersForView(){
    return result;
   }).sort(function(a,b){return (Date.parse(b._saved_at)||0)-(Date.parse(a._saved_at)||0);});
  }
- var regular=all.slice().sort(function(a,b){return sortDate(b)-sortDate(a);});
- if(view==='latest'){
-  var cutoff=Date.now()-24*60*60*1000;
-  return regular.filter(function(p){
-   var n=Date.parse(p.added_at||'');
-   return Number.isFinite(n)&&n>=cutoff&&n<=Date.now()+60*1000;
-  });
- }
+ var regular=all.slice().sort(function(a,b){
+  return sortDate(b)-sortDate(a) || (a.arxiv_id||'').localeCompare(b.arxiv_id||'');
+ });
+ if(view==='latest')return regular.slice(0,24);
  return regular;
 }
 function createCard(p){
@@ -251,12 +247,12 @@ function render(){
  count.textContent='显示 '+list.childElementCount+' / '+candidates.length+' 篇';
  empty.hidden=list.childElementCount>0;
  if(!empty.hidden){
-  if(loading&&view!=='favorites'){title.textContent='正在读取论文目录';detail.textContent='正在加载最近 24 小时及历史论文数据。';}
+  if(loading&&view!=='favorites'){title.textContent='正在读取论文目录';detail.textContent='正在加载最新 24 篇及历史论文数据。';}
   else if(loadError&&view!=='favorites'){title.textContent='论文目录暂不可用';detail.textContent='无法获取最新的公开论文清单。已收藏的论文仍可在本地收藏库查看。';}
   else if(candidates.length&&!filtered.length){title.textContent='没有匹配的论文';detail.textContent='尝试更换主题或搜索词。';}
   else if(view==='favorites'){title.textContent='还没有收藏的论文';detail.textContent='在论文卡片上点击「收藏」即可保存在当前浏览器。收藏库可导入、导出 JSON 备份，不上传 GitHub。';}
   else if(view==='history'){title.textContent='历史档案暂时为空';detail.textContent='已经完成并收录的论文会长期保留在这里。';}
-  else{title.textContent='最近 24 小时暂无新增';detail.textContent='这里只显示近 24 小时登记的完整讲解；更早的论文可在「历史论文」查看。';}
+  else{title.textContent='暂时没有收录论文';detail.textContent='最新页面会显示最近收录的 24 篇完整讲解，不受过去多少小时的限制。已有更早文章可在「历史论文」查看。';}
  }
 }
 document.querySelectorAll('[data-filter]').forEach(function(btn){
