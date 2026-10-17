@@ -66,8 +66,18 @@
   .sec-head .rule{flex:1;height:1px;background:var(--line)}
   .sec-head .count{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.1em}
 
+  /* 当前最佳：独立于历史版本排序的置顶展示位 */
+  .featured-block{margin:4px 0 42px}
+  .featured-block .sec-head{margin-bottom:16px}
+  .featured-note{margin:0 0 14px;color:var(--ink-dim);font-size:13px}
+  #featured .attempt{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);border:2px solid var(--accent);box-shadow:0 14px 32px rgba(60,40,20,.1)}
+  #featured .preview{aspect-ratio:16/9;min-height:300px;height:100%}
+  #featured .attempt-body{padding:24px 26px}
+  #featured .attempt-title{font-size:24px}
+  @media(max-width:760px){#featured .attempt{display:flex;flex-direction:column}#featured .preview{min-height:0;height:auto;aspect-ratio:16/9}#featured .attempt-body{padding:18px 20px 20px}}
+
   /* 尝试列表 */
-  .attempts{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+  .attempts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px}
 
   .attempt{
     position:relative;display:flex;flex-direction:column;
@@ -153,10 +163,19 @@
     <p>用 AI 反复尝试、生成<span class="hl">动态 SVG 动画</span>的实验画廊。每一次尝试单独成版本，既可在下方直接预览，也可点开独立页面全屏观看。</p>
   </section>
 
-  <!-- 尝试列表 -->
+  <!-- 当前最佳：独立于版本号的固定展区 -->
+  <section class="featured-block" aria-labelledby="featuredTitle">
+    <div class="sec-head">
+      <span class="bar-v"></span><h2 id="featuredTitle">当前最佳 · Current Best</h2><span class="rule"></span><span class="count">精选 / 01</span>
+    </div>
+    <p class="featured-note">人工指定的置顶作品。新版本会进入下方列表，不会挤走当前最佳。</p>
+    <div id="featured"></div>
+  </section>
+
+  <!-- 其余尝试 -->
   <div class="sec-head">
     <span class="bar-v"></span>
-    <h2>Attempts</h2>
+    <h2>其余尝试 · Other Attempts</h2>
     <span class="rule"></span>
     <span class="count" id="count">/ 01</span>
   </div>
@@ -173,6 +192,28 @@
 <script>
   // ============ 尝试数据（新增一次尝试只需在此追加一条） ============
   const attempts = [
+    {
+      file:'attempts/v12-pelican-bicycle-doubao21-pro-task.html',
+      badge:'v12 · DouBao 2.1 Pro · 工作模式',
+      title:'鹈鹕的滨海骑行',
+      sub:'2026-10-17 · 工作模式 · 单文件 SVG 动画',
+      model:'DouBao 2.1 Pro · 工作模式',
+      stack:['html','svg','javascript','inverse-kinematics','parallax'],
+      prompt:'创建一个HTML，内容是SVG绘制一个鹈鹕骑自行车的2D动画',
+      desc:'原始单文件 HTML 完整保留。暖色手绘滨海场景、车筐里的鱼、双腿逆向运动学踩踏、转动车轮与视差滚动背景，包含眨眼、喉囊轻摆及播放暂停。',
+      wide:true
+    },
+    {
+      file:'attempts/v11-pelican-bicycle-qwen38-max-task.html',
+      badge:'v11 · Qwen3.8-MAX · 工作模式',
+      title:'鹈鹕骑自行车 · 2D 骑行动画',
+      sub:'2026-10-17 · 工作模式 · 单文件 SVG 动画',
+      model:'Qwen3.8-MAX · 工作模式',
+      stack:['html','svg','javascript','inverse-kinematics','parallax','interactive'],
+      prompt:'创建一个HTML，内容是SVG绘制一个鹈鹕骑自行车的2D动画',
+      desc:'原始单文件 HTML 完整保留。乡间公路场景、双腿两骨连杆踩踏联动、车轮与背景多层视差动画，提供播放暂停、踏频调节、状态读数及白天/黄昏切换。',
+      wide:true
+    },
     {
       file:'attempts/v10-pelican-bicycle-gemini4-argon-task.html',
       badge:'v10 · Gemini4 Argon · 任务模式',
@@ -275,18 +316,23 @@
     }
   ];
 
+  // 更换当前最佳只需修改这一处路径，不依赖版本数组顺序。
+  const featuredFile = 'attempts/v8-neon-pelican-chatgpt-gpt6.html';
+  const featured = document.getElementById('featured');
+  let otherCount = 0;
   const grid = document.getElementById('grid');
   const frag = document.createDocumentFragment();
   attempts.forEach(a => {
     const card = document.createElement('article');
-    card.className = 'attempt' + (a.wide ? ' attempt--wide' : '');
+    const isFeatured = a.file === featuredFile;
+    card.className = 'attempt' + (a.wide ? ' attempt--wide' : '') + (isFeatured ? ' attempt--best' : '');
     const isHtml = /\.html?$/i.test(a.file);
     const previewEl = isHtml
       ? '<iframe src="' + a.file + '" title="' + a.title + ' 动态预览" loading="lazy" sandbox="allow-same-origin allow-scripts" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#0c1020"></iframe>'
       : '<object type="image/svg+xml" data="' + a.file + '" aria-label="' + a.title + ' 动态预览"></object>';
     card.innerHTML =
       '<div class="preview">' +
-        '<span class="badge">' + a.badge + '</span>' +
+        '<span class="badge">' + (isFeatured ? '当前最佳 · ' : '') + a.badge + '</span>' +
         previewEl +
       '</div>' +
       '<div class="attempt-body">' +
@@ -297,12 +343,13 @@
         '<p class="attempt-desc">' + a.desc + '</p>' +
         '<a class="attempt-cta" href="' + a.file + '" target="_blank" rel="noopener">打开独立页面 <span class="arrow">→</span></a>' +
       '</div>';
-    frag.appendChild(card);
+    if (isFeatured) featured.appendChild(card);
+    else { frag.appendChild(card); otherCount++; }
   });
   grid.appendChild(frag);
 
   // 计数同步
-  document.getElementById('count').textContent = '/ ' + String(attempts.length).padStart(2,'0');
+  document.getElementById('count').textContent = '/ ' + String(otherCount).padStart(2,'0');
 </script>
 </body>
 </html>
