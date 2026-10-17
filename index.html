@@ -606,7 +606,7 @@ var projects = [
 
   { id:'08', slug:'svg-pelican', title:'Dynamic SVG Pelican', tag:'SVG · ITERATION',
     kind:'3D', stack:['svg','smil','deepseek-v4-pro'], fig:'redraw',
-    labelZh:'逐笔重绘', labelEn:'STROKE REDRAW',
+    labelZh:'鹈鹕大头', labelEn:'PELICAN PORTRAIT',
     descZh:'用 AI 反复尝试生成动态 SVG 动画的实验画廊。每次尝试单独成版本：既可在首页直接预览动画，也可点开独立页面全屏观看。',
     descEn:'A gallery of AI-generated dynamic SVG animation, iterated attempt by attempt. Each attempt is its own version — preview the animation in place, or open it as a standalone full-screen page.' },
 
@@ -1085,58 +1085,107 @@ var MARKS = {
     return T('figOf') + u.id + ' · lead ' + names[lead];
   },
 
-  /* 09 · the pelican, redrawn once per version with the strokes re-traced */
+  /* 08 · a readable pelican portrait, rather than a generic stroke diagram */
   redraw:function(g, w, h, u){
-    var s = Math.min(w / 15, h / 9.4), cx = w * .46, cy = h * .46;
-    var v = Math.floor((u.t * .34) % 4);
-    var jit = [0, .5, -1, .8][v];
-    var P = function(p){ return [cx + p[0] * s, cy + p[1] * s + jit * .5]; };
-    /* stroke 5 is the bill — the one that changes most between attempts */
-    var strokes = [
-      [[-4.6,-1.2],[-3.4,-2.0],[-2.0,-2.2],[-1.2,-1.9]],
-      [[-1.2,-1.9],[-0.2,-2.4],[1.0,-2.2],[1.4,-1.6]],
-      [[1.4,-1.6],[2.6,-1.5],[4.2,-1.0],[5.0,-.5]],
-      [[5.0,-.5],[5.6,-.3],[5.9,-.7],[5.4,-1.1]],
-      [[5.4,-1.1],[4.0,-1.5],[2.4,-1.9],[1.4,-1.6]],
-      [[-1.2,-1.9],[-1.0,-.4],[-1.8,.7],[-3.2,1.3]],
-      [[-3.2,1.3],[-4.0,1.5],[-4.3,1.1],[-3.9,.6]],
-      [[-3.2,1.3],[-2.2,.4],[-2.0,-.9],[-2.4,-1.6]]
-    ];
-    var prog = clamp01(u.p * 1.15);
-    g.lineWidth = 1.4; g.lineJoin = 'round'; g.lineCap = 'round';
-    strokes.forEach(function(pts, si){
-      var local = clamp01(prog * strokes.length - si);
-      if(local <= 0) return;
-      g.strokeStyle = si === 5 ? FIG.acid : FIG.ink;
-      g.beginPath();
-      var a = P(pts[0]);
-      g.moveTo(a[0], a[1]);
-      var n = pts.length - 1;
-      for(var i = 1; i <= n; i++){
-        if((i / n) > local) break;
-        var b = P(pts[i]);
-        g.lineTo(b[0], b[1]);
-      }
-      g.stroke();
-    });
-    /* a pen head re-traces the outline continuously — the project is a series
-       of re-draw attempts, so the pen is the figure's own subject */
-    var pen = (u.t * .55) % 1, sp = pen * strokes.length;
-    var si2 = Math.floor(sp) % strokes.length, li = sp - Math.floor(sp);
-    var spts = strokes[si2], fi = li * (spts.length - 1);
-    var i0 = Math.floor(fi), fr = fi - i0;
-    var q0 = spts[Math.min(i0, spts.length - 1)];
-    var q1 = spts[Math.min(i0 + 1, spts.length - 1)];
-    var qp = P([q0[0] + (q1[0] - q0[0]) * fr, q0[1] + (q1[1] - q0[1]) * fr]);
-    g.fillStyle = FIG.acid;
-    g.beginPath(); g.arc(qp[0], qp[1], 2.6, 0, 6.2832); g.fill();
-    g.strokeStyle = FIG.ink3;
-    seg(g, [8, h - 18], [w - 8, h - 18]);
-    for(var d = 0; d < 4; d++){
-      box(g, 10 + d * 16, h - 14, 9, 3, d === v ? FIG.acid : FIG.ink3, null);
+    var scale = Math.min(w / 360, h / 218);
+    var ox = (w - 360 * scale) / 2, oy = (h - 218 * scale) / 2;
+    var t = u.t || 0;
+    var bob = Math.sin(t * 1.35) * 2;
+    var blink = Math.pow(Math.max(0, Math.sin(t * 1.15 - 1.1)), 24);
+    g.save();
+    g.translate(ox, oy);
+    g.scale(scale, scale);
+
+    /* A quiet halo keeps the head legible on the site's dark card background. */
+    g.fillStyle = 'rgba(212,255,107,.045)';
+    g.beginPath(); g.ellipse(160, 106, 105, 93, 0, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = 'rgba(212,255,107,.18)';
+    g.lineWidth = 1.2;
+    g.beginPath(); g.arc(160, 106, 96, .65, 4.90); g.stroke();
+
+    g.translate(0, bob);
+    g.lineJoin = 'round';
+    g.lineCap = 'round';
+
+    /* White neck, continuing past the lower edge of the portrait. */
+    g.fillStyle = '#e9efe7';
+    g.strokeStyle = '#9fb2aa';
+    g.lineWidth = 2.8;
+    g.beginPath();
+    g.moveTo(136, 112);
+    g.bezierCurveTo(113, 129, 117, 160, 96, 216);
+    g.lineTo(205, 216);
+    g.bezierCurveTo(181, 177, 181, 145, 187, 116);
+    g.closePath(); g.fill(); g.stroke();
+
+    /* Large, simple head silhouette. */
+    g.fillStyle = '#f7f7ef';
+    g.strokeStyle = '#a9b9ac';
+    g.lineWidth = 3;
+    g.beginPath();
+    g.moveTo(117, 51);
+    g.bezierCurveTo(147, 23, 203, 35, 218, 77);
+    g.bezierCurveTo(233, 116, 204, 151, 163, 154);
+    g.bezierCurveTo(117, 156, 94, 124, 99, 91);
+    g.bezierCurveTo(100, 73, 106, 61, 117, 51);
+    g.closePath(); g.fill(); g.stroke();
+
+    /* Two short crown feathers identify the bird without adding clutter. */
+    g.strokeStyle = '#dce5d9';
+    g.lineWidth = 5;
+    g.beginPath();
+    g.moveTo(144, 43); g.quadraticCurveTo(133, 27, 147, 25);
+    g.moveTo(156, 40); g.quadraticCurveTo(154, 22, 169, 25);
+    g.stroke();
+
+    /* Distinctive hanging pelican pouch sits behind the upper bill. */
+    g.fillStyle = '#f3cb82';
+    g.strokeStyle = '#cd8f4a';
+    g.lineWidth = 2.5;
+    g.beginPath();
+    g.moveTo(207, 112);
+    g.bezierCurveTo(237, 123, 282, 127, 326, 119);
+    g.bezierCurveTo(320, 143, 291, 177, 264, 179);
+    g.bezierCurveTo(234, 181, 214, 156, 207, 112);
+    g.closePath(); g.fill(); g.stroke();
+
+    g.strokeStyle = 'rgba(200,129,60,.42)';
+    g.lineWidth = 2;
+    g.beginPath();
+    g.moveTo(228, 139); g.quadraticCurveTo(255, 167, 297, 144);
+    g.stroke();
+
+    /* Long orange beak with a rounded, slightly hooked tip. */
+    g.fillStyle = '#ffae45';
+    g.strokeStyle = '#d78137';
+    g.lineWidth = 2.8;
+    g.beginPath();
+    g.moveTo(206, 103);
+    g.bezierCurveTo(248, 98, 296, 101, 325, 109);
+    g.quadraticCurveTo(335, 113, 328, 122);
+    g.bezierCurveTo(289, 130, 242, 118, 208, 116);
+    g.closePath(); g.fill(); g.stroke();
+
+    g.strokeStyle = 'rgba(255,239,181,.8)';
+    g.lineWidth = 2.2;
+    g.beginPath(); g.moveTo(229, 106); g.quadraticCurveTo(284, 105, 317, 113); g.stroke();
+
+    /* Single blinking eye; no other movement beyond a slight head bob. */
+    g.fillStyle = '#edd7b6';
+    g.beginPath(); g.ellipse(184, 85, 12, 11, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#202923';
+    g.beginPath(); g.ellipse(187, 85, 5.3, Math.max(.8, 5.3 * (1 - blink)), 0, 0, Math.PI * 2); g.fill();
+    if(blink < .8){
+      g.fillStyle = '#ffffff';
+      g.beginPath(); g.arc(188.5, 83, 1.9, 0, Math.PI * 2); g.fill();
+    }else{
+      g.strokeStyle = '#66736b';
+      g.lineWidth = 1.4;
+      g.beginPath(); g.moveTo(179, 86); g.quadraticCurveTo(187, 89, 194, 85); g.stroke();
     }
-    mono(g, 'v' + (v + 1), 78, h - 9, FIG.ink2, 9, 'left');
-    return T('figOf') + u.id + ' · v' + (v + 1) + '/4';
+
+    g.restore();
+    return T('figOf') + u.id + ' · ' + (lang === 'zh' ? '鹈鹕大头' : 'pelican portrait');
   },
 
   /* 03 · the group-meeting deck collection: talks fanned out, read across by a
