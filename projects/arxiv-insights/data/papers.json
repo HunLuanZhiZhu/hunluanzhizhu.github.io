@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-17T14:39:50.843Z",
+  "updated_at": "2026-10-17T17:25:32.411Z",
   "papers": [
     {
       "arxiv_id": "2610.21601",
@@ -87,6 +87,28 @@
       "html_url": "https://arxiv.org/html/2610.22200v1",
       "read_time": "约 18 分钟",
       "evidence_note": "页面草稿曾进行多视口浏览器检查；此次普通对话主要验证 GitHub 写入，未重新完成线上部署和 HTTP 路径检查。"
+    },
+    {
+      "arxiv_id": "2610.22276",
+      "title": "MJev-Spatial: System One Spatial Intelligence via Native Attention Matching",
+      "title_zh": "MJev-Spatial：通过原生注意力匹配实现快速空间智能",
+      "date": "2026-10-17",
+      "published": "2026-10-15",
+      "summary": "MJev-Spatial 复用视觉语言模型原生注意力查询与键投影，将空间问答改写为候选分类，数值与图像点采用粗到细决策而非逐词生成。作者报告 12 项空间基准宏平均得分 65.64%，单张 B200 批大小 1 时跨基准平均延迟 160.6 毫秒。页面提供中文分层精读、七组 MathML 原式、机制 SVG 与交互式空间区域细化演示。",
+      "topics": [
+        "空间智能",
+        "视觉语言模型",
+        "多模态",
+        "高效推理"
+      ],
+      "href": "papers/2610.22276/",
+      "heat_note": "Hugging Face 2026-10-16 论文日榜此前检索排名第 3、约 350 次赞同；历史观察信号，非实时核验，也不代表实验独立复现。",
+      "added_at": "2026-10-17T17:25:32.411Z",
+      "arxiv_version": "v1",
+      "arxiv_url": "https://arxiv.org/abs/2610.22276",
+      "html_url": "https://arxiv.org/html/2610.22276v1",
+      "read_time": "约 20 分钟",
+      "evidence_note": "基于 arXiv v1 第 1–5 节与附录 A–H 的论文精读，原文表 2、表 11 对照；此前草稿记录多视口浏览器验收，本轮未重新完成线上部署核验。"
     }
   ]
 }
