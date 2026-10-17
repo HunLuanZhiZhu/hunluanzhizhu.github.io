@@ -19,6 +19,26 @@ section.archive{padding:74px 0 90px}.section-head{display:flex;justify-content:s
 .empty{border:1px dashed #4c6078;border-radius:14px;background:linear-gradient(132deg,#142437aa,#111b2b);padding:51px 29px;text-align:center}.empty svg{width:60px;height:60px;stroke:var(--mint);fill:none;stroke-width:1.5;margin-bottom:8px}.empty h3{margin:0 0 7px;font-size:21px}.empty p{font-size:14px;color:var(--muted);max-width:490px;margin:auto}
 .method{padding:54px 0 83px;border-top:1px solid #2a3a4c}.method h2{font-size:30px;letter-spacing:-.03em;margin:10px 0 26px}.method-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.method article{border-top:2px solid #678f94;padding:21px 2px 0}.method .num{font:600 12px ui-monospace,monospace;color:var(--mint)}.method h3{font-size:18px;margin:13px 0 8px}.method p{font-size:13px;color:var(--muted)}.method a{font-size:12px;color:var(--mint)}
 footer{border-top:1px solid #2e3f51;padding:26px 0 35px;color:var(--muted);font-size:12px}footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}footer a{text-decoration:none;color:#c2d9d0}
+
+/* 浏览器本地收藏：独立于公开论文索引，不向服务器提交用户选择 */
+.view-tabs{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px}
+.view-tab{background:#111d2e;color:#b9cadd;border:1px solid var(--line);border-radius:9px;padding:10px 16px;font-size:14px;min-height:44px}
+.view-tab[aria-pressed=true]{border-color:var(--mint);background:#1c3939;color:var(--mint)}
+.bookmark-tools{margin:18px 0 2px;padding:19px;border:1px solid #3b5664;background:#152536;border-radius:12px}
+.bookmark-tools__top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.bookmark-tools h3{font-size:16px;margin:0}.bookmark-tools p{font-size:13px;color:var(--muted);margin:8px 0 0}
+.bookmark-actions{display:flex;flex-wrap:wrap;gap:9px}
+.bookmark-actions .btn{min-height:44px}
+.bookmark-status{font-size:13px;margin-top:11px!important;color:var(--mint)!important}
+.bookmark-status.is-error{color:#ffbaa9!important}
+.paper-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:auto}
+.paper-actions .open{margin-top:0}
+.favorite{background:#1c2a3c;color:#c5d5e4;border:1px solid #496078;border-radius:8px;min-height:44px;padding:9px 13px;font-size:13px}
+.favorite[aria-pressed=true]{background:#273d37;color:#b4f2cd;border-color:#77bf9f}
+.favorite:hover{border-color:var(--mint)}
+.library-update{font-size:12px;color:var(--muted);margin-top:7px}
+@media(max-width:640px){.view-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.view-tab{padding:9px 6px;font-size:12px}.bookmark-tools{padding:15px}.bookmark-actions{width:100%}.bookmark-actions .btn{flex:1}.paper-actions{align-items:stretch}.paper-actions>*{max-width:100%}}
+
 [hidden]{display:none!important}
 @media(max-width:900px){.hero{grid-template-columns:1fr;padding-top:60px;gap:32px}.diagram{max-width:730px}.stats,.method-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:640px){.wrap{padding:0 18px}.topin{min-height:68px}.top nav{gap:10px;font-size:11px}.hero{padding-top:48px}.lead{font-size:15px}.diagram{padding:14px}.diagram svg{margin:8px 0}.stats,.method-grid,.paper-grid{grid-template-columns:1fr}.section-head{display:block}section.archive{padding:64px 0}.toolbar{display:block}.filters{margin-bottom:12px}.search{max-width:none;width:100%}.count{display:block;margin:12px 0 0}.empty{padding:35px 17px}.method{padding-bottom:60px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -67,6 +87,24 @@ footer{border-top:1px solid #2e3f51;padding:26px 0 35px;color:var(--muted);font-
     <div><p class="eyebrow">PAPER LIBRARY</p><h2 id="archive-title">论文档案</h2></div>
     <p>这里只展示已经核对原文、形成独立 HTML 解读的论文，不把仅有热度排名的候选误当成已完成的精读。</p>
   </div>
+  <div class="view-tabs" role="group" aria-label="论文库视图">
+    <button class="view-tab" type="button" data-view="latest" aria-pressed="true">近 24 小时</button>
+    <button class="view-tab" type="button" data-view="history" aria-pressed="false">历史论文</button>
+    <button class="view-tab" type="button" data-view="favorites" aria-pressed="false">我的收藏 <span id="favorite-count">0</span></button>
+  </div>
+  <p class="library-update" id="library-update" aria-live="polite">正在检查最新论文索引…</p>
+  <div class="bookmark-tools" id="bookmark-tools" hidden>
+    <div class="bookmark-tools__top">
+      <h3>我的本地收藏库</h3>
+      <div class="bookmark-actions">
+        <button class="btn" type="button" id="bookmark-import">导入收藏</button>
+        <button class="btn" type="button" id="bookmark-export">导出收藏</button>
+      </div>
+    </div>
+    <p>收藏仅保存在当前浏览器。导出 JSON 文件可自行备份或在其他设备导入；导入采用合并去重，不覆盖原有收藏，绝不上传 GitHub。</p>
+    <input type="file" id="bookmark-file" accept=".json,application/json" aria-label="选择收藏备份 JSON 文件" hidden>
+    <p class="bookmark-status" id="bookmark-status" role="status" aria-live="polite"></p>
+  </div>
   <div class="toolbar">
     <div class="filters" role="group" aria-label="研究领域筛选">
       <button class="filter" type="button" data-filter="全部" aria-pressed="true">全部</button>
@@ -113,49 +151,222 @@ document.querySelectorAll('[data-step]').forEach(function(btn){
   document.getElementById('step-info').append(strong,document.createTextNode(steps[key][1]));
  });
 });
-var all=[],current='全部';
+var all=[],current='全部',view='latest',loadError=false;
+var STORAGE_KEY='arxiv-insights.bookmarks.v1';
+var BACKUP_FORMAT='arxiv-insights-bookmarks',BACKUP_VERSION=1;
+var MAX_BACKUP_BYTES=2*1024*1024,MAX_BACKUP_ITEMS=5000;
+var favorites=new Map(),storageAvailable=true;
 var list=document.getElementById('paper-list');
 var empty=document.getElementById('empty');
 var count=document.getElementById('count');
 var search=document.getElementById('search');
 var title=document.getElementById('empty-title'),detail=document.getElementById('empty-detail');
-function txt(el,cls,value){var child=document.createElement(el);if(cls)child.className=cls;child.textContent=value||'';return child;}
+var tools=document.getElementById('bookmark-tools');
+var status=document.getElementById('bookmark-status');
+var lastUpdate=document.getElementById('library-update');
+function txt(el,cls,value){var child=document.createElement(el);if(cls)child.className=cls;child.textContent=value==null?'':String(value);return child;}
+function stableId(value){var s=typeof value==='string'?value.trim().replace(/v\d+$/i,''):'';return /^\d{4}\.\d{4,5}$/.test(s)?s:null;}
+function safeText(value,max){return typeof value==='string'?value.trim().slice(0,max):'';}
+function safeTimestamp(t){var d=typeof t==='string'?Date.parse(t):NaN;return Number.isFinite(d)?new Date(d).toISOString():null;}
+function safeTags(v){return Array.isArray(v)?v.filter(function(x){return typeof x==='string';}).slice(0,16).map(function(x){return safeText(x,60);}).filter(Boolean):[];}
+function sanitizeBookmark(input){
+ if(!input||typeof input!=='object'||Array.isArray(input))return null;
+ var id=stableId(input.arxiv_id);if(!id)return null;
+ return {
+  arxiv_id:id,title:safeText(input.title,350),title_zh:safeText(input.title_zh,350),
+  summary:safeText(input.summary,1200),published:safeText(input.published,40),
+  topics:safeTags(input.topics),saved_at:safeTimestamp(input.saved_at)||new Date().toISOString()
+ };
+}
+function setMessage(message,isError){
+ status.textContent=message||'';
+ status.classList.toggle('is-error',!!isError);
+}
+function initFavorites(){
+ try{
+  var raw=localStorage.getItem(STORAGE_KEY);
+  if(!raw)return;
+  var data=JSON.parse(raw);
+  if(!data||data.version!==BACKUP_VERSION||!Array.isArray(data.bookmarks))throw Error('保存格式无法识别');
+  data.bookmarks.slice(0,MAX_BACKUP_ITEMS).forEach(function(b){
+   var cleaned=sanitizeBookmark(b);if(cleaned&&!favorites.has(cleaned.arxiv_id))favorites.set(cleaned.arxiv_id,cleaned);
+  });
+ }catch(err){
+  storageAvailable=false;
+  setMessage('浏览器收藏数据无法读取。为防止覆盖已有内容，已停止收藏写入；请检查浏览器网站数据设置。',true);
+ }
+}
+function persistFavorites(next){
+ if(!storageAvailable){setMessage('本地存储不可用，无法保存收藏。',true);return false;}
+ try{
+  localStorage.setItem(STORAGE_KEY,JSON.stringify({version:BACKUP_VERSION,bookmarks:Array.from(next.values())}));
+  favorites=next;
+  return true;
+ }catch(err){
+  setMessage('保存失败：浏览器存储可能已满或被禁止。原有收藏未修改。',true);
+  return false;
+ }
+}
+function catalogMap(){
+ var byId=new Map();
+ all.forEach(function(p){var id=stableId(p.arxiv_id);if(id)byId.set(id,p);});
+ return byId;
+}
+function makeSnapshot(p,id){
+ return sanitizeBookmark({
+  arxiv_id:id,title:p.title,title_zh:p.title_zh,summary:p.summary,
+  published:p.published,topics:p.topics,saved_at:new Date().toISOString()
+ });
+}
+function toggleFavorite(p,id){
+ var next=new Map(favorites),had=next.has(id);
+ if(had)next.delete(id);else next.set(id,makeSnapshot(p,id));
+ if(persistFavorites(next)){
+  setMessage(had?'已从本地收藏移除。':'已保存到本地收藏库。',false);
+  render();
+  var action=list.querySelector('[data-bookmark-id="'+id+'"]');
+  if(action)action.focus();
+ }
+}
+function sortDate(p){
+ var date=p.added_at||p.date||p.published;
+ return Date.parse(date)||0;
+}
+function papersForView(){
+ if(view==='favorites'){
+  var catalog=catalogMap();
+  return Array.from(favorites.values()).map(function(bookmark){
+   var live=catalog.get(bookmark.arxiv_id);
+   var result=Object.assign({},bookmark,live||{});
+   result._hasPage=!!live;result._saved_at=bookmark.saved_at;
+   return result;
+  }).sort(function(a,b){return (Date.parse(b._saved_at)||0)-(Date.parse(a._saved_at)||0);});
+ }
+ var regular=all.slice().sort(function(a,b){return sortDate(b)-sortDate(a);});
+ if(view==='latest'){
+  var cutoff=Date.now()-24*60*60*1000;
+  return regular.filter(function(p){
+   var n=Date.parse(p.added_at||'');
+   return Number.isFinite(n)&&n>=cutoff&&n<=Date.now()+60*1000;
+  });
+ }
+ return regular;
+}
+function createCard(p){
+ var id=stableId(p.arxiv_id);if(!id)return null;
+ var card=txt('article','paper','');
+ var meta=p._saved_at?'收藏于 '+new Date(p._saved_at).toLocaleString('zh-CN')+' · arXiv:'+id:
+   (p.added_at?'本站新增：'+new Date(p.added_at).toLocaleString('zh-CN'):(p.date||'日期未记录'))+' · arXiv:'+id;
+ card.append(txt('div','meta',meta));
+ card.append(txt('h3','',p.title_zh||p.title||'未提供中文标题'));
+ if(p.title_zh&&p.title)card.append(txt('p','original',p.title));
+ card.append(txt('p','summary',p.summary||'暂无简要介绍'));
+ var tags=txt('div','tags','');
+ safeTags(p.topics).forEach(function(tag){tags.append(txt('span','',tag));});
+ card.append(tags);
+ if(p.heat_note)card.append(txt('p','heat',p.heat_note));
+ if(p._hasPage===false)card.append(txt('p','heat','此论文暂不在当前站点目录中，可通过原文链接阅读。'));
+ var actions=txt('div','paper-actions','');
+ var link=txt('a','open',p._hasPage===false?'查看 arXiv 原文 ↗':'阅读交互讲解 →');
+ if(p._hasPage===false){link.href='https://arxiv.org/abs/'+encodeURIComponent(id);link.target='_blank';link.rel='noopener noreferrer';}
+ else link.href='./papers/'+id+'/';
+ actions.append(link);
+ var favoriteButton=txt('button','favorite',favorites.has(id)?'★ 已收藏':'☆ 收藏');
+ favoriteButton.type='button';favoriteButton.setAttribute('data-bookmark-id',id);
+ favoriteButton.setAttribute('aria-pressed',String(favorites.has(id)));
+ favoriteButton.setAttribute('aria-label',(favorites.has(id)?'取消收藏':'收藏论文')+'：'+(p.title_zh||p.title||id));
+ favoriteButton.disabled=!storageAvailable;
+ favoriteButton.addEventListener('click',function(){toggleFavorite(p,id);});
+ actions.append(favoriteButton);
+ card.append(actions);
+ return card;
+}
 function render(){
  list.replaceChildren();
+ tools.hidden=view!=='favorites';
+ document.getElementById('favorite-count').textContent=String(favorites.size);
  var term=search.value.trim().toLowerCase();
- var filtered=all.filter(function(p){
-  var tags=Array.isArray(p.topics)?p.topics:[];
+ var candidates=papersForView();
+ var filtered=candidates.filter(function(p){
+  var tags=safeTags(p.topics);
   var eligible=current==='全部'||tags.indexOf(current)>=0;
-  var matches=[p.title,p.title_zh,p.summary].concat(tags).join(' ').toLowerCase().includes(term);
+  var matches=[p.title,p.title_zh,p.summary,p.arxiv_id].concat(tags).join(' ').toLowerCase().includes(term);
   return eligible&&matches;
  });
- filtered.forEach(function(p){
-  if(!/^\d{4}\.\d{4,5}$/.test(p.arxiv_id||''))return;
-  var card=txt('article','paper','');
-  card.append(txt('div','meta',(p.date||'日期未记录')+' · arXiv:'+p.arxiv_id));
-  card.append(txt('h3','',p.title_zh||p.title));
-  if(p.title_zh)card.append(txt('p','original',p.title));
-  card.append(txt('p','summary',p.summary||'讲解页面'));
-  var tags=txt('div','tags','');
-  (Array.isArray(p.topics)?p.topics:[]).forEach(function(t){tags.append(txt('span','',String(t)));});
-  card.append(tags);
-  if(p.heat_note)card.append(txt('p','heat',p.heat_note));
-  var link=txt('a','open','阅读交互讲解 →');link.href='./papers/'+p.arxiv_id+'/';card.append(link);
-  list.append(card);
- });
- count.textContent='共 '+list.childElementCount+' 篇讲解';
- var has=list.childElementCount>0;
- empty.hidden=has;
- if(!has){
-  if(all.length>0){title.textContent='没有匹配的论文';detail.textContent='尝试更换主题或关键词。';}
-  else{title.textContent='展厅正在准备中';detail.textContent='子项目已建立，论文列表目前为空。第一批内容将在论文被明确选定、阅读和核对后加入；当前没有启用定时运行。';}
+ filtered.forEach(function(p){var card=createCard(p);if(card)list.append(card);});
+ count.textContent='显示 '+list.childElementCount+' / '+candidates.length+' 篇';
+ empty.hidden=list.childElementCount>0;
+ if(!empty.hidden){
+  if(loadError&&view!=='favorites'){title.textContent='论文目录暂不可用';detail.textContent='无法获取最新的公开论文清单。已收藏的论文仍可在本地收藏库查看。';}
+  else if(candidates.length&&!filtered.length){title.textContent='没有匹配的论文';detail.textContent='尝试更换主题或搜索词。';}
+  else if(view==='favorites'){title.textContent='还没有收藏的论文';detail.textContent='在论文卡片上点击「收藏」即可保存在当前浏览器。收藏库可导入、导出 JSON 备份，不上传 GitHub。';}
+  else if(view==='history'){title.textContent='历史档案暂时为空';detail.textContent='已经完成并收录的论文会长期保留在这里。';}
+  else{title.textContent='最近 24 小时暂无新增';detail.textContent='这里只显示近 24 小时登记的完整讲解；更早的论文可在「历史论文」查看。';}
  }
 }
 document.querySelectorAll('[data-filter]').forEach(function(btn){
  btn.addEventListener('click',function(){current=btn.getAttribute('data-filter');document.querySelectorAll('[data-filter]').forEach(function(b){b.setAttribute('aria-pressed',String(b===btn));});render();});
 });
+document.querySelectorAll('[data-view]').forEach(function(btn){
+ btn.addEventListener('click',function(){view=btn.getAttribute('data-view');document.querySelectorAll('[data-view]').forEach(function(b){b.setAttribute('aria-pressed',String(b===btn));});render();});
+});
 search.addEventListener('input',render);
-fetch('./data/papers.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('目录读取失败');return r.json();}).then(function(d){if(!d||!Array.isArray(d.papers))throw Error('清单格式不正确');all=d.papers;render();}).catch(function(){all=[];render();title.textContent='论文索引暂不可读';detail.textContent='请通过站点 HTTP 地址访问，或检查 data/papers.json 是否可用。';});
+document.getElementById('bookmark-export').addEventListener('click',function(){
+ if(!storageAvailable){setMessage('本地收藏不可读取，无法安全导出。',true);return;}
+ try{
+  var pack={format:BACKUP_FORMAT,version:BACKUP_VERSION,exported_at:new Date().toISOString(),bookmarks:Array.from(favorites.values())};
+  var blob=new Blob([JSON.stringify(pack,null,2)],{type:'application/json;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var link=document.createElement('a');
+  link.href=url;link.download='arxiv-insights-bookmarks-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(link);link.click();link.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},2000);
+  setMessage('已生成包含 '+pack.bookmarks.length+' 篇收藏的本地备份文件。',false);
+ }catch(err){setMessage('导出失败：当前浏览器无法生成文件。',true);}
+});
+var fileControl=document.getElementById('bookmark-file');
+document.getElementById('bookmark-import').addEventListener('click',function(){fileControl.click();});
+fileControl.addEventListener('change',async function(){
+ var file=fileControl.files&&fileControl.files[0];
+ if(!file)return;
+ try{
+  if(!storageAvailable)throw Error('浏览器本地存储不可用，无法合并收藏。');
+  if(file.size>MAX_BACKUP_BYTES)throw Error('文件超过 2 MB 的安全上限。');
+  var parsed=JSON.parse(await file.text());
+  if(!parsed||parsed.format!==BACKUP_FORMAT||parsed.version!==BACKUP_VERSION||!Array.isArray(parsed.bookmarks))throw Error('不是受支持的收藏备份 JSON 格式。');
+  if(parsed.bookmarks.length>MAX_BACKUP_ITEMS)throw Error('收藏数量超过单次导入上限（5000 篇）。');
+  var next=new Map(favorites),invalid=0,duplicates=0,added=0;
+  parsed.bookmarks.forEach(function(entry){
+   var b=sanitizeBookmark(entry);
+   if(!b){invalid++;return;}
+   if(next.has(b.arxiv_id)){duplicates++;return;}
+   next.set(b.arxiv_id,b);added++;
+  });
+  if(!parsed.bookmarks.length){setMessage('备份文件中没有收藏条目，现有收藏未更改。',false);return;}
+  if(added&&!persistFavorites(next))return;
+  render();
+  setMessage('导入完成：新增 '+added+' 篇，跳过重复 '+duplicates+' 篇'+(invalid?'，跳过无效 '+invalid+' 篇':'')+'；原有收藏已保留。',false);
+ }catch(err){
+  setMessage('导入失败：'+(err&&err.message?err.message:'文件解析出错')+'。原有收藏未更改。',true);
+ }finally{fileControl.value='';}
+});
+function fetchCatalog(){
+ fetch('./data/papers.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('公开目录读取失败');return r.json();}).then(function(d){
+  if(!d||!Array.isArray(d.papers))throw Error('目录格式错误');
+  all=d.papers.filter(function(p){return p&&stableId(p.arxiv_id);});
+  loadError=false;
+  var when=safeTimestamp(d.updated_at);
+  lastUpdate.textContent=when?'论文目录更新：'+new Date(when).toLocaleString('zh-CN')+' · 页面定期检查更新':'论文目录尚无发布时间 · 页面定期检查更新';
+  render();
+ }).catch(function(){
+  loadError=true;lastUpdate.textContent='论文目录读取失败；本地收藏仍可使用。';render();
+ });
+}
+initFavorites();
+render();
+fetchCatalog();
+setInterval(function(){if(!document.hidden)fetchCatalog();},5*60*1000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)fetchCatalog();});
 })();
 </script>
 </body>
