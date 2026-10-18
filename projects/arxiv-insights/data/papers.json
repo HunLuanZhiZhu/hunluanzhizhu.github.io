@@ -1,38 +1,68 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-17T17:25:32.411Z",
+  "updated_at": "2026-10-18T01:30:00Z",
   "papers": [
     {
-      "arxiv_id": "2610.21601",
-      "title": "Waypoint-OPD: Transferring RL-Induced Policy Shifts via Gated On-Policy Distillation",
-      "title_zh": "通过一致性门控的在线蒸馏传递强化学习诱导的策略变化",
+      "title": "Any Time, Any Space: A World-State-Centric Framework for Agentic Video Generation",
+      "title_zh": "让视频记住空间与时间：ATAS 的双重世界记忆",
+      "published": "2026-10-14",
+      "date": "2026-10-18",
+      "added_at": "2026-10-18T01:30:00Z",
+      "summary": "ATAS 通过可更新的场景记忆和事件记忆，为跨镜头视频生成提供空间与时间一致性。",
+      "topics": [
+        "视频生成",
+        "世界模型",
+        "智能体",
+        "多模态"
+      ],
+      "heat_note": "Hugging Face 论文页历史观察 343 次赞同；非实时数据。",
+      "arxiv_version": "v1",
+      "arxiv_id": "2610.20571",
+      "href": "papers/2610.20571/"
+    },
+    {
+      "arxiv_id": "2610.22276",
+      "title": "MJev-Spatial: System One Spatial Intelligence via Native Attention Matching",
+      "title_zh": "MJev-Spatial：通过原生注意力匹配实现快速空间智能",
       "date": "2026-10-17",
       "published": "2026-10-15",
-      "summary": "仅看教师强化学习前后的概率变化，无法知道训练早期与晚期的相对词元偏好是否一致。Waypoint-OPD 引入中途教师检查点，用候选词元的加权余弦一致性门控终点策略变化，再用于学生在线蒸馏。在三种 Qwen3 学生规模的数学和代码评估中，论文报告其六组领域平均分均为所比较方法中最高；页面包含全部公式变量释义与可操作的教学模拟。",
+      "summary": "复用视觉语言模型原生注意力匹配进行空间问答、分类与粗到细决策。",
       "topics": [
-        "语言模型",
-        "强化学习",
-        "知识蒸馏",
-        "优化"
+        "空间智能",
+        "视觉语言模型",
+        "多模态",
+        "高效推理"
       ],
-      "href": "papers/2610.21601/",
-      "heat_note": "第三方 Paper Pulse 对 Hugging Face 2026-10-16 论文日榜的存档列为第 1（存档记录 654 个赞；非官网实时核验数据，热度不代表实验结论正确）。",
-      "added_at": "2026-10-17T11:31:41.632Z",
+      "href": "papers/2610.22276/",
+      "heat_note": "Hugging Face 2026-10-16 日榜历史观察约 350 次赞同；非实时数据。",
+      "added_at": "2026-10-17T17:25:32.411Z",
       "arxiv_version": "v1",
-      "arxiv_url": "https://arxiv.org/abs/2610.21601",
-      "html_url": "https://arxiv.org/html/2610.21601v1",
-      "code_url": "https://github.com/hhhbxloveai/WaypointOPD",
-      "heat_sources": [
-        {
-          "source": "Paper Pulse 对 Hugging Face Daily Papers 2026-10-16 的历史存档",
-          "url": "https://paperpulse.ifsp.dev/",
-          "value": 654,
-          "unit": "历史存档赞数",
-          "observed_at": "2026-10-17T11:31:41.632Z"
-        }
+      "arxiv_url": "https://arxiv.org/abs/2610.22276",
+      "html_url": "https://arxiv.org/html/2610.22276v1",
+      "read_time": "约 20 分钟",
+      "evidence_note": "基于 arXiv v1 第 1–5 节与附录 A–H 的论文精读，原文表 2、表 11 对照；此前草稿记录多视口浏览器验收，本轮未重新完成线上部署核验。"
+    },
+    {
+      "arxiv_id": "2610.22200",
+      "title": "OpenGCUA: Towards Open-Source General Computer-Use Agents",
+      "title_zh": "OpenGCUA：迈向开放的通用计算机操作智能体",
+      "date": "2026-10-17",
+      "published": "2026-10-15",
+      "summary": "围绕开放的计算机操作智能体技术栈，解读任务构建、训练与评测。",
+      "topics": [
+        "智能体",
+        "强化学习",
+        "计算机操作",
+        "多模态"
       ],
-      "evidence_note": "已读取 arXiv v1 完整 HTML；方法第 2–3 节、实验第 4–5 节表 1–3 和附录 A–G。浏览器实测 320/375/430/768/1280 CSS 像素及横屏，8 处 MathML 公式，滑块/重置与脚本异常检测通过。",
-      "read_time": "约 16 分钟"
+      "href": "papers/2610.22200/",
+      "heat_note": "Hugging Face 论文日榜历史观察约 315 次赞同；非实时数据。",
+      "added_at": "2026-10-17T14:39:50.843Z",
+      "arxiv_version": "v1",
+      "arxiv_url": "https://arxiv.org/abs/2610.22200",
+      "html_url": "https://arxiv.org/html/2610.22200v1",
+      "read_time": "约 18 分钟",
+      "evidence_note": "页面草稿曾进行多视口浏览器检查；此次普通对话主要验证 GitHub 写入，未重新完成线上部署和 HTTP 路径检查。"
     },
     {
       "arxiv_id": "2610.20584",
@@ -40,7 +70,7 @@
       "title_zh": "Player-1：从合成经验学习游戏控制",
       "date": "2026-10-17",
       "published": "2026-10-14",
-      "summary": "利用 6044 条游戏演示进行监督初始化，再通过 16 个合成环境中的强化学习改善游戏控制；论文报告 9B 模型在 300 项《我的世界》任务上的成功率为 38.33%。页面提供中文分层精读、数学公式、SVG 机制图及交互演示。",
+      "summary": "从游戏演示监督初始化，借助合成环境强化学习提升游戏控制能力。",
       "topics": [
         "强化学习",
         "智能体",
@@ -48,7 +78,7 @@
         "多模态"
       ],
       "href": "papers/2610.20584/",
-      "heat_note": "Hugging Face 2026-10-15 论文日榜第 2 位，2026-10-17 查询时观察到 333 次赞同；热度为观察快照，非学术质量证明。",
+      "heat_note": "Hugging Face 2026-10-15 日榜第 2，2026-10-17 观察到 333 次赞同。",
       "added_at": "2026-10-17T13:09:52.927Z",
       "arxiv_version": "v1",
       "arxiv_url": "https://arxiv.org/abs/2610.20584",
@@ -67,48 +97,36 @@
       "read_time": "约 18 分钟"
     },
     {
-      "arxiv_id": "2610.22200",
-      "title": "OpenGCUA: Towards Open-Source General Computer-Use Agents",
-      "title_zh": "OpenGCUA：迈向开放的通用计算机操作智能体",
+      "arxiv_id": "2610.21601",
+      "title": "Waypoint-OPD: Transferring RL-Induced Policy Shifts via Gated On-Policy Distillation",
+      "title_zh": "通过一致性门控的在线蒸馏传递强化学习诱导的策略变化",
       "date": "2026-10-17",
       "published": "2026-10-15",
-      "summary": "围绕通用计算机操作智能体的开放技术栈，解读任务构建、训练与评测。论文报告在 OSWorld-v2 的 82 项离线任务上，八款模型平均部分得分提升 19.6 分，平均交互步数减少 53.0%。页面包含中文分层讲解、数学公式、机制 SVG 与交互。",
+      "summary": "通过中途教师检查点的候选词元加权余弦一致性，门控终点策略变化以进行在线蒸馏。",
       "topics": [
-        "智能体",
+        "语言模型",
         "强化学习",
-        "计算机操作",
-        "多模态"
+        "知识蒸馏",
+        "优化"
       ],
-      "href": "papers/2610.22200/",
-      "heat_note": "Hugging Face 论文日榜此前检索显示约 315 次赞同；历史观察值，非实时热度。",
-      "added_at": "2026-10-17T14:39:50.843Z",
+      "href": "papers/2610.21601/",
+      "heat_note": "Paper Pulse 对 Hugging Face 2026-10-16 日榜的历史存档列为第 1；非实时数据。",
+      "added_at": "2026-10-17T11:31:41.632Z",
       "arxiv_version": "v1",
-      "arxiv_url": "https://arxiv.org/abs/2610.22200",
-      "html_url": "https://arxiv.org/html/2610.22200v1",
-      "read_time": "约 18 分钟",
-      "evidence_note": "页面草稿曾进行多视口浏览器检查；此次普通对话主要验证 GitHub 写入，未重新完成线上部署和 HTTP 路径检查。"
-    },
-    {
-      "arxiv_id": "2610.22276",
-      "title": "MJev-Spatial: System One Spatial Intelligence via Native Attention Matching",
-      "title_zh": "MJev-Spatial：通过原生注意力匹配实现快速空间智能",
-      "date": "2026-10-17",
-      "published": "2026-10-15",
-      "summary": "MJev-Spatial 复用视觉语言模型原生注意力查询与键投影，将空间问答改写为候选分类，数值与图像点采用粗到细决策而非逐词生成。作者报告 12 项空间基准宏平均得分 65.64%，单张 B200 批大小 1 时跨基准平均延迟 160.6 毫秒。页面提供中文分层精读、七组 MathML 原式、机制 SVG 与交互式空间区域细化演示。",
-      "topics": [
-        "空间智能",
-        "视觉语言模型",
-        "多模态",
-        "高效推理"
+      "arxiv_url": "https://arxiv.org/abs/2610.21601",
+      "html_url": "https://arxiv.org/html/2610.21601v1",
+      "code_url": "https://github.com/hhhbxloveai/WaypointOPD",
+      "heat_sources": [
+        {
+          "source": "Paper Pulse 对 Hugging Face Daily Papers 2026-10-16 的历史存档",
+          "url": "https://paperpulse.ifsp.dev/",
+          "value": 654,
+          "unit": "历史存档赞数",
+          "observed_at": "2026-10-17T11:31:41.632Z"
+        }
       ],
-      "href": "papers/2610.22276/",
-      "heat_note": "Hugging Face 2026-10-16 论文日榜此前检索排名第 3、约 350 次赞同；历史观察信号，非实时核验，也不代表实验独立复现。",
-      "added_at": "2026-10-17T17:25:32.411Z",
-      "arxiv_version": "v1",
-      "arxiv_url": "https://arxiv.org/abs/2610.22276",
-      "html_url": "https://arxiv.org/html/2610.22276v1",
-      "read_time": "约 20 分钟",
-      "evidence_note": "基于 arXiv v1 第 1–5 节与附录 A–H 的论文精读，原文表 2、表 11 对照；此前草稿记录多视口浏览器验收，本轮未重新完成线上部署核验。"
+      "evidence_note": "已读取 arXiv v1 完整 HTML；方法第 2–3 节、实验第 4–5 节表 1–3 和附录 A–G。浏览器实测 320/375/430/768/1280 CSS 像素及横屏，8 处 MathML 公式，滑块/重置与脚本异常检测通过。",
+      "read_time": "约 16 分钟"
     }
   ]
 }
