@@ -1,7 +1,27 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-18T01:30:00Z",
+  "updated_at": "2026-10-18T04:08:27Z",
   "papers": [
+    {
+      "arxiv_id": "2610.22174",
+      "arxiv_version": "v1",
+      "title": "Mosaic: Multi-Session Agentic Reinforcement Learning",
+      "title_zh": "让智能体学会跨会话思考：Mosaic 多会话强化学习",
+      "published": "2026-10-15",
+      "date": "2026-10-15",
+      "added_at": "2026-10-18T04:08:27Z",
+      "summary": "研究智能体上下文压缩与子智能体分叉造成的多会话轨迹训练问题，提出 Mosaic：用会话数量调节轨迹优势，并以答案对数似然变化衡量会话的边际贡献。在 BrowseComp 上，压缩场景准确率由广播基线的 35.31% 提升至 38.86%，平均会话数由 3.17 降至 2.35；结果为作者报告，尚非独立复现。",
+      "topics": [
+        "智能体",
+        "强化学习",
+        "多会话训练",
+        "上下文工程"
+      ],
+      "heat_note": "Hugging Face Trending Papers 于 2026-10-18 UTC 检索时显示 52 次赞同；该数字仅表示页面当时的关注信号，不代表学术结论。",
+      "read_time": "约 18 分钟",
+      "source": "https://arxiv.org/abs/2610.22174",
+      "href": "papers/2610.22174/"
+    },
     {
       "title": "Any Time, Any Space: A World-State-Centric Framework for Agentic Video Generation",
       "title_zh": "让视频记住空间与时间：ATAS 的双重世界记忆",
