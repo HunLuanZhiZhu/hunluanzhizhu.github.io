@@ -1,7 +1,27 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-18T04:08:27Z",
+  "updated_at": "2026-10-18T05:10:34Z",
   "papers": [
+    {
+      "arxiv_id": "2610.21439",
+      "arxiv_version": "v1",
+      "title": "Each Reward to Its Relevant Tokens: Reward-Specific Token-Level Credit Assignment for Multi-Reward RL",
+      "title_zh": "让每份奖励找到自己的词元：多奖励强化学习的精细归因",
+      "published": "2026-10-15",
+      "date": "2026-10-18",
+      "added_at": "2026-10-18T05:10:34Z",
+      "summary": "精读 MRTPO：用带有或移除单项验证信息的自回放预测分布差异，定位每项奖励相关词元，再按相关性重分配组标准化优势。覆盖原文公式、实验对照、消融与可操作的教学模拟。",
+      "topics": [
+        "强化学习",
+        "大语言模型",
+        "多奖励优化",
+        "词元级归因",
+        "可验证奖励"
+      ],
+      "heat_note": "Hugging Face Daily Papers 2026-10-16 榜单；2026-10-18 查询论文页显示 56 次赞同，随时间变化。",
+      "paper_url": "https://arxiv.org/abs/2610.21439",
+      "href": "papers/2610.21439/"
+    },
     {
       "arxiv_id": "2610.22174",
       "arxiv_version": "v1",
