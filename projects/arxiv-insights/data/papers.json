@@ -1,7 +1,47 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-18T05:10:34Z",
+  "updated_at": "2026-10-18T10:27:32Z",
   "papers": [
+    {
+      "arxiv_id": "2610.17953",
+      "arxiv_version": "v1",
+      "title": "Agent-Reflex: Teaching Language Agents to Act Reflectively",
+      "title_zh": "让语言智能体学会主动反思与纠错",
+      "published": "2026-10-13",
+      "date": "2026-10-13",
+      "summary": "通过故障环境中的成败轨迹对比提炼反思技能，再结合监督微调和在线策略蒸馏，让智能体在工具噪声与用户纠正下更可靠地恢复任务。",
+      "topics": [
+        "语言智能体",
+        "强化学习",
+        "工具使用",
+        "反思学习"
+      ],
+      "heat_note": "Hugging Face Papers 页面在 2026-10-18 查询时显示 208 次赞同及当日论文第 3 名；该信号是社区关注度，不是效果独立验证。",
+      "read_time": "约 18 分钟",
+      "method_note": "完整阅读 arXiv v1 HTML 正文、实验、附录和局限；所有实验结果均为论文作者报告。",
+      "added_at": "2026-10-18T10:27:32Z",
+      "href": "papers/2610.17953/"
+    },
+    {
+      "arxiv_id": "2610.18829",
+      "arxiv_version": "v1",
+      "title": "OmniCompass: A Holistic Benchmark for Omni-Modal Video Grounding and Understanding",
+      "title_zh": "OmniCompass：面向全模态视频定位与理解的综合评测基准",
+      "published": "2026-10-13",
+      "date": "2026-10-18",
+      "added_at": "2026-10-18T10:27:27Z",
+      "summary": "用同一视频目标的文字与图文双指代，联合检验视频时间定位、空间定位与问答的正确性及一致性；覆盖纯视觉与音视频两条评测轨道。",
+      "topics": [
+        "多模态大模型",
+        "视频理解",
+        "评测基准",
+        "时空定位",
+        "跨模态一致性"
+      ],
+      "heat_note": "Paper Pulse（Hugging Face 每日论文历史统计）记录该论文在 2026-10-16 日榜第 2、577 次赞同；2026-10-18 查询。该信号不等于学术验证。",
+      "read_time": 17,
+      "href": "papers/2610.18829/"
+    },
     {
       "arxiv_id": "2610.21439",
       "arxiv_version": "v1",
