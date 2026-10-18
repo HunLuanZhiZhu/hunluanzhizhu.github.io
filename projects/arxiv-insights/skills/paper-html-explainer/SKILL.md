@@ -118,11 +118,11 @@ description: 基于论文原文，面向机器学习和深度学习读者，生�
 
 ## 八、文件产出与登记（必须）
 
-文章保存到 projects/arxiv-insights/papers/%ARXIV_ID%/index.html；论文列表位于 projects/arxiv-insights/data/papers.json。页面链接须适用于 GitHub Pages 子路径，包含返回该子项目索引、原文及可核验代码链接。
+文章保存到 projects/arxiv-insights/papers/%ARXIV_ID%/index.html；论文列表由 GitHub Actions 从每篇 HTML 自动生成到 projects/arxiv-insights/data/papers.json，**生成者只新增 HTML，禁止直接修改共享 JSON**。HTML 的 `<head>` 必须有唯一 `<script type="application/json" id="paper-meta">`，内容为合法 JSON 对象，必填 `arxiv_id`、`title`、`title_zh`、`published`、`date`、`added_at`、`summary`、`topics`、`heat_note`；`added_at` 为首次收录 UTC ISO 8601 时间，后续不得变化。稳定 ID 必须与目录一致，热度不得虚构。页面链接须适用于 GitHub Pages 子路径，包含返回该子项目索引、原文及可核验代码链接。
 
 推荐页面布局：**中文论文标题+英文原题配对 → 问题导览 → 五分钟看懂 → 前置知识 → 技术拆解（公式/方法/实验）→ 交互式机制 → 结论与局限 → 原文与参考来源**。双入口可以用标签页、锚点或可展开章节组织，不能为了省空间隐去深度内容。
 
-完成全文核对与真实页面检查后，才把元数据写入 data/papers.json。遵守项目 README 的字段约定，使用剥离版本号的 arXiv ID 去重。修改前读取已有文件，保护用户修改。未经授权，不修改其他项目或主站，不启动定时任务，不自行发布。
+完成全文核对与真实页面检查后，校验 HTML 内 `paper-meta` 元数据；索引由 GitHub Actions 执行 `tools/build_paper_index.py` 自动生成，**AI 不直接写 data/papers.json**。遵守项目 README 的字段约定，使用剥离版本号的 arXiv ID 去重。修改前读取已有文件，保护用户修改。未经授权，不修改其他项目或主站，不启动定时任务，不自行发布。
 
 ## 九、发布前强制验收清单
 

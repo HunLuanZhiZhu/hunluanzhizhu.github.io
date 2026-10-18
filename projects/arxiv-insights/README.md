@@ -20,7 +20,7 @@
 
 这些是存储在仓库中的 **Agent Skill 指令文件**，不是由浏览器执行的脚本。ChatGPT 定时任务不会因为文件存在而自动安装或加载它们；若未来接入任务，需要在每次运行中明确读取总控及两份子 Skill 的 `SKILL.md`，并按权限调用论文检索及 GitHub 工具。此步骤尚未进行。
 
-总控只会在全部内容和浏览器验收通过、具备写入授权时，先新增单篇文章，再**最后**更新 `data/papers.json`；首页应以数据驱动，而非每小时重写 `index.html`。为首页「最新 24 篇」的稳定排序，每篇新增记录应写入 `added_at`（本站登记完成的 UTC 时间）；「历史」读取全部历史记录；「我的收藏」由浏览器本地存储管理，不写入 GitHub。这三个首页视图现已实现，首页通过 JavaScript 自动加载并定期刷新 `data/papers.json`，每小时内容任务无需修改首页代码。首页第一屏默认显示「最新 24 篇」，按 `added_at` 从新到旧取最多 24 篇（旧记录缺少该字段时回退到归档日期、发表日期），**不按小时数过滤**；「历史论文」与「我的收藏」使用同页标签切换；项目介绍已移至独立的 `about.html`。
+总控在验收通过、具备授权后，**每次只提交单篇 HTML，不直接修改 `data/papers.json`**；GitHub Actions 自动从文章 HTML 提取元数据生成索引；首页应以数据驱动，而非每小时重写 `index.html`。为首页「最新 24 篇」的稳定排序，每篇新增记录应写入 `added_at`（本站登记完成的 UTC 时间）；「历史」读取全部历史记录；「我的收藏」由浏览器本地存储管理，不写入 GitHub。这三个首页视图现已实现，首页通过 JavaScript 自动加载并定期刷新 `data/papers.json`，每小时内容任务无需修改首页代码。首页第一屏默认显示「最新 24 篇」，按 `added_at` 从新到旧取最多 24 篇（旧记录缺少该字段时回退到归档日期、发表日期），**不按小时数过滤**；「历史论文」与「我的收藏」使用同页标签切换；项目介绍已移至独立的 `about.html`。
 
 ## 本地收藏与 JSON 备份
 
@@ -31,6 +31,8 @@
 - 当前 `data/papers.json` 为空，尚不能对真实已发布论文进行收藏的端到端演示；浏览器本地备份功能已加入网站代码。
 
 ## 内容数据约定
+
+`data/papers.json` 是自动生成文件，不是 AI 的编辑入口。每篇文章的 `<head>` 必须包含唯一 `<script type="application/json" id="paper-meta">`，其中至少填写 `arxiv_id`、`title`、`title_zh`、`date`、`published`、`added_at`、`summary`、`topics`、`heat_note`。`added_at` 是首次收录的 UTC 时间，后续不得改变。工作流 `.github/workflows/arxiv-paper-index.yml` 在论文 HTML 变更时运行 `python projects/arxiv-insights/tools/build_paper_index.py` 并由机器人提交生成索引。需要 Actions 写入权限；GitHub Pages 部署仍须单独核验。
 
 `data/papers.json` 是单一对象：
 

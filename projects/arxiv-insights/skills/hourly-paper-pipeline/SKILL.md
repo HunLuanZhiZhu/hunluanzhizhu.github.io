@@ -1,6 +1,6 @@
 ---
 name: hourly-paper-pipeline
-description: 单次论文生产总控。由用户或未来的 ChatGPT 定时任务调用，串联热点论文发现与 HTML 讲解两个已有 Skill；每次最多新增一篇完整中文交互讲解，质量验收后按授权写入 GitHub 文章和 JSON 索引，不自行设定运行频率。
+description: 单次论文生产总控。由用户或未来的 ChatGPT 定时任务调用，串联热点论文发现与 HTML 讲解两个已有 Skill；每次最多新增一篇完整中文交互讲解，质量验收后仅发布文章 HTML，索引由 GitHub Actions 自动生成，不自行设定运行频率。
 ---
 
 # 单次论文总控：发现 → 精读 → 讲解 → 核验 → 登记
@@ -71,32 +71,22 @@ projects/arxiv-insights/papers/<稳定-arxiv-id>/index.html
 
 **如缺乏必要浏览器能力或数学公式无法实测，必须标记为“未验收/阻塞”，不能发布成已通过完整质量门槛的文章。** 用户或未来调度流程可另行授权补验，不能默认放宽标准。
 
-## 5. DevSpace 本地 Git 优先发布与 GitHub 回退：文章和索引一致性
+## 5. HTML 单文件发布与自动索引（强制）
 
-**优先工作区**：通过 DevSpace 打开 `D:\\aiworkspace\\hunluanzhizhu.github.io`（Windows 路径，实际大小写以工作区返回为准），在该仓库的 `projects/arxiv-insights/` 内制作、测试并发布。普通对话已验证可打开此工作区；**不得据此推断定时任务也能访问**。每次运行必须实际检查连接、工作区路径、`git status --short`、当前分支及 `origin`，并读取最新仓库指令与两份子 Skill。若 DevSpace 不可用，才考虑经授权的 GitHub 文件接口。
+**每轮 AI 只新增一篇 `papers/<稳定-id>/index.html`，不得修改 `data/papers.json`。** GitHub Actions 在 HTML 推送后执行 `projects/arxiv-insights/tools/build_paper_index.py`，扫描所有 HTML 的唯一 `<script type="application/json" id="paper-meta">`，自动生成 `data/papers.json`。首页仍读取自动生成的 JSON；AI 不再直接编辑共享索引。
 
-**DevSpace 与 GitHub 插件的区别（执行者必读）**：DevSpace 连接的是本机 Windows 仓库工作区，提供终端命令执行能力，**包括 `git fetch`、`git pull`、`git add`、`git commit`、`git push` 等 Git 命令**；不要把它误认为只能读取文件或只能运行检查命令，也不要因为看到工具用途描述就未经实际验证断言「DevSpace 不支持 Git 提交/推送」。GitHub 插件则是另一套远程 API，不等于本机 Git。用户要求「通过 DevSpace」时，**必须在 DevSpace 工作区执行本地 Git 流程**，不得擅自换成 GitHub 插件代替；若当前会话工具策略确实禁止某个动作，应明确区分「本次接口策略限制」与「DevSpace 产品能力」，报告阻塞并征询用户，不得暗中切换渠道。拉取远程更新使用 DevSpace 终端中的 `git fetch` / `git pull --ff-only`，先保护本地未提交修改；提交和推送也优先通过同一工作区的 Git 命令完成，并以实际输出为准。
+每篇 HTML 的 head 必须包含合法的 `paper-meta` JSON，至少含 `arxiv_id`（无版本后缀）、`title`、`title_zh`、`published`、`date`、`added_at`（首次收录 UTC 时间，后续保持不变）、`summary`、`topics`（非空数组）、`heat_note`（有出处的观察信号），建议附 `arxiv_version`、原文链接和其他证据字段。缺少真实元数据不得猜测。
 
-**本地 Git 路径（优先）**：只有调用者已明确授权提交/推送、所有论文及浏览器验收通过，并且工作区状态安全时，才执行：
+**DevSpace 是本机终端，支持 Git 全流程**（`fetch`、`pull`、`add`、`commit`、`push`）；GitHub 插件是远程 API，不能混淆。用户要求 DevSpace 时必须通过 DevSpace 本地 Git 操作；对话模式成功不代表定时模式有相同权限，每次实际检查。安全检查拒绝的写入不能换工具绕过。
 
-1. 先检查本地未提交修改及远程 `origin/main`。保留用户工作；存在可能冲突的脏工作区、未同步提交、分支不符或远程变化时停止并报告，绝不强制清理、重置、覆盖或强推。读取远程最新 `papers.json` 与目标论文路径，稳定 arXiv ID 去重；若发现上轮文章已在远程而索引缺失，优先恢复该篇，不再选第二篇。
-2. 先在本地生成 `papers/<稳定-arxiv-id>/index.html` 并完成全文、公式、SVG、交互和多视口验收；**验收未通过不得提交或推送**。
-3. 在同一工作区增量更新 `data/papers.json`，完整保留历史记录，`schema_version=1`，无重复 ID；字段遵守 README：`arxiv_id`、`title`、`title_zh`、`date`、`published`、`summary`、`topics`、`href`、`heat_note`，并记录准确 UTC `added_at` 和顶层 `updated_at`。本站首页显示按 `added_at` 倒序的最近收录 24 篇，**不是过去 24 小时**。
-4. 推送前再次核验远程 `main` 未变化，检查 `git diff --check`、差异范围、JSON 解析与链接；只暂存本篇 HTML 与索引，**优先在一个 Git 提交中包含两文件**，避免半成品索引。远程前进或冲突时重新核对，不强推。
-5. 按实际可用且获授权的 DevSpace/Git 能力推送 `origin/main`；推送后通过 GitHub 重新读取文章及索引，核对 SHA、ID 和元数据。**本地提交不等于远程发布，远程提交不等于线上 Pages 部署**；线上链接仅在实际访问验证后标为已核实。
-6. 如本地工具不支持 Git 提交或推送、需要额外审批、或安全检查拒绝，保留草稿/本地变更并报告具体阻塞。**安全检查明确拒绝的同一写入动作不得改用另一接口规避拒绝**；正常的备选渠道必须有独立明确授权且不违反当前执行环境限制。
+1. 读取 AGENTS、README、总控和子 Skill；检查 `git status -sb`、分支、远程 `origin/main`、已存在 HTML 和索引。已存在 HTML 但索引缺失时，先排查元数据和 Actions 构建，不重复发表同一论文。
+2. 选题、精读、生成一篇带元数据的 HTML，并完成第 4 节全部浏览器和学术验收。校验稳定 ID、时间和元数据与正文一致。
+3. 运行索引生成器可用于本地校验；**生成的 JSON 不能暂存或作为本轮 AI 提交的一部分**。新增 HTML 尚未被 Actions 处理时，`--check` 报索引过期属于预期现象。保护工作区原有修改。
+4. 检查 `git diff --check` 和远程并发；仅暂存本轮 HTML 及其必要专属资源，经授权通过 DevSpace `git commit`、`git push origin main`。禁止重置、覆盖和强推。
+5. 推送后验证 GitHub Actions **Build arXiv paper index** 的运行结果、远程 `papers.json` 是否包含该 ID、首页是否可读；分别报告 HTML 提交 SHA 和自动索引提交 SHA。**HTML 已推送不等于登记成功；登记成功不等于 Pages 已部署。**
+6. DevSpace 不可用时，仅在独立授权且当前环境允许的情况下通过 GitHub 插件发布 HTML；不得恢复为 AI 直接写 JSON，也不得借此绕过任何明确安全拒绝。
 
-**GitHub 文件接口备选路径（仅在允许时）**：
-
-1. 写入前重新读取 main 上的 papers.json 和目标论文路径；再次确认 ID 未登记、目标页面没有旧内容，保留既有文件。
-2. **先创建本篇论文 HTML**（以及确有必要的站内静态资源），只创建一篇。对 GitHub 连接的授权和审批按实际结果处理。
-3. **最后更新 papers.json**，确保旧记录全部保留，schema_version 仍为 1，且无重复稳定 ID。新增条目使用仓库 README 的字段：arxiv_id、title、title_zh、date、published、summary、topics、href、heat_note；href = papers/<id>/。date 为本站归档日，published 为论文原始首发日。
-4. 为首页准确展示**最新收录的 24 篇完整讲解**，每篇新文章都必须补充 **added_at（本站登记完成的 ISO 8601 UTC 时间）**，用于按收录时间倒序取前 24 篇；可额外记录论文版本、热度来源、核验时间。更新 JSON 顶层 updated_at 为真实写入时间。**不要把 published（原始发表时间）当成 added_at（本站收录时间），也不要按过去 24 小时过滤。**
-5. 采用 GitHub 文件版本 SHA 的乐观并发检查；更新 JSON 前**再次读取**最新版本并核对去重，遇到冲突要重新检查，绝不能强行覆盖其他人更新。
-6. **论文索引是面向首页的发布登记点**。如果 HTML 已写、JSON 失败，则记录“未完成、需恢复”；不要假称新增成功。下一次先核查并恢复这一篇，符合质量条件再登记，不再另发第二篇。
-7. GitHub 文件接口可能为两文件创建两个提交，**不得虚称原子事务**；GitHub 提交成功也不代表线上 GitHub Pages 已部署，除非确实验证了公开访问页面。
-
-本次运行**不应该每小时修改根站或子项目 index.html**。首页应长期从 data/papers.json 读取最新数据；新增内容通过 JSON 自然出现，不靠大模型反复改首页模板。
+首页继续按 `added_at` 展示最近收录 24 篇、历史论文和浏览器本地收藏。每小时任务不修改首页、共享 JSON、localStorage 或其他定时任务。
 
 ## 6. 与网站「最新、历史、收藏」功能的关系
 
