@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>让智能体学会跨会话思考：Mosaic 多会话强化学习｜arXiv 洞察</title>
+<meta name="description" content="精读 Mosaic：多会话智能体强化学习中的轨迹级会话感知优势、会话级边际信息增益与类型归一化，附交互实验及原文证据。">
+<script type="application/json" id="paper-meta">{"arxiv_id":"2610.22174","arxiv_version":"v1","title":"Mosaic: Multi-Session Agentic Reinforcement Learning","title_zh":"让智能体学会跨会话思考：Mosaic 多会话强化学习","published":"2026-10-15","date":"2026-10-15","added_at":"2026-10-18T04:08:27Z","summary":"研究智能体上下文压缩与子智能体分叉造成的多会话轨迹训练问题，提出 Mosaic：用会话数量调节轨迹优势，并以答案对数似然变化衡量会话的边际贡献。在 BrowseComp 上，压缩场景准确率由广播基线的 35.31% 提升至 38.86%，平均会话数由 3.17 降至 2.35；结果为作者报告，尚非独立复现。","topics":["智能体","强化学习","多会话训练","上下文工程"],"heat_note":"Hugging Face Trending Papers 于 2026-10-18 UTC 检索时显示 52 次赞同；该数字仅表示页面当时的关注信号，不代表学术结论。","read_time":"约 18 分钟","source":"https://arxiv.org/abs/2610.22174"}</script>
+<style>
+:root{--bg:#f5f7fb;--paper:#fff;--ink:#19283a;--muted:#546477;--line:#d9e1ec;--accent:#2459b3;--soft:#e9f1ff;--good:#0c7962;--bad:#ad4c3e;--shadow:0 9px 28px #14263d0a;font-family:system-ui,-apple-system,"Microsoft YaHei","PingFang SC",sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);line-height:1.83;font-size:16px}
+a{color:var(--accent);text-underline-offset:3px}a:hover{text-decoration-thickness:2px}a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #d38a27;outline-offset:3px}
+.container{width:min(1120px,calc(100% - 32px));margin:auto}.top{border-bottom:1px solid var(--line);background:var(--paper)}.top .container{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;padding:10px 0}.brand{font-weight:800;text-decoration:none}.tag{font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.hero{padding:62px 0 38px}.eyebrow{color:var(--accent);font-weight:700;letter-spacing:.12em;font-size:.82rem}.hero h1{font-size:clamp(2rem,5vw,3.45rem);line-height:1.23;letter-spacing:-.035em;max-width:900px;margin:12px 0}.subtitle{font-size:1rem;color:var(--muted);line-height:1.6;overflow-wrap:anywhere}.intro{font-size:1.12rem;max-width:860px}.meta{display:flex;flex-wrap:wrap;gap:9px;margin:20px 0}.meta span{border:1px solid var(--line);background:var(--paper);padding:4px 11px;border-radius:999px;font-size:.86rem}.jump{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.jump a{display:inline-block;padding:10px 17px;border-radius:10px;background:var(--accent);color:white;text-decoration:none;font-weight:700}.jump a+ a{background:var(--paper);border:1px solid var(--line);color:var(--ink)}
+main{display:grid;grid-template-columns:minmax(0,1fr) 242px;gap:26px;align-items:start;padding-bottom:70px}.content{min-width:0}.section{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3.2vw,34px);margin-bottom:22px;box-shadow:var(--shadow)}h2{font-size:1.56rem;line-height:1.4;margin:0 0 16px}h3{font-size:1.17rem;margin:24px 0 10px;line-height:1.5}p{margin:11px 0 15px}ul,ol{padding-left:1.45em}li{margin:6px 0}.side{position:sticky;top:16px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;font-size:.9rem}.side a{display:block;padding:6px 0}.side strong{display:block;margin-bottom:9px}.kicker{color:var(--accent);font-size:.8rem;font-weight:800;letter-spacing:.09em}.notice{border-left:4px solid var(--accent);padding:11px 15px;background:var(--soft);border-radius:0 10px 10px 0}.warn{border-left-color:#b97727}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:19px 0}.metric{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg)}.metric strong{display:block;font-size:1.5rem;line-height:1.3;font-variant-numeric:tabular-nums}.metric span{display:block;font-size:.82rem;color:var(--muted);margin-top:7px}.diagram{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:8px}.diagram svg{display:block;width:100%;min-width:480px;height:auto}.caption{font-size:.83rem;color:var(--muted);line-height:1.65}.formula{margin:14px 0;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow-x:auto;max-width:100%}.formula math{font-size:1.18rem;min-width:max-content}.eqnum{font-size:.78rem;color:var(--muted);margin:5px 0 0}.symbols{padding:10px 14px;border-radius:10px;background:var(--soft);font-size:.93rem}.symbols strong{color:var(--accent)}details{border:1px solid var(--line);border-radius:11px;padding:10px 14px;margin:12px 0;background:var(--paper)}summary{cursor:pointer;font-weight:700}code{overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.85rem}.demo{background:var(--bg);border:1px solid var(--line);border-radius:15px;padding:20px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:end}.field label{display:block;font-weight:700;margin-bottom:7px}.field select,.field input[type=range]{width:100%}.field select{border:1px solid var(--line);border-radius:9px;padding:10px;background:var(--paper);color:var(--ink);font:inherit;min-height:44px}.field input[type=range]{min-height:44px;accent-color:var(--accent)}.output{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:18px 0}.big{font-size:2rem;font-weight:800;font-variant-numeric:tabular-nums}.barbox{height:26px;background:var(--line);border-radius:8px;overflow:hidden;flex:1;min-width:160px}.bar{height:100%;width:50%;background:var(--good);transition:width .15s}.btn{border:1px solid var(--line);border-radius:9px;padding:10px 18px;min-height:44px;background:var(--paper);color:var(--ink);font:inherit;cursor:pointer}.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:600px;font-size:.91rem}th,td{padding:11px 13px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{background:var(--soft)}tr:last-child td{border-bottom:0}.highlight-row{background:var(--soft);font-weight:700}.small{font-size:.87rem;color:var(--muted)}footer{padding:20px 0 40px;color:var(--muted);font-size:.87rem}svg text{font-family:system-ui,"Microsoft YaHei",sans-serif}svg .node{fill:var(--paper);stroke:var(--accent);stroke-width:1.5}svg .node2{fill:var(--soft);stroke:var(--accent);stroke-width:1.5}svg .t{fill:var(--ink);font-size:17px;font-weight:650}svg .sm{fill:var(--muted);font-size:12px}svg .arr{stroke:var(--accent);stroke-width:2.5;fill:none}
+@media(max-width:880px){main{grid-template-columns:1fr}.side{position:static;order:-1}.side nav{display:flex;gap:10px;flex-wrap:wrap}.side a{display:inline-block}.hero{padding-top:36px}}@media(max-width:540px){.container{width:min(100% - 24px,1120px)}.hero h1{font-size:2rem}.section{border-radius:12px}.metrics{grid-template-columns:1fr}.controls{grid-template-columns:1fr}.intro{font-size:1rem}.formula math{font-size:1.08rem}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar{transition:none}}
+@media(prefers-color-scheme:dark){:root{--bg:#101923;--paper:#192635;--ink:#eaf1fb;--muted:#b0bed0;--line:#33465b;--accent:#9ec5ff;--soft:#253a56;--good:#50c5a6;--bad:#ff9b8c;--shadow:none}.jump a{background:#3667ac;color:#fff}.jump a+a{background:var(--paper);color:var(--ink)}}
+</style>
+</head>
+<body>
+<header class="top"><div class="container"><a class="brand" href="../../index.html">← arXiv 洞察</a><span class="tag">原文精读 · 多会话智能体强化学习</span></div></header>
+<div class="container hero">
+<div class="eyebrow">研究论文 / 2026 年 10 月 15 日</div>
+<h1>让智能体学会跨会话思考：Mosaic 多会话强化学习</h1>
+<p class="subtitle">英文原题：Mosaic: Multi-Session Agentic Reinforcement Learning</p>
+<p class="intro">一个智能体为了完成困难的网页搜索任务，可能压缩上下文、重新开始一段对话，或者派出子智能体。传统强化学习却把这些片段视作同一条连续轨迹，给每一段完全相同的反馈。Mosaic 试图回答：<strong>哪些会话真的帮到了最终答案，训练时该怎样奖励它们？</strong></p>
+<div class="meta"><span>arXiv 2610.22174v1</span><span>徐一龙等六位作者</span><span>领域：智能体与强化学习</span><span>阅读约 18 分钟</span></div>
+<div class="jump"><a href="#quick">五分钟看懂</a><a href="#technical">技术拆解</a><a href="#lab">动手实验</a></div>
+</div>
+<main class="container"><article class="content">
+<section class="section" id="quick"><div class="kicker">01 / 五分钟看懂</div><h2>一项任务，为什么会分成很多段会话？</h2>
+<p>假设智能体需要在几十个网页中寻找一条隐蔽的事实。它先搜索、阅读，再发现上下文窗口快满了，于是把历史压缩成摘要，继续搜索。或者它派出一个子智能体去查某个细节，等对方返回结果后再整合。这些都是<strong>同一任务的不同会话</strong>，而不是多个互不相干的任务。</p>
+<p>传统的组相对策略优化（Group Relative Policy Optimization，GRPO）会比较同一道题的多条完整执行轨迹，再给每条轨迹一个优势值（Advantage），表示它相对同组平均水平有多好。最直接的多会话方案叫<strong>广播</strong>：把这个优势值原封不动地发给所有会话、所有训练词元。它忽略了有些会话帮忙、有些会话拖后腿的差别。<a href="https://arxiv.org/abs/2610.22174" target="_blank" rel="noopener noreferrer">原文第 2 节</a>。</p>
+<div class="notice"><strong>核心变化：</strong>Mosaic 同时计算两层信号。全局层考虑“任务是否成功，以及使用了多少会话”；局部层衡量“某个会话前后，模型生成正确答案的能力有没有提高”。两层相加，再用于训练。</div>
+<div class="metrics"><div class="metric"><strong>38.86%</strong><span>上下文压缩场景的题目准确率</span></div><div class="metric"><strong>35.31%</strong><span>同场景广播基线准确率</span></div><div class="metric"><strong>2.35</strong><span>Mosaic 平均会话数；广播为 3.17</span></div></div>
+<p class="small">以上均为论文表 1 的作者报告，评测为 BrowseComp、基础模型为 Qwen3.5-4B。38.86% − 35.31% = 3.55 个百分点，约为相对提升 10.1%；不能将相对百分比误写为百分点。未作独立复现。</p>
+<h3>论文特有机制图</h3>
+<div class="diagram"><svg viewBox="0 0 850 345" role="img" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">Mosaic 多会话双层优化机制</title><desc id="diagram-desc">任务生成多个会话，包括正常执行、上下文压缩和子智能体分叉。会话数量进入轨迹级优势校准，各会话前后答案似然变化进入会话级优势塑形，两层合成训练信号。</desc><defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6" fill="none" stroke="currentColor" stroke-width="1.4"/></marker></defs>
+<rect class="node" x="18" y="115" width="128" height="92" rx="13"/><text class="t" x="82" y="150" text-anchor="middle">待解决任务</text><text class="sm" x="82" y="174" text-anchor="middle">搜索 / 浏览</text>
+<path class="arr" d="M146 161 H186" marker-end="url(#arrow)"/>
+<rect class="node2" x="190" y="20" width="178" height="72" rx="12"/><text class="t" x="279" y="49" text-anchor="middle">会话一</text><text class="sm" x="279" y="70" text-anchor="middle">正常执行</text>
+<rect class="node2" x="190" y="119" width="178" height="72" rx="12"/><text class="t" x="279" y="147" text-anchor="middle">会话二</text><text class="sm" x="279" y="169" text-anchor="middle">上下文压缩</text>
+<rect class="node2" x="190" y="218" width="178" height="72" rx="12"/><text class="t" x="279" y="247" text-anchor="middle">会话三</text><text class="sm" x="279" y="269" text-anchor="middle">子智能体分叉</text>
+<path class="arr" d="M170 161 V56 H190 M170 161 H190 M170 161 V254 H190"/>
+<path class="arr" d="M368 56 H418 V96 H460 M368 155 H418 V96 M368 254 H418 V96" marker-end="url(#arrow)"/>
+<rect class="node" x="464" y="43" width="174" height="105" rx="12"/><text class="t" x="551" y="74" text-anchor="middle">轨迹级校准</text><text class="sm" x="551" y="97" text-anchor="middle">结果 × 会话数量</text><text class="sm" x="551" y="119" text-anchor="middle">全局优势信号</text>
+<path class="arr" d="M368 254 H460" marker-end="url(#arrow)"/>
+<rect class="node" x="464" y="205" width="174" height="105" rx="12"/><text class="t" x="551" y="235" text-anchor="middle">会话级塑形</text><text class="sm" x="551" y="259" text-anchor="middle">前后答案似然差</text><text class="sm" x="551" y="280" text-anchor="middle">按会话类型归一化</text>
+<path class="arr" d="M638 96 H675 V162 H705 M638 258 H675 V162" marker-end="url(#arrow)"/>
+<rect class="node2" x="710" y="120" width="126" height="84" rx="12"/><text class="t" x="773" y="151" text-anchor="middle">合成优势</text><text class="sm" x="773" y="173" text-anchor="middle">更新策略</text>
+<text class="sm" x="426" y="332" text-anchor="middle">概念结构重绘；非论文原图、非测量曲线</text></svg></div>
+<p class="caption">根据原文图 1、图 2 与第 3 节重绘。分叉会话并非总是严格线性排列；图中的三种会话用于说明信号如何汇合。</p>
+<h3>一分钟记住三个结论</h3>
+<ol><li>多会话执行不是普通“多轮对话”：上下文可能被压缩、重写或分叉，训练时必须知道这些边界。</li><li>成功后尽量少浪费会话，失败时不能简单惩罚探索；因此会话数量的作用要依赖任务结果。</li><li>不能只数会话：局部信息增益让训练信号更细致，但它也不是对因果贡献的严格证明。</li></ol>
+</section>
+<section class="section" id="prereq"><div class="kicker">02 / 先修知识</div><h2>从强化学习到“会话”</h2>
+<details open><summary>什么是策略、轨迹、奖励和优势？</summary><p><strong>策略（Policy）</strong>是模型根据已有上下文选择下一步行动的概率分布；<strong>轨迹（Trajectory）</strong>是一次任务中按时间发生的行动与观察；<strong>奖励（Reward）</strong>是执行结束后的评分；<strong>优势</strong>比较一条轨迹相对于基线是否更值得鼓励。组相对策略优化不训练独立的价值评估器，而是在同题多条轨迹间比较奖励。对应原文第 2.1 节。</p></details>
+<details><summary>为什么压缩上下文等于新会话？</summary><p>模型继续行动所见的前缀已经被摘要替换，不再是原始历史的连续延长。新会话接收压缩后的状态；若子智能体分叉，还会出现多条并行或分支上下文。对应原文第 2.2 节及图 1。</p></details>
+<details><summary>什么是对数似然与边际信息增益？</summary><p>对数似然（Log-Likelihood）衡量模型给定当前上下文后，对正确答案每个词元赋予的概率。某会话执行前后，正确答案平均对数概率的差值，构成本文的<strong>边际信息增益</strong>代理量。它可以为负；它衡量“正确答案变得多容易生成”，不等于证明该会话导致任务成功。</p></details>
+</section>
+<section class="section" id="technical"><div class="kicker">03 / 技术拆解</div><h2>从广播到双层优势估计</h2>
+<h3>第一步：标准组相对优势</h3>
+<p>同一道任务采样多条轨迹，先以组内奖励均值和标准差标准化。原文公式 (3)：</p>
+<div class="formula"><math display="block" aria-label="轨迹优势等于轨迹奖励减组平均奖励，再除以组标准差加稳定项"><semantics><mrow><msubsup><mi>A</mi><mi>i</mi><mtext>traj</mtext></msubsup><mo>=</mo><mfrac><mrow><msub><mi>R</mi><mi>i</mi></msub><mo>−</mo><msub><mi>μ</mi><mi>G</mi></msub></mrow><mrow><msub><mi>σ</mi><mi>G</mi></msub><mo>+</mo><mi>ε</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\hat A_i^{\mathrm{traj}}=(R_i-\mu_G)/(\sigma_G+\epsilon)</annotation></semantics></math><div class="eqnum">原文公式 (3) · 轨迹级优势</div></div>
+<div class="symbols"><strong>符号全解：</strong>A 带帽表示估计的优势；下标 i 是同一任务的第 i 条轨迹；上标 traj 表示轨迹级；Rᵢ 是该轨迹的最终奖励；μ_G、σ_G 分别为组 G 中轨迹奖励的算术均值和标准差；ε 是防止除零的正稳定常数；减号表示相对均值的偏离。优势为正时鼓励该轨迹，为负时抑制。若同组奖励全部相同，原式得到零优势。</div>
+<h3>第二步：让会话数量成为有界的调节信号</h3>
+<p>原文公式 (10)–(13) 的关键思想是：在<strong>同样成功或同样失败</strong>的子组内，按会话数量排序得到居中名次 u，再用调节强度 ρ 控制优势幅度。混合成功与失败的任务组中：</p>
+<div class="formula"><math display="block" aria-label="会话感知优势等于一减调节强度乘居中名次，再乘轨迹优势"><semantics><mrow><msubsup><mi>A</mi><mi>i</mi><mtext>sat</mtext></msubsup><mo>=</mo><mo>(</mo><mn>1</mn><mo>−</mo><mi>ρ</mi><msub><mi>u</mi><mi>i</mi></msub><mo>)</mo><msubsup><mi>A</mi><mi>i</mi><mtext>traj</mtext></msubsup></mrow><annotation encoding="application/x-tex">\hat A_i^{\mathrm{sat}}=(1-\rho u_i)\hat A_i^{\mathrm{traj}}</annotation></semantics></math><div class="eqnum">原文公式 (10)、(13) 联立 · 适用于混合结果组</div></div>
+<div class="symbols"><strong>符号全解：</strong>Âᵢˢᵃᵗ 是第 i 条轨迹的会话感知优势；Âᵢᵗʳᵃʲ 是上式原始轨迹优势；ρ 是强度系数，满足 0 ≤ ρ &lt; 1，论文训练设为 0.2；uᵢ 是轨迹 i 在相同结果子组内的居中会话数量名次，范围 [−1,1]，会话越多 u 越大；1 是不调节时的基准倍数。因为 1−ρu 始终为正，成功/失败的优势符号不会被颠倒。</div>
+<p>原文公式 (12) 将升序名次映射到 [−1,1]；当同结果子组仅一条轨迹或会话数无方差时，作者令 u=0。若整组全部成功或全部失败，原文公式 (14) 采用不同的回退策略：全成功组用 −β₁u，全失败组用 β₀ min(u,0)，其中 β₁、β₀ 为非负强度系数。这样全失败组不会产生正优势。<a href="https://arxiv.org/abs/2610.22174" target="_blank" rel="noopener noreferrer">核对第 3.1 节及公式 (12)–(14)</a>。</p>
+<h3>第三步：用正确答案的可预测性衡量会话的边际贡献</h3>
+<p>作者用策略更新前的模型，计算给定状态时正确答案的平均对数概率。原文公式 (15)：</p>
+<div class="formula"><math display="block" aria-label="答案似然势函数为所有正确答案词元的平均对数条件概率"><semantics><mrow><msub><mi>Φ</mi><mover><mi>θ</mi><mo>¯</mo></mover></msub><mo>(</mo><msubsup><mi>y</mi><mi>i</mi><mo>*</mo></msubsup><mo>∣</mo><msub><mi>x</mi><mi>i</mi></msub><mo>,</mo><mi>v</mi><mo>)</mo><mo>=</mo><mfrac><mn>1</mn><msub><mi>L</mi><mi>i</mi></msub></mfrac><munderover><mo>∑</mo><mrow><mi>ℓ</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>L</mi><mi>i</mi></msub></munderover><mi>log</mi><msub><mi>π</mi><mover><mi>θ</mi><mo>¯</mo></mover></msub><mo>(</mo><msubsup><mi>y</mi><mrow><mi>i</mi><mo>,</mo><mi>ℓ</mi></mrow><mo>*</mo></msubsup><mo>∣</mo><msub><mi>x</mi><mi>i</mi></msub><mo>,</mo><mi>v</mi><mo>,</mo><msubsup><mi>y</mi><mrow><mi>i</mi><mo>,</mo><mo>&lt;</mo><mi>ℓ</mi></mrow><mo>*</mo></msubsup><mo>)</mo></mrow><annotation encoding="application/x-tex">\Phi_{\bar\theta}(y_i^*\mid x_i,v)=\frac1{L_i}\sum_{\ell=1}^{L_i}\log\pi_{\bar\theta}(y^*_{i,\ell}\mid x_i,v,y^*_{i,<\ell})</annotation></semantics></math><div class="eqnum">原文公式 (15) · 正确答案对数似然势函数</div></div>
+<div class="symbols"><strong>符号全解：</strong>Φ 是势函数；θ 上横线表示本步更新前固定的策略参数；π 是策略给定上下文后生成下一词元的条件概率；i 是任务/轨迹编号；xᵢ 是任务问题；v 是某会话边界的可见状态；yᵢ* 是标准正确答案序列，星号表示真值；Lᵢ 是该答案的词元数；ℓ 从 1 累加到 Lᵢ；y*ᵢ,ℓ 是第 ℓ 个正确词元；y*ᵢ,&lt;ℓ 是此前所有正确词元；竖线表示“在……条件下”；log 是自然对数；Σ 是求和；1/Lᵢ 表示取每词元平均。数值越大（越接近 0），说明正确答案在该状态下越容易被模型生成。</div>
+<p>比较同一会话开始与结束的势函数，得到原文公式 (16)：</p>
+<div class="formula"><math display="block" aria-label="会话边际奖励等于结束状态势函数减开始状态势函数，并停止梯度传播"><semantics><mrow><msubsup><mi>r</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow><mi>Δ</mi></msubsup><mo>=</mo><mi mathvariant="normal">stopgrad</mi><mo>[</mo><mi>Φ</mi><mo>(</mo><msub><mi>v</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>)</mo><mo>−</mo><mi>Φ</mi><mo>(</mo><msub><mi>v</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>)</mo><mo>]</mo></mrow><annotation encoding="application/x-tex">r^\Delta_{i,j}=\mathrm{stopgrad}[\Phi(v_{i,j})-\Phi(v_{i,j-1})]</annotation></semantics></math><div class="eqnum">原文公式 (16) · 为排版简洁省略 Φ 的固定条件，完整条件见上一式</div></div>
+<div class="symbols"><strong>符号全解：</strong>rᵢ,ⱼΔ 是轨迹 i 中第 j 个会话的边际奖励；Δ 表示“变化量”；vᵢ,ⱼ₋₁、vᵢ,ⱼ 是该会话开始和结束的状态；Φ 沿用上一式，条件均为同一任务 xᵢ、正确答案 yᵢ* 与固定策略参数；stopgrad 表示把括号内结果当作常数训练信号，不让梯度反传进入该奖励计算。若开始时平均对数似然为 −1.2，结束时为 −0.7，则奖励为 +0.5；这是教学算例，不是论文测量。</div>
+<h3>第四步：按会话类型归一化，再与全局信号合成</h3>
+<p>压缩会话与普通搜索会话的增益分布可能不同。原文公式 (17) 对相同类型的会话单独标准化；最后一段会话不塑形，以免正确最终答案造成虚高。原文公式 (18) 合成优势：</p>
+<div class="formula"><math display="block" aria-label="会话优势等于轨迹优势加上系数乘标准化会话边际奖励"><semantics><mrow><msubsup><mi>A</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow><mtext>session</mtext></msubsup><mo>=</mo><msubsup><mi>A</mi><mi>i</mi><mtext>traj</mtext></msubsup><mo>+</mo><msub><mi>λ</mi><mi>r</mi></msub><msub><mover><mi>r</mi><mo>^</mo></mover><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\hat A_{i,j}^{\mathrm{session}}=\hat A_i^{\mathrm{traj}}+\lambda_r\hat r_{i,j}</annotation></semantics></math><div class="eqnum">原文公式 (18) · 轨迹优势可用上文的会话感知优势替换</div></div>
+<div class="symbols"><strong>符号全解：</strong>Âᵢ,ⱼˢᵉˢˢⁱᵒⁿ 是第 i 条轨迹、第 j 个会话的训练优势；Âᵢᵗʳᵃʲ 是全局轨迹优势（实际可取 Âᵢˢᵃᵗ）；λᵣ 是局部奖励塑形强度，论文设置为 0.1；r̂ᵢ,ⱼ 是按会话类型归一化的边际奖励，帽号表示标准化后的估计量；i、j 分别是轨迹和会话索引。原文公式 (17) 用相同会话类型的均值 μ 与标准差 σ 加稳定常数 ε 做标准化；末会话的 r̂ 设为 0。</div>
+<div class="notice warn"><strong>精度提醒：</strong>原文公式 (18) 在记号上写作轨迹优势，随后说明可替换成会话感知优势；上面的 MathML 保留原式形式。公式 (16) 的 Φ 省略固定条件仅为排版，绝非另定义新奖励。分叉结构的即时信息增益可能无法准确表示最终因果贡献，作者也在第 4.3 节讨论了这一点。</div><h3>附录补充：两道安全门与真实会话边界</h3><p>原文附录 B.2 的公式 (32)、(33) 还为局部塑形加入两道门控：若整个任务组都失败、且某会话的全局优势近似为零，就将其正向局部修正截为零；若局部修正与非零全局优势方向相反、幅度又大到足以翻转符号，则直接丢弃该修正。前者防止失败组被错误鼓励，后者保证局部信号不能推翻全局结果。这些门控作用在按类型标准化之后，不是额外训练一个价值模型。</p><p>附录 B.1 说明边际信息增益通过在会话前后两个边界追加<strong>同一标准答案</strong>、仅对答案词元做教师强制评分来计算。附录 C 规定压缩场景中摘要由策略自己生成并作为可训练会话，子智能体场景采用同步分叉—汇合、子智能体不可递归分叉；附录 D 列出训练与评测超参数。这些实现细节决定了论文结论的适用边界。</p>
+</section>
+<section class="section" id="lab"><div class="kicker">04 / 交互实验</div><h2>为什么“会话越多”不总是越坏？</h2>
+<p>下面用原文公式 (10)、(13) 的<strong>混合结果组</strong>情形演示。假设原始轨迹优势是成功 +1、失败 −1；改变同结果子组内的居中会话名次 u 和成功状态，观察会话感知优势。调节强度固定为论文使用的 ρ=0.2。</p>
+<div class="demo"><div class="controls"><div class="field"><label for="outcome">任务最终结果</label><select id="outcome"><option value="1">成功（原始优势 +1）</option><option value="-1">失败（原始优势 −1）</option></select></div><div class="field"><label for="rank">会话数量的相对名次：<output id="rank-label" for="rank">0.00</output></label><input id="rank" type="range" min="-1" max="1" step="0.1" value="0"><div class="small">−1：同结果组中较少会话；+1：较多会话</div></div></div><div class="output"><div><div class="small">会话感知优势</div><div class="big" id="adv" aria-live="polite">+1.00</div></div><div class="barbox" aria-hidden="true"><div class="bar" id="advbar"></div></div></div><p id="explain" aria-live="polite">相对名次居中，优势保持原值。</p><button class="btn" type="button" id="reset">恢复初始值</button><p class="caption">教学模拟：使用论文真实数学关系，但 +1/−1 的原始优势与滑块名次是人为设定的示例，不是训练记录、真实会话数或论文实测曲线。全成功/全失败组应使用公式 (14) 的回退分支，不适用本演示。</p></div>
+</section>
+<section class="section" id="evidence"><div class="kicker">05 / 实验证据</div><h2>提升发生在什么设置下？</h2>
+<p>作者在需要长期网页检索的 BrowseComp 基准上评测，基准含 1,266 道问题。以 Qwen3.5-4B 为基础模型；训练使用 REDSearcher_RL_1k 的 1,000 道任务，组大小 8、批大小 16，训练一轮。表 1 的关键对比如下。<a href="https://arxiv.org/abs/2610.22174" target="_blank" rel="noopener noreferrer">原文第 4.1 节及表 1</a>。</p>
+<div class="table-scroll"><table><thead><tr><th>训练方法</th><th>压缩场景准确率</th><th>压缩平均会话数</th><th>子智能体场景准确率</th><th>子智能体平均会话数</th></tr></thead><tbody><tr><td>基础模型</td><td>24.80%</td><td>1.70</td><td>21.64%</td><td>2.98</td></tr><tr><td>单会话 GRPO</td><td>34.68%</td><td>1.24</td><td>31.91%</td><td>2.09</td></tr><tr><td>多会话广播</td><td>35.31%</td><td>3.17</td><td>31.44%</td><td>4.43</td></tr><tr class="highlight-row"><td>Mosaic</td><td>38.86%</td><td>2.35</td><td>32.46%</td><td>3.77</td></tr></tbody></table></div>
+<p class="caption">单位：准确率为百分比，平均会话数为每条轨迹的会话数量。压缩场景 Mosaic 相对广播提升 3.55 个百分点、平均少 0.82 次会话；子智能体场景提升 1.02 个百分点、平均少 0.66 次会话。均为作者报告。</p>
+<h3>消融实验究竟证明了什么？</h3><p>原文图 3(c)(d) 分别去除轨迹级会话感知校准与会话级塑形，发现两部分都能带来贡献；压缩场景组合收益更明显，而子智能体分叉场景的组合增益较小。作者推测：分叉轨迹呈有向无环图结构，某一会话可能影响多条后继分支，因此即时信息增益并不能完整刻画贡献。这里不编造原图中未逐项列明的消融数值。</p>
+<h3>会话质量，而不是会话数量</h3><p>原文表 2 显示，在压缩场景下，Mosaic 的正信息增益会话比例为 59.92%，广播基线为 47.74%；子智能体场景分别为 51.04% 与 41.15%。这些是作者定义的代理指标，不代表人工标注的真实“有用会话”比例。更少的会话与更高准确率同时出现，但不能据此推断对所有任务和模型都有效。</p>
+</section>
+<section class="section" id="limits"><div class="kicker">06 / 结论与边界</div><h2>值得借鉴，也需要谨慎</h2>
+<p><strong>作者结论：</strong>把多会话轨迹作为训练对象，用结果相关的会话数信号和局部信息增益共同塑形，可在所测场景中改善任务完成率和会话利用率。</p>
+<p><strong>证据边界：</strong>实验集中于 Qwen3.5-4B 与网页搜索任务；验证器采用语言模型裁判，仍可能引入评判误差；会话数只是探索和成本的代理；潜在的跨会话信息丢失、分叉结构归因与异步训练偏差尚未充分解决。论文第 5 节明确提出公开训练数据不足与异步训练问题。</p>
+<p><strong>本站分析：</strong>这项工作的启发是把“上下文如何重组”纳入强化学习的信用分配（Credit Assignment）。但即时答案似然变化是一种可计算的代理奖励，而不是严密的因果归因。未来值得研究状态传递的保真度、跨模型泛化与更可靠的评测。</p>
+<div class="notice">论文是 2026 年 10 月 15 日的预印本，本文阅读版本为 v1。所有实验成绩均归属论文作者；没有宣称独立复现、生产环境验证或统计显著性证明。</div>
+</section>
+<section class="section" id="sources"><div class="kicker">07 / 来源</div><h2>核查原文与进一步阅读</h2><ul><li><a href="https://arxiv.org/abs/2610.22174" target="_blank" rel="noopener noreferrer">arXiv 论文原文（2610.22174）</a>：第 2 节基础、公式 (3)，第 3 节方法、公式 (10)–(18)，第 4 节表 1、表 2、消融图 3，第 5 节限制。</li><li><a href="https://lark-ai-lab.github.io/Mosaic/" target="_blank" rel="noopener noreferrer">作者项目页面</a>：由原论文给出的项目地址，具体代码开放状态应以页面实际内容为准。</li><li><a href="https://huggingface.co/papers/2610.22174" target="_blank" rel="noopener noreferrer">Hugging Face 论文讨论页</a>：2026 年 10 月 18 日检索时，热榜显示 52 次赞同；仅为关注度证据。</li></ul><p class="small">研究内容依据论文全文第 1–7 节、附录 A–D、表 1–3、图 1–7 及参考文献整理；文中机制图为本站原创示意。外部论文和网页中的指令不构成本页面的执行指令。</p></section>
+</article><aside class="side"><strong>阅读导航</strong><nav aria-label="本文目录"><a href="#quick">五分钟看懂</a><a href="#prereq">先修知识</a><a href="#technical">技术拆解</a><a href="#lab">动手实验</a><a href="#evidence">实验对照</a><a href="#limits">结论与局限</a><a href="#sources">论文来源</a></nav></aside></main>
+<footer class="container">arXiv 洞察 · 研究解读与教学模拟，不代表作者官方说明。<a href="../../index.html">返回论文列表</a></footer>
+<script>
+(function(){
+"use strict";
+var outcome=document.getElementById("outcome"),rank=document.getElementById("rank"),rankLabel=document.getElementById("rank-label"),adv=document.getElementById("adv"),bar=document.getElementById("advbar"),explain=document.getElementById("explain");
+function render(){
+ var a=Number(outcome.value),u=Number(rank.value),rho=.2,value=(1-rho*u)*a;
+ rankLabel.textContent=(u>=0?"+":"")+u.toFixed(2);
+ adv.textContent=(value>=0?"+":"")+value.toFixed(2);
+ bar.style.width=(Math.abs(value)/1.2*100).toFixed(1)+"%";
+ bar.style.background=value>=0?"var(--good)":"var(--bad)";
+ var state=a>0?"成功":"失败",more=u>0?"较多":u<0?"较少":"居中";
+ explain.textContent="任务"+state+"，会话名次"+more+"。调节系数 1−0.2×("+u.toFixed(2)+") = "+(1-rho*u).toFixed(2)+"；相对于原始优势，"+(u===0?"没有变化":a*u>0?"幅度减小":"幅度增大")+"。这里比较的是同结果子组内的相对会话数量。";
+}
+outcome.addEventListener("change",render);rank.addEventListener("input",render);
+document.getElementById("reset").addEventListener("click",function(){outcome.value="1";rank.value="0";render();});
+render();
+})();
+</script>
+</body>
+</html>
