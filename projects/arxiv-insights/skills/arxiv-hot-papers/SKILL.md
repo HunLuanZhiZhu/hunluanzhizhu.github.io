@@ -16,7 +16,7 @@ description: 搜索并筛选最近新发布、且具有可核查社区关注度�
 
 ## 执行流程
 
-1. 读取 `../../data/papers.json` 和过去已收录论文。确认研究主题和目标日期窗口（未提供时为最近 7 天）。避免每次只抓最后 24 小时而错过周末或时区差。
+1. 通过 GitHub 插件只读核查远程论文 HTML 路径及可访问的历史草稿，不读取或编辑 `data/papers.json`。确认研究主题和目标日期窗口（未提供时为最近 7 天）。避免每次只抓最后 24 小时而错过周末或时区差。
 2. 从 arXiv 官方记录查找在窗口内首次提交的新论文；记录原始标题、作者、`arxiv_id`、`published`、`updated`、分类、摘要、原文链接。可使用 arXiv 官方搜索/API；遇到限流采取退避，不要绕过访问限制。
 3. 对 AI 论文，加入 Hugging Face Daily Papers 与 Trending Papers 的候选及其关注信号。优先使用官方公开接口 `https://huggingface.co/api/daily_papers?sort=trending&limit=100`、`/api/papers/{ARXIV_ID}` 等，在实际请求时核对响应格式。可选参考 alphaXiv 热榜；如果不可用，不能伪装为已验证。
 4. 基于统一的 arXiv ID（去除版本后缀）去重，同一论文的多个来源合并。检查是否已有 `papers/<id>/` 解读，避免重复生成。
