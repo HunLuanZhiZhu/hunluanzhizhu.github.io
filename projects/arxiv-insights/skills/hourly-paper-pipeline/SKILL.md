@@ -5,11 +5,11 @@ description: 单次 arXiv 论文生产流程。调用热点发现和中文交互
 
 # 单篇论文生产总控
 
-本 Skill 只负责**一次执行：选题 → 精读 → 生成 → 验收 → 发布 → 报告**。项目架构、目录、自动索引、首页视图和收藏机制见 `projects/arxiv-insights/README.md`；仓库操作约束见 `projects/arxiv-insights/AGENTS.md`。仓库使用当前连接的 GitHub 账号对应的 `<github用户名>.github.io` 用户站点仓库，执行时以插件返回的实际仓库标识和默认分支为准，不固定特定用户。
+本 Skill 只负责**一次执行：选题 → 精读 → 生成 → 验收 → 发布 → 报告**。项目架构、目录、自动索引、首页视图和收藏机制见 `projects/arxiv-insights/README.md`；仓库操作约束遵循根目录 `AGENTS.md` 和子项目 `README.md`。仓库使用当前连接的 GitHub 账号对应的 `<github用户名>.github.io` 用户站点仓库，执行时以插件返回的实际仓库标识和默认分支为准，不固定特定用户。
 
 ## 1. 读取指令与检查候选
 
-通过 GitHub 插件读取仓库根 `AGENTS.md`、`projects/arxiv-insights/AGENTS.md`、`projects/arxiv-insights/README.md` 及以下两个子 Skill，并遵守其中全部强制要求：
+通过 GitHub 插件读取仓库根 `AGENTS.md`、`projects/arxiv-insights/README.md` 及以下两个子 Skill，并遵守其中全部强制要求：
 
 - `projects/arxiv-insights/skills/arxiv-hot-papers/SKILL.md`
 - `projects/arxiv-insights/skills/paper-html-explainer/SKILL.md`
