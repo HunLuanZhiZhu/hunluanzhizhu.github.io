@@ -1,22 +1,22 @@
 ---
 name: hourly-paper-pipeline
-description: 单次 arXiv 论文生产流程。调用热点发现和中文交互讲解两个子 Skill，每次最多通过 GitHub 插件创建一篇论文 HTML；网站自动从 HTML 生成索引。
+description: 单次 arXiv 论文生产流程。调用热点发现和中文交互讲解两个子 Skill，每次最多通过 DevSpace 工作区提交一篇论文 HTML；网站自动从 HTML 生成索引。
 ---
 
 # 单篇论文生产总控
 
-本 Skill 只负责**一次执行：选题 → 精读 → 生成 → 验收 → 发布 → 报告**。项目架构、目录、自动索引、首页视图和收藏机制见 `projects/arxiv-insights/README.md`；仓库操作约束遵循根目录 `AGENTS.md` 和子项目 `README.md`。仓库使用当前连接的 GitHub 账号对应的 `<github用户名>.github.io` 用户站点仓库，执行时以插件返回的实际仓库标识和默认分支为准，不固定特定用户。
+本 Skill 只负责**一次执行：选题 → 精读 → 生成 → 验收 → 发布 → 报告**。项目架构、目录、自动索引、首页视图和收藏机制见 `projects/arxiv-insights/README.md`；仓库操作约束遵循根目录 `AGENTS.md` 和子项目 `README.md`。仓库使用当前连接的 GitHub 账号对应的 `<github用户名>.github.io` 用户站点仓库，执行时以工作区 Git 远程配置和实际默认分支为准，不固定特定用户。
 
 ## 1. 读取指令与检查候选
 
-通过 GitHub 插件读取仓库根 `AGENTS.md`、`projects/arxiv-insights/README.md` 及以下两个子 Skill，并遵守其中全部强制要求：
+通过 DevSpace 打开仓库工作区，读取仓库根 `AGENTS.md`、`projects/arxiv-insights/README.md` 及以下两个子 Skill，并遵守其中全部强制要求：
 
 - `projects/arxiv-insights/skills/arxiv-hot-papers/SKILL.md`
 - `projects/arxiv-insights/skills/paper-html-explainer/SKILL.md`
 
 按热点发现 Skill 搜索近期论文，核实 arXiv 版本、首次发表日期、全文可用性及带来源和观察时间的关注信号。优先有实质研究价值且可完整精读的论文；没有合格候选时本轮新增 0 篇，不为凑数伪造质量或热度。
 
-对候选提取不带版本后缀的稳定 arXiv ID。**使用 GitHub 插件检查远程 `projects/arxiv-insights/papers/<稳定-id>/index.html` 是否存在**：已存在则视为已发布或待恢复，不能再次选中。**不读取、不修改 `data/papers.json`；它是自动生成的索引，不是去重依据。** 最终只选一篇。
+对候选提取不带版本后缀的稳定 arXiv ID。**使用 DevSpace 检查本地及远程 `projects/arxiv-insights/papers/<稳定-id>/index.html` 是否存在**：已存在则视为已发布或待恢复，不能再次选中。**不读取、不修改 `data/papers.json`；它是自动生成的索引，不是去重依据。** 最终只选一篇。
 
 ## 2. 全文精读
 
@@ -38,12 +38,13 @@ description: 单次 arXiv 论文生产流程。调用热点发现和中文交互
 
 **无法完成必要验收时，标记未验收或阻塞，不得宣称质量通过或直接发布。** 不能将静态代码检查冒充浏览器实测。
 
-## 5. 通过 GitHub 插件发布
+## 5. 通过 DevSpace 发布
 
-1. 仅在内容与验收合格且本轮具备写入授权时，使用 GitHub 插件重新查询远程目标 HTML 路径，确认不存在，防止并发覆盖。
-2. 使用 GitHub 插件的创建文件接口**只新增这一篇 HTML**，不编辑已有文章、首页或共享 JSON。若创建失败或需要未获批准的权限，停止并报告；不得更换通道绕过拒绝。
-3. 核对 GitHub 返回的提交 SHA 与远程 HTML 内容。索引由 GitHub Actions 自动从 HTML 生成；**单篇生产任务既不读取也不写入 `papers.json`**。
-4. 如可通过 GitHub 插件查询 Actions 状态，确认索引生成是否成功；否则如实标记未核实。HTML 提交、索引生成与 Pages 线上部署是三个独立状态，不可混为一谈。
+1. 使用 DevSpace 打开当前 Git 仓库工作区，核对远程仓库、目标分支、工作区状态与候选文章路径；检查远程分支，避免覆盖并发提交。未经授权不得操作其他仓库。
+2. 内容与浏览器验收合格、且本轮具备写入授权时，使用 DevSpace 的文件编辑能力**仅新增这一篇 HTML**。不要修改已有文章、首页或共享 JSON；不要把其他未提交改动混入本次提交。
+3. 使用工作区 Git 检查差异，仅暂存目标 HTML，创建单篇提交并正常推送到授权的远程分支；推送前核对目标路径在远程仍不存在。遇到权限拒绝、安全拦截、冲突或需要审批时停止并报告，不得通过其他接口绕过。
+4. 核对远程提交 SHA 与文章内容。索引由 GitHub Actions 自动从 HTML 生成；**单篇生产任务既不读取也不写入 `papers.json`**。
+5. 若可正常查询 Actions 和 Pages 状态，分别核实索引生成与部署；否则标记未核实。HTML 提交、索引生成与 Pages 部署是三个独立状态。
 
 ## 6. 报告与恢复
 
