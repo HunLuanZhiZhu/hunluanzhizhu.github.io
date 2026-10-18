@@ -77,14 +77,13 @@ projects/arxiv-insights/papers/<稳定-arxiv-id>/index.html
 
 每篇 HTML 的 head 必须包含合法的 `paper-meta` JSON，至少含 `arxiv_id`（无版本后缀）、`title`、`title_zh`、`published`、`date`、`added_at`（首次收录 UTC 时间，后续保持不变）、`summary`、`topics`（非空数组）、`heat_note`（有出处的观察信号），建议附 `arxiv_version`、原文链接和其他证据字段。缺少真实元数据不得猜测。
 
-**发布统一使用项目内 Python 工具**：`projects/arxiv-insights/tools/publish_paper.py`。脚本根据自身位置解析仓库路径，不依赖固定工作目录或绝对路径。DevSpace 负责读取、编辑与运行该工具；不在总控中手写零散的 Git 提交命令。对话模式与定时任务权限可能不同，必须以每次实际执行结果为准；脚本不是安全检查的豁免通道，明确拒绝时停止。
+**职责分离：定时任务只生成并保存本地 HTML，不执行 Git 提交或推送。** 独立本地服务 `projects/arxiv-insights/tools/watch_papers.py` 监控新增 HTML，调用 `publish_paper.py` 校验并发布。服务必须由用户本机的持续运行环境独立启动；定时任务不得自行启动、停止或代替该服务。所有路径由脚本自身位置解析。
 
-1. 读取仓库指令、README、总控及子 Skill，检查当前分支、Git 状态和远程目标 HTML 是否已存在。**不读取或修改 `data/papers.json`**，去重以远程文章 HTML 路径为准。
-2. 精读论文、生成一篇带 `paper-meta` 的 HTML 并完成第 4 节学术与浏览器验收。先将 HTML 保存在本地 `papers/<稳定-id>/index.html`，本地保存成功与远程发布成功分开报告。
-3. 运行 `python projects/arxiv-insights/tools/publish_paper.py <稳定-id>` 做只读检查；检查失败时保留本地 HTML，修正问题后再验收。脚本不负责论文内容质量和浏览器验收。
-4. 内容与验收合格、且有实际发布授权时，运行 `python projects/arxiv-insights/tools/publish_paper.py <稳定-id> --publish`。脚本负责检查目标路径、远程去重、仅暂存目标 HTML、创建提交及正常推送。禁止强推、覆盖已有论文、混入其他工作区改动或通过其他工具绕过拒绝。
-5. 发布失败时保留本地 HTML 并报告准确错误，**不要因为提交失败丢弃已完成文章**。发布成功后分别核实远程 HTML SHA、GitHub Actions 索引状态和 Pages 部署；未经核实的状态明确标注。索引由 Actions 生成，不由本轮任务读写。
-6. DevSpace 不可用或脚本执行被拒绝时，停止本轮并报告，不自动切换发布接口。
+1. 读取仓库指令、README、总控及两份子 Skill。使用远程文章 HTML 路径进行稳定 arXiv ID 去重；不读取或修改自动生成的 `data/papers.json`。
+2. 精读论文，生成 `papers/<稳定-id>/index.html` 并完成第 4 节学术与浏览器验收。**仅在验收合格后把完整 HTML 写入目标路径**，避免监控服务提交半成品。
+3. 可运行 `python projects/arxiv-insights/tools/publish_paper.py <稳定-id>` 进行只读元数据检查，但**不得传入 `--publish`，不得执行 `git add`、`git commit` 或 `git push`**。
+4. 本轮以“本地 HTML 已保存，等待独立服务发布”结束；如本地写入或验收失败则报告失败，不把它描述为已上线。独立服务的提交、索引与 Pages 部署状态分别核验，不能推断成功。
+5. 本地监控服务通过 `python projects/arxiv-insights/tools/watch_papers.py --interval 60` 持续运行。它只处理尚未纳入 Git 跟踪的 `papers/<稳定-id>/index.html`，等待连续两次轮询文件大小和修改时间稳定后调用发布脚本。失败时保留 HTML 以便重试；不得提交其他文件或覆盖远程已有文章。
 首页继续按 `added_at` 展示最近收录 24 篇、历史论文和浏览器本地收藏。每小时任务不修改首页、共享 JSON、localStorage 或其他定时任务。
 
 ## 6. 与网站「最新、历史、收藏」功能的关系
