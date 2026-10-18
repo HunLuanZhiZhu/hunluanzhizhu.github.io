@@ -5,11 +5,11 @@ description: 单次 arXiv 论文生产流程。调用热点发现和中文交互
 
 # 单篇论文生产总控
 
-本 Skill 只负责**一次执行：选题 → 精读 → 生成 → 验收 → 发布 → 报告**。项目架构、目录规范、权限、自动索引和收藏机制见 `projects/arxiv-insights/AGENTS.md`，不在这里重复。仓库使用当前连接的 GitHub 账号对应的 `<github用户名>.github.io` 用户站点仓库，执行时以插件返回的实际仓库标识和默认分支为准，不固定特定用户。
+本 Skill 只负责**一次执行：选题 → 精读 → 生成 → 验收 → 发布 → 报告**。项目架构、目录、自动索引、首页视图和收藏机制见 `projects/arxiv-insights/README.md`；仓库操作约束见 `projects/arxiv-insights/AGENTS.md`。仓库使用当前连接的 GitHub 账号对应的 `<github用户名>.github.io` 用户站点仓库，执行时以插件返回的实际仓库标识和默认分支为准，不固定特定用户。
 
 ## 1. 读取指令与检查候选
 
-通过 GitHub 插件读取仓库根 `AGENTS.md`、`projects/arxiv-insights/AGENTS.md` 及以下两个子 Skill，并遵守其中全部强制要求：
+通过 GitHub 插件读取仓库根 `AGENTS.md`、`projects/arxiv-insights/AGENTS.md`、`projects/arxiv-insights/README.md` 及以下两个子 Skill，并遵守其中全部强制要求：
 
 - `projects/arxiv-insights/skills/arxiv-hot-papers/SKILL.md`
 - `projects/arxiv-insights/skills/paper-html-explainer/SKILL.md`
@@ -30,7 +30,7 @@ description: 单次 arXiv 论文生产流程。调用热点发现和中文交互
 - 保留完整研究级技术内容。公式须真实渲染（MathML 或确实存在的本地数学资源），保留准确 LaTeX 原式，解释每个变量、索引、参数和非显然算子。
 - 至少一张论文特有机制 SVG；适合时提供有明确教学意义的交互，区分示意模拟和论文实测。
 - 使用简体中文界面，适配手机、键盘、深色模式及静态 GitHub Pages 子路径，不依赖外部不可信脚本。
-- 在 `<head>` 内写入唯一的 `<script type="application/json" id="paper-meta">`，字段与约束按子项目 `AGENTS.md` 执行；特别确保 ID、原始发表日期、首次收录 UTC 时间、中文摘要和可核查热度真实准确。
+- 在 `<head>` 内写入唯一的 `<script type="application/json" id="paper-meta">`，字段与约束按子项目 `README.md` 执行；特别确保 ID、原始发表日期、首次收录 UTC 时间、中文摘要和可核查热度真实准确。
 
 ## 4. 发布前验收
 
