@@ -77,15 +77,14 @@ projects/arxiv-insights/papers/<稳定-arxiv-id>/index.html
 
 每篇 HTML 的 head 必须包含合法的 `paper-meta` JSON，至少含 `arxiv_id`（无版本后缀）、`title`、`title_zh`、`published`、`date`、`added_at`（首次收录 UTC 时间，后续保持不变）、`summary`、`topics`（非空数组）、`heat_note`（有出处的观察信号），建议附 `arxiv_version`、原文链接和其他证据字段。缺少真实元数据不得猜测。
 
-**DevSpace 是本机终端，支持 Git 全流程**（`fetch`、`pull`、`add`、`commit`、`push`）；GitHub 插件是远程 API，不能混淆。用户要求 DevSpace 时必须通过 DevSpace 本地 Git 操作；对话模式成功不代表定时模式有相同权限，每次实际检查。安全检查拒绝的写入不能换工具绕过。
+**唯一发布接口：GitHub 插件。** 通过已连接的 GitHub 插件直接读取远程仓库、检查默认分支与文件 SHA、创建单篇 HTML 并核验提交。不得要求本机工作区、终端或本地 Git；不要将仓库文件 API 与本地 Git 操作混用。对话和定时任务权限可能不同，必须以本轮真实授权和工具返回为准；若被拒绝，停止并报告，不得绕过安全检查。
 
-1. 读取 AGENTS、README、总控和子 Skill；检查 `git status -sb`、分支、远程 `origin/main`、已存在 HTML 和索引。已存在 HTML 但索引缺失时，先排查元数据和 Actions 构建，不重复发表同一论文。
-2. 选题、精读、生成一篇带元数据的 HTML，并完成第 4 节全部浏览器和学术验收。校验稳定 ID、时间和元数据与正文一致。
-3. 运行索引生成器可用于本地校验；**生成的 JSON 不能暂存或作为本轮 AI 提交的一部分**。新增 HTML 尚未被 Actions 处理时，`--check` 报索引过期属于预期现象。保护工作区原有修改。
-4. 检查 `git diff --check` 和远程并发；仅暂存本轮 HTML 及其必要专属资源，经授权通过 DevSpace `git commit`、`git push origin main`。禁止重置、覆盖和强推。
-5. 推送后验证 GitHub Actions **Build arXiv paper index** 的运行结果、远程 `papers.json` 是否包含该 ID、首页是否可读；分别报告 HTML 提交 SHA 和自动索引提交 SHA。**HTML 已推送不等于登记成功；登记成功不等于 Pages 已部署。**
-6. DevSpace 不可用时，仅在独立授权且当前环境允许的情况下通过 GitHub 插件发布 HTML；不得恢复为 AI 直接写 JSON，也不得借此绕过任何明确安全拒绝。
-
+1. 使用 GitHub 插件读取仓库 AGENTS、README、三份 Skill、远程 main 上的 `papers.json` 和现有论文目录；稳定 arXiv ID 去重。若 HTML 已存在但索引未出现，优先核查元数据及 Actions 状态，避免重复发布。
+2. 选题、精读并生成一篇含 `paper-meta` 的完整 HTML，完成第 4 节所有学术、公式、交互与浏览器验收；不合格则不发布。
+3. 发布前使用 GitHub 插件重新核对远程目标路径和 main 状态，确保目标文章不存在，避免覆盖并发修改。通过 GitHub 插件的创建文件接口，仅创建 `projects/arxiv-insights/papers/<稳定-id>/index.html`；若创建失败则保留草稿并报告，禁止假称发布成功。
+4. **AI 不直接修改 `data/papers.json`**。GitHub Actions 在 HTML 提交后扫描所有论文 HTML，自动生成并提交索引。若自动化失败，应报告待恢复状态，不能手工通过插件补写共享 JSON。
+5. 发布后通过 GitHub 插件核对 HTML 文件、提交 SHA、Actions 执行状态及远程 `papers.json` 是否包含该 ID；分别报告文章提交和索引自动提交。HTML 已提交不等于登记成功，索引生成成功也不等于 Pages 已部署。
+6. 如插件连接、审批或安全策略阻止写入，停止并准确说明原因；不得切换其他接口绕过拒绝。
 首页继续按 `added_at` 展示最近收录 24 篇、历史论文和浏览器本地收藏。每小时任务不修改首页、共享 JSON、localStorage 或其他定时任务。
 
 ## 6. 与网站「最新、历史、收藏」功能的关系
