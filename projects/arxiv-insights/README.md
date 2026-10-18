@@ -16,11 +16,11 @@
 
 1. **发现热点论文**：参考 [Yilgrimage/arxiv-digest](https://github.com/Yilgrimage/arxiv-digest) 的三源检索、社区热度信号、筛选和推荐历史设计，并以 [Hugging Face 官方论文 Skill](https://github.com/huggingface/skills/blob/main/skills/huggingface-papers/SKILL.md) 的公开 API 信息为接口参考。本仓库的 `arxiv-hot-papers` 是**重新编写的站点适配说明**，没有复制原仓库脚本、模型评分结果或 QQ/OpenClaw 调度设置。
 2. **生成 HTML 讲解**：参考 [sukanthoriginal/interactive-paper-explainers](https://github.com/sukanthoriginal/interactive-paper-explainers)（MIT License）双层讲解、论文专属交互和静态网页发布的思路。本仓库的 `paper-html-explainer` 是**重新编写的站点适配说明**，没有复制其反馈服务器和运行时代码。
-3. **单次总控**：`hourly-paper-pipeline` 读取并调用上述两份 Skill 的规范，目标一次选择、精读、生成、验证并在授权后登记**一篇**完整讲解。用于未来每小时一次、每天目标 24 篇的调度，定时调度需单独授权与配置。
+3. **单次总控**：`hourly-paper-pipeline` 读取并调用上述两份 Skill 的规范，目标一次选择、精读、生成、验证并暂存**一篇**完整讲解。用于未来每小时一次、每天目标 24 篇的调度，定时调度需单独授权与配置。
 
 这些是存储在仓库中的 **Agent Skill 指令文件**，不是由浏览器执行的脚本。ChatGPT 定时任务不会因为文件存在而自动安装或加载它们；若未来接入任务，需要在每次运行中明确读取总控及两份子 Skill 的 `SKILL.md`，并按权限调用论文检索及 GitHub 插件 工具。具体执行是否可用取决于该轮任务的连接与权限。
 
-总控在验收通过、具备授权后，**每次只提交单篇 HTML，不直接修改 `data/papers.json`**；GitHub Actions 自动从文章 HTML 提取元数据生成索引；首页应以数据驱动，而非每小时重写 `index.html`。为首页「最新 24 篇」的稳定排序，每篇新增记录应写入 `added_at`（本站登记完成的 UTC 时间）；「历史」读取全部历史记录；「我的收藏」由浏览器本地存储管理，不写入 GitHub。这三个首页视图现已实现，首页通过 JavaScript 自动加载并定期刷新 `data/papers.json`，每小时内容任务无需修改首页代码。首页第一屏默认显示「最新 24 篇」，按 `added_at` 从新到旧取最多 24 篇（旧记录缺少该字段时回退到归档日期、发表日期），**不按小时数过滤**；「历史论文」与「我的收藏」使用同页标签切换；项目介绍已移至独立的 `about.html`。
+自动总控只生成并验收 HTML 附件，不提交文章或触发索引；人工发布须在普通对话中经用户明确批准，通过 GitHub 插件单独执行。为首页「最新 24 篇」的稳定排序，每篇新增记录应写入 `added_at`（本站登记完成的 UTC 时间）；「历史」读取全部历史记录；「我的收藏」由浏览器本地存储管理，不写入 GitHub。这三个首页视图现已实现，首页通过 JavaScript 自动加载并定期刷新 `data/papers.json`，每小时内容任务无需修改首页代码。首页第一屏默认显示「最新 24 篇」，按 `added_at` 从新到旧取最多 24 篇（旧记录缺少该字段时回退到归档日期、发表日期），**不按小时数过滤**；「历史论文」与「我的收藏」使用同页标签切换；项目介绍已移至独立的 `about.html`。
 
 ## 本地收藏与 JSON 备份
 
@@ -58,7 +58,7 @@
 - 无外部 JS 依赖，移动端、键盘和减少动效偏好可正常使用。
 
 
-## 自动论文生产与人工发布（现行规则）
+## 自动论文生产与人工发布
 
 定时任务仅通过 GitHub 插件读取仓库规范并按远程文章路径去重，每轮最多精读、生成和验收一篇中文交互 HTML，作为 ChatGPT 可下载附件暂存。不得写入仓库、修改索引、运行发布或监控程序，不得读取或编辑 data/papers.json。附件不保证永久保存。
 
