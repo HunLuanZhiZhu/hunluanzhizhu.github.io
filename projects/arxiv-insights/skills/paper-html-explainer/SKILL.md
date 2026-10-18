@@ -118,7 +118,7 @@ description: 基于论文原文，面向机器学习和深度学习读者，生�
 
 ## 八、文件产出与登记（必须）
 
-自动生产只生成经验证的完整 HTML 附件，不写入仓库。经用户在普通对话明确批准后，独立发布阶段才可通过 GitHub 插件提交至 projects/arxiv-insights/papers/%ARXIV_ID%/index.html。禁止自动生产读取或修改 data/papers.json。HTML 的 `<head>` 必须有唯一 `<script type="application/json" id="paper-meta">`，内容为合法 JSON 对象，必填 `arxiv_id`、`title`、`title_zh`、`published`、`date`、`added_at`、`summary`、`topics`、`heat_note`；`added_at` 表示实际首次收录 UTC ISO 8601 时间；未发布草稿不得伪造该时间，留待人工发布阶段补齐并复核。稳定 ID 必须与目录一致，热度不得虚构。页面链接须适用于 GitHub Pages 子路径，包含返回该子项目索引、原文及可核验代码链接。
+自动生产只生成经验证的完整 HTML 附件，不写入仓库。经用户在普通对话明确批准后，独立发布阶段才可通过 GitHub 插件提交至 projects/arxiv-insights/papers/%ARXIV_ID%/index.html。禁止自动生产读取或修改 data/papers.json。HTML 的 `<head>` 必须有唯一 `<script type="application/json" id="paper-meta">`，内容为合法 JSON 对象，必填 `arxiv_id`、`title`、`title_zh`、`published`、`date`、`added_at`（仅实际收录时填写）、`summary`、`topics`、`heat_note`；`added_at` 表示实际首次收录 UTC ISO 8601 时间；未发布草稿不得伪造该时间，留待人工发布阶段补齐并复核。稳定 ID 必须与目录一致，热度不得虚构。页面链接须适用于 GitHub Pages 子路径，包含返回该子项目索引、原文及可核验代码链接。
 
 推荐页面布局：**中文论文标题+英文原题配对 → 问题导览 → 五分钟看懂 → 前置知识 → 技术拆解（公式/方法/实验）→ 交互式机制 → 结论与局限 → 原文与参考来源**。双入口可以用标签页、锚点或可展开章节组织，不能为了省空间隐去深度内容。
 
@@ -139,7 +139,3 @@ description: 基于论文原文，面向机器学习和深度学习读者，生�
 ## 禁止事项
 
 不得以普通字符代替数学公式，不得留下任何一个未解释的公式变量；不得将桌面页面直接缩小冒充移动端适配；不得以纯英文标签代替中文讲解；不得假定读者了解论文所在细分领域；不得为了制造互动虚构数据、公式或作者结论；不得把「HTML 能打开」当成「学术和渲染都已验证」。
-
-## 自动生产场景覆盖规则
-
-由每小时论文总控调用时，仅生成经过浏览器与数学验收的 HTML 草稿并作为 ChatGPT 附件交付，不写入仓库，不读取或编辑 data/papers.json。实际文章目录、首次收录时间和索引维护留待用户在普通对话中批准的 GitHub 插件发布阶段处理。旧文中要求自动保存到仓库的条款不再适用。
