@@ -1,7 +1,48 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-19T00:25:46Z",
+  "updated_at": "2026-10-19T10:22:50Z",
   "papers": [
+    {
+      "arxiv_id": "2610.20818",
+      "arxiv_version": "v1",
+      "title": "Intern Lumina U2: A Multi-Codebook Diffusion Large Language Model for Omni-Visual Understanding and Image Generation",
+      "title_zh": "Intern Lumina U2：以多码本扩散语言模型统一全视觉理解与图像生成",
+      "published": "2026-10-14",
+      "date": "2026-10-14",
+      "added_at": "2026-10-19T10:22:50Z",
+      "summary": "精读多码本离散视觉词元、位置并行与码本内自回归、共享掩码扩散目标及稳定性驱动采样；核对模型结构、训练预算、实验与消融。",
+      "topics": [
+        "多模态学习",
+        "扩散语言模型",
+        "视觉生成",
+        "离散表征",
+        "推理加速"
+      ],
+      "heat_note": "Hugging Face 论文页在 2026-10-19 18:09（北京时间）观察到 44 次赞同；关注度不代表独立复现。",
+      "method_note": "依据 arXiv v1 HTML 正文第1—8节及附录A—D；公式按原文编号重绘为原生 MathML。",
+      "read_time": "约20分钟",
+      "href": "papers/2610.20818/"
+    },
+    {
+      "arxiv_id": "2610.21306",
+      "arxiv_version": "v1",
+      "title": "VLA-Δ: Learning Physical State Transition for Vision-Language-Action Models",
+      "title_zh": "VLA-Δ：为视觉—语言—动作模型学习物理状态转移",
+      "published": "2026-10-15",
+      "date": "2026-10-19",
+      "added_at": "2026-10-19T10:22:44Z",
+      "summary": "通过九类结构化物理状态槽位、稠密光流与未来状态差异文本，在预训练阶段显式监督物理变化，推理时仍直接生成机器人动作。",
+      "topics": [
+        "具身智能",
+        "视觉语言动作模型",
+        "机器人控制",
+        "表征学习"
+      ],
+      "heat_note": "Hugging Face 2026-10-16 论文日榜收录；2026-10-19 约 17:05（北京时间）观察论文页显示 56 次赞同，非全领域热度指标。",
+      "method_note": "基于 arXiv v1 HTML 正文与附录精读；数学采用原生 MathML，保留逐式 LaTeX 核对源。",
+      "read_time": "20–30 分钟",
+      "href": "papers/2610.21306/"
+    },
     {
       "arxiv_id": "2610.21025",
       "arxiv_version": "v1",
