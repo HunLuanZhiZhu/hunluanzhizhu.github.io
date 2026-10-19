@@ -1,7 +1,91 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-19T00:25:10Z",
+  "updated_at": "2026-10-19T00:25:46Z",
   "papers": [
+    {
+      "arxiv_id": "2610.21025",
+      "arxiv_version": "v1",
+      "title": "Learning to Read Out: Unembedding Dynamics in Language Model Pretraining",
+      "title_zh": "学会读出：语言模型预训练中输出映射层的动态演化",
+      "published": "2026-10-14",
+      "date": "2026-10-19",
+      "added_at": "2026-10-19T00:25:46Z",
+      "summary": "研究语言模型隐藏状态中的任务信息与输出映射层表达能力之间的时间差；通过参数轨迹跨编码、线性探针、跨检查点输出层替换和学习率干预区分两者。",
+      "topics": [
+        "语言模型",
+        "可解释性",
+        "预训练",
+        "稀疏字典",
+        "表征学习"
+      ],
+      "heat_note": "2026-10-19 检索到 Hugging Face 论文第三方镜像显示 2 次赞同，非官方实时热度；主要按研究方法和教学价值选题。",
+      "method_note": "原文 2610.21025v1；论文实验未独立复现；交互中的二维向量为教学示例。",
+      "read_time": "约 18 分钟",
+      "href": "papers/2610.21025/"
+    },
+    {
+      "arxiv_id": "2610.20939",
+      "arxiv_version": "v1",
+      "title": "MAI-Gym: An Open All-in-One Platform for GUI Agent Evaluation and RL Training across Mobile and Computer Environments",
+      "title_zh": "MAI-Gym：跨手机与计算机环境的图形界面智能体评测和强化学习一体化开放平台",
+      "published": "2026-10-14",
+      "date": "2026-10-19",
+      "added_at": "2026-10-19T00:25:41Z",
+      "summary": "统一图形界面智能体评测、任务合成与在线强化学习的回放路径；通过可重置环境、跨应用任务、执行验证器和窗口历史训练手机与计算机通用智能体。",
+      "topics": [
+        "智能体",
+        "强化学习",
+        "图形界面",
+        "训练基础设施",
+        "任务合成"
+      ],
+      "heat_note": "Hugging Face 2026-10-16 每日论文榜第8，2026-10-19 观察论文页显示154次赞同；热度仅表示社区关注，不代表独立复现。",
+      "method_note": "v1 全文正文第1—7节与附录A.1—A.7核对；独立HTML草稿，尚未收录。",
+      "read_time": "约18分钟",
+      "href": "papers/2610.20939/"
+    },
+    {
+      "arxiv_id": "2610.20341",
+      "arxiv_version": "v1",
+      "title": "InfiniSplat v2: Analyzing and Improving Feed-Forward 3DGS from Any Views",
+      "title_zh": "几何不动，外观变清晰：InfiniSplat v2 如何从任意输入视角重建三维高斯场景",
+      "published": "2026-10-14",
+      "date": "2026-10-19",
+      "added_at": "2026-10-19T00:25:36Z",
+      "summary": "冻结几何分支、对齐真实相机尺度并采用大角度视角监督，改善前馈式三维高斯场景重建；进一步通过输入视角的渲染梯度学习属性细化。",
+      "topics": [
+        "计算机视觉",
+        "三维重建",
+        "三维高斯泼溅",
+        "新视角合成",
+        "多视角学习"
+      ],
+      "heat_note": "Hugging Face 论文页在 2026-10-19（北京时间）查看显示 119 次赞同；仅是社区关注度，不代表独立复现。",
+      "method_note": "未发布的本轮附件草稿；归档日期与 added_at 均为 null，待未来人工发布时确定。",
+      "read_time": "18–25 分钟",
+      "href": "papers/2610.20341/"
+    },
+    {
+      "arxiv_id": "2610.17665",
+      "arxiv_version": "v2",
+      "title": "RoTA-Bench: Evaluating 3D Spatial Reasoning through Interactive Projection Alignment",
+      "title_zh": "从二维轮廓到三维动作：RoTA-Bench 交互投影对齐评测",
+      "published": "2026-10-13",
+      "updated": "2026-10-14",
+      "date": "2026-10-19",
+      "added_at": "2026-10-19T00:25:31Z",
+      "summary": "通过可逆三维旋转与投影轮廓匹配，检验视觉语言模型能否将二维视觉反馈转化为精细三维控制；解析模型与人类在方向、角度及交互历史利用上的差异。",
+      "topics": [
+        "视觉语言模型",
+        "三维空间推理",
+        "智能体评测",
+        "交互式控制"
+      ],
+      "heat_note": "Paper Pulse 记录 2026-10-16 Hugging Face Daily Papers 第6名、201次赞同；2026-10-19核查历史榜单。关注度不代表独立学术验证。",
+      "method_note": "依据 arXiv:2610.17665v2 的31页全文、主文第1–6节与附录B–N；页面内交互为自制教学近似，非论文复现。",
+      "read_time": "约18分钟",
+      "href": "papers/2610.17665/"
+    },
     {
       "arxiv_id": "2610.22264",
       "arxiv_version": "v1",
