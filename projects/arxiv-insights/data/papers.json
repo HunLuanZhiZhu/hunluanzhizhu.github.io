@@ -1,7 +1,48 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-19T10:22:50Z",
+  "updated_at": "2026-10-19T23:31:21Z",
   "papers": [
+    {
+      "arxiv_id": "2610.22194",
+      "arxiv_version": "v1",
+      "title": "AutoSFT: An Agentic System for Automated Data Research in Supervised Fine-Tuning",
+      "title_zh": "AutoSFT：让智能体自动研究监督微调数据配方",
+      "published": "2026-10-15",
+      "date": "2026-10-19",
+      "added_at": "2026-10-19T23:31:21Z",
+      "summary": "以固定基础模型和训练预算为实验控制，剖析单智能体只会调整数据比例的失败模式，并通过执行隔离、四路分析与受验证约束的数据合成扩展数据研究动作空间。",
+      "topics": [
+        "监督微调",
+        "数据工程",
+        "多智能体",
+        "自动机器学习",
+        "实验方法"
+      ],
+      "heat_note": "Hugging Face Daily Papers 2026-10-16 收录；2026-10-19 20:15（北京时间）页面观察到 37 次赞同，仅为社区关注信号。",
+      "method_note": "精读 arXiv v1 HTML 第1—7节及附录A—E；公式区分原式与教学改写；所有对照值均标注原文章节或图表。",
+      "read_time": "约25分钟",
+      "href": "papers/2610.22194/"
+    },
+    {
+      "arxiv_id": "2610.18784",
+      "arxiv_version": "v2",
+      "title": "Pack Light, CarryOn: Building Object-Oriented Context for Long-Horizon Agents",
+      "title_zh": "轻装前行：以面向对象的上下文支撑长程智能体",
+      "published": "2026-10-13",
+      "date": "2026-10-20",
+      "added_at": "2026-10-19T23:31:15Z",
+      "summary": "CarryOn 将长程智能体的上下文重组为可复用任务对象、执行上下文和最新交互尾部；通过证据绑定与原子提交维护跨轮次进展，在两项长程基准上改善成绩并减少词元与成本。",
+      "topics": [
+        "智能体",
+        "上下文管理",
+        "长程任务",
+        "大语言模型系统"
+      ],
+      "heat_note": "Paper Pulse 收录的 Hugging Face 2026-10-19 日榜：92 次赞同、并列第 6；2026-10-20 核查，历史榜单快照而非实时赞同数。",
+      "method_note": "全文核查 arXiv v2 正文 1—5 节及附录 A—D；公式标注原文或教学改写；尚未发布。",
+      "read_time": "约 18 分钟",
+      "href": "papers/2610.18784/"
+    },
     {
       "arxiv_id": "2610.20818",
       "arxiv_version": "v1",
