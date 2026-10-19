@@ -1,7 +1,68 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-19T00:24:33Z",
+  "updated_at": "2026-10-19T00:24:47Z",
   "papers": [
+    {
+      "arxiv_id": "2610.18356",
+      "arxiv_version": "v1",
+      "title": "Urbex: Agentic Spatial Grounding for City-Scale 3D Scenes",
+      "title_zh": "从俯瞰整座城市到找到那辆车：Urbex 主动空间搜索",
+      "date": "2026-10-13",
+      "published": "2026-10-13",
+      "added_at": "2026-10-19T00:24:47Z",
+      "summary": "将城市级三维语言指代定位改写为视觉语言智能体的主动空间搜索：先查地标，再局部放大，必要时从斜视角验证，最后提交自由边界框；在 CityRefer 与跨域 STPLS3D-Refer 上评估精度、效率和失效模式。",
+      "topics": [
+        "三维视觉定位",
+        "视觉语言智能体",
+        "强化学习",
+        "城市点云"
+      ],
+      "heat_note": "Hugging Face 论文页在 2026-10-18 查询显示 129 次赞同；这是社区关注度而非独立质量认证。",
+      "method_note": "阅读全文 arXiv v1 的第 1–5 节及附录 A–E；交互为教学模拟，不复现论文模型。",
+      "read_time": "约 18 分钟",
+      "href": "papers/2610.18356/"
+    },
+    {
+      "arxiv_id": "2610.18813",
+      "arxiv_version": "v1",
+      "title": "Self-Evolving Agent Harness",
+      "title_zh": "智能体运行框架如何自我演化？",
+      "published": "2026-10-13",
+      "date": "2026-10-13",
+      "added_at": "2026-10-19T00:24:42Z",
+      "summary": "围绕固定模型的提示词、记忆、工具和执行逻辑，定义反馈驱动、可持续且跨运行保留的运行框架自演化；用算法稳定性、历史风险预算和独立验证样本解释为何更新不等于改进。",
+      "topics": [
+        "智能体",
+        "自演化",
+        "机器学习理论",
+        "持续学习",
+        "运行框架",
+        "可靠性评估"
+      ],
+      "heat_note": "Paper Pulse 所载 Hugging Face Daily Papers 2026-10-16 榜单：第7名，198 次赞同；2026-10-18 查阅。该数值为第三方历史榜单快照，非实时票数。",
+      "method_note": "综述、形式化框架和有条件的理论分析；案例表格引用其他研究，不是本文新做的统一控制实验。",
+      "read_time": "约18分钟",
+      "href": "papers/2610.18813/"
+    },
+    {
+      "arxiv_id": "2610.21261",
+      "arxiv_version": "v1",
+      "title": "Behavioral Compositionality of Sparse Autoencoder Representations",
+      "title_zh": "稀疏自编码器表征的行为可组合性",
+      "published": "2026-10-15",
+      "date": "2026-10-15",
+      "added_at": "2026-10-19T00:24:37Z",
+      "summary": "检验稀疏自编码器特征的线性重建是否意味着下游行为可加，提出行为加性残差、交互分解与组合排序误差界，并通过坐标旋转、成对建模和组合干预实验检验。",
+      "topics": [
+        "模型可解释性",
+        "稀疏自编码器",
+        "特征交互",
+        "表征学习"
+      ],
+      "heat_note": "Hugging Face 2026-10-16 每日论文榜第12位；2026-10-19 查阅论文页时显示106次赞同。热度不代表实验已复现。",
+      "method_note": "仅自动生成草稿，added_at 待人工首次发布时确定",
+      "href": "papers/2610.21261/"
+    },
     {
       "arxiv_id": "2610.19789",
       "arxiv_version": "v1",
