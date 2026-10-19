@@ -1,7 +1,70 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-19T23:31:48Z",
+  "updated_at": "2026-10-19T23:32:03Z",
   "papers": [
+    {
+      "arxiv_id": "2610.23479",
+      "arxiv_version": "v1",
+      "title": "HexaShell: A Thin Harness for Exploring the Limits of VLM Agents as Robot Coding Agents",
+      "title_zh": "HexaShell：以轻量执行接口探索视觉语言模型机器人编程智能体的能力边界",
+      "published": "2026-10-16",
+      "date": "2026-10-20",
+      "added_at": "2026-10-19T23:32:03Z",
+      "summary": "在双臂机器人上用薄执行接口和可修复代码工具将三路彩色图像转换为几何测量，报告 RoboDojo 五类任务等权成功率 39.7%，同时揭示精密接触任务仍是短板。",
+      "topics": [
+        "具身智能",
+        "视觉语言模型",
+        "机器人编程智能体",
+        "三维几何",
+        "智能体工具学习"
+      ],
+      "heat_note": "Hugging Face 论文索引与相关活动页面可见社区赞同信号，但不同缓存快照数值不一致；2026-10-20 04:05（北京时间）检索，未采用未经实时核实的具体赞同数。",
+      "method_note": "精读 arXiv 2610.23479v1 官方 HTML 正文第1—7节及附录A—G；页面几何公式均为与原文方法一致的教学推导，并非原文编号公式；对照原文表1—4、表6—7及图2—3。",
+      "read_time": "约 22—30 分钟",
+      "href": "papers/2610.23479/"
+    },
+    {
+      "arxiv_id": "2610.20424",
+      "arxiv_version": "v1",
+      "title": "BizBench: Unveiling Hidden Challenges in Deploying Long-Horizon Agents for Real-World Business",
+      "title_zh": "BizBench：揭示长程智能体部署于真实商业流程时的隐藏难题",
+      "published": "2026-10-14",
+      "date": "2026-10-20",
+      "added_at": "2026-10-19T23:31:58Z",
+      "summary": "基于50项真实业务流程抽象任务、789份文档和601种可发现业务能力，区分最终目标、过程合规和保护约束；交互解释为何终态成功不等于全过程有效。",
+      "topics": [
+        "长程智能体",
+        "智能体评测",
+        "工具调用",
+        "流程约束",
+        "商业流程"
+      ],
+      "heat_note": "Hugging Face 热门论文页面在2026-10-20约03:13（北京时间）检索显示169次赞同；仅为平台社区关注信号，不代表独立验证。",
+      "method_note": "精读arXiv v1官方HTML第1—6节及附录A—D；原式(1)与表1—8逐项核查，其他公式明确标记为教学改写。",
+      "read_time": "约25分钟",
+      "href": "papers/2610.20424/"
+    },
+    {
+      "arxiv_id": "2610.22341",
+      "arxiv_version": "v1",
+      "title": "3DCodeVerse: Exploring 3D Worlds as Code",
+      "title_zh": "3DCodeVerse：把三维世界写成可验证的程序",
+      "published": "2026-10-15",
+      "date": "2026-10-20",
+      "added_at": "2026-10-19T23:31:53Z",
+      "summary": "精读以可执行三维代码为载体的 2.03 百万条件—代码记录、分工任务图、执行与空间测量、视觉评审、局部修复闭环，并核查训练、评测与推理成本。",
+      "topics": [
+        "机器学习",
+        "三维生成",
+        "代码智能体",
+        "程序验证",
+        "多模态学习"
+      ],
+      "heat_note": "Hugging Face 论文页于 2026-10-20 约 02:12（北京时间）检索时显示 109 次赞同；仅为社区关注信号，非学术复现。",
+      "method_note": "基于 arXiv 2610.22341v1 官方 HTML，正文第 1—7 节与附录 A—D；公式为原生 MathML 并提供 LaTeX 核对源。",
+      "read_time": "约 25—35 分钟",
+      "href": "papers/2610.22341/"
+    },
     {
       "arxiv_id": "2610.23787",
       "arxiv_version": "v1",
