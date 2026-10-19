@@ -1,7 +1,91 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-19T00:24:47Z",
+  "updated_at": "2026-10-19T00:25:10Z",
   "papers": [
+    {
+      "arxiv_id": "2610.22264",
+      "arxiv_version": "v1",
+      "title": "SCOPE: Semantic Bounded Credit Optimization for Prompt Engineering in Text-to-image Generation",
+      "title_zh": "让语义片段共同获得训练信用：SCOPE 图像生成提示词优化",
+      "date": "2026-10-15",
+      "published": "2026-10-15",
+      "added_at": "2026-10-19T00:25:10Z",
+      "summary": "SCOPE 在冻结文生图生成器的前提下，通过语言模型联合输出提示词及语义片段边界，在组相对策略优化中对片段内部的策略对数概率漂移求均值、限幅并归一化，将同一条回答的优势按语义片段重新加权。原文在三种图像生成骨干上报告了优于统一词元权重的结果。",
+      "topics": [
+        "强化学习",
+        "图像生成",
+        "信用分配",
+        "提示词优化",
+        "策略优化"
+      ],
+      "heat_note": "Hugging Face Daily Papers 2026-10-16 榜单第13名；2026-10-19（北京时间）查询页面显示79次赞同；热度不是研究结果的独立验证。",
+      "method_note": "基于 arXiv 2610.22264v1 的正文第1—5节、公式(1)—(12)、表1—2及附录1.1—1.11；作者实验未独立复现。",
+      "read_time": "约18分钟",
+      "href": "papers/2610.22264/"
+    },
+    {
+      "arxiv_id": "2610.22347",
+      "arxiv_version": "v1",
+      "title": "Speculative Forcing for Efficient Autoregressive Video Generation",
+      "title_zh": "哪些视频块可以提前停止去噪？——推测式强制的逐词元计算分配",
+      "published": "2026-10-15",
+      "date": "2026-10-15",
+      "added_at": "2026-10-19T00:25:06Z",
+      "summary": "论文将少步自回归视频扩散模型的中间清洁潜变量估计视为草稿，用免训练或学习式验证器逐词元判断是否提前提交；已经提交的词元停止去噪但保留键值缓存。对短视频、长视频及交互世界模型报告速度与画质权衡。",
+      "topics": [
+        "视频生成",
+        "扩散模型",
+        "自回归建模",
+        "推理加速",
+        "世界模型"
+      ],
+      "heat_note": "Hugging Face Daily Papers 2026-10-16 排名第14；2026-10-19 查阅论文页显示78次赞同。关注度不等于学术验证。",
+      "method_note": "基于 arXiv:2610.22347v1 全文第1–5节与附录A–D；作者结果未独立复现。",
+      "read_time": "18分钟",
+      "href": "papers/2610.22347/"
+    },
+    {
+      "arxiv_id": "2610.18615",
+      "arxiv_version": "v1",
+      "title": "VideoJev: System One Model for Video Understanding and Interaction",
+      "title_zh": "不必逐词回答：VideoJev 如何把视频理解变成直接决策",
+      "published": "2026-10-13",
+      "date": "2026-10-13",
+      "added_at": "2026-10-19T00:25:01Z",
+      "summary": "VideoJev 以共享候选评分头统一视频事件时间定位与多项选择问答，并以视频前缀缓存和联合推理复用视觉计算；论文报告跨七项基准的质量与延迟结果。",
+      "topics": [
+        "视频理解",
+        "多模态大模型",
+        "时间定位",
+        "结构化决策",
+        "推理效率"
+      ],
+      "heat_note": "Hugging Face Trending Papers 页面显示约 364 次赞同（2026-10-19 查询；网页计数动态变化，非独立学术验证）。",
+      "method_note": "arXiv v1 第 1–6 节与附录 A、B 已查阅；原生 MathML，独立静态交互教学示例。",
+      "read_time": "约 20 分钟",
+      "href": "papers/2610.18615/"
+    },
+    {
+      "arxiv_id": "2610.22350",
+      "arxiv_version": "v1",
+      "title": "FDE-Gym: The Last Mile of AI Delivery",
+      "title_zh": "代码交付了，客户却没有受益？——FDE-Gym 衡量人工智能交付的最后一公里",
+      "published": "2026-10-15",
+      "date": "2026-10-15",
+      "added_at": "2026-10-19T00:24:51Z",
+      "summary": "FDE-Gym 用95项真实项目改编的客户交付任务衡量智能体能否发现未说明的约束、部署有效系统并真正提升客户业务指标。它将归一化业务提升、事故与利益相关者沟通成本纳入评分，发现领先模型在最接近现实的设置下仍存在显著交付差距。",
+      "topics": [
+        "智能体评测",
+        "软件工程",
+        "需求澄清",
+        "企业人工智能",
+        "基准设计"
+      ],
+      "heat_note": "Hugging Face Daily Papers 2026-10-16 榜单展示；2026-10-19（北京时间）查询论文页面显示285次赞同。关注度不是学术可靠性证明。",
+      "method_note": "核对 arXiv 2610.22350v1 正式 HTML 第1–8节、表1–4与公式(1)–(5)，并交叉检查官方摘要；互动计算为教学演示而非模型复现。",
+      "read_time": "18–25分钟",
+      "href": "papers/2610.22350/"
+    },
     {
       "arxiv_id": "2610.18356",
       "arxiv_version": "v1",
