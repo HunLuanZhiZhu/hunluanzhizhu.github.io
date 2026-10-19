@@ -1,7 +1,49 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-18T10:27:32Z",
+  "updated_at": "2026-10-19T00:24:33Z",
   "papers": [
+    {
+      "arxiv_id": "2610.19789",
+      "arxiv_version": "v1",
+      "title": "More Methods, Better Agents? A Reality Check on Self-Distillation in Agentic Reinforcement Learning",
+      "title_zh": "更多方法就有更好的智能体吗？智能体强化学习自蒸馏的实证检验",
+      "published": "2026-10-14",
+      "date": "2026-10-18",
+      "summary": "统一比较十种自蒸馏方法与组相对策略优化基线，跨四类智能体任务和三种模型规模检验最终成绩、训练稳定性及计算成本。",
+      "topics": [
+        "强化学习",
+        "自蒸馏",
+        "智能体",
+        "实验可复现性",
+        "训练稳定性"
+      ],
+      "heat_note": "2026-10-18 查询 Hugging Face 论文页面显示 82 次赞同；社区关注不代表结果已经独立复现。",
+      "method_note": "基于 arXiv v1 正文、附录 D/E/F/G 和项目页逐项核对；未发布草稿，added_at 留待正式收录时填写。",
+      "read_time": "18 分钟",
+      "added_at": "2026-10-19T00:24:33Z",
+      "href": "papers/2610.19789/"
+    },
+    {
+      "arxiv_id": "2610.18773",
+      "arxiv_version": "v1",
+      "title": "Jeva: System One Models from First Principles",
+      "title_zh": "从第一性原理构建快速决策模型：Jeva",
+      "published": "2026-10-13",
+      "date": "2026-10-18",
+      "summary": "Jeva 将问题状态与候选项分别编码，再用轻量决策模块对整个候选集合进行条件化判断；单独估计是否存在有效答案，支持顺序对称、可变候选数和跨请求缓存。本文以交互式推演解释集合注意力、覆盖门控、损失函数及论文实验边界。",
+      "topics": [
+        "机器学习",
+        "大语言模型",
+        "结构化决策",
+        "集合建模",
+        "模型推理效率"
+      ],
+      "heat_note": "Hugging Face Papers 页面在 2026-10-18 查询时显示 412 次赞同、曾列当日榜首；属于社区关注信号，不代表同行评审或独立复现。",
+      "read_time": "18–25 分钟",
+      "method_note": "核对 arXiv 2610.18773v1 正文、公式、实验与附录 A/B/C；交互模拟不是 Jeva 模型推理或复现实验。",
+      "added_at": "2026-10-19T00:24:28Z",
+      "href": "papers/2610.18773/"
+    },
     {
       "arxiv_id": "2610.17953",
       "arxiv_version": "v1",
