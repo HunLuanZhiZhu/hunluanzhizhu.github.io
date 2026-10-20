@@ -8,7 +8,7 @@
 - 独立项目介绍与方法页：`about.html`（原首页的大幅介绍、研究工作流交互图和方法来源移至此处）
 - 内容清单：`data/papers.json`（由 GitHub Actions 自动生成）
 - 单篇论文页面：`papers/<arxiv-id>/index.html`
-- 三份 Skill：`skills/arxiv-hot-papers/SKILL.md`（论文发现）、`skills/paper-html-explainer/SKILL.md`（中文交互讲解）、`skills/hourly-paper-pipeline/SKILL.md`（单次总控）
+- 四份 Skill：`skills/arxiv-hot-papers/SKILL.md`（论文发现）、`skills/paper-html-explainer/SKILL.md`（中文交互讲解）、`skills/hourly-paper-pipeline/SKILL.md`（单次总控）、`skills/chat-paper-publisher/SKILL.md`（普通聊天人工授权发布）
 
 **页面逻辑：读者打开首页即进入论文列表，不以项目自我介绍占据首屏。** 导航中的「关于本站」单独介绍项目理念、方法来源及隐私原则；首页只负责浏览、搜索、筛选及收藏。保持原生 HTML / CSS / JavaScript、无打包流程、无需外部内容分发网络。项目相对路径须兼容 GitHub Pages 的 `/projects/arxiv-insights/` 子路径及站点实际域名。
 
@@ -17,6 +17,8 @@
 1. **发现热点论文**：参考 [Yilgrimage/arxiv-digest](https://github.com/Yilgrimage/arxiv-digest) 的三源检索、社区热度信号、筛选和推荐历史设计，并以 [Hugging Face 官方论文 Skill](https://github.com/huggingface/skills/blob/main/skills/huggingface-papers/SKILL.md) 的公开 API 信息为接口参考。本仓库的 `arxiv-hot-papers` 是**重新编写的站点适配说明**，没有复制原仓库脚本、模型评分结果或 QQ/OpenClaw 调度设置。
 2. **生成 HTML 讲解**：参考 [sukanthoriginal/interactive-paper-explainers](https://github.com/sukanthoriginal/interactive-paper-explainers)（MIT License）双层讲解、论文专属交互和静态网页发布的思路。本仓库的 `paper-html-explainer` 是**重新编写的站点适配说明**，没有复制其反馈服务器和运行时代码。
 3. **单次总控**：`hourly-paper-pipeline` 读取并调用上述两份 Skill 的规范，目标一次选择、精读、生成、验证并暂存**一篇**完整讲解。用于未来每小时一次、每天目标 24 篇的调度，定时调度需单独授权与配置。
+
+4. **普通聊天人工发布**：`chat-paper-publisher` 专门处理用户在非定时任务的普通对话中明确授权的草稿发布；读取并调用 `tools/preflight_papers.py` 对待提交 HTML 进行只读元数据检查，再通过 GitHub 插件提交并核查索引构建与 Pages 状态。脚本不是 Git Hook 或 CI 强制门禁，不会自动触发发布，也不属于定时生产流程。
 
 这些是存储在仓库中的 **Agent Skill 指令文件**，不是由浏览器执行的脚本。ChatGPT 定时任务不会因为文件存在而自动安装或加载它们；若未来接入任务，需要在每次运行中明确读取总控及两份子 Skill 的 `SKILL.md`，并按权限调用论文检索及 GitHub 插件 工具。具体执行是否可用取决于该轮任务的连接与权限。
 
@@ -62,4 +64,4 @@
 
 定时任务仅通过 GitHub 插件读取仓库规范并按远程文章路径去重，每轮最多精读、生成和验收一篇中文交互 HTML，作为 ChatGPT 可下载附件暂存。不得写入仓库、修改索引、运行发布或监控程序，不得读取或编辑 data/papers.json。附件不保证永久保存。
 
-只有用户在普通对话中明确授权，才能通过 GitHub 插件审核并集中提交可访问的未发布 HTML。之后索引由 GitHub Actions 维护，Pages 部署须另行核验。自动生产流程不包括发布。
+只有用户在普通对话中明确授权，才能通过 GitHub 插件审核并集中提交可访问的未发布 HTML。之后索引由 GitHub Actions 维护，Pages 部署须另行核验。自动生产流程不包括发布。 普通聊天发布流程按 `skills/chat-paper-publisher/SKILL.md` 执行，并在提交前使用 `tools/preflight_papers.py --mode publish <HTML文件路径>` 校验待发布页面；检查脚本不会写入仓库或生成索引。
