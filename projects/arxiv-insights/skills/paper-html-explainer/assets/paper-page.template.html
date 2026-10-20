@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>待填写：论文中文标题｜arXiv 洞察</title>
+<meta name="description" content="待填写：基于已核查论文原文的中文摘要。">
+<!--
+  草稿脚手架：不可直接发布到 papers/<id>/index.html。
+  published = arXiv 原论文首发日；date = 本站实际归档日。
+  YYYY-MM-DD 是必须替换的无效占位符，不能以 null 或虚构日期发布。
+  草稿不含 added_at；只有人工首次正式收录时才写入真实 UTC ISO 8601 时间。
+  所有论文内容、公式、数学变量说明、SVG 和交互必须针对原文重新制作。
+-->
+<script type="application/json" id="paper-meta">
+{
+  "arxiv_id": "REPLACE_STABLE_ARXIV_ID",
+  "arxiv_version": "v1",
+  "title": "REPLACE_ORIGINAL_ENGLISH_TITLE",
+  "title_zh": "待替换：论文中文标题",
+  "published": "YYYY-MM-DD",
+  "date": "YYYY-MM-DD",
+  "summary": "待替换：由论文全文支持的中文摘要",
+  "topics": ["待替换研究主题"],
+  "heat_note": "待核对热度来源及观察时间；如果没有可核实信号，应明确说明"
+}
+</script>
+<style>
+:root{font:16px/1.78 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color-scheme:light dark}
+*{box-sizing:border-box}
+body{margin:0;color:CanvasText;background:Canvas}
+a{color:LinkText;text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #418ddd;outline-offset:3px}
+.wrap{width:min(900px,calc(100% - 32px));margin-inline:auto}
+header,footer{padding:18px 0}
+h1{font-size:clamp(1.6rem,5vw,2.6rem);line-height:1.23}
+h2{font-size:clamp(1.3rem,4vw,1.8rem)}
+section{padding:25px 0;border-top:1px solid color-mix(in srgb,CanvasText 20%,transparent)}
+nav{display:flex;flex-wrap:wrap;gap:12px;margin:25px 0}
+.meta,.note{opacity:.8}
+.figure,.equation{max-width:100%;overflow-x:auto;padding:14px;border:1px solid color-mix(in srgb,CanvasText 20%,transparent);border-radius:8px}
+svg{max-width:100%;height:auto}
+math{font-size:1.1rem}
+button{min-height:44px;min-width:44px}
+@media(max-width:400px){.wrap{width:calc(100% - 24px)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="wrap"><a href="../../">← 返回 arXiv 洞察</a></header>
+<main class="wrap">
+<article>
+<h1>待填写：论文中文标题</h1>
+<p class="meta">英文原题：REPLACE_ORIGINAL_ENGLISH_TITLE · arXiv: REPLACE_STABLE_ARXIV_ID</p>
+<nav aria-label="阅读入口"><a href="#quick">五分钟看懂</a><a href="#technical">技术拆解</a><a href="#sources">原文与来源</a></nav>
+<section aria-labelledby="problem-title">
+<h2 id="problem-title">研究问题</h2>
+<p>待填写：研究问题、已有方法的局限、作者的主要变化。标明论文来源。</p>
+</section>
+<section id="quick" aria-labelledby="quick-title">
+<h2 id="quick-title">五分钟看懂</h2>
+<p>待填写：从可感知的情境解释输入、输出、机制与局限；不能编造实验结果。</p>
+</section>
+<section aria-labelledby="prereq-title">
+<h2 id="prereq-title">前置知识</h2>
+<details><summary>待替换：核心概念名称</summary><p>逐步说明是什么、为何需要、输入、输出以及论文中使用的位置。</p></details>
+</section>
+<section id="technical" aria-labelledby="technical-title">
+<h2 id="technical-title">技术拆解</h2>
+<p>待填写：研究定义、模型结构、训练/推理算法、实验设置、基线、消融与成本。</p>
+<div class="equation" role="group" aria-label="论文数学公式待填写">
+  <p>待添加：经核查的真实 MathML 公式和对应的 LaTeX 数学源。</p>
+  <!-- 本区域不可原样发布：每个公式都需要原文出处、完整符号解释和数学意义。 -->
+</div>
+</section>
+<section aria-labelledby="mechanism-title">
+<h2 id="mechanism-title">关键机制与交互讲解</h2>
+<div class="figure">
+  <p>待绘制：与该论文方法直接相关的 SVG。严禁把此占位内容当作成品。</p>
+  <!-- 本区域不可原样发布：需论文专属 SVG、无障碍替代文本和基于真实机制的交互；
+       如果不适合交互则说明原因。模拟数值必须注明不是论文实测。 -->
+</div>
+</section>
+<section aria-labelledby="limits-title">
+<h2 id="limits-title">结论与局限</h2>
+<p>待填写：分别说明作者报告、证据限制、本站分析判断。</p>
+</section>
+<section id="sources" aria-labelledby="sources-title">
+<h2 id="sources-title">原文与参考来源</h2>
+<p><a href="https://arxiv.org/abs/REPLACE_STABLE_ARXIV_ID" target="_blank" rel="noopener noreferrer">访问 arXiv 原文</a></p>
+<p class="note">待填写：原文版本、阅读范围、关键表格/公式定位及真实代码链接。</p>
+</section>
+</article>
+</main>
+<footer class="wrap">arXiv 洞察 · 科研交流与教育讲解</footer>
+</body>
+</html>
