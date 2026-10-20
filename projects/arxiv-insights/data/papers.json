@@ -1,7 +1,196 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-19T23:32:26Z",
+  "updated_at": "2026-10-20T08:21:00Z",
   "papers": [
+    {
+      "arxiv_id": "2610.23839",
+      "arxiv_version": "v1",
+      "title": "DiscoveryRSI: Recursively Learning to Discover Valuable Hypotheses",
+      "title_zh": "发现式递归自改进：让科研智能体从假设演化中学习",
+      "published": "2026-10-16",
+      "date": "2026-10-20",
+      "draft_generated_at": "2026-10-20T06:05:08Z",
+      "summary": "通过研究假设树、可追溯贡献分配、工作流重放和再次发现，让科研智能体从研究过程而不只是最终评分中学习；在四个生命科学领域，自动评审均分从4.86增至5.39，但研究价值与真正科学发现仍须谨慎区分。",
+      "topics": [
+        "机器学习",
+        "科研智能体",
+        "递归自改进",
+        "加权监督学习",
+        "科学评测"
+      ],
+      "heat_note": "Hugging Face 论文页面于2026-10-20（北京时间）观察到14次赞同；仅代表社区关注，不代表独立验证。",
+      "method_note": "已核查arXiv v1 官方HTML正文第1—9节及附录A—F；",
+      "read_time": "约25分钟",
+      "added_at": "2026-10-20T08:21:00Z",
+      "href": "papers/2610.23839/"
+    },
+    {
+      "arxiv_id": "2610.23181",
+      "arxiv_version": "v1",
+      "title": "Tree-Aware Posterior Distillation for Long-Horizon Agentic Reinforcement Learning",
+      "title_zh": "树感知后验蒸馏：为长程智能体强化学习分配逐轮信用并设定有限更新目标",
+      "published": "2026-10-16",
+      "date": "2026-10-20",
+      "added_at": "2026-10-20T08:21:00Z",
+      "summary": "将共享前缀的多条交互轨迹组织成树，从终局奖励递推每轮信用，再构造有界伯努利教师分布，以前向相对熵蒸馏抵消连续小批量更新中的策略漂移。",
+      "topics": [
+        "强化学习",
+        "智能体",
+        "后验蒸馏",
+        "长程推理",
+        "信用分配"
+      ],
+      "heat_note": "Hugging Face 论文页面于 2026-10-20 核查显示 32 次赞同；2026-10-19 日榜记录 31 次赞同、第 14 名（64 篇），仅代表社区关注。",
+      "method_note": "论文原式以原生 MathML 排版；独立的树与后验交互是数学教学模拟，不是作者模型复现。",
+      "read_time": "约 25 分钟",
+      "href": "papers/2610.23181/"
+    },
+    {
+      "arxiv_id": "2610.23121",
+      "arxiv_version": "v1",
+      "title": "Scene-Designer: Learning Design Intelligence for Agentic 3D Scene Generation",
+      "title_zh": "场景设计师：让三维场景生成智能体同时学会设计与评审",
+      "published": "2026-10-16",
+      "date": "2026-10-20",
+      "summary": "通过因果轨迹精简与场景偏好学习，将设计与评审能力联合训练，再利用评审器引导分支采样强化学习，提升三维室内场景的功能性、布局质量和纠错效率。",
+      "topics": [
+        "三维场景生成",
+        "视觉语言模型",
+        "智能体",
+        "强化学习",
+        "偏好评审"
+      ],
+      "heat_note": "Hugging Face 论文页于 2026-10-20 查询时显示 49 次赞同；属于社区关注信号，非独立复现。",
+      "draft_generated_at": "2026-10-20T07:14:00Z",
+      "method_note": "Scene-OTA/Scene-OTC 联合监督微调，冻结评审器引导 Scene-GRPO",
+      "added_at": "2026-10-20T08:21:00Z",
+      "href": "papers/2610.23121/"
+    },
+    {
+      "arxiv_id": "2610.22282",
+      "arxiv_version": "v1",
+      "title": "Routing Policy Optimization for Online Diffusion Reinforcement Learning",
+      "title_zh": "路由策略优化：不改采样器，也能强化学习图像与视频生成",
+      "published": "2026-10-15",
+      "date": "2026-10-20",
+      "added_at": "2026-10-20T08:21:00Z",
+      "summary": "将扩散变换器的注意力块路由作为训练时的随机探索动作，使用共享初始噪声的成对生成结果估计优势，再通过速度场的高斯代理似然更新原本的稠密模型；推理时移除路由，保持原始确定性采样器。",
+      "topics": [
+        "扩散模型",
+        "视觉生成",
+        "强化学习",
+        "注意力路由",
+        "策略梯度"
+      ],
+      "heat_note": "Hugging Face Papers 论文页于 2026-10-20 观察到 24 次赞同；这是社区关注信号，不代表独立复现。",
+      "method_note": "精读 arXiv v1 官方 HTML 正文第1—7节与附录A—E；所有数值标明原文表/图，交互为教学模拟。",
+      "read_time": "18 分钟",
+      "href": "papers/2610.22282/"
+    },
+    {
+      "arxiv_id": "2610.22131",
+      "arxiv_version": "v1",
+      "title": "Intern-Decision: Efficient Multimodal Decision Making with Autoregressive Masked Language Modeling",
+      "title_zh": "书生决策模型：通过自回归掩码语言建模实现高效多模态决策",
+      "published": "2026-10-15",
+      "date": "2026-10-20",
+      "summary": "通过在完整结构化回答骨架中为每个决策字段放置占位符，利用因果语言模型的一次前向传播读取多个候选分数，输出多模态封闭选项决策及概率。作者在七套评测中报告四十亿参数模型平均准确率90.02%，并研究温度校准与低置信度升级处理。",
+      "topics": [
+        "多模态学习",
+        "智能体决策",
+        "结构化预测",
+        "概率校准",
+        "高效推理"
+      ],
+      "heat_note": "2026-10-20 核查：Hugging Face 官方论文页面访问失败；可访问的第三方镜像检索快照（约2026-10-18抓取）显示25次赞同，非当日实时官方数据。",
+      "method_note": "仅供本轮暂存的未发布精读草稿；",
+      "added_at": "2026-10-20T08:21:00Z",
+      "href": "papers/2610.22131/"
+    },
+    {
+      "arxiv_id": "2610.21046",
+      "arxiv_version": "v1",
+      "title": "PremiseCheck: Efficient Fact-Checking of Human and AI Peer Reviews",
+      "title_zh": "前提核验：低成本识别人工与人工智能同行评审中的事实错误",
+      "published": "2026-10-15",
+      "date": "2026-10-20",
+      "draft_generated_at": "2026-10-20T05:09:38Z",
+      "summary": "通过将审稿意见拆为可验证前提、区分论文内证据与一般知识，再用低成本决策模型逐项核验，PremiseCheck 在 ReviewFact 的三个领域以约半成本达到与整体大模型核验接近的排序表现；其目标是辅助人工定位可能的事实错误，不评价审稿判断是否合理。",
+      "topics": [
+        "大语言模型",
+        "同行评审",
+        "事实核验",
+        "决策模型",
+        "成本感知推理"
+      ],
+      "heat_note": "Hugging Face 论文页于 2026-10-20 13:09（北京时间）观察到 77 次赞同；社区关注度不代表独立复现。",
+      "method_note": "草稿：尚未在本站正式归档，date 保留显式无效占位，added_at 故意缺省；发布需另行授权并补齐。",
+      "read_time": "18 分钟",
+      "added_at": "2026-10-20T08:21:00Z",
+      "href": "papers/2610.21046/"
+    },
+    {
+      "arxiv_id": "2610.20951",
+      "arxiv_version": "v1",
+      "title": "LEV: Thinking Fast and Deep with Looped Decision Models",
+      "title_zh": "LEV：不写推理文字，如何让决策模型按需深思？",
+      "published": "2026-10-14",
+      "date": "2026-10-20",
+      "added_at": "2026-10-20T08:21:00Z",
+      "summary": "循环式决策模型在共享权重的多个循环深度读取候选答案，联合训练各深度，并利用无标签的深层答案一致性停止器按题分配计算；重点核查深度收益、计算代价和跨数据分布局限。",
+      "topics": [
+        "循环式语言模型",
+        "自适应计算",
+        "决策模型",
+        "推理效率",
+        "模型校准"
+      ],
+      "heat_note": "Hugging Face 论文页面于2026-10-20约11:05北京时间观察到148次赞同；计数随时间变化，不代表独立复现。",
+      "read_time": 19,
+      "method_note": "基于arXiv v1官方HTML正文第1至8节及附录A至G；数学原式与教学扩展明确区分。",
+      "href": "papers/2610.20951/"
+    },
+    {
+      "arxiv_id": "2610.20556",
+      "arxiv_version": "v1",
+      "title": "Speculative Sampling in Interactive Video Generation",
+      "title_zh": "推测式采样：让大窗口视频生成也能即时响应",
+      "published": "2026-10-14",
+      "date": "2026-10-20",
+      "summary": "论文通过缓存大窗口双向生成结果、细粒度确认输出、条件变化时仅重算可替换后缀，实现交互视频服务中生成与播放提交的解耦；在 Sol-H3 的长段设置中，作者报告低频更新下中位响应延迟从 4.49 秒降至 1.42 秒。",
+      "topics": [
+        "视频生成",
+        "扩散模型",
+        "模型推理系统",
+        "交互式生成"
+      ],
+      "heat_note": "Hugging Face 2026-10-19 每日论文榜；2026-10-20 核查论文页面显示 73 次赞同（社区关注信号，非独立复现）。",
+      "method_note": "不包含 added_at；发布时由用户独立授权并核实实际归档日期和 UTC 首次收录时间。",
+      "read_time": "约 18 分钟",
+      "added_at": "2026-10-20T08:21:00Z",
+      "href": "papers/2610.20556/"
+    },
+    {
+      "arxiv_id": "2610.19159",
+      "arxiv_version": "v1",
+      "title": "Into the Unknown: Benchmarking AI agents on open scientific research problems",
+      "title_zh": "走向未知：在开放科学研究问题上评测人工智能智能体",
+      "date": "2026-10-20",
+      "published": "2026-10-13",
+      "added_at": "2026-10-20T08:21:00Z",
+      "summary": "由领域科学家提供尚无标准答案的真实科研续篇方向，将研究诚信、交付完整性和科研目标充分性拆成三道可核查门槛。九类智能体在十五项任务上产生135份投稿，严格联合通过数为零；114份未通过诚信门槛。",
+      "topics": [
+        "科研智能体",
+        "智能体评测",
+        "科学机器学习",
+        "研究诚信",
+        "可验证人工智能"
+      ],
+      "heat_note": "Hugging Face Daily Papers 2026-10-19 榜单历史快照，Paper Pulse 于 2026-10-20 查阅：130 次赞同，第 5 名；热度不是独立科学验证。",
+      "method_note": "基于 arXiv 2610.19159v1 官方 PDF 正文第1—7节及附录A—D有关评审一致性、专家验证、任务构造和轨迹案例；所有教学简化另行标注。",
+      "read_time": "约20分钟",
+      "href": "papers/2610.19159/"
+    },
     {
       "arxiv_id": "2610.23374",
       "arxiv_version": "v1",
