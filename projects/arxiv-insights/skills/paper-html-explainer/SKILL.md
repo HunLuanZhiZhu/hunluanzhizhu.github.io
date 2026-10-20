@@ -1,6 +1,6 @@
 ---
 name: paper-html-explainer
-description: 基于论文原文，面向机器学习和深度学习读者，生成全中文、数学公式真正渲染、兼顾零基础导入与研究级技术深度的交互式 HTML/SVG 论文讲解页。
+description: 需要将 arXiv/机器学习论文精读成中文交互式 HTML 页面时使用；提供可复用草稿模板、逐式数学符号解释、论文专属 SVG、移动端验收及严格的 paper-meta 日期/发布校验；禁止自行发布。
 ---
 
 # 论文 → 中文交互式 HTML 技术解读
@@ -8,6 +8,40 @@ description: 基于论文原文，面向机器学习和深度学习读者，生�
 用于 projects/arxiv-insights/ 的站点适配 Skill。设计参考：https://github.com/sukanthoriginal/interactive-paper-explainers （MIT；双层解释、论文专属交互、静态页面）。
 
 本文件是重新编写的生成规范，不包含上游反馈服务器或运行时代码。**不执行热点检索、不配置定时任务、不自行部署或更新未授权文件。** 以下标记为「必须」的规则，不能因为篇幅、时间或视觉效果而省略。
+
+## 零、草稿模板和元数据发布边界（必须先读）
+
+### 提供实际 HTML 模板
+
+- 本 Skill 自带 `assets/paper-page.template.html`，是可复制改造的**草稿页面骨架**，不是仅有文字中的布局建议。模板包含中文标题及英文原题位置、唯一 `paper-meta`、两个阅读入口、前置知识、技术拆解、机制图、结论与参考来源，采用原生静态 HTML/CSS，不请求第三方字体、图片或脚本。
+- **模板不可直接发布**：其中所有标题、论文 ID、日期、示例说明、数学区域和 SVG 区域都标为占位符。必须阅读全文并重写对应内容；数学公式需真实 MathML 或本地已验证 KaTeX 排版、保留原始 LaTeX 源且解释全部符号。SVG 必须针对该论文独有机制绘制，不可把模板占位当成合格图示。
+- 模板不强制每篇采用同一视觉或交互设计。鼓励依据论文特点另做页面，但无论是否使用模板，都必须遵守本 Skill 全部证据、中文、数学、交互、性能、无障碍及移动端验收条款。
+- **推荐用法**：读取模板 → 生成独立 HTML 草稿 → 核实论文与替换全部占位内容 → 检查 JSON 与浏览器 → 作为未发布附件交付。自动运行不得写 GitHub；仅经用户另行明确授权的人工发布流程才可提交文章。
+
+### 三种日期不能混淆
+
+| 字段 | 准确含义 | 草稿阶段 | 人工发布阶段 |
+| --- | --- | --- | --- |
+| `published` | arXiv 官方首次发表日 | 核实原文；未核实则保留显式草稿占位并报告 | 必须是已核实、合法的 `YYYY-MM-DD` |
+| `date` | 论文在**本站实际归档的日期**，并非原论文首发日 | 尚未归档时可使用模板中的显式无效占位 `YYYY-MM-DD`，**不要猜测日期** | 必须填写真实有效的日期字符串；`null`、空白、占位值一律拒绝 |
+| `added_at` | 论文在本站**首次正式收录**的 UTC 时间，决定最新 24 篇排序 | **不得伪造；模板有意不提供此字段** | 首次发布时填写真实、以 `Z` 结尾的 UTC ISO 8601 时间；后续修改不得重置 |
+
+- `draft_generated_at` 可选，仅描述草稿生成时间，**不能代替 `date` 或 `added_at`**。
+- 如采用东八区归档日期，应统一依据实际归档时刻换算当地日期，并注明该日历口径；不得直接复制 `published` 当作 `date`。
+
+### 人工正式发布前的阻断式校验
+
+1. 目标路径必须为 `projects/arxiv-insights/papers/<稳定-arxiv-id>/index.html`；目录名与 JSON `arxiv_id` 严格一致（去掉 v1/v2 等版本后缀）；`<head>` 中恰好一个 `type="application/json"` 且 `id="paper-meta"` 的 script，内容必须是可解析的 JSON 对象。
+2. **逐字段校验**：`arxiv_id`、`title`、`title_zh`、`published`、`date`、`added_at`、`summary`、`topics`、`heat_note` 必须全部存在；除 `topics` 为非空字符串数组外，均须为非空且真实的字符串。禁止 `null`、空字符串、模板占位或不正确的数据类型。`arxiv_version`、`method_note`、`read_time` 等为可选。
+3. `published` 和 `date` 必须是合法真实日历日期 `YYYY-MM-DD`，`added_at` 必须是有效 UTC ISO 8601 时间且以 `Z` 结尾，并保留首次收录时间。绝不自行补造不存在的热度、论文结果或日期。
+4. **发布前必须先验证**目标 HTML 的元数据与证据、正文、数学、专属 SVG、响应式及交互；不得把 CI 失败当作正常补齐字段的方法。索引生成脚本 `tools/build_paper_index.py` 是最终兜底校验，不能替代人工发布前的检查。
+5. 若已处于**人工授权发布阶段**且持有完整本地检出，可用下面的只读命令调用现有索引构建器的验证函数，检查**所有已在 papers/ 下的论文**，不会写出 `data/papers.json`：
+
+   ~~~bash
+   python -c "import runpy; m=runpy.run_path('projects/arxiv-insights/tools/build_paper_index.py'); print('validated:',len(m['load_papers']()['papers']))"
+   ~~~
+
+   注意：这个命令会读取已有索引以保留历史元数据，因此**禁止**在只允许只读检索特定文件、不得读取 `data/papers.json` 的自动生产任务中执行；它也**不会检查尚未加入仓库的附件草稿**。这些草稿的元数据必须在发布流程中另行逐项校验。
 
 ## 一、研究方向与读者模型（必须）
 
@@ -118,7 +152,7 @@ description: 基于论文原文，面向机器学习和深度学习读者，生�
 
 ## 八、文件产出与登记（必须）
 
-自动生产只生成经验证的完整 HTML 附件，不写入仓库。经用户在普通对话明确批准后，独立发布阶段才可通过 GitHub 插件提交至 projects/arxiv-insights/papers/%ARXIV_ID%/index.html。禁止自动生产读取或修改 data/papers.json。HTML 的 `<head>` 必须有唯一 `<script type="application/json" id="paper-meta">`，内容为合法 JSON 对象，必填 `arxiv_id`、`title`、`title_zh`、`published`、`date`、`added_at`（仅实际收录时填写）、`summary`、`topics`、`heat_note`；`added_at` 表示实际首次收录 UTC ISO 8601 时间；未发布草稿不得伪造该时间，留待人工发布阶段补齐并复核。稳定 ID 必须与目录一致，热度不得虚构。页面链接须适用于 GitHub Pages 子路径，包含返回该子项目索引、原文及可核验代码链接。
+自动生产只生成经验证的完整 HTML 附件，不写入仓库。经用户在普通对话明确批准后，独立发布阶段才可通过 GitHub 插件提交至 projects/arxiv-insights/papers/%ARXIV_ID%/index.html。禁止自动生产读取或修改 data/papers.json。HTML 的 `<head>` 必须有唯一 `<script type="application/json" id="paper-meta">`，内容为合法 JSON 对象。**正式发布之前**必填 `arxiv_id`、`title`、`title_zh`、`published`、`date`、`added_at`、`summary`、`topics`、`heat_note` 并通过本文件「零、草稿模板和元数据发布边界」的阻断校验。`date` 必须是本站真实归档日的合法 `YYYY-MM-DD` 字符串，**不得为 null、空字符串或模板占位**；`published` 是核实的论文首发日，不可混用；`added_at` 表示本站首次收录 UTC ISO 8601 时间，未发布草稿不得伪造，首次发布时补齐，日后不可覆写。稳定 ID 必须与目录一致，热度不得虚构。页面链接须适用于 GitHub Pages 子路径，包含返回该子项目索引、原文及可核验代码链接。
 
 推荐页面布局：**中文论文标题+英文原题配对 → 问题导览 → 五分钟看懂 → 前置知识 → 技术拆解（公式/方法/实验）→ 交互式机制 → 结论与局限 → 原文与参考来源**。双入口可以用标签页、锚点或可展开章节组织，不能为了省空间隐去深度内容。
 
@@ -134,6 +168,7 @@ description: 基于论文原文，面向机器学习和深度学习读者，生�
 - [ ] 至少有一张论文特有的 SVG 机制图；互动有明确教学目的，区分概念演示与论文实测。
 - [ ] 重要结论和量化数字可定位到原文；论文版本、实验设置、基线、局限和作者/解读者立场清楚。
 - [ ] **移动端专门验收**：检查 320、375、430、768 CSS 像素宽度及横屏，正文无需缩放可读，整页无横向溢出，长公式/宽表格仅容器内滚动，SVG 标签可读，触控目标足够大，重要操作不依赖悬停；验证手机触摸与键盘、深色模式、页面缩放、链接及浏览器错误。未验证项逐项声明。
+- [ ] 模板所有占位内容均已替换（若使用模板）；正式发布前检查唯一有效 paper-meta、目录 ID、真实 published、非 null 的有效 date、首次收录 added_at、真实来源及非空 topics；**不合格即停止发布**。
 - [ ] 只修改已授权路径，不引入不可信远程脚本，不启动调度或擅自覆盖/发布现有文章。
 
 ## 禁止事项
