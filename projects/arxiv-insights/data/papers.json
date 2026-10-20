@@ -1,7 +1,50 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-19T23:32:03Z",
+  "updated_at": "2026-10-19T23:32:26Z",
   "papers": [
+    {
+      "arxiv_id": "2610.23374",
+      "arxiv_version": "v1",
+      "title": "MOSS-Image Technical Report",
+      "title_zh": "MOSS-Image：让图像生成真正理解文字与版式",
+      "published": "2026-10-16",
+      "date": "2026-10-20",
+      "added_at": "2026-10-19T23:32:26Z",
+      "summary": "解析 MOSS-Image 的五十亿参数扩散变换器、结构化版式条件、分层图文监督、长文本覆盖率和人工偏好评测，并用交互式布局及评分演示澄清指标边界。",
+      "topics": [
+        "图像生成",
+        "扩散变换器",
+        "视觉文字",
+        "版式控制",
+        "多模态学习"
+      ],
+      "heat_note": "Hugging Face Trending Papers 2026-10-20 查询快照显示约14—16次赞同；不同缓存快照不一致，不能视作实时精确计数。未发布草稿。",
+      "method_note": "精读 arXiv 2610.23374v1 官方 HTML 第1—9节及附录A—L；交互为教学模拟而非模型复现。",
+      "read_time": "约25分钟",
+      "href": "papers/2610.23374/"
+    },
+    {
+      "arxiv_id": "2610.22471",
+      "arxiv_version": "v1",
+      "title": "Has GPT-6-Astra Achieved Embodied Intelligence?",
+      "title_zh": "GPT-6-Astra 达到具身智能了吗？从仿真高分到真实机器人鸿沟",
+      "published": "2026-10-15",
+      "date": "2026-10-20",
+      "draft_generated_at": "2026-10-20",
+      "added_at": "2026-10-19T23:32:18Z",
+      "summary": "跨十二类具身基准、八种实体机器人配置的研究指出：演示驱动的上下文学习与延长执行预算可大幅提高仿真成绩，但时间、成本、安全、物理成功验证与长程责任使真实部署仍然困难。",
+      "topics": [
+        "具身智能",
+        "机器人控制",
+        "多模态智能体",
+        "评测方法",
+        "上下文学习"
+      ],
+      "heat_note": "Hugging Face Trending Papers 页面观察到约236次赞同，2026-10-20（页面快照）；社区关注度并非独立验证。",
+      "method_note": "原文为评测与系统研究，页面公式均标注为论文定义的教学形式化或教学计算，并非作者提出的新训练损失。",
+      "read_time": "22 分钟",
+      "href": "papers/2610.22471/"
+    },
     {
       "arxiv_id": "2610.23479",
       "arxiv_version": "v1",
