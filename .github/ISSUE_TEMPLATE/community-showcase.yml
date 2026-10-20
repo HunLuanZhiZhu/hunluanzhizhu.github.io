@@ -1,0 +1,60 @@
+name: Community showcase submission
+description: Submit a creative browser project for the community showcase
+title: "[Showcase] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for sharing! English and Chinese submissions are welcome.
+        Projects remain on the creator's website. Please do not upload preview images.
+        See the [contribution guide](https://github.com/HunLuanZhiZhu/hunluanzhizhu.github.io/blob/main/CONTRIBUTING.md).
+  - type: input
+    id: project
+    attributes:
+      label: Project name
+      placeholder: Name of the project
+    validations:
+      required: true
+  - type: input
+    id: creator
+    attributes:
+      label: Creator name or handle
+      placeholder: Your display name
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Short description
+      description: What can visitors experience?
+    validations:
+      required: true
+  - type: input
+    id: demo
+    attributes:
+      label: Live demo URL
+      description: Public HTTPS link, ideally without payment or registration
+      placeholder: https://example.org/demo
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source repository URL (optional)
+      placeholder: https://github.com/creator/project
+    validations:
+      required: false
+  - type: input
+    id: category
+    attributes:
+      label: Suggested category (optional)
+      placeholder: Creative coding, game, research, tool...
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I have the right to submit this project and understand that I remain responsible for hosting and maintaining it.
+          required: true
