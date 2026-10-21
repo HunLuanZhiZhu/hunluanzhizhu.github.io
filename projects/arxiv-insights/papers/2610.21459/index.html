@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="精读 arXiv:2610.21459：图像生成训练能否把视觉事实迁移到语言问答？从知识三元组、可访问性指标、三种对齐训练到逐项实验。">
+<title>图像会画，文字却答不出？｜arXiv 洞察</title>
+<script type="application/json" id="paper-meta">{
+  "arxiv_id":"2610.21459",
+  "arxiv_version":"v1",
+  "title":"Can Visual Generation Expand What Unified Multimodal Models Know?",
+  "title_zh":"图像生成能扩展统一多模态模型所知道的知识吗？",
+  "published":"2026-10-15",
+  "date":"2026-10-21","added_at":"2026-10-21T02:29:09Z",
+  "draft_generated_at":"2026-10-21T06:19:59+08:00",
+  "summary":"以虚构实体的视觉属性为受控知识，研究图像生成训练能否让统一多模态模型在没有输入图像的情况下用文字回答，以及文本对齐、图文交错对齐如何改变这种能力。",
+  "topics":["多模态学习","图像生成","跨模态知识迁移","模型评测"],
+  "heat_note":"Hugging Face 论文页 2026-10-21 本轮查阅显示 25 次赞同；社区关注度不等于研究结果被独立证实。",
+  "method_note":"已核对 arXiv v1 官方 HTML 正文第1—5节及附录A.1—A.4；数字来自原文表1—7。",
+  "read_time":"约18分钟"
+}</script>
+<style>
+:root{--paper:#f8f7f3;--surface:#fffefa;--surface2:#f0f3f0;--ink:#1d2d31;--muted:#5d7072;--line:#d7dfdc;--accent:#0c6b67;--accent2:#ad5e35;--soft:#e0f1ec;--blue:#347d9c;--red:#c56c47;--shadow:0 12px 35px rgba(22,48,48,.065)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:78px}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.8 -apple-system,BlinkMacSystemFont,"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif}
+strong{overflow-wrap:anywhere}a{color:var(--accent);text-underline-offset:3px}a:hover{text-decoration-thickness:2px}
+button,select{font:inherit}button{cursor:pointer}
+button:focus-visible,select:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--accent2);outline-offset:3px}
+.skip{position:absolute;top:-100px;left:8px;padding:8px;background:var(--surface);z-index:100}.skip:focus{top:8px}
+.topbar{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);background:var(--surface);background:color-mix(in srgb,var(--surface) 93%,transparent);backdrop-filter:blur(12px)}
+.nav{max-width:1140px;margin:auto;min-height:64px;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:8px 22px}
+.brand{font-weight:850;letter-spacing:.04em;text-decoration:none;color:var(--ink);white-space:nowrap}.brand em{font-style:normal;color:var(--accent)}
+.navlinks{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:.85rem}.navlinks a{text-decoration:none}.theme{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:6px 14px;min-height:40px}
+main{max-width:1140px;margin:auto;padding:0 22px 80px}
+.hero{padding:72px 0 58px;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(240px,.85fr);gap:42px;align-items:center}
+.eyebrow{font-size:.76rem;letter-spacing:.13em;font-weight:850;color:var(--accent);text-transform:uppercase}.draft{display:inline-block;background:var(--soft);padding:3px 10px;border-radius:20px;margin-left:8px;letter-spacing:0;color:var(--accent)}
+h1,h2,h3{line-height:1.32;letter-spacing:-.035em;margin:0 0 16px}h1{font-size:clamp(2.15rem,4.4vw,4.1rem);font-weight:900;letter-spacing:-.055em}h2{font-size:clamp(1.65rem,3vw,2.5rem)}h3{font-size:1.25rem}
+.en-title{font:italic 1rem/1.5 Georgia,serif;color:var(--muted);overflow-wrap:anywhere;margin:8px 0 22px}
+.lead{font-size:1.12rem;line-height:1.75;color:var(--muted);max-width:730px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.action{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--accent);border-radius:12px;background:var(--accent);color:white;text-decoration:none;padding:10px 18px;min-height:46px;font-weight:700;font-size:.9rem}
+.action.alt{background:transparent;color:var(--accent)}.action:hover{filter:brightness(1.08)}
+.hero-visual{border-radius:24px;padding:24px;background:linear-gradient(145deg,#174c4b,#0d6a65);color:#effff9;min-height:360px;box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.hero-visual .tiny{opacity:.8;font-size:.8rem;letter-spacing:.08em}.hero-visual .demo-card{background:#ffffff17;border:1px solid #ffffff35;border-radius:15px;padding:14px 16px;margin:9px 0}.hero-visual strong{font-size:1.12rem}.hero-visual .mutedwhite{color:#d2ebe5;font-size:.87rem}
+.arrowline{text-align:center;color:#b4e5d8;font-weight:900;line-height:1.1}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 54px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:17px 18px}
+.stat strong{display:block;font-size:1.6rem;line-height:1.2;color:var(--accent);font-variant-numeric:tabular-nums}.stat span{font-size:.78rem;color:var(--muted)}
+section{padding:54px 0;border-top:1px solid var(--line)}
+.kicker{color:var(--accent2);font-size:.8rem;font-weight:800;letter-spacing:.11em;margin-bottom:8px}
+.section-lead{color:var(--muted);max-width:820px;margin-top:0}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;min-width:0;box-shadow:var(--shadow)}
+.card p:last-child{margin-bottom:0}
+.card h3{margin-bottom:8px}
+.rail{border-left:4px solid var(--accent);padding:16px 22px;background:var(--soft);border-radius:0 14px 14px 0;margin:24px 0}
+.rail strong{color:var(--accent)}
+details.knowledge{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 18px;margin:10px 0}
+details.knowledge summary{padding:14px 0;cursor:pointer;font-weight:750;min-height:48px;overflow-wrap:anywhere}
+details.knowledge p{margin:0 0 16px;color:var(--muted)}
+.stepnum{display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;border-radius:50%;background:var(--soft);color:var(--accent);font-weight:900;margin-right:10px}
+.flowbox{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;margin-top:24px}
+.controlbar{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0}
+.pill{border:1px solid var(--line);background:var(--surface2);color:var(--ink);padding:9px 15px;border-radius:12px;min-height:44px;font-size:.89rem;font-weight:700}
+.pill[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.svg-scroll{overflow-x:auto;max-width:100%;border-radius:12px;background:var(--surface2);padding:8px;scrollbar-color:var(--accent) var(--line)}
+.mechanism{display:block;width:100%;min-width:680px;height:auto}
+.mechanism .node{fill:var(--surface);stroke:var(--line);stroke-width:2}
+.mechanism .node.active{fill:var(--soft);stroke:var(--accent);stroke-width:3}
+.mechanism .link{stroke:var(--muted);stroke-width:2;fill:none}
+.mechanism text{font-family:inherit;fill:var(--ink);font-size:17px;font-weight:700}
+.mechanism .subtext{fill:var(--muted);font-size:13px;font-weight:400}
+.note{color:var(--muted);font-size:.83rem}.feedback{padding:13px 17px;border-radius:12px;background:var(--soft);color:var(--ink);min-height:65px}
+.formula{border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:22px;margin:22px 0;min-width:0}
+.formula header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.formula header strong{font-size:1.05rem}.eqno{color:var(--accent);font-size:.78rem;font-weight:800;white-space:nowrap}
+.mathwrap{overflow-x:auto;overflow-y:hidden;max-width:100%;padding:15px 8px;background:var(--surface2);border-radius:12px}
+.mathwrap math{font-size:1.2rem;min-width:max-content;color:var(--ink)}
+.formula .purpose{color:var(--muted);margin:13px 0}
+.formula .dictionary{font-size:.9rem;line-height:1.75}
+.formula .dictionary strong{color:var(--accent)}
+.formula details{font-size:.84rem;margin-top:10px}
+.formula details summary{cursor:pointer;font-weight:700}
+.formula pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.6 ui-monospace,monospace;background:var(--surface2);padding:12px;border-radius:9px;max-width:100%}
+.table-scroll{max-width:100%;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:560px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--surface2);color:var(--muted);font-weight:800}
+.metric{font-variant-numeric:tabular-nums;font-weight:800}
+.lab{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:25px;margin:24px 0}
+.labhead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.lab label{font-size:.85rem;font-weight:700;color:var(--muted);min-width:0;max-width:100%;display:flex;gap:8px;flex-wrap:wrap}
+.lab select{border:1px solid var(--line);background:var(--surface2);color:var(--ink);padding:9px 12px;border-radius:10px;min-height:44px;max-width:100%;min-width:0}
+.barrow{display:grid;grid-template-columns:128px minmax(0,1fr) 55px;gap:12px;align-items:center;margin:15px 0;font-size:.9rem}
+.track{height:16px;border-radius:9px;background:var(--surface2);overflow:hidden}
+.fill{height:100%;width:0;background:var(--accent);border-radius:9px;transition:width .28s ease}
+.fill.secondary{background:var(--accent2)}.fill.third{background:var(--blue)}
+.dualrow{display:grid;grid-template-columns:90px minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:center;margin:12px 0;font-size:.84rem}
+.dualrow .track{height:13px}
+.legend{display:flex;flex-wrap:wrap;gap:18px;font-size:.82rem;color:var(--muted)}
+.swatch{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--accent);margin-right:6px}
+.swatch.other{background:var(--accent2)}
+.bigresult{font-size:1.5rem;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums}
+.smallgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.smallgrid .card{padding:17px}
+blockquote{border-left:3px solid var(--accent2);padding:4px 20px;margin:18px 0;color:var(--muted);font-size:1.04rem}
+.footer{padding:40px 0 70px;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line)}
+@media(max-width:900px){.cols{grid-template-columns:1fr}.barrow{grid-template-columns:minmax(0,1fr) auto;gap:6px}.barrow>span:first-child{grid-column:1/-1}}
+@media(max-width:800px){.hero{grid-template-columns:1fr;gap:24px;padding-top:44px}.hero-visual{min-height:240px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.smallgrid{grid-template-columns:1fr}.navlinks{gap:8px}}
+@media(max-width:560px){body{font-size:16.5px}.nav{padding:8px 14px}.navlinks a[href="#math"]{display:none}.navlinks a[href="#results"]{display:none}.brand{font-size:.89rem}.navlinks{font-size:.76rem}.theme{padding:6px 10px}.hero{padding-top:34px}.hero-visual{padding:18px}main{padding:0 16px 55px}.cols{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:14px 12px}.stat strong{font-size:1.4rem}.card,.lab,.formula{padding:18px}.barrow{grid-template-columns:minmax(0,1fr) auto;gap:6px;font-size:.8rem}.barrow>span:first-child{grid-column:1/-1}.dualrow{grid-template-columns:1fr;gap:4px;font-size:.78rem}.dualrow>strong{margin-top:7px}.mathwrap math{font-size:1.12rem}.navlinks a{display:none}.navlinks a[href="#intro"]{display:inline}.navlinks a[href="#mechanism"]{display:inline}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
+html[data-theme="dark"]{--paper:#101c1f;--surface:#17282b;--surface2:#203437;--ink:#e9f3ef;--muted:#b3c7c2;--line:#365155;--accent:#79d5c1;--accent2:#e4aa86;--soft:#21433e;--blue:#80b8d4;--red:#e69d7e;--shadow:none}
+@media(prefers-color-scheme:dark){html:not([data-theme="light"]){--paper:#101c1f;--surface:#17282b;--surface2:#203437;--ink:#e9f3ef;--muted:#b3c7c2;--line:#365155;--accent:#79d5c1;--accent2:#e4aa86;--soft:#21433e;--blue:#80b8d4;--red:#e69d7e;--shadow:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#intro">跳转到正文</a>
+<header class="topbar"><nav class="nav" aria-label="主导航">
+<a class="brand" href="../../index.html">arXiv <em>洞察</em></a>
+<div class="navlinks"><a href="#intro">五分钟看懂</a><a href="#mechanism">交互机制</a><a href="#math">技术公式</a><a href="#results">实验数据</a><button class="theme" id="themeBtn" type="button" aria-label="切换明暗主题">切换主题</button></div>
+</nav></header>
+<main>
+<header class="hero">
+<div>
+<div class="eyebrow">论文精读 / 2610.21459 · v1 <span class="draft">本站已收录论文</span></div>
+<h1>图像会画，<br>文字却答不出？</h1>
+<p class="en-title">Can Visual Generation Expand What Unified Multimodal Models Know?</p>
+<p class="lead">一张训练图片教会模型：虚构球队的球衣上印着「10」。为什么同一个模型能画出数字，却可能回答不出「球衣号码是多少」？这篇论文把<strong>视觉知识是否真正能被语言调用</strong>变成可测量的研究问题。</p>
+<div class="hero-actions"><a class="action" href="#intro">五分钟看懂 ↓</a><a class="action alt" href="#math">技术拆解 ↓</a></div>
+<p class="note">作者：Wenkai Li、Wenyi Hong、Zhuoyi Yang、Jie Tang｜首次提交：2026-10-15｜分类：计算机视觉、人工智能｜阅读约 18 分钟</p>
+</div>
+<div class="hero-visual" role="img" aria-label="示意：训练图片中的球衣号码为10，但纯文字问答可能失败，说明视觉生成与语言检索之间存在差距">
+<div class="tiny">一条知识，两种访问方式</div>
+<div>
+<div class="demo-card"><div class="mutedwhite">图像生成任务</div><strong>「画出阿文布洛克的球衣」</strong><div style="font-size:2.6rem;line-height:1.5;text-align:center" aria-hidden="true">▣ 10</div><div class="mutedwhite">图像目标包含号码 10</div></div>
+<div class="arrowline">↓　同一知识　↓</div>
+<div class="demo-card"><div class="mutedwhite">纯文字问答</div><strong>「阿文布洛克的球衣号码？」</strong><div style="font-size:1.15rem;color:#ffe1c5">模型可能回答错误</div></div>
+</div><div class="tiny">概念示意，不是模型实际输出截图</div>
+</div>
+</header>
+<div class="stats" aria-label="研究概要">
+<div class="stat"><strong>7 类</strong><span>受控视觉知识</span></div>
+<div class="stat"><strong>350</strong><span>虚构知识三元组</span></div>
+<div class="stat"><strong>3 种</strong><span>统一多模态模型</span></div>
+<div class="stat"><strong>8,552</strong><span>经筛选的训练图片</span></div>
+</div>
+<section id="intro">
+<div class="kicker">01 / 五分钟看懂</div>
+<h2>会生成，不代表能说出来</h2>
+<p class="section-lead">作者没有把「模型知道」等同于单一测试分数，而是分别测量：模型能否<strong>把事实画出来</strong>，以及能否<strong>在没有图片的情况下用文字答出来</strong>。这两种能力可能不一致。</p>
+<div class="cols">
+<article class="card"><h3>原来的困难</h3><p>统一多模态模型（Unified Multimodal Model）同时处理文字理解和图像生成，但共享参数不保证共享检索路径。传统图像问答会给模型图片，无法判断它是否从<strong>此前的图像生成训练</strong>中学到了可用的事实。</p></article>
+<article class="card"><h3>论文的关键变化</h3><p>构造虚构实体，训练文字提示只写实体名称，目标属性值只出现在图像中。随后完全不提供图片，直接问文字问题。再用不同对齐训练检验这种跨模态访问是否改善。</p></article>
+</div>
+<div class="rail"><strong>先记住一个区分：</strong>模型能画对 ≠ 模型能答对。更严格地说，画对与答对都是任务表现，并不直接证明内部存在某个可定位的「知识条目」。</div>
+<div class="smallgrid">
+<div class="card"><h3>第一步：隔离知识来源</h3><p>虚构人名、旗帜、徽章、书名，尽量避免模型靠预训练常识猜答案。</p></div>
+<div class="card"><h3>第二步：分别测量</h3><p>图像生成由视觉语言模型判分；文字问答依据最终简短答案与标准值比对。</p></div>
+<div class="card"><h3>第三步：改变训练连接</h3><p>比较只训练画图、增加文字问答对齐、增加图文交错推理三种条件。</p></div>
+</div>
+<h3 style="margin-top:30px">论文最能说明问题的一个数字</h3>
+<p>在直接迁移条件下，SenseNova-U1 的「球衣号码」类别<strong>图像可访问率为 88%，文字可访问率为 0%</strong>（表 1）。这是同一类知识在两种输出方式上的巨大落差，而不是「模型完全没学到图像内容」的直接证据。</p>
+</section>
+<section id="prereq">
+<div class="kicker">02 / 前置知识地图</div>
+<h2>读懂实验前，需要哪些概念？</h2>
+<p class="section-lead">下列卡片依照「模型能力 → 训练信号 → 评测隔离 → 推理方式」排列。已熟悉者可直接跳至机制图。</p>
+<details class="knowledge"><summary>统一多模态模型（Unified Multimodal Model）</summary><p><strong>是什么：</strong>同一系统具备文本处理与图像生成能力，具体可能由共享主干或多个专家分支实现。<strong>为什么需要：</strong>论文要检查图像生成分支学到的事实是否能被语言回答过程利用。<strong>输入：</strong>文字或跨模态序列。<strong>输出：</strong>文本答案或生成图片。<strong>在本文：</strong>测试 BAGEL、GLM-Omni 和 SenseNova-U1 三种架构。</p></details>
+<details class="knowledge"><summary>监督信号（Supervision）与信息泄漏</summary><p><strong>是什么：</strong>训练提示、目标图片、目标文字共同决定模型从哪里接触到正确答案。<strong>为什么需要：</strong>如果文字提示已经写出「10」，就无法证明号码来自图像监督。<strong>输入：</strong>不含答案值的文字提示与含答案值的目标图。<strong>输出：</strong>生成训练损失。<strong>在本文：</strong>所有目标实体都有图像监督；仅对齐组额外见到目标文字答案。</p></details>
+<details class="knowledge"><summary>训练集与测试集按实体分离</summary><p><strong>是什么：</strong>不是随机拆分同一实体的图片，而是将每类实体对半划分为对齐组和测试组。<strong>为什么需要：</strong>确保测试实体没有被文字问答直接教过答案。<strong>输入：</strong>每类 50 个虚构实体。<strong>输出：</strong>每类 25 个对齐实体与 25 个测试实体。<strong>在本文：</strong>表 2、表 3 比较对测试组的迁移效果。</p></details>
+<details class="knowledge"><summary>视觉思维链（Visual Chain-of-Thought）</summary><p><strong>是什么：</strong>推理时先生成一幅相关图片，再检查图片内容并给出文字答案。<strong>为什么需要：</strong>测试知识是否只是难以被直接语言检索。<strong>输入：</strong>纯文字问题。<strong>中间产物：</strong>模型自行生成的图像。<strong>输出：</strong>文字答案。<strong>在本文：</strong>表 3 的额外推理实验；与表 2 的「纯文字直接回答」不同，不能混作同一测试条件。</p></details>
+</section>
+<section id="mechanism">
+<div class="kicker">03 / 交互机制</div>
+<h2>同样的图片，怎样连接到语言答案？</h2>
+<p class="section-lead">点击三种训练条件，观察哪些实体获得文字监督、图像监督与交错监督。下方图示为<strong>依据论文第 3.3、4.2、4.3 节重绘的教学结构</strong>，不是原论文图片，也不代表实验结果。</p>
+<div class="flowbox">
+<div class="controlbar" role="group" aria-label="选择训练条件">
+<button type="button" class="pill mode" data-mode="direct" aria-pressed="true">① 仅图像生成</button>
+<button type="button" class="pill mode" data-mode="text" aria-pressed="false">② 文字对齐</button>
+<button type="button" class="pill mode" data-mode="inter" aria-pressed="false">③ 图文交错对齐</button>
+<button type="button" class="pill" id="resetMode">复位</button>
+</div>
+<div class="svg-scroll" tabindex="0" aria-label="训练条件示意图，可在窄屏横向滚动">
+<svg class="mechanism" viewBox="0 0 760 320" role="img" aria-labelledby="svgTitle svgDesc">
+<title id="svgTitle">受控知识从图像监督迁移到语言问答的三阶段结构</title>
+<desc id="svgDesc">左侧是所有实体的图像生成监督；中间为仅对齐组可获得的附加监督；右侧为没有文字答案训练的测试组及其纯文字问答。</desc>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="currentColor"/></marker></defs>
+<path d="M223 116H274" class="link" marker-end="url(#arr)"/><path d="M493 116H535" class="link" marker-end="url(#arr)"/>
+<rect class="node active" x="10" y="45" width="214" height="148" rx="16"/>
+<text x="117" y="76" text-anchor="middle">全部 350 个实体</text><text x="117" y="107" text-anchor="middle">文字提示 → 目标图片</text><text class="subtext" x="117" y="137" text-anchor="middle">提示不含属性答案</text><text class="subtext" x="117" y="160" text-anchor="middle">图片展示目标属性</text>
+<rect id="alignNode" class="node" x="275" y="45" width="219" height="148" rx="16"/>
+<text x="385" y="77" text-anchor="middle">对齐组：每类 25 个</text><text id="alignTitle" x="385" y="108" text-anchor="middle">不额外给目标答案</text><text id="alignSub" class="subtext" x="385" y="139" text-anchor="middle">仅有图像生成训练</text><text class="subtext" x="385" y="161" text-anchor="middle">测试组不接触此监督</text>
+<rect class="node active" x="535" y="45" width="215" height="148" rx="16"/>
+<text x="642" y="77" text-anchor="middle">测试组：每类 25 个</text><text x="642" y="109" text-anchor="middle">纯文字问答</text><text class="subtext" x="642" y="139" text-anchor="middle">无输入图片</text><text class="subtext" x="642" y="161" text-anchor="middle">未见目标值的问答示例</text>
+<rect x="10" y="220" width="740" height="80" rx="14" fill="var(--soft)"/>
+<text x="26" y="247">关键隔离：</text><text class="subtext" x="26" y="272">所有实体在训练图像中出现目标属性；只有对齐组额外接收答案形式的监督。</text>
+</svg>
+</div>
+<p class="note">窄屏可在图内横向滚动；箭头表示信息处理顺序，不表示因果证明。</p>
+<p class="feedback" id="modeFeedback" aria-live="polite">仅图像生成：所有实体通过目标图片接触属性值；不使用目标知识的文字对齐。检验直接迁移。</p>
+</div>
+<div class="cols">
+<div class="card"><h3>训练时：答案在哪里？</h3><p>提示只给出实体和场景，目标属性值放在生成图像里。对齐组的附加示例负责建立「视觉内容 ↔ 文字答案」的联系；测试组不获得对应实体的问答答案。</p></div>
+<div class="card"><h3>测试时：刻意拿走图片</h3><p>表 2 评测始终使用<strong>无输入图片、无中间图像生成</strong>的文字问答。因此平均分的提升不能解释为测试时偷看了答案图，而是训练条件改变后的泛化结果。</p></div>
+</div>
+</section>
+<section id="math">
+<div class="kicker">04 / 技术拆解：问题形式化与数学</div>
+<h2>把「知道」拆成可检验的两个通道</h2>
+<p class="section-lead">以下依次列出原文的知识定义、公式 (1)—(4) 及第 4.4 节条件概率定义。每一式均提供真实 MathML 排版、对应的 LaTeX 数学源、完整符号词典和最小算例。公式容器可独立横向滚动。</p>
+<article class="formula" id="eq3.1">
+<header><strong>① 受控知识三元组</strong><span class="eqno">原文定位：3.1</span></header>
+<div class="mathwrap" tabindex="0" aria-label="数学公式，可横向滚动">
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>τ</mi><mi>i</mi></msub><mo>=</mo><mo>(</mo><msub><mi>e</mi><mi>i</mi></msub><mo>,</mo><msub><mi>a</mi><mi>i</mi></msub><mo>,</mo><msub><mi>v</mi><mi>i</mi></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">\tau_i=(e_i,a_i,v_i)</annotation></semantics></math>
+</div><p class="purpose">作用：给每个受控事实一个可核查的表示。该式是原文第 3.1 节的定义，不是模型训练损失。</p><div class="dictionary"><strong>完整符号说明：</strong>希腊字母 <strong>τ</strong> 表示知识单元；下标 <strong>i</strong> 是实体索引，取第 1 到第 350 个知识单元；<strong>eᵢ</strong> 是虚构实体，<strong>aᵢ</strong> 是其目标属性，<strong>vᵢ</strong> 是该属性的正确值；括号表示有序三元组。</div>
+<p class="note"><strong>计算直觉：</strong>例如「阿文布洛克、球衣号码、10」是一条知识。名称和属性可以在训练提示出现，但值 10 只由目标图片提供。</p>
+<details><summary>查看对应的 LaTeX 数学源（可复制）</summary><pre>\tau_i=(e_i,a_i,v_i)</pre></details>
+</article>
+<article class="formula" id="eq1">
+<header><strong>② 文字可访问率</strong><span class="eqno">原文定位：1</span></header>
+<div class="mathwrap" tabindex="0" aria-label="数学公式，可横向滚动">
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>A</mi><mtext>text</mtext></msub><mo>(</mo><mtext>UMM</mtext><mo>;</mo><mi>𝒦</mi><mo>)</mo><mo>=</mo><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msub><mtext>Eval</mtext><mtext>text</mtext></msub><mo>(</mo><mtext>UMM</mtext><mo>(</mo><msub><mi>q</mi><mi>i</mi></msub><mo>;</mo><mtext>T2T</mtext><mo>)</mo><mo>,</mo><msub><mi>v</mi><mi>i</mi></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">A_{\mathrm{text}}(\mathrm{UMM};\mathcal K)=\frac1N\sum_{i=1}^{N}\operatorname{Eval}_{\mathrm{text}}\bigl(\mathrm{UMM}(q_i;\mathrm{T2T}),v_i\bigr)</annotation></semantics></math>
+</div><p class="purpose">作用：原文公式 (1)。检验只用文字提问时，模型能否说出从图片训练中接触过的正确属性值；越高越好。</p><div class="dictionary"><strong>完整符号说明：</strong><strong>Aₜₑₓₜ</strong> 是文字可访问率；<strong>UMM</strong> 是被评测的统一多模态模型；分号表示函数输入的不同部分；<strong>𝒦</strong> 是知识集合；<strong>N</strong> 是其中知识单元数（完整集合为 350；对齐实验仅在测试组评估）；<strong>i</strong> 从 1 到 N 逐条枚举；<strong>qᵢ</strong> 是第 i 条知识的纯文字问题；<strong>T2T</strong> 是文字输入到文字输出模式；<strong>vᵢ</strong> 是标准属性值；<strong>Evalₜₑₓₜ</strong> 是最终答案的正确性函数，正确返回 1，错误返回 0；<strong>∑</strong> 求和，<strong>1/N</strong> 取平均。</div>
+<p class="note"><strong>计算直觉：</strong>如果两道问题中一道答对、一道答错，两个指示值是 1 和 0，平均为 50%。这只是公式的教学计算，不是论文实验数据。</p>
+<details><summary>查看对应的 LaTeX 数学源（可复制）</summary><pre>A_{\mathrm{text}}(\mathrm{UMM};\mathcal K)=\frac1N\sum_{i=1}^{N}\operatorname{Eval}_{\mathrm{text}}\bigl(\mathrm{UMM}(q_i;\mathrm{T2T}),v_i\bigr)</pre></details>
+</article>
+<article class="formula" id="eq2">
+<header><strong>③ 图像可访问率</strong><span class="eqno">原文定位：2</span></header>
+<div class="mathwrap" tabindex="0" aria-label="数学公式，可横向滚动">
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>A</mi><mtext>vis</mtext></msub><mo>(</mo><mtext>UMM</mtext><mo>;</mo><mi>𝒦</mi><mo>)</mo><mo>=</mo><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msub><mtext>Judge</mtext><mtext>VLM</mtext></msub><mo>(</mo><mtext>UMM</mtext><mo>(</mo><msub><mi>p</mi><mi>i</mi></msub><mo>;</mo><mtext>T2I</mtext><mo>)</mo><mo>,</mo><msub><mi>τ</mi><mi>i</mi></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">A_{\mathrm{vis}}(\mathrm{UMM};\mathcal K)=\frac1N\sum_{i=1}^{N}\operatorname{Judge}_{\mathrm{VLM}}\bigl(\mathrm{UMM}(p_i;\mathrm{T2I}),\tau_i\bigr)</annotation></semantics></math>
+</div><p class="purpose">作用：原文公式 (2)。不再要求文字答题，而是看模型能否在生成图像里复现目标事实；越高越好。</p><div class="dictionary"><strong>完整符号说明：</strong><strong>Aᵥᵢₛ</strong> 是图像可访问率；<strong>UMM</strong>、<strong>𝒦</strong>、<strong>N</strong>、<strong>i</strong>、求和与平均含义同<a href='#eq1'>公式 (1)</a>；<strong>pᵢ</strong> 是第 i 条知识对应的图像生成提示，不包含目标属性值；<strong>T2I</strong> 是文字输入到图像输出模式；<strong>τᵢ</strong> 是<a href='#eq3.1'>三元组</a>；<strong>Judgeᵥₗₘ</strong> 是视觉语言模型判分函数，生成图满足实体—属性—值关系返回 1，否则返回 0。它是自动判分器，并非无误的人工真值。</div>
+<p class="note"><strong>计算直觉：</strong>例如生成两张图，只有一张正确描绘目标号码，图像可访问率为 50%。原文附录 A.3 还对名字、书名等采用编辑距离容差。</p>
+<details><summary>查看对应的 LaTeX 数学源（可复制）</summary><pre>A_{\mathrm{vis}}(\mathrm{UMM};\mathcal K)=\frac1N\sum_{i=1}^{N}\operatorname{Judge}_{\mathrm{VLM}}\bigl(\mathrm{UMM}(p_i;\mathrm{T2I}),\tau_i\bigr)</pre></details>
+</article>
+<article class="formula" id="eq3">
+<header><strong>④ 视觉—语言访问差距</strong><span class="eqno">原文定位：3</span></header>
+<div class="mathwrap" tabindex="0" aria-label="数学公式，可横向滚动">
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>Δ</mi><mtext>access</mtext></msub><mo>(</mo><mtext>UMM</mtext><mo>;</mo><mi>𝒦</mi><mo>)</mo><mo>=</mo><msub><mi>A</mi><mtext>vis</mtext></msub><mo>(</mo><mtext>UMM</mtext><mo>;</mo><mi>𝒦</mi><mo>)</mo><mo>−</mo><msub><mi>A</mi><mtext>text</mtext></msub><mo>(</mo><mtext>UMM</mtext><mo>;</mo><mi>𝒦</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\Delta_{\mathrm{access}}(\mathrm{UMM};\mathcal K)=A_{\mathrm{vis}}(\mathrm{UMM};\mathcal K)-A_{\mathrm{text}}(\mathrm{UMM};\mathcal K)</annotation></semantics></math>
+</div><p class="purpose">作用：原文公式 (3)。同一知识集合上，图像表现减去文字表现，衡量「能画但不能说」的程度。</p><div class="dictionary"><strong>完整符号说明：</strong><strong>Δₐ꜀꜀ₑₛₛ</strong> 是访问差距；<strong>Aᵥᵢₛ</strong> 和 <strong>Aₜₑₓₜ</strong> 分别由<a href='#eq2'>公式 (2)</a>和<a href='#eq1'>公式 (1)</a>定义；<strong>UMM</strong> 是被评测模型；<strong>𝒦</strong> 是同一知识集合；<strong>Δ</strong> 表示差值；百分率相减以「百分点」报告。</div>
+<p class="note"><strong>计算直觉：</strong>SenseNova-U1 在表 1 的「号码」类为 88%（图像）和 0%（文字），差距为 88 个百分点；这不是 88% 的相对提升。</p>
+<details><summary>查看对应的 LaTeX 数学源（可复制）</summary><pre>\Delta_{\mathrm{access}}(\mathrm{UMM};\mathcal K)=A_{\mathrm{vis}}(\mathrm{UMM};\mathcal K)-A_{\mathrm{text}}(\mathrm{UMM};\mathcal K)</pre></details>
+</article>
+<article class="formula" id="eq4.4">
+<header><strong>⑤ 图像正确与文字正确的条件关联</strong><span class="eqno">原文定位：4.4</span></header>
+<div class="mathwrap" tabindex="0" aria-label="数学公式，可横向滚动">
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>Δ</mi><mtext>assoc</mtext></msub><mo>=</mo><mi mathvariant="normal">Pr</mi><mo>(</mo><mi>T</mi><mo>|</mo><mi>I</mi><mo>)</mo><mo>−</mo><mi mathvariant="normal">Pr</mi><mo>(</mo><mi>T</mi><mo>|</mo><mo>¬</mo><mi>I</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\Delta_{\mathrm{assoc}}=\Pr(T\mid I)-\Pr(T\mid\neg I)</annotation></semantics></math>
+</div><p class="purpose">作用：原文第 4.4 节。比较「生成图正确」和「生成图不正确」时文字答案正确的条件概率，检验两种能力是否相关。</p><div class="dictionary"><strong>完整符号说明：</strong><strong>Δₐₛₛₒ꜀</strong> 是条件正确率之差；<strong>Pr</strong> 表示概率；<strong>T</strong> 是文字答案正确事件；<strong>I</strong> 是生成图正确事件；竖线 <strong>|</strong> 表示「在……条件下」；<strong>¬I</strong> 是图像生成不正确；<strong>Δ</strong> 为相减的差值。两个探针是分开评估的，文字问答时并未看到对应生成图。</div>
+<p class="note"><strong>计算直觉：</strong>GLM-Omni 的交错对齐结果：31.25% − 23.16% = +8.09 个百分点（表 4）。正相关不证明图像知识一定导致文字答对。</p>
+<details><summary>查看对应的 LaTeX 数学源（可复制）</summary><pre>\Delta_{\mathrm{assoc}}=\Pr(T\mid I)-\Pr(T\mid\neg I)</pre></details>
+</article>
+<article class="formula" id="eq4">
+<header><strong>⑥ 视觉文本判分的容差</strong><span class="eqno">原文定位：4</span></header>
+<div class="mathwrap" tabindex="0" aria-label="数学公式，可横向滚动">
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>δ</mi><mo>(</mo><mi>L</mi><mo>)</mo><mo>=</mo><mo>{</mo><mtable columnalign="left left" rowspacing=".5em"><mtr><mtd><mn>1</mn></mtd><mtd><mi>L</mi><mo>≤</mo><mn>5</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd><mtd><mn>5</mn><mo>&lt;</mo><mi>L</mi><mo>≤</mo><mn>10</mn></mtd></mtr><mtr><mtd><mn>3</mn></mtd><mtd><mi>L</mi><mo>&gt;</mo><mn>10</mn></mtd></mtr></mtable></mrow><annotation encoding="application/x-tex">\delta(L)=\begin{cases}1,&amp;L\leq5,\\2,&amp;5&lt;L\leq10,\\3,&amp;L&gt;10.\end{cases}</annotation></semantics></math>
+</div><p class="purpose">作用：原文附录 A.3 的公式 (4)。判分生成图里的姓名、国名、书名时，允许少量字符错误；球衣号码仍必须完全匹配。</p><div class="dictionary"><strong>完整符号说明：</strong><strong>δ</strong> 是允许的最大编辑距离（字符编辑次数）；<strong>L</strong> 是参考文字的字符长度，取非负整数；<strong>1、2、3、5、10</strong> 是作者设定的固定阈值；<strong>≤</strong> 表示小于等于，<strong>&lt;</strong> 表示小于，<strong>&gt;</strong> 表示大于；大括号表示按条件选用一段；<strong>编辑距离</strong> 是把一个字符串改成另一个所需的最少插入、删除或替换次数。</div>
+<p class="note"><strong>计算直觉：</strong>参考名称长度为 7 个字符时，允许编辑距离不超过 2；长度为 11 时允许 3。该容差只属于图像文字判分，不用于号码精确匹配。</p>
+<details><summary>查看对应的 LaTeX 数学源（可复制）</summary><pre>\delta(L)=\begin{cases}1,&amp;L\leq5,\\2,&amp;5&lt;L\leq10,\\3,&amp;L&gt;10.\end{cases}</pre></details>
+</article>
+<div class="rail"><strong>方法论警告：</strong>图像指标依赖自动视觉判分；文字指标依赖答案比对。两种测量的误差结构不同，访问差距不是内部「知识是否存在」的直接观测。论文只声称在受控条件下观察到跨模态迁移迹象。</div>
+</section>
+
+<section id="results">
+<div class="kicker">05 / 论文实验与交互数据</div>
+<h2>真实实验告诉我们什么？</h2>
+<p class="section-lead">下面的数值直接来自 arXiv v1 的表 1—4，均为<strong>作者报告</strong>，不是本站复现。图形只是把表格数值重绘为可操作的柱条；切换不会生成或拟合任何新实验结果。</p>
+<div class="lab">
+<div class="labhead"><h3>实验一：同一模型，能画与能说差多少？</h3><label>模型选择 <select id="directModel"><option value="BAGEL">BAGEL</option><option value="GLM-Omni">GLM-Omni</option><option value="SenseNova-U1" selected>SenseNova-U1</option></select></label></div>
+<div class="legend"><span><i class="swatch"></i>图像可访问率</span><span><i class="swatch other"></i>文字可访问率</span></div>
+<div id="directRows" aria-live="polite"></div>
+<p>七类平均差距：<span class="bigresult" id="directGap">41.14 个百分点</span></p>
+<p class="note">数据：原文表 1；七类依次为颜色、数量、号码、形状、大小、空间关系、文字内容。所有模型在完整 350 条知识上评估。每个柱条长度与表中百分率成正比。</p>
+</div>
+<div class="lab">
+<div class="labhead"><h3>实验二：对齐训练改变了多少？</h3><label>查看指标 <select id="metricSelect"><option value="avg">七类平均</option><option value="shape">形状</option><option value="size">大小</option><option value="spatial">空间关系</option><option value="number">球衣号码</option><option value="color">颜色</option><option value="count">数量</option><option value="text">文字内容</option></select></label></div>
+<p class="note">三种模型在测试组的<strong>纯文字问答正确率</strong>。每类测试组有 25 个实体；所有实体都见过含答案的训练图像，但测试实体没有目标值的文字问答监督。</p>
+<div id="alignRows"></div>
+<p id="alignSummary" class="feedback" aria-live="polite">切换指标，查看不同模型是否都受益。</p>
+<div class="table-scroll"><table><caption style="text-align:left;padding:8px 0;color:var(--muted)">表 2：七类平均文字可访问率（%），越高越好</caption><thead><tr><th>模型</th><th>直接迁移</th><th>文字对齐</th><th>图文交错对齐</th></tr></thead><tbody>
+<tr><td>BAGEL</td><td>8.86</td><td>15.43</td><td class="metric">17.14</td></tr>
+<tr><td>GLM-Omni</td><td>14.57</td><td>12.57</td><td class="metric">26.86</td></tr>
+<tr><td>SenseNova-U1</td><td>20.00</td><td>28.00</td><td class="metric">28.57</td></tr>
+</tbody></table></div>
+</div>
+<div class="cols">
+<div class="card">
+<h3>实验三：推理时主动生成图像</h3>
+<p>原文表 3：图文交错训练后，允许模型先生成图像、再读图回答。它改变了<strong>推理协议</strong>，不能与纯文字推理的提升混淆。</p>
+<div class="table-scroll"><table><thead><tr><th>模型</th><th>直接文字答</th><th>视觉思维链</th></tr></thead><tbody><tr><td>BAGEL</td><td>17.14%</td><td>20.57%</td></tr><tr><td>GLM-Omni</td><td>26.86%</td><td>41.14%</td></tr><tr><td>SenseNova-U1</td><td>28.57%</td><td>34.86%</td></tr></tbody></table></div>
+<p class="note">在「球衣号码」类别，三模型直接文字答题均为 0%；改用视觉思维链后分别为 4%、36%、20%。</p>
+</div>
+<div class="card">
+<h3>消融：图文交错里，图像损失重要吗？</h3>
+<p>原文第 4.3 节、图 5：GLM-Omni 保留交错序列和文字损失，只遮蔽其中图像部分的训练损失。</p>
+<div class="barrow"><span>完整交错训练</span><div class="track"><div class="fill" style="width:26.86%"></div></div><strong>26.86%</strong></div>
+<div class="barrow"><span>遮蔽图像损失</span><div class="track"><div class="fill secondary" style="width:13.71%"></div></div><strong>13.71%</strong></div>
+<p>七类平均文字问答正确率下降 <strong>13.15 个百分点</strong>。这支持图像生成损失在交错监督中发挥作用，但不单独证明其为唯一机制。</p>
+</div>
+</div>
+<h3 style="margin-top:35px">条件关联：图画对时，文字也更可能答对吗？</h3>
+<p>原文表 4 对同一测试实体分别执行图像生成和文字问答，并计算条件正确率差。下面不是因果效应，也没有把生成图直接提供给问答模型。</p>
+<div class="table-scroll"><table>
+<thead><tr><th>模型</th><th>训练方式</th><th>图正确时文字正确</th><th>图错误时文字正确</th><th>差距（百分点）</th></tr></thead>
+<tbody>
+<tr><td>BAGEL</td><td>文字对齐</td><td>23.91%</td><td>12.40%</td><td>+11.51</td></tr>
+<tr><td>BAGEL</td><td>图文交错</td><td>32.61%</td><td>11.63%</td><td>+20.98</td></tr>
+<tr><td>GLM-Omni</td><td>文字对齐</td><td>6.90%</td><td>18.18%</td><td>−11.28</td></tr>
+<tr><td>GLM-Omni</td><td>图文交错</td><td>31.25%</td><td>23.16%</td><td>+8.09</td></tr>
+<tr><td>SenseNova-U1</td><td>文字对齐</td><td>46.39%</td><td>5.13%</td><td>+41.26</td></tr>
+<tr><td>SenseNova-U1</td><td>图文交错</td><td>44.00%</td><td>8.00%</td><td>+36.00</td></tr>
+</tbody></table></div>
+<p class="note">注意：交错对齐后，三个模型在「图像正确」条件下的文字正确率仍全部低于 50%。关联在 SenseNova-U1 上反而由 +41.26 降到 +36.00，并非所有模型都单调改善。</p>
+</section>
+<section id="protocol">
+<div class="kicker">06 / 训练与评测细节</div>
+<h2>怎样避免把「答案泄漏」误当作迁移？</h2>
+<div class="cols">
+<div class="card"><h3>数据隔离</h3><p>七类知识，每类 50 个虚构实体；颜色、数量、形状、空间、大小、号码和文字。每条知识生成约 25 个视角或场景变体，经过视觉语言模型质量筛选，最终保留 8,552 张图片（附录 A.1、表 5）。提示中不能泄漏属性值。</p><p>文字对齐和图文交错对齐只用于每类 25 个对齐实体，另外 25 个测试实体仅接受图像生成监督。每个对齐实体额外构造 10 个文字问答样本（第 4.2 节）。</p></div>
+<div class="card"><h3>不同架构与训练配方</h3><p>BAGEL 采用理解与生成专家分支；SenseNova-U1 采用原生图像建模架构；GLM-Omni 使用离散图像词元。三者并非相同架构，不能把模型间差异直接归因为训练方式。</p><p>附录 A.2：学习率均为 0.00001；训练步数分别为 4,000、1,500、1,500，批大小分别为 8、16、8（顺序为 BAGEL、GLM-Omni、SenseNova-U1）。各模型图像与对齐数据采样比率不同，不能把模型间分数解释成严格同预算横向竞赛。</p></div>
+</div>
+<div class="rail"><strong>一个容易忽视的控制：</strong>直接迁移条件还混入 10,000 条与目标知识无关的文字问答样本，用来熟悉答题格式，而不是泄漏测试实体答案（第 3.3 节）。</div>
+<h3>哪些是「训练时」的提升，哪些是「推理时」的提升？</h3>
+<div class="cols">
+<div class="card"><p><strong>训练时：</strong>表 2 比较三种训练条件；测试协议固定为纯文字问答，检验跨实体、跨模态的访问变化。</p></div>
+<div class="card"><p><strong>推理时：</strong>表 3 使用同样的图文交错训练模型，但允许先生成图像再答题，因此既包含训练效果，也包含推理策略改变的效果。</p></div>
+</div>
+</section>
+<section id="limits">
+<div class="kicker">07 / 结论、边界与研究启发</div>
+<h2>这篇论文证明了什么，没有证明什么？</h2>
+<div class="cols">
+<article class="card"><h3>作者报告的证据</h3>
+<p>在三个统一多模态模型和七类受控知识上，单独的图像生成监督可以带来有限、参差不齐的文字迁移。对一部分实体增加图文交错监督，能改善其他测试实体的平均文字问答表现。图像损失消融和视觉思维链进一步支持训练形式与检索形式的重要性。</p>
+</article>
+<article class="card"><h3>证据边界</h3>
+<p>主要实验使用虚构实体和人为控制的属性，不代表自然世界复杂事实；图像正确性由视觉语言模型自动判定；不同模型的架构、采样比率与训练步数不同；每类测试实体仅 25 个。论文没有提供跨更多自然分布、长期保留或独立复现的充分证据。</p>
+</article>
+</div>
+<blockquote>本站分析：对统一多模态模型，应该分开评估「视觉事实能否生成」「能否在无图情况下文字检索」「能否借助自己生成的图像恢复答案」。把这三种能力合成一个总分，会掩盖重要的失败模式。</blockquote>
+<p>下一步研究可采用自然图片与真实罕见实体、人工核查自动图像判分、跨训练规模的匹配预算对照，以及对视觉记忆位置和检索路径的因果干预。上述是本站提出的研究方向，不是作者已完成的实验。</p>
+</section>
+<section id="sources">
+<div class="kicker">08 / 可追溯来源</div>
+<h2>原文、代码与核查范围</h2>
+<p>本页基于 <strong>arXiv:2610.21459v1</strong>，2026 年 10 月 15 日首次提交。已核对官方 HTML 第 1—5 节（引言、相关工作、实验设置、直接迁移、文字对齐、交错对齐、条件关联、结论）与附录 A.1—A.4（数据、训练、评测、失败案例），对照原文公式 (1)—(4)、表 1—7、图 5 的消融数字。未独立运行训练、生成模型或复现实验。</p>
+<ul>
+<li><a href="https://arxiv.org/abs/2610.21459" target="_blank" rel="noopener noreferrer">arXiv 官方摘要、版本与作者</a></li>
+<li><a href="https://arxiv.org/html/2610.21459" target="_blank" rel="noopener noreferrer">arXiv 官方 HTML 全文</a>（公式、表格与附录核对来源）</li>
+<li><a href="https://arxiv.org/pdf/2610.21459" target="_blank" rel="noopener noreferrer">论文 PDF 全文</a></li>
+<li><a href="https://github.com/kevinlllee/Knowledge-Transfer-Probing" target="_blank" rel="noopener noreferrer">作者在论文中给出的数据与评测协议仓库</a>（不声称包含完整训练权重）</li>
+<li><a href="https://kevinlllee.github.io/Knowledge-Transfer-Probing/" target="_blank" rel="noopener noreferrer">作者项目主页</a></li>
+<li><a href="https://huggingface.co/papers/2610.21459" target="_blank" rel="noopener noreferrer">Hugging Face 论文社区页面</a>（2026-10-21 本轮观察到 25 次赞同；热度不是学术验证）</li>
+</ul>
+<p class="small">本站归档日期：2026-10-21；本页所述论文实验结果来自原作者，非本站独立复现。</p>
+</section>
+<footer class="footer"><p>arXiv 洞察 · 中文交互论文精读 · 仅供研究学习</p><p>阅读建议：先比较两种可访问率，再切换三种训练条件，最后阅读公式与证据局限。<a href="../../index.html">返回项目论文列表</a>。</p></footer>
+</main>
+<script>
+(function(){
+'use strict';
+const doc=document.documentElement;
+const theme=document.getElementById('themeBtn');
+theme.addEventListener('click',()=>{
+  const current=doc.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  doc.setAttribute('data-theme',current==='dark'?'light':'dark');
+  theme.textContent=doc.getAttribute('data-theme')==='dark'?'切换浅色':'切换深色';
+});
+const modes={
+ direct:{title:'不额外给目标答案',sub:'仅有图像生成训练',feedback:'仅图像生成：所有实体通过目标图片接触属性值；不使用目标知识的文字对齐。检验直接迁移。'},
+ text:{title:'增加文字问答对齐',sub:'只用于每类 25 个对齐实体',feedback:'文字对齐：对齐组额外接受直接问答监督；测试组没有对应实体的文字答案。检查能否迁移到未对齐实体。'},
+ inter:{title:'增加图文交错监督',sub:'先生成图、观察、再回答',feedback:'图文交错对齐：对齐组在同一示例中联合训练图像生成、观察与文字答案；测试时仍直接用纯文字回答。'}
+};
+function setMode(name){
+ const cfg=modes[name];if(!cfg)return;
+ document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===name)));
+ document.getElementById('alignNode').classList.toggle('active',name!=='direct');
+ document.getElementById('alignTitle').textContent=cfg.title;
+ document.getElementById('alignSub').textContent=cfg.sub;
+ document.getElementById('modeFeedback').textContent=cfg.feedback;
+}
+document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+document.getElementById('resetMode').addEventListener('click',()=>setMode('direct'));
+const categories=[['color','颜色'],['count','数量'],['number','号码'],['shape','形状'],['size','大小'],['spatial','空间关系'],['text','文字内容']];
+const direct={
+ 'BAGEL':{text:[14,14,0,10,24,0,0],vis:[20,42,4,58,60,0,36],meanT:8.86,meanV:31.43},
+ 'GLM-Omni':{text:[16,24,2,20,40,0,0],vis:[70,46,72,88,24,62,16],meanT:14.57,meanV:54},
+ 'SenseNova-U1':{text:[20,32,0,20,68,0,0],vis:[32,34,88,98,98,0,78],meanT:20,meanV:61.14}
+};
+function bar(v,other){const b=document.createElement('div');b.className='track';const f=document.createElement('div');f.className='fill'+(other?' secondary':'');f.style.width=v+'%';b.appendChild(f);b.setAttribute('aria-label',v+'%');return b;}
+function directRender(){
+ const key=document.getElementById('directModel').value,d=direct[key],root=document.getElementById('directRows');
+ root.replaceChildren();
+ categories.forEach(([id,label],i)=>{
+  const row=document.createElement('div');row.className='dualrow';
+  const name=document.createElement('strong');name.textContent=label;
+  const a=document.createElement('div');a.appendChild(bar(d.vis[i],false));const aVal=document.createElement('span');aVal.className='note';aVal.textContent='图 '+d.vis[i]+'%';a.appendChild(aVal);
+  const b=document.createElement('div');b.appendChild(bar(d.text[i],true));const bVal=document.createElement('span');bVal.className='note';bVal.textContent='文 '+d.text[i]+'%';b.appendChild(bVal);
+  row.append(name,a,b);root.appendChild(row);
+ });
+ document.getElementById('directGap').textContent=(d.meanV-d.meanT).toFixed(2)+' 个百分点';
+}
+document.getElementById('directModel').addEventListener('change',directRender);
+const align={
+ 'BAGEL':{avg:[8.86,15.43,17.14],color:[14,4,12],count:[14,28,32],number:[0,0,0],shape:[10,24,20],size:[24,52,56],spatial:[0,0,0],text:[0,0,0]},
+ 'GLM-Omni':{avg:[14.57,12.57,26.86],color:[16,16,24],count:[24,20,20],number:[2,0,0],shape:[20,12,64],size:[40,40,40],spatial:[0,0,40],text:[0,0,0]},
+ 'SenseNova-U1':{avg:[20,28,28.57],color:[20,8,4],count:[32,20,16],number:[0,0,0],shape:[20,68,84],size:[68,100,96],spatial:[0,0,0],text:[0,0,0]}
+};
+const names=['直接迁移','文字对齐','图文交错'];
+function alignRender(){
+ const metric=document.getElementById('metricSelect').value,root=document.getElementById('alignRows');root.replaceChildren();
+ const messages=[];
+ Object.keys(align).forEach(model=>{
+  const panel=document.createElement('div');panel.className='card';panel.style.margin='12px 0';panel.style.padding='16px';
+  const title=document.createElement('strong');title.textContent=model;panel.appendChild(title);
+  const values=align[model][metric];
+  values.forEach((v,i)=>{
+    const row=document.createElement('div');row.className='barrow';
+    const name=document.createElement('span');name.textContent=names[i];
+    const value=document.createElement('strong');value.textContent=v.toFixed(2).replace(/\.00$/,'')+'%';
+    const b=bar(v,false);b.firstChild.classList.toggle('secondary',i===1);b.firstChild.classList.toggle('third',i===2);
+    row.append(name,b,value);panel.appendChild(row);
+  });
+  root.appendChild(panel);
+  const delta=(values[2]-values[1]).toFixed(2);
+  messages.push(model+'：交错比文字对齐 '+(delta[0]==='-'?'下降 ':'增加 ')+Math.abs(Number(delta)).toFixed(2)+' 个百分点');
+ });
+ document.getElementById('alignSummary').textContent=messages.join('；')+'。数值来自论文表 2。';
+}
+document.getElementById('metricSelect').addEventListener('change',alignRender);
+directRender();alignRender();setMode('direct');
+})();
+</script>
+</body></html>
