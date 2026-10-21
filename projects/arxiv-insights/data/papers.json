@@ -1,7 +1,381 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-20T08:21:00Z",
+  "updated_at": "2026-10-21T02:29:09Z",
   "papers": [
+    {
+      "arxiv_id": "2610.26860",
+      "arxiv_version": "v1",
+      "title": "OpenVLHarness: Real World Visual Agentic Tool-Use with Multimodal Memory",
+      "title_zh": "把工具结果变成可复用证据：多模态记忆驱动的真实世界视觉智能体",
+      "published": "2026-10-19",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "论文提出 OpenVLHarness：以统一能力接口和可读证据呈现连接视觉感知、搜索和计算工具，再用可寻址的多模态记忆保存图像、数值数组与网页引用。作者在22项基准、8种模型骨干上评估，报告相较无工具模型平均提升9.7至12.6分；但模型外部工具成本、单次专有模型实验和密集目标感知仍是重要限制。",
+      "topics": [
+        "多模态大语言模型",
+        "视觉智能体",
+        "工具调用",
+        "多模态记忆",
+        "推理时计算"
+      ],
+      "heat_note": "Hugging Face 论文页于2026-10-21（北京时间）查阅时显示60次赞同；Paper Pulse的2026-10-20每日历史榜单记录59次赞同、当日第2名。不同快照口径不同，均非学术质量指标。",
+      "read_time": "约18分钟",
+      "method_note": "原论文v1第1—5节及附录A—H；原文表1、表2、表3、图2—4。公式均为显式标注的教学重述，不冒充论文编号公式。",
+      "href": "papers/2610.26860/"
+    },
+    {
+      "arxiv_id": "2610.26847",
+      "arxiv_version": "v1",
+      "title": "WeAct: Dynamic Weight Switching as Agent Actions",
+      "title_zh": "让智能体在运行中切换权重：把能力选择变成内部动作",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "published": "2026-10-19",
+      "summary": "WeAct 将规划、检索与写作能力分别训练为冻结基座上的低秩适配器，通过工具调用在同一任务轨迹内切换活动权重。作者在八项深度研究基准上报告，固定顺序切换版本平均准确率为45.47%，高于全参数监督微调的42.80%；同时分析训练干扰、静态融合失配和新增能力的局限。",
+      "topics": [
+        "智能体",
+        "低秩适配",
+        "持续学习",
+        "工具调用",
+        "模型权重切换"
+      ],
+      "heat_note": "2026-10-20 查阅 arXiv cs.LG 当日更新列表，属于新论文；未取得可核验的 Hugging Face 赞同数，不标为热榜论文。",
+      "method_note": "精读 arXiv:2610.26847v1 官方 HTML 全文：第1—7节及附录A—J，重点核对公式(1)—(6)、表1—3、表7—8与附录B、F、H；页面机制图为本站原创教学重绘。",
+      "read_time": "约18分钟",
+      "href": "papers/2610.26847/"
+    },
+    {
+      "arxiv_id": "2610.26825",
+      "arxiv_version": "v1",
+      "title": "MemT-1.0: Towards Memory-Native Evolution",
+      "title_zh": "记忆不再只是长上下文：MemT-1.0 的原生记忆机制",
+      "published": "2026-10-19",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "draft_generated_at": "2026-10-21T05:13:58+08:00",
+      "summary": "MemT-1.0 在冻结的语言模型骨干上加入可训练的原生记忆模块，通过稳定逐词元写入、存储专家混合和两阶段训练，将历史信息压缩到跨轮次延续的动态状态；本文核对了记忆任务、智能体任务、存储与延迟的实验条件及局限。",
+      "topics": [
+        "大语言模型",
+        "长期记忆",
+        "状态空间与增量更新",
+        "知识蒸馏",
+        "智能体"
+      ],
+      "heat_note": "Paper Pulse 的 2026-10-20 每日论文历史榜单；2026-10-21 05:06（北京时间）查看时显示 107 次赞同，并列第 3 名。热度是社区关注信号，不代表学术验证。",
+      "method_note": "已查阅 arXiv v1 官方 HTML 正文第 1—9 节及附录 B—G；公式采用原文等价简记，保留 LaTeX 核对源。",
+      "read_time": "约 20 分钟",
+      "href": "papers/2610.26825/"
+    },
+    {
+      "arxiv_id": "2610.26824",
+      "arxiv_version": "v1",
+      "title": "SpecMRL: Redesign Matryoshka Representation Learning within Parametric Spectrum",
+      "title_zh": "给句向量换一套坐标：谱排序如何改进套娃式表征压缩",
+      "published": "2026-10-19",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "精读 SpecMRL：从可学习投影矩阵的格拉姆矩阵构造有序正交谱基，将套娃式表征学习的前缀截取移至谱空间；对比英语 MTEB 56 个数据集上的维度压缩、消融、求解器稳定性和检索吞吐。",
+      "topics": [
+        "表征学习",
+        "文本嵌入",
+        "对比学习",
+        "降维",
+        "谱分解"
+      ],
+      "heat_note": "Hugging Face 论文页于 2026-10-21 早间（北京时间）显示 81 次赞同；Paper Pulse 对 2026-10-20 每日榜单记录 79 次赞同、排名第 9；不同观察时点不可混用。",
+      "method_note": "已精读 arXiv 2610.26824v1 正文第 1—6 节与附录 A—E；所有论文数字均来自作者报告，未独立复现。",
+      "read_time": "约 18 分钟",
+      "href": "papers/2610.26824/"
+    },
+    {
+      "arxiv_id": "2610.26802",
+      "arxiv_version": "v1",
+      "title": "Scaling Parameter-Efficient Fine-Tuning for Brain Encoding",
+      "title_zh": "让大模型读懂脑活动：BrainLoRA 如何以低秩微调扩展脑编码",
+      "published": "2026-10-19",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "作者以脑功能磁共振数据联合训练低秩适配器与轻量读出头，利用单次因果前向计算降低视频特征提取成本，在 Algonauts 2025 的同分布与分布外测试上改进脑响应预测，并通过多适配器集成与模态归因分析其效果。",
+      "topics": [
+        "脑编码",
+        "参数高效微调",
+        "多模态模型",
+        "神经科学与机器学习"
+      ],
+      "heat_note": "Paper Pulse 的 2026-10-20 Hugging Face Daily Papers 历史榜单记录 231 次赞同、当日第 1；2026-10-21（北京时间）查阅。此为历史快照，不是学术质量验证。",
+      "method_note": "本站于2026-10-21正式收录。",
+      "href": "papers/2610.26802/"
+    },
+    {
+      "arxiv_id": "2610.26625",
+      "arxiv_version": "v1",
+      "title": "EgoXperience: Learning World-Grounded Egocentric Representations from Human Experience",
+      "title_zh": "从第一人称视频重建一致的三维世界：EgoXperience 的数据、几何与联合学习",
+      "published": "2026-10-19",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "论文构建几何对齐的50小时第一人称数据、自动标注引擎与联合重建模型，在统一米制坐标系内同时估计相机、场景深度、手和刚体物体；分析耦合监督、尺度预测和深度分支的作用。",
+      "topics": [
+        "计算机视觉",
+        "三维重建",
+        "具身智能",
+        "多任务学习"
+      ],
+      "heat_note": "Machine Notes 的 Hugging Face 每日论文追踪快照：2026-10-20 09:43 UTC 更新，EgoXperience 记录 45 次赞同；属第三方快照，非实时官方 API。",
+      "draft_generated_at": "2026-10-21T00:08:51Z",
+      "method_note": "本站于2026-10-21正式收录。",
+      "read_time": "约18分钟",
+      "href": "papers/2610.26625/"
+    },
+    {
+      "arxiv_id": "2610.25736",
+      "arxiv_version": "v1",
+      "title": "Learning from Fleet Experience: A Collective Learning Paradigm for Robots",
+      "title_zh": "从机器人群体经验中学习：一种机器人的集体学习范式",
+      "published": "2026-10-19",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "研究提出集体经验学习：利用机器人失败片段检索群体中的相似成功动作并提高其训练采样优先级；通过容错异步系统持续收集经验。五项真实操作任务在留出机器人上的成功率为93.3%—99.2%，但研究限于单一机器人平台和任务专属策略。",
+      "topics": [
+        "机器人学习",
+        "模仿学习",
+        "经验检索",
+        "分布式训练"
+      ],
+      "heat_note": "Hugging Face 论文页于 2026-10-20 UTC 查阅时显示 107 次赞同；Paper Pulse 的 2026-10-20 每日历史快照记录 86 次赞同、当日第 1 名。两者为不同观察时刻的社区信号，不是实验验证。",
+      "draft_generated_at": "2026-10-20T18:10:54Z",
+      "method_note": "基于 arXiv v1 官方 HTML 第1—6节、附录 B、C、D、E、F、G、H 的阅读与核对；独立解读，非实验复现。",
+      "read_time": "约18分钟",
+      "href": "papers/2610.25736/"
+    },
+    {
+      "arxiv_id": "2610.25690",
+      "arxiv_version": "v1",
+      "title": "ScaleNav: Scalable Internet Video Pretraining for Language-Conditioned Local Navigation",
+      "title_zh": "ScaleNav：利用大规模互联网视频预训练实现语言条件局部导航",
+      "published": "2026-10-19",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "以无机器人动作标签的互联网第一人称视频学习目标导向的视觉变化，再利用模拟器动作数据完成动作对齐与联合微调。论文报告在两个室内仿真基准上的成功率分别为86.5%与94.9%，并在四足机器人60次测试中达到83.3%。",
+      "topics": [
+        "机器人导航",
+        "世界—动作模型",
+        "视频预训练",
+        "流匹配",
+        "具身智能"
+      ],
+      "heat_note": "Hugging Face Papers 论文页面于2026-10-21 00:10（北京时间）查阅：84次赞同；社区关注信号不构成独立学术验证。",
+      "method_note": "精读 arXiv 2610.25690v1 官方HTML全文：第1—5节、附录A—E、表1—6。数学采用原生MathML并保留LaTeX核对源；交互数值为公式教学示例或论文表格数据。",
+      "read_time": "约22分钟",
+      "href": "papers/2610.25690/"
+    },
+    {
+      "arxiv_id": "2610.24087",
+      "arxiv_version": "v1",
+      "title": "OR-License: Evaluating LLM Agents as Real-World Operations Research Practitioners",
+      "title_zh": "从客户原始需求到可部署优化方案：OR-License 如何考核大模型智能体",
+      "published": "2026-10-16",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "基于31项来自10类工业场景的真实委托运筹优化任务，评估语言模型智能体能否主动澄清业务信息、建立约束与目标、编写求解器并交付可行解；以严格可行性门槛和专家相对质量构成部署调整质量指标。",
+      "topics": [
+        "大语言模型智能体",
+        "运筹优化",
+        "智能体评测",
+        "约束可行性",
+        "工具使用"
+      ],
+      "heat_note": "Hugging Face 2026-10-20 每日论文榜第2；2026-10-21（北京时间）查阅论文页时显示177次赞同。赞同数是社区关注信号，不是研究结论的独立验证。",
+      "method_note": "已查阅arXiv v1 HTML正文第1—5节及附录A—G；数值来自原文表1、3、6、7与图4、5，示意模拟不代表复现。",
+      "read_time": "约18分钟",
+      "href": "papers/2610.24087/"
+    },
+    {
+      "arxiv_id": "2610.23542",
+      "arxiv_version": "v1",
+      "title": "Execution Before Memory: Diagnosing Memory Failures in Video World Models",
+      "title_zh": "先执行，再谈记忆：诊断视频世界模型的记忆失败",
+      "published": "2026-10-16",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "论文提出 MIST，将视频世界模型的场景建立、遮挡期泄漏、最终揭示及目标状态匹配分别评估，并用 M3-Agent 针对未执行的操作改写提示。在 43 项内部测试中，单条保留视频的揭示均分由 0.147 升至 0.492；作者强调使用报告评分器选优属于上界分析，不能证明模型具有记忆能力。",
+      "topics": [
+        "视频世界模型",
+        "多模态生成",
+        "模型评测",
+        "测试时优化"
+      ],
+      "heat_note": "Hugging Face 论文页于 2026-10-21 查阅时显示 27 次赞同；这是社区关注度而非独立复现。",
+      "method_note": "根据 arXiv 2610.23542v1 的正文第 1—9 节与附录 A—D 精读；示意交互非模型运行或论文测量。",
+      "read_time": "约 18 分钟",
+      "href": "papers/2610.23542/"
+    },
+    {
+      "arxiv_id": "2610.22791",
+      "arxiv_version": "v1",
+      "title": "Self-Evolving Coding Agents via Harness-Policy Optimization",
+      "title_zh": "让编码智能体同时改进自己的工作台与大脑：框架—策略交替优化",
+      "published": "2026-10-16",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "Self-HPO 让编码智能体交替修改运行框架与通过强化学习更新模型策略，并将训练中始终失败的任务送回下一轮框架搜索。三项软件工程基准平均解决率由 57.8% 提高到 64.8%，但收益依赖可执行验证与较高训练开销。",
+      "topics": [
+        "编码智能体",
+        "强化学习",
+        "框架优化",
+        "自我改进",
+        "软件工程评测"
+      ],
+      "heat_note": "Paper Pulse 2026-10-20 Hugging Face Daily Papers 历史快照：32 次赞同，日榜第 4；仅为社区关注度，不代表实验独立复现。",
+      "method_note": "依据 arXiv 2610.22791v1 官方 HTML 全文第1—5节及附录A—E；论文公式(1)(2)、表1—3、图4与附录B的 pass@k；教学改写单独标注。",
+      "read_time": "约22分钟",
+      "href": "papers/2610.22791/"
+    },
+    {
+      "arxiv_id": "2610.22169",
+      "arxiv_version": "v2",
+      "title": "Lexical Reference Frames: Interpreting LM Residual Streams in Native Semantics",
+      "title_zh": "词汇参照系：用语言模型自己的语义解读残差流",
+      "published": "2026-10-15",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "论文把语言模型中间层的隐藏状态置于由后续网络层及上下文诱导的词汇参照系中，提出按跨位置注意力轮数近似的 LexFrame。作者在 SmolLM3-3B 与 OLMo3-7B 上报告，一级词汇参照系的层平均散度为 0.16 和 0.15 纳特，显著低于固定镜头方法；同时研究了归因、干预及其计算代价。",
+      "topics": [
+        "语言模型可解释性",
+        "残差流",
+        "上下文感知读出",
+        "机制解释"
+      ],
+      "heat_note": "Hugging Face 论文页于 2026-10-21 查阅时显示 47 次赞同；社区关注度不代表独立学术验证。",
+      "method_note": "基于 arXiv 2610.22169v2 官方 HTML 全文、正文第 1—5 节及附录 A—D；未独立复现。",
+      "href": "papers/2610.22169/"
+    },
+    {
+      "arxiv_id": "2610.21791",
+      "arxiv_version": "v1",
+      "title": "RSIFlow: Adaptive Self-Improvement Workflows with an Evolving Meta-Agent",
+      "title_zh": "RSIFlow：让元智能体持续进化的自适应自改进工作流",
+      "published": "2026-10-15",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "RSIFlow 将任务智能体的模型参数、执行框架和任务产物视为三类可选择的改进对象，并让元智能体依据轨迹与反馈选择工作流、总结可复用经验、更新自身执行框架。论文在六个基准与两种 Qwen3 主干上报告了整体改进，但尚未证明大模型规模下的可扩展性。",
+      "topics": [
+        "智能体",
+        "递归自改进",
+        "工作流编排",
+        "元智能体",
+        "模型与执行框架协同优化"
+      ],
+      "heat_note": "arXiv 官方于 2026-10-15 首次收录；2026-10-20 检索到 alphaXiv 论文讨论页显示 15 次浏览，属于有限且平台特定的关注信号，未核实 Hugging Face 赞同数；不据此宣称热门。",
+      "method_note": "依据 arXiv 2610.21791v1 全文第1—5节及附录A—D核对方法、公式、主结果、消融和实验边界；交互演示为概念模拟，不是论文模型运行。",
+      "read_time": "约22分钟",
+      "href": "papers/2610.21791/"
+    },
+    {
+      "arxiv_id": "2610.21459",
+      "arxiv_version": "v1",
+      "title": "Can Visual Generation Expand What Unified Multimodal Models Know?",
+      "title_zh": "图像生成能扩展统一多模态模型所知道的知识吗？",
+      "published": "2026-10-15",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "draft_generated_at": "2026-10-21T06:19:59+08:00",
+      "summary": "以虚构实体的视觉属性为受控知识，研究图像生成训练能否让统一多模态模型在没有输入图像的情况下用文字回答，以及文本对齐、图文交错对齐如何改变这种能力。",
+      "topics": [
+        "多模态学习",
+        "图像生成",
+        "跨模态知识迁移",
+        "模型评测"
+      ],
+      "heat_note": "Hugging Face 论文页 2026-10-21 本轮查阅显示 25 次赞同；社区关注度不等于研究结果被独立证实。",
+      "method_note": "已核对 arXiv v1 官方 HTML 正文第1—5节及附录A.1—A.4；数字来自原文表1—7。",
+      "read_time": "约18分钟",
+      "href": "papers/2610.21459/"
+    },
+    {
+      "arxiv_id": "2610.20588",
+      "arxiv_version": "v1",
+      "title": "Your Transformer Is Secretly Elastic",
+      "title_zh": "你的变换器其实具有弹性：用可微分软剪枝适配不同计算预算",
+      "published": "2026-10-14",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "研究如何在不更新预训练权重的情况下，为变换器的前馈神经元和注意力头学习统一重要性排序，使同一编码器在不同计算预算下弹性运行。通过多稀疏度软掩码联合优化，论文在27种视觉和文本编码器上展示性能与算力折中，并报告特定硬件上的实际加速。",
+      "topics": [
+        "模型压缩",
+        "结构化剪枝",
+        "弹性推理",
+        "变换器",
+        "可微分优化"
+      ],
+      "heat_note": "2026-10-20 查阅 arXiv 官方 v1 全文及作者公开代码仓库；未取得可核验的 Hugging Face 当日赞同数，故不将其标为热榜论文。",
+      "method_note": "依据 arXiv 2610.20588v1 正文第1—5节、附录 A.2 与 A.7；图示与交互数值均标为教学示意。",
+      "read_time": "约18分钟",
+      "href": "papers/2610.20588/"
+    },
+    {
+      "arxiv_id": "2610.17771",
+      "arxiv_version": "v1",
+      "title": "Many Right Answers, One Training Example: Removing Responder Noise from GRPO for LLM Recommenders",
+      "title_zh": "一个问题，许多正确答案：消除推荐强化学习中的回答者噪声",
+      "published": "2026-10-13",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "论文 ReMaRk 将同一推荐请求的多个回答者所提物品合并为一个集合，以请求为单位均匀采样，并保留逐位置的二值奖励和群体相对策略优化更新。作者在七种模型骨干和三个 Reddit 数据集上报告，达到逐回答者基线两千步的验证召回水平仅需其 25%—53% 的训练步数；此为作者实验结果，非独立复现。",
+      "topics": [
+        "强化学习",
+        "大语言模型推荐",
+        "群体相对策略优化",
+        "多参考答案",
+        "方差缩减"
+      ],
+      "heat_note": "Hugging Face Papers 论文页于 2026-10-20 查阅时显示 78 次赞同；关注度不代表独立复现或结论可靠。",
+      "method_note": "依据 arXiv 2610.17771v1 官方 PDF 全文（32 页），重点核对第 1—6 节、局限性和附录 A、C、D、H；所有交互数值均标明为教学例子或论文实测。",
+      "read_time": "约 22 分钟",
+      "href": "papers/2610.17771/"
+    },
+    {
+      "arxiv_id": "2610.14162",
+      "arxiv_version": "v1",
+      "title": "Next-Concept Modeling: Fast, Parallel Coarse-to-Fine Text Generation",
+      "title_zh": "下一概念建模：快速、并行的从粗到细文本生成",
+      "published": "2026-10-09",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "用多尺度残差向量量化器把文本编码为由粗到细的离散码层级，再逐层并行预测；论文报告在 LM1B 和 XSum 等任务上取得显著采样加速，并分析重建精度、层级深度和误差累积。",
+      "topics": [
+        "语言模型",
+        "并行生成",
+        "离散潜变量",
+        "向量量化",
+        "模型推理效率"
+      ],
+      "heat_note": "Hugging Face Trending Papers 页面于 2026-10-20 查阅，显示 7 次赞同；该数值随时间变化，不能视为论文可靠性评价。",
+      "method_note": "已查阅 arXiv 2610.14162v1 全文40页，重点核对第1—5节、附录F（消融）、I（局限）和J（定性样例）。本站于2026-10-21正式收录。",
+      "read_time": "约18分钟",
+      "href": "papers/2610.14162/"
+    },
+    {
+      "arxiv_id": "2610.13361",
+      "arxiv_version": "v1",
+      "title": "AgentSWE: Can Coding Agents Build the Agent You Actually Want?",
+      "title_zh": "写出来，不等于交付了：AgentSWE 如何测量智能体工程",
+      "published": "2026-10-09",
+      "date": "2026-10-21",
+      "added_at": "2026-10-21T02:29:09Z",
+      "summary": "AgentSWE 通过创建、编辑与优化三类共25项委托任务，测试编程智能体能否真正交付符合自然语言需求的可运行智能体。开发期示例与隐藏验收分离，执行门槛与需求评分并用。作者报告：在所测配置中，创建任务最高平均隐藏评分19.1/100，编辑任务最高31.6/100，优化平均剩余差距缩小不足5%。",
+      "topics": [
+        "编程智能体",
+        "智能体评测",
+        "软件工程",
+        "泛化与过拟合",
+        "执行验证"
+      ],
+      "heat_note": "Hugging Face 每日论文 2026-10-13 历史快照（Crosswalk 转录）列为第3位、205次赞同；这是历史社区关注信号，不是2026-10-20实时值，也不是独立科学验证。",
+      "method_note": "核对 arXiv 2610.13361v1 官方35页PDF：正文第1—6节、公式(1)—(3)、表1—5、图3—6及附录B/D/G/J；交互中的自拟数值明确标记为教学模拟。",
+      "read_time": "约18分钟",
+      "href": "papers/2610.13361/"
+    },
     {
       "arxiv_id": "2610.23839",
       "arxiv_version": "v1",
