@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>跳转 · hunluanzhizhu</title>
+<meta name="description" content="项目都在首页的索引里，正在带你过去。">
+<!-- GitHub Pages 没有服务端重定向：/projects/ 是子项目「返回项目列表」的
+     相对落点（href="../"），这里用一个零依赖的跳转页把它接回首页索引区。 -->
+<meta http-equiv="refresh" content="0; url=/#index">
+<link rel="canonical" href="https://zyh.sryze.cc/">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<script>try{location.replace('/#index');}catch(e){}</script>
+<style>
+  :root{
+    --acid:#c6ff00;--ground:#000;
+    --ink:#fffef4;--ink-2:#8f8f8f;--ink-3:#4e4e4e;
+    --mono:'Cascadia Mono','JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+    --cjk:'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{background:var(--ground);color-scheme:dark}
+  body{
+    font-family:var(--mono),var(--cjk);background:var(--ground);color:var(--ink);
+    font-size:13px;line-height:1.7;min-height:100vh;
+    display:flex;align-items:center;padding:clamp(20px,5vw,64px);
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--acid);color:#000}
+  .box{width:100%;max-width:560px;margin:0 auto}
+  .k{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);
+     margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .k i{width:16px;height:1px;background:var(--acid);display:block}
+  p{color:var(--ink-2)}
+  a{color:var(--acid);text-decoration:none;border-bottom:1px solid transparent}
+  a:hover{border-bottom-color:var(--acid)}
+  .cmd{color:var(--ink-3);font-size:12px;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="box">
+  <p class="k"><i></i>redirect · /projects/</p>
+  <p>这里没有独立页面 —— 全部项目都在首页索引区，正在带你过去…</p>
+  <p class="cmd">若未自动跳转：<a href="/#index">前往项目索引 →</a></p>
+</div>
+</body>
+</html>
