@@ -76,6 +76,9 @@ BPM 129.2、66 个拍点、每帧 32 段 mel 能量。`utils/motion.ts` 据此�
 - `index.html` 通过 `@remotion/player`（`player/player.js`，由 `player/entry.tsx`
   经 esbuild 打包，构建命令见该文件头部注释）在浏览器里**实时逐帧渲染**合成，
   不依赖视频文件；拖动进度条可定位 920 帧中的任意一帧；
+- 支持全屏（按钮 / `F` 键 / 双击画面）与手机横屏铺满布局（横屏时自动收起页面
+  框架、控制条贴底悬浮）。iPhone Safari 不提供网页全屏 API，会自动退化为
+  「影院模式」（CSS 满屏 + 锁滚动）；进入全屏时部分安卓会尝试锁定横屏；
 - Pages 托管在子路径下，`player/static-base.ts` 把 `window.remotion_staticBase`
   设为相对基准，`staticFile()` 才能正确解析 `public/` 下的音频与贴图；
 - Remotion 工程的文件结构与命令不变，`npm run dev` / `npm run render` 照常使用；
