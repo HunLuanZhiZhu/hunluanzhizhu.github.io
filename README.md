@@ -73,6 +73,8 @@ Useful pages and utilities designed to run locally in the browser without a back
 | 08 | [Dynamic SVG Pelican](https://zyh.sryze.cc/projects/svg-pelican/) | Dynamic SVG / SMIL drawing experiment | SVG · SMIL |
 | 09 | [Blender 3D](https://zyh.sryze.cc/projects/blender-3d/) | Blender → glTF → WebGL 3D presentation experiment | Blender · glTF · WebGL |
 | 10 | [Open Design Test](https://zyh.sryze.cc/projects/open-design-test/) | WebGL2 shaders and open-ended visual design experiments | WebGL2 · Shader |
+| 11 | [arXiv Insights](https://zyh.sryze.cc/projects/arxiv-insights/) | Interactive explainers for recent AI papers, verified against the originals | arXiv · AI · SVG |
+| 12 | [Remotion Try](https://zyh.sryze.cc/projects/remotion-try/) | A seamless-loop MV as a Remotion composition, rendered live in the browser | Remotion · React · Player |
 
 ### Client / commissioned work
 
@@ -166,6 +168,8 @@ hunluanzhizhu.github.io/
 │   ├── svg-pelican/
 │   ├── blender-3d/
 │   ├── open-design-test/
+│   ├── arxiv-insights/
+│   ├── remotion-try/
 │   └── ...
 │
 ├── tools/

@@ -73,6 +73,8 @@ Canvas、WebGL、SVG、WASM、交互图形和一些不太适合塞进传统作�
 | 08 | [Dynamic SVG Pelican](https://zyh.sryze.cc/projects/svg-pelican/) | 动态 SVG / SMIL 绘制实验 | SVG · SMIL |
 | 09 | [Blender 3D](https://zyh.sryze.cc/projects/blender-3d/) | Blender → glTF → WebGL 的 3D 展示实验 | Blender · glTF · WebGL |
 | 10 | [Open Design Test](https://zyh.sryze.cc/projects/open-design-test/) | WebGL2 Shader 与开放式视觉设计实验 | WebGL2 · Shader |
+| 11 | [arXiv Insights](https://zyh.sryze.cc/projects/arxiv-insights/) | 前沿 AI 论文的交互式讲解，内容对照原文核验 | arXiv · AI · SVG |
+| 12 | [Remotion Try](https://zyh.sryze.cc/projects/remotion-try/) | 用 Remotion 写成的无缝循环 MV，浏览器实时渲染 | Remotion · React · Player |
 
 ### Client / commissioned work
 
@@ -166,6 +168,8 @@ hunluanzhizhu.github.io/
 │   ├── svg-pelican/
 │   ├── blender-3d/
 │   ├── open-design-test/
+│   ├── arxiv-insights/
+│   ├── remotion-try/
 │   └── ...
 │
 ├── tools/
