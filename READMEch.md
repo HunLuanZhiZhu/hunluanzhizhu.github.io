@@ -75,6 +75,7 @@ Canvas、WebGL、SVG、WASM、交互图形和一些不太适合塞进传统作�
 | 10 | [Open Design Test](https://zyh.sryze.cc/projects/open-design-test/) | WebGL2 Shader 与开放式视觉设计实验 | WebGL2 · Shader |
 | 11 | [arXiv Insights](https://zyh.sryze.cc/projects/arxiv-insights/) | 前沿 AI 论文的交互式讲解，内容对照原文核验 | arXiv · AI · SVG |
 | 12 | [Remotion Try](https://zyh.sryze.cc/projects/remotion-try/) | 用 Remotion 写成的无缝循环 MV，浏览器实时渲染 | Remotion · React · Player |
+| 13 | [Neon Requiem](https://zyh.sryze.cc/projects/neon-requiem/) | 雨夜霓虹街区的第一人称怪物生存射击 | TypeScript · Three.js · WebGL |
 
 ### Client / commissioned work
 

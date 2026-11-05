@@ -1,0 +1,204 @@
+{
+  "generated": "2026-11-04",
+  "license": "CC0-1.0 for Poly Haven assets; SIL OFL 1.1 for fonts",
+  "textures": {
+    "brick_wall": {
+      "slug": "brick_wall_11",
+      "resolution": "1k",
+      "diffuse": "assets/textures/brick_wall_11/brick_wall_11_diff_1k.jpg",
+      "normal": "assets/textures/brick_wall_11/brick_wall_11_nor_gl_1k.jpg",
+      "arm": "assets/textures/brick_wall_11/brick_wall_11_arm_1k.jpg"
+    },
+    "concrete_wall": {
+      "slug": "concrete_wall_008",
+      "resolution": "1k",
+      "diffuse": "assets/textures/concrete_wall_008/concrete_wall_008_diff_1k.jpg",
+      "normal": "assets/textures/concrete_wall_008/concrete_wall_008_nor_gl_1k.jpg",
+      "arm": "assets/textures/concrete_wall_008/concrete_wall_008_arm_1k.jpg"
+    },
+    "dirty_concrete": {
+      "slug": "dirty_concrete",
+      "resolution": "1k",
+      "diffuse": "assets/textures/dirty_concrete/dirty_concrete_diff_1k.jpg",
+      "normal": "assets/textures/dirty_concrete/dirty_concrete_nor_gl_1k.jpg",
+      "arm": "assets/textures/dirty_concrete/dirty_concrete_arm_1k.jpg"
+    },
+    "painted_metal_shutter": {
+      "slug": "painted_metal_shutter",
+      "resolution": "1k",
+      "diffuse": "assets/textures/painted_metal_shutter/painted_metal_shutter_diff_1k.jpg",
+      "normal": "assets/textures/painted_metal_shutter/painted_metal_shutter_nor_gl_1k.jpg",
+      "arm": "assets/textures/painted_metal_shutter/painted_metal_shutter_arm_1k.jpg"
+    },
+    "rusty_metal": {
+      "slug": "rusty_metal_02",
+      "resolution": "1k",
+      "diffuse": "assets/textures/rusty_metal_02/rusty_metal_02_diff_1k.jpg",
+      "normal": "assets/textures/rusty_metal_02/rusty_metal_02_nor_gl_1k.jpg",
+      "arm": "assets/textures/rusty_metal_02/rusty_metal_02_arm_1k.jpg"
+    },
+    "corrugated_iron": {
+      "slug": "corrugated_iron_02",
+      "resolution": "1k",
+      "diffuse": "assets/textures/corrugated_iron_02/corrugated_iron_02_diff_1k.jpg",
+      "normal": "assets/textures/corrugated_iron_02/corrugated_iron_02_nor_gl_1k.jpg",
+      "arm": "assets/textures/corrugated_iron_02/corrugated_iron_02_arm_1k.jpg"
+    },
+    "asphalt": {
+      "slug": "asphalt_02",
+      "resolution": "2k",
+      "diffuse": "assets/textures/asphalt_02/asphalt_02_diff_2k.jpg",
+      "normal": "assets/textures/asphalt_02/asphalt_02_nor_gl_2k.jpg",
+      "arm": "assets/textures/asphalt_02/asphalt_02_arm_2k.jpg"
+    },
+    "metal_grate_rusty": {
+      "slug": "metal_grate_rusty",
+      "resolution": "1k",
+      "diffuse": "assets/textures/metal_grate_rusty/metal_grate_rusty_diff_1k.jpg",
+      "normal": "assets/textures/metal_grate_rusty/metal_grate_rusty_nor_gl_1k.jpg",
+      "arm": "assets/textures/metal_grate_rusty/metal_grate_rusty_arm_1k.jpg"
+    },
+    "metal_plate": {
+      "slug": "metal_plate_02",
+      "resolution": "1k",
+      "diffuse": "assets/textures/metal_plate_02/metal_plate_02_diff_1k.jpg",
+      "normal": "assets/textures/metal_plate_02/metal_plate_02_nor_gl_1k.jpg",
+      "arm": "assets/textures/metal_plate_02/metal_plate_02_arm_1k.jpg"
+    },
+    "damaged_plaster": {
+      "slug": "damaged_plaster",
+      "resolution": "1k",
+      "diffuse": "assets/textures/damaged_plaster/damaged_plaster_diff_1k.jpg",
+      "normal": "assets/textures/damaged_plaster/damaged_plaster_nor_gl_1k.jpg",
+      "arm": "assets/textures/damaged_plaster/damaged_plaster_arm_1k.jpg"
+    },
+    "concrete_pavement": {
+      "slug": "concrete_pavement_02",
+      "resolution": "2k",
+      "diffuse": "assets/textures/concrete_pavement_02/concrete_pavement_02_diff_2k.jpg",
+      "normal": "assets/textures/concrete_pavement_02/concrete_pavement_02_nor_gl_2k.jpg",
+      "arm": "assets/textures/concrete_pavement_02/concrete_pavement_02_arm_2k.jpg"
+    },
+    "wood": {
+      "diffuse": "assets/textures/dark_wood/dark_wood_diff_1k.jpg",
+      "normal": "assets/textures/dark_wood/dark_wood_nor_gl_1k.jpg",
+      "arm": "assets/textures/dark_wood/dark_wood_arm_1k.jpg"
+    }
+  },
+  "models": {
+    "street_lamp": {
+      "slug": "street_lamp_01",
+      "resolution": "1k",
+      "url": "assets/models/street_lamp_01/street_lamp_01_1k.gltf",
+      "source": "https://polyhaven.com/a/street_lamp_01"
+    },
+    "trash_can": {
+      "slug": "metal_trash_can",
+      "resolution": "1k",
+      "url": "assets/models/metal_trash_can/metal_trash_can_1k.gltf",
+      "source": "https://polyhaven.com/a/metal_trash_can"
+    },
+    "fire_hydrant": {
+      "slug": "fire_hydrant",
+      "resolution": "1k",
+      "url": "assets/models/fire_hydrant/fire_hydrant_1k.gltf",
+      "source": "https://polyhaven.com/a/fire_hydrant"
+    },
+    "road_barrier": {
+      "slug": "concrete_road_barrier",
+      "resolution": "1k",
+      "url": "assets/models/concrete_road_barrier/concrete_road_barrier_1k.gltf",
+      "source": "https://polyhaven.com/a/concrete_road_barrier"
+    },
+    "manhole_cover": {
+      "slug": "water_manhole_cover",
+      "resolution": "1k",
+      "url": "assets/models/water_manhole_cover/water_manhole_cover_1k.gltf",
+      "source": "https://polyhaven.com/a/water_manhole_cover"
+    },
+    "trashbag": {
+      "slug": "trashbag",
+      "resolution": "1k",
+      "url": "assets/models/trashbag/trashbag_1k.gltf",
+      "source": "https://polyhaven.com/a/trashbag"
+    },
+    "cardboard_box": {
+      "slug": "cardboard_box_01",
+      "resolution": "1k",
+      "url": "assets/models/cardboard_box_01/cardboard_box_01_1k.gltf",
+      "source": "https://polyhaven.com/a/cardboard_box_01"
+    },
+    "aircon_unit": {
+      "slug": "exterior_aircon_unit",
+      "resolution": "1k",
+      "url": "assets/models/exterior_aircon_unit/exterior_aircon_unit_1k.gltf",
+      "source": "https://polyhaven.com/a/exterior_aircon_unit"
+    },
+    "wooden_crate": {
+      "slug": "wooden_crate_01",
+      "resolution": "1k",
+      "url": "assets/models/wooden_crate_01/wooden_crate_01_1k.gltf",
+      "source": "https://polyhaven.com/a/wooden_crate_01"
+    },
+    "barrel": {
+      "slug": "Barrel_01",
+      "resolution": "1k",
+      "url": "assets/models/barrel_01/Barrel_01_1k.gltf",
+      "source": "https://polyhaven.com/a/Barrel_01"
+    },
+    "utility_box": {
+      "slug": "utility_box_01",
+      "resolution": "1k",
+      "url": "assets/models/utility_box_01/utility_box_01_1k.gltf",
+      "source": "https://polyhaven.com/a/utility_box_01"
+    },
+    "plastic_crate": {
+      "slug": "plastic_crate_01",
+      "resolution": "1k",
+      "url": "assets/models/plastic_crate_01/plastic_crate_01_1k.gltf",
+      "source": "https://polyhaven.com/a/plastic_crate_01"
+    },
+    "weapon_pistol": {
+      "url": "assets/models/pistol/service_pistol_2k.gltf",
+      "source": "https://polyhaven.com/a/service_pistol",
+      "license": "CC0",
+      "notes": "2k PBR maps: service_pistol_{diff,nor_gl,arm}_2k.jpg"
+    },
+    "support_hand": {
+      "slug": "realistic_hand",
+      "resolution": "rigged",
+      "url": "assets/models/hands/realistic_hand.glb",
+      "source": "https://poly.pizza/m/2lEkhDqfQf",
+      "license": "CC-BY 3.0",
+      "author": "J-Toastie",
+      "notes": "Frozen Grab pose; used as support hand, tinted leather."
+    }
+  },
+  "hdri": "assets/hdri/cobblestone_street_night_1k.hdr",
+  "fonts": [
+    {
+      "family": "Chakra Petch",
+      "weight": 500,
+      "style": "normal",
+      "subset": "latin",
+      "url": "assets/fonts/ChakraPetch-500-latin.woff2",
+      "license": "OFL-1.1"
+    },
+    {
+      "family": "Chakra Petch",
+      "weight": 700,
+      "style": "normal",
+      "subset": "latin",
+      "url": "assets/fonts/ChakraPetch-700-latin.woff2",
+      "license": "OFL-1.1"
+    },
+    {
+      "family": "Share Tech Mono",
+      "weight": 400,
+      "style": "normal",
+      "subset": "latin",
+      "url": "assets/fonts/ShareTechMono-400-latin.woff2",
+      "license": "OFL-1.1"
+    }
+  ]
+}

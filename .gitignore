@@ -23,3 +23,6 @@ Gemfile.lock
 # 滑动变祖器测试素材（不入库；正式素材替换后只提交 video/ 目录的 liang-evolution.mp4）
 **/vidios/
 **/test*.mp4
+
+# ZCode Sites deploy stage (built from source, never committed)
+.zcode-site/
