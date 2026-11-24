@@ -613,8 +613,8 @@ var projects = [
   { id:'03', slug:'group-meeting-ppts', title:'Group Meeting PPTs', tag:'SLIDES · TALK',
     kind:'talk', stack:['slides','katex','svg','webgl'], fig:'deck',
     labelZh:'论文胶片', labelEn:'PAPER DECK',
-    descZh:'把论文讲成可以交互的网页。EML 与 CT 文献精读，配有公式注解和逐页讲稿。<a class="src" href="https://github.com/HunLuanZhiZhu/zuhui-ppt" target="_blank" rel="noopener">查看源码</a>。',
-    descEn:'Research talks made interactive, with annotated equations and speaker notes. EML and CT reading sessions. <a class="src" href="https://github.com/HunLuanZhiZhu/zuhui-ppt" target="_blank" rel="noopener">Source</a>.' },
+    descZh:'把论文讲成可以交互的网页。EML、CT 与 TabPFN/TabICLv2 三场文献精读，公式就地注解，推导逐步展开。<a class="src" href="https://github.com/HunLuanZhiZhu/zuhui-ppt" target="_blank" rel="noopener">查看源码</a>。',
+    descEn:'Research talks made interactive, with annotated equations and step-by-step derivations. Three sessions: EML, CT, and TabPFN/TabICLv2. <a class="src" href="https://github.com/HunLuanZhiZhu/zuhui-ppt" target="_blank" rel="noopener">Source</a>.' },
 
   { id:'04', slug:'guon-paper', title:'GUON Optimizer', tag:'PAPER · HUMOR',
     kind:'paper', stack:['llm','optimizer','satire'], fig:'descent',
@@ -1319,10 +1319,10 @@ var MARKS = {
   },
 
   /* 03 · the group-meeting deck collection: talks fanned out, read across by a
-     continuous playhead. The segments are the two talks the collection
-     actually holds — a generic three would be a claim about content. */
+     continuous playhead. The segments are the talks the collection actually
+     holds — a generic one would be a claim about content. */
   deck:function(g, w, h, u){
-    var talks = ['EML', 'CT'];
+    var talks = ['EML', 'CT', 'TABPFN'];
     var segs = talks.length;
     var s = Math.min(w / 14, h / 8.6), cx = w / 2, cy = h * .44;
     var i;
