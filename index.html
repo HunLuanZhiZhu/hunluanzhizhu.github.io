@@ -183,6 +183,9 @@ h1,h2,h3{font-weight:600;line-height:1.1}
 .lang button{width:34px;min-height:44px;color:var(--ink-3)}
 .lang button[aria-pressed=true]{color:var(--ink)}
 .lang__sep{color:var(--ink-3);font-size:9px}
+.mirror{display:flex;align-items:center;gap:6px;min-height:44px;font-size:12px;color:var(--ink-2);white-space:nowrap;border-left:1px solid var(--hairline);padding-left:17px;transition:color .2s}
+.mirror:hover{color:var(--accent)}
+.mirror__arw{font-size:10px;color:var(--ink-3)}
 .hero{padding-top:calc(var(--bar-h) + 50px)}
 .hero__top{display:flex;justify-content:space-between;align-items:center;font:10px var(--face-mono);letter-spacing:.08em;color:var(--ink-2)}
 .hero__kick{display:flex;align-items:center;gap:10px}
@@ -342,6 +345,8 @@ html[lang=zh-CN] .sec-title{font-family:var(--face-cjk);font-size:clamp(28px,2.6
   .bar__in{gap:12px}.brand__name{font-size:11px}.brand__mark{width:27px;height:27px}.brand{gap:9px}
   .bar__nav,.trigger kbd,.trigger>span{display:none}.trigger{justify-content:center;width:36px;flex-shrink:0}.trigger svg{width:19px;height:19px}
   .lang{padding-left:9px}.lang button{width:29px}.bar__spacer{min-width:0}
+  .mirror{padding-left:8px;font-size:10px;gap:0}
+  .mirror__arw{display:none}
   .hero{padding-top:calc(var(--bar-h) + 30px)}.hero__edition{display:none}
   .hero__composition{min-height:0;display:block;padding-bottom:0}
   .hero__type{padding:36px 0 0}.hero__type h1{font-size:clamp(72px,15.8vw,117px)}
@@ -449,6 +454,7 @@ html[data-motion=paused] .card__run{display:none!important}
     <span class="lang" role="group" aria-label="语言 / language">
       <button id="lang-zh" type="button" aria-pressed="false">ZH</button><span class="lang__sep" aria-hidden="true">/</span><button id="lang-en" type="button" aria-pressed="true">EN</button>
     </span>
+    <a class="mirror" data-mirror="domestic" href="https://hunluanzhizhu-d0c3.zai.site/" target="_blank" rel="noopener" title="国内可直连的精简镜像，4 个 WASM 项目仍指回本页 / Lighter mirror reachable from mainland China"><span data-i18n="mirror">Mirror</span><span class="mirror__arw" aria-hidden="true">↗</span></a>
   </div>
 </header>
 
@@ -535,7 +541,6 @@ html[data-motion=paused] .card__run{display:none!important}
       <div class="foot__col">
         <p class="foot__k" data-i18n="fout">Elsewhere</p>
         <ul class="foot__list">
-          <li><a data-mirror="domestic" href="https://hunluanzhizhu-d0c3.zai.site/" target="_blank" rel="noopener" title="国内可直连的精简镜像；4 个 WASM 项目仍指回本页">国内镜像 · China mirror</a></li>
           <li><a href="https://github.com/hunluanzhizhu" target="_blank" rel="noopener">github.com/hunluanzhizhu</a></li>
           <li><a href="https://github.com/HunLuanZhiZhu/ZCode-Game-Studios" target="_blank" rel="noopener">ZCode Game Studios</a></li>
           <li><a href="https://github.com/hunluanzhizhu/hunluanzhizhu.github.io" target="_blank" rel="noopener" data-i18n="frepo">Source of this site</a></li>
@@ -738,6 +743,8 @@ var I18N = {
     "f2": "项目索引",
     "f3": "客户项目",
     "fout": "外部",
+    "mirror": "国内镜像",
+    "mirrorIntl": "国际站",
     "frepo": "本站源码",
     "fbuild": "关于这个实验室",
     "fnote": "这里收藏好奇心的各种形状。<br>从想法出发，在浏览器里相遇。",
@@ -811,6 +818,8 @@ var I18N = {
     "f2": "Project index",
     "f3": "Client works",
     "fout": "Elsewhere",
+    "mirror": "Mirror",
+    "mirrorIntl": "Intl site",
     "frepo": "Source of this site",
     "fbuild": "About the lab",
     "fnote": "A collection of curiosity in its many forms.<br>Made of ideas. Met in a browser.",
