@@ -595,58 +595,62 @@ html[data-motion=paused] .card__run{display:none!important}
    renumbering entries cannot leave a stale number in a drawing.
 
    All project entries open their original local /projects/<slug>/ paths.
+
+   The collection is ordered newest change first. `updated` is the date that
+   subproject was last touched; bump it in the same commit. Entry `id`s are
+   assigned after sorting, so FIG numbers track recency, not identity.
    ═══════════════════════════════════════════════════════════════════════════ */
 var projects = [
-  { id:'01', slug:'minecraft-web', title:'Minecraft Web', tag:'3D · SANDBOX',
+  { updated:'2026-08-11', slug:'minecraft-web', title:'Minecraft Web', tag:'3D · SANDBOX',
     kind:'3D', stack:['rust','bevy','wasm'], fig:'voxel',
     labelZh:'体素晶格', labelEn:'VOXEL LATTICE',
     descZh:'一个在浏览器中运行的体素沙盒世界，由 Rust + Bevy 编译为 WebAssembly 驱动。',
     descEn:'A voxel sandbox running in-browser via WebAssembly, powered by Rust + Bevy.' },
 
-  { id:'02', slug:'neon-pulse', title:'Neon Pulse', tag:'ARCADE',
+  { updated:'2026-08-11', slug:'neon-pulse', title:'Neon Pulse', tag:'ARCADE',
     kind:'game', stack:['canvas','arcade'], fig:'corridor',
     labelZh:'透视航道', labelEn:'PERSPECTIVE LANE',
     descZh:'闪避光墙，积累连击。在不断加速的霓虹航道里，挑战自己的反应极限。',
     descEn:'Dodge light walls, build combos, and find your rhythm in an ever-accelerating neon arcade.' },
 
   /* The two decks retain their own paths; this card opens the local collection. */
-  { id:'03', slug:'group-meeting-ppts', title:'Group Meeting PPTs', tag:'SLIDES · TALK',
+  { updated:'2026-11-24', slug:'group-meeting-ppts', title:'Group Meeting PPTs', tag:'SLIDES · TALK',
     kind:'talk', stack:['slides','katex','svg','webgl'], fig:'deck',
     labelZh:'论文胶片', labelEn:'PAPER DECK',
     descZh:'把论文讲成可以交互的网页。EML、CT 与 TabPFN/TabICLv2 三场文献精读，公式就地注解，推导逐步展开。<a class="src" href="https://github.com/HunLuanZhiZhu/zuhui-ppt" target="_blank" rel="noopener">查看源码</a>。',
     descEn:'Research talks made interactive, with annotated equations and step-by-step derivations. Three sessions: EML, CT, and TabPFN/TabICLv2. <a class="src" href="https://github.com/HunLuanZhiZhu/zuhui-ppt" target="_blank" rel="noopener">Source</a>.' },
 
-  { id:'04', slug:'guon-paper', title:'GUON Optimizer', tag:'PAPER · HUMOR',
+  { updated:'2026-08-11', slug:'guon-paper', title:'GUON Optimizer', tag:'PAPER · HUMOR',
     kind:'paper', stack:['llm','optimizer','satire'], fig:'descent',
     labelZh:'无状态下降', labelEn:'STATELESS DESCENT',
     descZh:'VRAM 太贵所以用研究生训练 LLM —— GUON 无状态二阶优化器，发表于 JokerofAcademics。',
     descEn:'VRAM is too expensive so we use graduate students to train LLMs — GUON, a stateless second-order optimizer. Published in JokerofAcademics.' },
 
-  { id:'05', slug:'ecg-ai-local', title:'ECG AI Local', tag:'AI · HEALTH',
+  { updated:'2026-08-25', slug:'ecg-ai-local', title:'ECG AI Local', tag:'AI · HEALTH',
     kind:'app', stack:['tfjs','snn','local-ai'], fig:'ecg',
     labelZh:'心电节律', labelEn:'CARDIAC TRACE',
     descZh:'心韵深辨 —— 由微信小程序完整转化的本地AI心电检测应用，浏览器内 TensorFlow.js 推理，9 个页面完整复刻。',
     descEn:'Xin Yun Shen Bian — a WeChat mini-program fully converted to web. Local ECG detection with TensorFlow.js in-browser inference, all 9 pages replicated.' },
 
-  { id:'06', slug:'liang-intensity-calibrator', title:'Liang Calibrator', tag:'AIGC · SCRUBBER',
+  { updated:'2026-08-11', slug:'liang-intensity-calibrator', title:'Liang Calibrator', tag:'AIGC · SCRUBBER',
     kind:'app', stack:['image2','h3-ai','video','canvas'], fig:'scrub',
     labelZh:'逐帧滑杆', labelEn:'FRAME SCRUBBER',
     descZh:'从「小难梁」到「梁祖」。滑动 0–30 级刻度，探索 AI 生成的 241 帧连续变化。',
     descEn:'From first frame to final form. Scrub through 241 AI-generated frames with a continuous 0–30 slider.' },
 
-  { id:'07', slug:'game-studio-eval-s2', title:'Game Studio Eval', tag:'AI · BENCHMARK',
+  { updated:'2026-09-14', slug:'game-studio-eval-s2', title:'Game Studio Eval', tag:'AI · BENCHMARK',
     kind:'paper', stack:['benchmark','godot','wasm'], fig:'bracket',
     labelZh:'评测记分', labelEn:'BENCH SCORE',
     descZh:'给 AI 一个目标，它能独立做出怎样的游戏？第二届生成评测，可玩作品与完整榜单。<a class="src" href="https://github.com/HunLuanZhiZhu/ZCode-Game-Studios" target="_blank" rel="noopener">框架源码</a>。',
     descEn:'One goal. No extra prompts. See the games AI builds on its own in the second game-generation benchmark. <a class="src" href="https://github.com/HunLuanZhiZhu/ZCode-Game-Studios" target="_blank" rel="noopener">Source</a>.' },
 
-  { id:'08', slug:'svg-pelican', title:'Dynamic SVG Pelican', tag:'SVG · ITERATION',
+  { updated:'2026-10-17', slug:'svg-pelican', title:'Dynamic SVG Pelican', tag:'SVG · ITERATION',
     kind:'3D', stack:['svg','smil','deepseek-v4-pro'], fig:'redraw',
     labelZh:'鹈鹕轮廓', labelEn:'PELICAN STUDY',
     descZh:'用 AI 反复尝试生成动态 SVG 动画的实验画廊。每次尝试单独成版本：既可在首页直接预览动画，也可点开独立页面全屏观看。',
     descEn:'A gallery of AI-generated dynamic SVG animation, iterated attempt by attempt. Each attempt is its own version — preview the animation in place, or open it as a standalone full-screen page.' },
 
-  { id:'09', slug:'blender-3d', title:'Blender 3D', tag:'3D · MODELING',
+  { updated:'2026-09-15', slug:'blender-3d', title:'Blender 3D', tag:'3D · MODELING',
     kind:'3D', stack:['blender','gltf','webgl','deepseek-v4.1-flash'], fig:'lathe',
     labelZh:'旋转成形', labelEn:'LATHE FORM',
     descZh:'由几何体生长出的提灯与皮卡丘。程序化建模，实时 3D 预览，拖动即可探索每个角度。',
@@ -654,13 +658,13 @@ var projects = [
 
   /* Built in Open Design (model: deepseek-v4.1-flash); a single self-contained
      file, no grid, no textures — click the water to drop a ripple. */
-  { id:'10', slug:'open-design-test', title:'Open Design Test', tag:'WEBGL · EXPERIMENT',
+  { updated:'2026-10-02', slug:'open-design-test', title:'Open Design Test', tag:'WEBGL · EXPERIMENT',
     kind:'exp', stack:['webgl2','shader','open-design','deepseek-v4.1-flash'], fig:'caustic',
     labelZh:'涟漪焦散', labelEn:'RIPPLE CAUSTICS',
     descZh:'Open Design 生成的自包含 WebGL2 主视觉 —— 多层域扭曲涟漪织成动态水面焦散，点击水面即可落下涟漪。无网格、无贴图、单文件。',
     descEn:'A self-contained WebGL2 visual generated with Open Design — domain-warped ripples weave into animated water caustics. Click the water to drop a ripple. No mesh, no textures, one file.' },
 
-  { id:'11', slug:'arxiv-insights', title:'arXiv Insights', tag:'AI · RESEARCH',
+  { updated:'2026-10-22', slug:'arxiv-insights', title:'arXiv Insights', tag:'AI · RESEARCH',
     kind:'paper', stack:['arxiv','ai','svg','interactive','papers'], fig:'deck',
     labelZh:'论文洞察', labelEn:'PAPER INSIGHTS',
     descZh:'把前沿 AI 论文讲清楚：原文核验、五分钟直觉讲解、技术拆解与交互式 SVG。当前已建立两份可改造的研究 Skill，尚未启用自动更新。',
@@ -668,13 +672,13 @@ var projects = [
 
   /* Remotion Try — the composition IS the deliverable: the page renders frames
      live via @remotion/player, no video file is committed. */
-  { id:'12', slug:'remotion-try', title:'Remotion Try', tag:'REMOTION · MV',
+  { updated:'2026-11-01', slug:'remotion-try', title:'Remotion Try', tag:'REMOTION · MV',
     kind:'exp', stack:['remotion','react','player'], fig:'film',
     labelZh:'拍点驱动', labelEn:'BEAT-DRIVEN',
     descZh:'幻听（DJ 版）无缝循环 MV —— 整支片子由 Remotion 写成 React 合成：像素小克劳德、终端与频谱能量条全部程序化绘制，挂在 librosa 分析出的真实拍网上。浏览器实时逐帧渲染，无视频文件，可拖动进度条定位 920 帧中的任意一帧。',
     descEn:'A seamless-loop MV written entirely as a Remotion composition — the pixel Clawd, terminal and spectrum bars are drawn procedurally on a real beat grid analyzed by librosa. Rendered live in your browser, no video file; scrub to any of the 920 frames.' },
 
-  { id:'13', slug:'neon-requiem', title:'Neon Requiem', tag:'FPS · NEON',
+  { updated:'2026-11-05', slug:'neon-requiem', title:'Neon Requiem', tag:'FPS · NEON',
     kind:'game', stack:['typescript','three.js','webgl','vite'], fig:'corridor',
     labelZh:'霓虹街区', labelEn:'NEON BLOCK',
     descZh:'雨夜霓虹街区的第一人称怪物生存射击：扫描手枪、双手握持、三种骨骼怪物、程序化雨/湿地反射/空间音场，浏览器内实时渲染。',
@@ -682,7 +686,7 @@ var projects = [
 ];
 
 var clientWorks = [
-  { id:'C01', slug:'clients/breakout', title:'Breakout', tag:'CLIENT · RESTYLE',
+  { updated:'2026-09-14', slug:'clients/breakout', title:'Breakout', tag:'CLIENT · RESTYLE',
     kind:'game', stack:['godot','svg','wasm'], fig:'paddle',
     labelZh:'霓虹砖墙', labelEn:'NEON BRICKS',
     kickZh:'客户委托', kickEn:'CLIENT COMMISSION',
@@ -695,7 +699,7 @@ var clientWorks = [
   /* slug keeps the project's original path — only its placement on this page
      changed, so links to /projects/fund-manager/ still resolve. No fee is
      shown for this one. */
-  { id:'C02', slug:'fund-manager', title:'Fund Manager', tag:'CLIENT · TOOL',
+  { updated:'2026-08-24', slug:'fund-manager', title:'Fund Manager', tag:'CLIENT · TOOL',
     kind:'tool', stack:['indexeddb','sheetjs','single-page'], fig:'ledger',
     labelZh:'经费流水', labelEn:'EXPENSE LEDGER',
     kickZh:'客户委托', kickEn:'CLIENT COMMISSION',
@@ -704,6 +708,16 @@ var clientWorks = [
     metaZh:[['委托内容','单人经费管理工具，单页应用'],['功能','预算表导入 · 报销追踪 · 催办提醒 · Excel 导出'],['数据','全部存在浏览器本地（IndexedDB），不经过服务端']],
     metaEn:[['BRIEF','A single-user expense tool as a single-page app'],['FEATURES','Budget import · reimbursement tracking · reminders · Excel export'],['DATA','All of it stays in the browser (IndexedDB); no server involved']] }
 ];
+
+/* Newest change first: `updated` is the day a subproject was last touched, so
+   bump it in the same commit as the change. FIG numbers are positions in that
+   order, not identities, so they always read as "how recent" — every figure
+   takes its number from the harness, never from a hardcoded one. */
+function byUpdated(a, b){ return (b.updated || '').localeCompare(a.updated || ''); }
+projects.sort(byUpdated);
+clientWorks.sort(byUpdated);
+projects.forEach(function(p, i){ p.id = String(i + 1).padStart(2, '0'); });
+clientWorks.forEach(function(p, i){ p.id = 'C' + String(i + 1).padStart(2, '0'); });
 
 var ALL = projects.concat(clientWorks);
 
@@ -1313,7 +1327,7 @@ var MARKS = {
     g.beginPath(); g.ellipse(187, 82, 3.1, Math.max(.45, 3.1 * (1 - blink)), 0, 0, Math.PI * 2); g.fill();
     g.restore();
 
-    mono(g, '08 / PELICAN', 14, 19, FIG.ink2, 9, 'left');
+    mono(g, u.id + ' / PELICAN', 14, 19, FIG.ink2, 9, 'left');
     axis(g, w, h, 28, null, u);
     return T('figOf') + u.id + ' · ' + (lang === 'zh' ? '鹈鹕轮廓' : 'PELICAN STUDY');
   },
